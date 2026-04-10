@@ -57,7 +57,7 @@
       -webkit-font-smoothing: antialiased;
       overflow-x: hidden;
     }
-    .wrap { max-width: 440px; margin: 0 auto; padding: 0 20px; }
+    .wrap { max-width: 720px; margin: 0 auto; padding: 0 20px; }
 
     /* Logo */
     .logo { text-align: center; padding: 16px 0 8px; }
@@ -190,17 +190,17 @@
     /* ================================
        QUIZ
        ================================ */
-    #quiz { display: none; position: fixed; inset: 0; background: var(--bg); z-index: 100; flex-direction: column; }
+    #quiz { display: none; position: fixed; inset: 0; background: var(--bg); z-index: 100; flex-direction: column; overflow-y: auto; -webkit-overflow-scrolling: touch; }
     #quiz.on { display: flex; }
-    .q-head { display: flex; align-items: center; justify-content: center; padding: 14px 20px; border-bottom: 1px solid var(--surface-2); }
+    .q-head { display: flex; align-items: center; justify-content: center; padding: 14px 20px; border-bottom: 1px solid var(--surface-2); position: sticky; top: 0; background: var(--bg); z-index: 10; }
     .q-head img { height: 32px; }
-    .q-progress { padding: 12px 20px 0; max-width: 440px; margin: 0 auto; width: 100%; }
+    .q-progress { padding: 12px 20px 0; max-width: 600px; margin: 0 auto; width: 100%; position: sticky; top: 57px; background: var(--bg); z-index: 10; }
     .q-bar { height: 4px; background: var(--surface-2); border-radius: 2px; overflow: hidden; }
     .q-fill { height: 100%; background: var(--accent); border-radius: 2px; transition: width 0.4s ease; width: 11%; }
     .q-num { font-size: 11px; color: var(--text-3); text-align: right; margin-top: 4px; }
-    .q-body { flex: 1; display: flex; align-items: center; justify-content: center; padding: 20px; }
+    .q-body { flex: 1; display: flex; align-items: flex-start; justify-content: center; padding: 40px 20px; }
 
-    .step { display: none; max-width: 440px; width: 100%; animation: up 0.3s ease; }
+    .step { display: none; max-width: 600px; width: 100%; animation: up 0.3s ease; }
     .step.on { display: block; }
     @keyframes up { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
     .step h2 { font-size: 20px; font-weight: 700; text-align: center; margin-bottom: 24px; line-height: 1.3; letter-spacing: -0.2px; }
@@ -257,7 +257,7 @@
     .form-proof .fp-row b { color: var(--text-2); }
 
     /* === DANKE-SEITE === */
-    .thanks { text-align: center; max-width: 440px; width: 100%; }
+    .thanks { text-align: center; max-width: 600px; width: 100%; padding-bottom: 40px; }
     .thanks .check-big {
       width: 56px; height: 56px; border-radius: 50%;
       background: rgba(74,222,128,0.12); color: var(--green);
@@ -349,10 +349,42 @@
 
     /* Desktop */
     @media (min-width: 600px) {
-      .hero h1 { font-size: 30px; }
-      .mini h2 { font-size: 24px; }
-      .step h2 { font-size: 24px; }
+      .hero h1 { font-size: 36px; }
+      .hero p { font-size: 17px; }
+      .mini h2 { font-size: 26px; }
+      .gender-row { max-width: 480px; margin-left: auto; margin-right: auto; margin-bottom: 20px; }
+      .risks li, .benefits li { font-size: 15px; padding: 14px 18px; }
+      .testimonial { padding: 20px; gap: 16px; }
+      .testimonial .t-text { font-size: 14px; }
+      .cta { max-width: 400px; margin: 0 auto; font-size: 17px; padding: 18px; }
+      .team-strip img { max-width: 420px; }
+
+      /* Quiz Desktop */
+      .step h2 { font-size: 26px; }
       .opts { display: grid; grid-template-columns: 1fr 1fr; }
+      .opt { font-size: 16px; padding: 18px 20px; }
+      .opt:hover { border-color: var(--accent); background: var(--surface-2); }
+      .q-body { padding: 60px 20px 40px; }
+
+      /* Formular Desktop */
+      .fields { max-width: 440px; margin-left: auto; margin-right: auto; margin-bottom: 14px; }
+      .submit { max-width: 440px; margin-left: auto; margin-right: auto; }
+      .form h2 { font-size: 26px; }
+      .cb-row { max-width: 440px; margin-left: auto; margin-right: auto; margin-bottom: 16px; }
+
+      /* Danke Desktop */
+      .prio-box { max-width: 520px; margin-left: auto; margin-right: auto; margin-bottom: 12px; }
+      .wait-box { max-width: 520px; margin-left: auto; margin-right: auto; }
+      .thanks-proof { max-width: 520px; margin-left: auto; margin-right: auto; }
+      .thanks h2 { font-size: 28px; }
+    }
+
+    @media (min-width: 900px) {
+      .hero h1 { font-size: 42px; }
+      .hero p { font-size: 18px; }
+      .gender-row { max-width: 520px; gap: 20px; }
+      .risks, .benefits { max-width: 560px; margin-left: auto; margin-right: auto; }
+      .testimonial { max-width: 560px; margin-left: auto; margin-right: auto; }
     }
   </style>
 </head>
