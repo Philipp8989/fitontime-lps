@@ -1,6 +1,5 @@
 ---
 // Schilddrüsen-Report Funnel v3 — Mobile-First, Proof, Booking-Prio
-const bookingUrl = import.meta.env.PUBLIC_BOOKING_URL || 'https://fitontime.youcanbook.me';
 ---
 <html lang="de">
 <head>
@@ -587,8 +586,8 @@ const bookingUrl = import.meta.env.PUBLIC_BOOKING_URL || 'https://fitontime.youc
             <li><span class="pic">&#10003;</span>Persönliche Erklärung im Gespräch</li>
             <li><span class="pic">&#10003;</span>Individueller Abnehm-Plan inklusive</li>
           </ul>
-          <a class="book-btn" id="cal-link" href="#" target="_blank" rel="noopener">Jetzt Termin sichern</a>
           <div class="spots">&#128293; Nur noch wenige Plätze diese Woche</div>
+          <div id="ycbm-container"></div>
         </div>
 
         <!-- Kein-Termin Option -->
@@ -607,9 +606,6 @@ const bookingUrl = import.meta.env.PUBLIC_BOOKING_URL || 'https://fitontime.youc
     </div>
   </div>
 
-  <script is:inline define:vars={{ bookingUrl }}>
-    document.getElementById('cal-link').href = bookingUrl;
-  </script>
   <script is:inline>
     function tk(e, d) {
       fetch('/api/track', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ event: e, page: 'schilddruesen-report', ...d }) }).catch(function(){});
@@ -676,6 +672,13 @@ const bookingUrl = import.meta.env.PUBLIC_BOOKING_URL || 'https://fitontime.youc
         document.querySelector('.step[data-s="form"]').classList.remove('on');
         document.querySelector('.step[data-s="thx"]').classList.add('on');
         document.getElementById('qn').textContent = 'Fertig!';
+        // YCBM Kalender laden
+        var s = document.createElement('script');
+        s.src = 'https://embed.ycb.me';
+        s.async = true;
+        s.setAttribute('data-domain', 'fitontime-stoffwechsel-report');
+        s.setAttribute('data-displaymode', 'auto');
+        document.getElementById('ycbm-container').appendChild(s);
       }, 800);
     }
   </script>
