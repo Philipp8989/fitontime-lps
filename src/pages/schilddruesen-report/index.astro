@@ -12,6 +12,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
+  <!-- Meta Pixel -->
   <script is:inline define:vars={{ pixelId: import.meta.env.PUBLIC_META_PIXEL_ID || '' }}>
     if (pixelId) {
       !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
@@ -21,6 +22,14 @@
       document,'script','https://connect.facebook.net/en_US/fbevents.js');
       fbq('init', pixelId); fbq('track', 'PageView');
     }
+  </script>
+  <!-- Hyros -->
+  <script is:inline>
+    var head = document.head;
+    var script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.src = "https://180866.t.hyros.com/v1/lst/universal-script?ph=689a71ca1ab3be1cb1caddbe6b7902a4ad2c51a228f4ec9ea7fef3123a705f63&tag=!clicked&ref_url=" + encodeURI(document.URL);
+    head.appendChild(script);
   </script>
 
   <style is:global>
