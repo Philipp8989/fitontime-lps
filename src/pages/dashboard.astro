@@ -1,0 +1,71 @@
+---
+// Analytics Dashboard — Key-geschützt
+const key = Astro.url.searchParams.get('key');
+const validKey = import.meta.env.DASHBOARD_KEY;
+if (key !== validKey) {
+  return new Response('Unauthorized', { status: 401 });
+}
+---
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>FOT LP Dashboard</title>
+  <style is:global>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: system-ui, sans-serif; background: #0a0a0f; color: #e0e0e0; padding: 2rem; }
+    h1 { margin-bottom: 1.5rem; color: #fff; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+    .card { background: #1a1a2e; border-radius: 12px; padding: 1.5rem; }
+    .card h3 { font-size: 0.85rem; color: #888; margin-bottom: 0.5rem; }
+    .card .value { font-size: 2rem; font-weight: 700; color: #d4a0b9; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 0.75rem; text-align: left; border-bottom: 1px solid #222; }
+    th { color: #888; font-size: 0.85rem; }
+    #loading { text-align: center; padding: 3rem; color: #888; }
+  </style>
+</head>
+<body>
+  <h1>Schilddrüsen-Report Dashboard</h1>
+  <div id="loading">Lade Daten...</div>
+  <div id="stats" class="grid" style="display:none"></div>
+  <div id="events" style="display:none">
+    <h2 style="margin-bottom:1rem">Letzte Events</h2>
+    <table><thead><tr><th>Zeit</th><th>Event</th><th>Seite</th><th>Details</th></tr></thead><tbody id="tbody"></tbody></table>
+  </div>
+  <script define:vars={{ key }}>
+    fetch(`/api/events?key=${key}&days=7`)
+      .then(r => r.json())
+      .then(events => {
+        document.getElementById('loading').style.display = 'none';
+        const stats = document.getElementById('stats');
+        stats.style.display = 'grid';
+        document.getElementById('events').style.display = 'block';
+
+        const views = events.filter(e => e.event === 'page_view').length;
+        const quizStarts = events.filter(e => e.event === 'quiz_start').length;
+        const quizCompletes = events.filter(e => e.event === 'quiz_complete').length;
+        const leads = events.filter(e => e.event === 'lead_submit').length;
+
+        stats.innerHTML = `
+          <div class="card"><h3>Seitenaufrufe</h3><div class="value">${views}</div></div>
+          <div class="card"><h3>Quiz gestartet</h3><div class="value">${quizStarts}</div></div>
+          <div class="card"><h3>Quiz abgeschlossen</h3><div class="value">${quizCompletes}</div></div>
+          <div class="card"><h3>Leads</h3><div class="value">${leads}</div></div>
+          <div class="card"><h3>Start-Rate</h3><div class="value">${views ? Math.round(quizStarts/views*100) : 0}%</div></div>
+          <div class="card"><h3>Completion-Rate</h3><div class="value">${quizStarts ? Math.round(quizCompletes/quizStarts*100) : 0}%</div></div>
+          <div class="card"><h3>Lead-Rate</h3><div class="value">${quizCompletes ? Math.round(leads/quizCompletes*100) : 0}%</div></div>
+          <div class="card"><h3>Gesamt-CR</h3><div class="value">${views ? Math.round(leads/views*100) : 0}%</div></div>
+        `;
+
+        const tbody = document.getElementById('tbody');
+        events.sort((a,b) => b.timestamp.localeCompare(a.timestamp)).slice(0,50).forEach(e => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `<td>${new Date(e.timestamp).toLocaleString('de-CH')}</td><td>${e.event}</td><td>${e.page||'-'}</td><td>${e.detail||'-'}</td>`;
+          tbody.appendChild(tr);
+        });
+      });
+  </script>
+</body>
+</html>
