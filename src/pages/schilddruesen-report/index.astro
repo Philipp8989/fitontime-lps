@@ -73,10 +73,10 @@
     /* Gender */
     .gender-q { font-size: 13px; font-weight: 600; color: var(--text-2); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 14px; }
     .gender-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
-    .g-card { position: relative; border-radius: var(--r); overflow: hidden; cursor: pointer; border: 2px solid transparent; transition: border-color 0.2s, transform 0.2s; -webkit-tap-highlight-color: transparent; }
-    .g-card:active { transform: scale(0.97); }
-    .g-card img { width: 100%; aspect-ratio: 1/1; object-fit: cover; object-position: center 20%; display: block; }
-    .g-card span { position: absolute; bottom: 0; left: 0; right: 0; padding: 10px; background: linear-gradient(transparent, rgba(0,0,0,.7)); font-size: 15px; font-weight: 600; text-align: center; }
+    .g-card { border-radius: var(--r); cursor: pointer; border: 1.5px solid var(--surface-2); transition: border-color 0.2s, transform 0.2s; -webkit-tap-highlight-color: transparent; background: var(--surface); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px 16px 18px; gap: 8px; }
+    .g-card:active { transform: scale(0.97); border-color: var(--accent); }
+    .g-card .g-icon { font-size: 48px; line-height: 1; }
+    .g-card .g-label { font-size: 15px; font-weight: 600; }
 
     /* === PROOF BAR === */
     .proof-bar {
@@ -416,12 +416,12 @@
         <div class="gender-q">Ich bin:</div>
         <div class="gender-row">
           <div class="g-card" onclick="go('frau')">
-            <img src="https://images.unsplash.com/photo-1594744803329-e58b31de8bf5?w=400&h=500&fit=crop&crop=face&q=80" alt="Frau" />
-            <span>Frau</span>
+            <span class="g-icon">&#9792;</span>
+            <span class="g-label">Frau</span>
           </div>
           <div class="g-card" onclick="go('mann')">
-            <img src="https://images.unsplash.com/photo-1594672830234-ba4cfe1202dc?w=400&h=500&fit=crop&crop=face&q=80" alt="Mann" />
-            <span>Mann</span>
+            <span class="g-icon">&#9794;</span>
+            <span class="g-label">Mann</span>
           </div>
         </div>
       </section>
