@@ -1,17 +1,17 @@
 ---
-// Schilddrüsen-Report Funnel — Landing Page + Quiz + Lead-Formular
-// Feminines, stilvolles Dark-Theme mit Conversion-Optimierungen
+// Schilddrüsen-Report Funnel v2 — Mobile-First, Senior Design, Conversion-Optimiert
+const calendlyUrl = import.meta.env.PUBLIC_CALENDLY_URL || 'https://calendly.com/fitontime';
 ---
 <html lang="de">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="robots" content="noindex, nofollow" />
-  <title>Schilddrüsen-Report | Fit on Time</title>
+  <title>Kostenloser Schilddrüsen-Check | Fit on Time</title>
   <link rel="icon" type="image/png" href="/images/logo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
   <!-- Meta Pixel -->
   <script is:inline define:vars={{ pixelId: import.meta.env.PUBLIC_META_PIXEL_ID || '' }}>
@@ -21,1056 +21,872 @@
       n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
       t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
       document,'script','https://connect.facebook.net/en_US/fbevents.js');
-      fbq('init', pixelId);
-      fbq('track', 'PageView');
+      fbq('init', pixelId); fbq('track', 'PageView');
     }
   </script>
 
   <style is:global>
-    /* === RESET & BASE === */
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
     :root {
-      --bg-primary: #0c0a13;
-      --bg-card: #16131f;
-      --bg-card-hover: #1e1a2a;
-      --accent: #c9899a;
-      --accent-light: #e4b4c2;
-      --accent-glow: rgba(201, 137, 154, 0.3);
-      --gold: #d4a574;
-      --text: #e8e4ef;
-      --text-muted: #9a95a8;
-      --border: rgba(201, 137, 154, 0.15);
-      --radius: 16px;
-      --font-serif: 'Playfair Display', Georgia, serif;
-      --font-sans: 'Inter', system-ui, sans-serif;
+      --bg: #0b0b0f;
+      --surface: #151519;
+      --surface-2: #1c1c22;
+      --accent: #c4697a;
+      --accent-soft: #d4949f;
+      --green: #4ade80;
+      --text: #f0eff2;
+      --text-2: #a09cac;
+      --text-3: #6b6778;
+      --r: 14px;
+      --font: 'DM Sans', system-ui, -apple-system, sans-serif;
     }
 
-    html { scroll-behavior: smooth; }
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
 
     body {
-      font-family: var(--font-sans);
-      background: var(--bg-primary);
+      font-family: var(--font);
+      background: var(--bg);
       color: var(--text);
-      line-height: 1.6;
-      overflow-x: hidden;
+      line-height: 1.5;
       -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
     }
 
-    /* === HINTERGRUND-EFFEKT === */
-    body::before {
-      content: '';
-      position: fixed;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(ellipse at 30% 20%, rgba(201,137,154,0.06) 0%, transparent 50%),
-                  radial-gradient(ellipse at 70% 80%, rgba(212,165,116,0.04) 0%, transparent 50%);
-      z-index: -1;
-    }
-
-    /* === CONTAINER === */
-    .container { max-width: 720px; margin: 0 auto; padding: 0 1.25rem; }
+    /* === LAYOUT === */
+    .wrap { max-width: 440px; margin: 0 auto; padding: 0 20px; }
 
     /* === LOGO === */
-    .logo-bar {
-      text-align: center;
-      padding: 1.25rem 0;
-    }
-    .logo-bar img {
-      height: 48px;
-      width: auto;
-      filter: brightness(1.1);
-    }
+    .logo { text-align: center; padding: 16px 0 8px; }
+    .logo img { height: 40px; }
 
     /* === HERO === */
-    .hero {
-      text-align: center;
-      padding: 2rem 0 2.5rem;
-    }
-    .hero-badge {
-      display: inline-block;
-      background: linear-gradient(135deg, var(--accent), var(--gold));
-      color: #0c0a13;
-      font-size: 0.75rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      padding: 0.4rem 1.2rem;
-      border-radius: 50px;
-      margin-bottom: 1.5rem;
-    }
+    .hero { text-align: center; padding: 20px 0 24px; }
     .hero h1 {
-      font-family: var(--font-serif);
-      font-size: clamp(1.75rem, 5vw, 2.5rem);
+      font-size: 24px;
       font-weight: 700;
-      line-height: 1.25;
-      margin-bottom: 1rem;
-      background: linear-gradient(135deg, #fff 40%, var(--accent-light));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      line-height: 1.3;
+      letter-spacing: -0.3px;
+      margin-bottom: 10px;
+    }
+    .hero h1 em {
+      font-style: normal;
+      color: var(--accent);
     }
     .hero p {
-      font-size: 1.1rem;
-      color: var(--text-muted);
-      max-width: 560px;
-      margin: 0 auto 2rem;
+      font-size: 15px;
+      color: var(--text-2);
+      margin-bottom: 20px;
     }
+    .hero p strong { color: var(--text); font-weight: 600; }
 
-    /* === GESCHLECHTS-AUSWAHL === */
-    .gender-label {
-      font-size: 1rem;
+    /* === GENDER === */
+    .gender-q {
+      font-size: 13px;
       font-weight: 600;
-      margin-bottom: 1.25rem;
-      color: var(--text);
+      color: var(--text-2);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 14px;
     }
-    .gender-grid {
+    .gender-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 1rem;
-      max-width: 440px;
-      margin: 0 auto 1.5rem;
+      gap: 12px;
+      margin-bottom: 16px;
     }
-    .gender-card {
+    .g-card {
       position: relative;
-      border-radius: var(--radius);
+      border-radius: var(--r);
       overflow: hidden;
       cursor: pointer;
-      border: 2px solid var(--border);
-      transition: all 0.3s ease;
-      background: var(--bg-card);
+      border: 2px solid transparent;
+      transition: border-color 0.2s, transform 0.2s;
+      -webkit-tap-highlight-color: transparent;
     }
-    .gender-card:hover {
-      border-color: var(--accent);
-      transform: translateY(-3px);
-      box-shadow: 0 8px 30px var(--accent-glow);
-    }
-    .gender-card img {
+    .g-card:active { transform: scale(0.97); }
+    .g-card img {
       width: 100%;
-      aspect-ratio: 3/4;
+      aspect-ratio: 4/5;
       object-fit: cover;
       display: block;
     }
-    .gender-card .label {
+    .g-card span {
       position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      padding: 1rem;
-      background: linear-gradient(transparent, rgba(12,10,19,0.9));
+      bottom: 0; left: 0; right: 0;
+      padding: 10px;
+      background: linear-gradient(transparent, rgba(0,0,0,.7));
+      font-size: 15px;
       font-weight: 600;
-      font-size: 1.1rem;
       text-align: center;
     }
 
-    /* === SOCIAL PROOF === */
-    .social-proof {
-      text-align: center;
-      margin: 0.75rem 0 1rem;
-    }
-    .social-proof .count {
-      font-weight: 600;
-      color: var(--accent-light);
-    }
-    .social-proof .badge {
+    /* === PROOF === */
+    .proof {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 0.4rem;
-      margin-top: 0.35rem;
-      color: var(--text-muted);
-      font-size: 0.85rem;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--text-3);
     }
-    .social-proof .badge svg {
-      width: 14px;
-      height: 14px;
-      color: var(--gold);
-    }
+    .proof b { color: var(--text-2); }
 
-    /* === CONTENT-SEKTIONEN === */
-    .section {
-      padding: 3rem 0;
+    /* === MINI-SEKTIONEN (nur 2-3 kurze) === */
+    .divider {
+      width: 40px; height: 1px;
+      background: var(--accent);
+      margin: 28px auto;
+      opacity: 0.4;
     }
-    .section-divider {
-      width: 60px;
-      height: 2px;
-      background: linear-gradient(90deg, var(--accent), var(--gold));
-      margin: 0 auto 2rem;
-      border-radius: 2px;
-    }
-    .section-tag {
-      display: inline-block;
-      color: var(--accent);
-      font-size: 0.8rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      margin-bottom: 0.75rem;
-    }
-    .section h2 {
-      font-family: var(--font-serif);
-      font-size: clamp(1.4rem, 4vw, 1.9rem);
-      font-weight: 700;
-      margin-bottom: 1rem;
-      line-height: 1.3;
-    }
-    .section p {
-      color: var(--text-muted);
-      margin-bottom: 1rem;
-    }
-
-    /* === WARNUNG-KARTEN === */
-    .warning-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 1.5rem;
-      margin-bottom: 1.25rem;
-    }
-    .warning-card h3 {
-      font-size: 1.1rem;
-      font-weight: 600;
-      margin-bottom: 0.75rem;
-      color: #e8a0a0;
-    }
-    .warning-card ul {
-      list-style: none;
-      padding: 0;
-    }
-    .warning-card ul li {
-      padding: 0.4rem 0;
-      padding-left: 1.5rem;
-      position: relative;
-      color: var(--text-muted);
-      font-size: 0.95rem;
-    }
-    .warning-card ul li::before {
-      content: '×';
-      position: absolute;
-      left: 0;
-      color: #e8a0a0;
-      font-weight: 700;
-    }
-
-    /* === POSITIV-KARTEN === */
-    .benefit-card {
-      background: var(--bg-card);
-      border: 1px solid rgba(201,137,154,0.2);
-      border-radius: var(--radius);
-      padding: 1.5rem;
-      margin-bottom: 1rem;
-    }
-    .benefit-card h3 {
-      font-size: 1.05rem;
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-      color: var(--accent-light);
-    }
-    .benefit-card p {
-      font-size: 0.92rem;
-      line-height: 1.5;
-    }
-
-    /* === URGENCY-SEKTION === */
-    .urgency {
-      background: linear-gradient(135deg, rgba(201,137,154,0.08), rgba(212,165,116,0.05));
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 2rem;
+    .mini {
       text-align: center;
-      margin: 1rem 0;
+      padding: 0 0 8px;
     }
-    .urgency h3 {
-      font-family: var(--font-serif);
-      font-size: 1.4rem;
-      margin-bottom: 0.75rem;
+    .mini h2 {
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 1.3;
+      margin-bottom: 14px;
+      letter-spacing: -0.2px;
     }
-    .urgency-items {
+
+    /* === RISK-LISTE === */
+    .risks {
+      list-style: none;
       display: flex;
       flex-direction: column;
-      gap: 0.5rem;
-      margin: 1rem 0 1.5rem;
+      gap: 8px;
+      margin-bottom: 20px;
+      text-align: left;
     }
-    .urgency-item {
+    .risks li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 14px;
+      color: var(--text-2);
+      background: var(--surface);
+      padding: 12px 14px;
+      border-radius: 10px;
+    }
+    .risks li .ic {
+      flex-shrink: 0;
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      background: rgba(196,105,122,0.15);
+      color: var(--accent);
       display: flex;
       align-items: center;
-      gap: 0.6rem;
-      font-size: 0.95rem;
-      color: var(--text-muted);
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      margin-top: 1px;
     }
-    .urgency-item .dot {
-      width: 8px;
-      height: 8px;
+
+    /* === BENEFIT-LISTE === */
+    .benefits {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 20px;
+      text-align: left;
+    }
+    .benefits li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 14px;
+      color: var(--text-2);
+      background: var(--surface);
+      padding: 12px 14px;
+      border-radius: 10px;
+    }
+    .benefits li .ic {
+      flex-shrink: 0;
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      background: rgba(74,222,128,0.12);
+      color: var(--green);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      margin-top: 1px;
+    }
+
+    /* === CTA === */
+    .cta-wrap { text-align: center; padding: 4px 0 20px; }
+    .cta {
+      display: block;
+      width: 100%;
+      background: var(--accent);
+      color: #fff;
+      font-family: var(--font);
+      font-size: 16px;
+      font-weight: 700;
+      padding: 16px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: opacity 0.2s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .cta:active { opacity: 0.85; }
+    .cta-sub {
+      font-size: 11px;
+      color: var(--text-3);
+      margin-top: 8px;
+    }
+
+    /* === URGENCY BOX === */
+    .urg {
+      background: var(--surface);
+      border: 1px solid rgba(196,105,122,0.2);
+      border-radius: var(--r);
+      padding: 20px;
+      text-align: center;
+      margin-bottom: 28px;
+    }
+    .urg h3 {
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .urg p { font-size: 13px; color: var(--text-2); margin-bottom: 16px; }
+    .urg .signals {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 16px;
+    }
+    .urg .sig {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text-2);
+    }
+    .urg .dot {
+      width: 6px; height: 6px;
       border-radius: 50%;
       background: var(--accent);
       flex-shrink: 0;
     }
-
-    /* === CTA BUTTON === */
-    .cta-wrap { text-align: center; margin: 1.5rem 0; }
-    .cta-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      background: linear-gradient(135deg, var(--accent), #b07585);
-      color: #fff;
-      font-size: 1.1rem;
-      font-weight: 600;
-      padding: 1rem 2.5rem;
-      border: none;
-      border-radius: 60px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 20px var(--accent-glow);
-      text-decoration: none;
-    }
-    .cta-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 35px rgba(201,137,154,0.4);
-    }
-
-    /* === WHY-SEKTION === */
-    .why-section {
-      text-align: center;
-      padding: 2.5rem 0 3rem;
-      border-top: 1px solid var(--border);
-    }
-    .why-section .gold { color: var(--gold); font-weight: 700; }
 
     /* === FOOTER === */
     footer {
       text-align: center;
-      padding: 2rem 0;
-      border-top: 1px solid var(--border);
-      font-size: 0.8rem;
-      color: var(--text-muted);
+      padding: 20px;
+      font-size: 11px;
+      color: var(--text-3);
+      border-top: 1px solid var(--surface-2);
     }
-    footer a { color: var(--text-muted); text-decoration: none; }
-    footer a:hover { color: var(--text); }
+    footer a { color: var(--text-3); text-decoration: none; }
 
-    /* ============================================
-       QUIZ-OVERLAY
-       ============================================ */
-    .quiz-overlay {
+    /* ================================
+       QUIZ OVERLAY
+       ================================ */
+    #quiz {
       display: none;
       position: fixed;
       inset: 0;
-      background: var(--bg-primary);
-      z-index: 1000;
-      overflow-y: auto;
+      background: var(--bg);
+      z-index: 100;
+      flex-direction: column;
     }
-    .quiz-overlay.active { display: flex; flex-direction: column; }
+    #quiz.on { display: flex; }
 
-    .quiz-header {
-      padding: 1rem 1.25rem;
-      text-align: center;
-      border-bottom: 1px solid var(--border);
+    .q-head {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--surface-2);
     }
-    .quiz-header img { height: 36px; }
+    .q-head img { height: 32px; }
 
-    /* Fortschrittsbalken */
-    .progress-wrap {
-      padding: 0 1.25rem;
-      max-width: 720px;
-      margin: 1rem auto 0;
+    .q-progress {
+      padding: 12px 20px 0;
+      max-width: 440px;
+      margin: 0 auto;
       width: 100%;
     }
-    .progress-bar {
-      height: 6px;
-      background: rgba(201,137,154,0.15);
-      border-radius: 3px;
+    .q-bar {
+      height: 4px;
+      background: var(--surface-2);
+      border-radius: 2px;
       overflow: hidden;
     }
-    .progress-fill {
+    .q-fill {
       height: 100%;
-      background: linear-gradient(90deg, var(--accent), var(--gold));
-      border-radius: 3px;
-      transition: width 0.5s ease;
-      width: 0%;
+      background: var(--accent);
+      border-radius: 2px;
+      transition: width 0.4s ease;
+      width: 11%;
     }
-    .progress-text {
+    .q-num {
+      font-size: 11px;
+      color: var(--text-3);
       text-align: right;
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      margin-top: 0.4rem;
+      margin-top: 4px;
     }
 
-    /* Quiz-Content */
-    .quiz-body {
+    .q-body {
       flex: 1;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 2rem 1.25rem;
+      padding: 20px;
     }
-    .quiz-step {
-      display: none;
-      max-width: 640px;
-      width: 100%;
-      text-align: center;
-      animation: fadeUp 0.4s ease;
-    }
-    .quiz-step.active { display: block; }
 
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(20px); }
+    .step {
+      display: none;
+      max-width: 440px;
+      width: 100%;
+      animation: up 0.3s ease;
+    }
+    .step.on { display: block; }
+    @keyframes up {
+      from { opacity: 0; transform: translateY(16px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
-    .quiz-step h2 {
-      font-family: var(--font-serif);
-      font-size: clamp(1.3rem, 4vw, 1.7rem);
+    .step h2 {
+      font-size: 20px;
       font-weight: 700;
-      margin-bottom: 2rem;
+      text-align: center;
+      margin-bottom: 24px;
       line-height: 1.3;
+      letter-spacing: -0.2px;
     }
 
-    .quiz-options {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0.75rem;
+    .opts {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
     }
-    @media (max-width: 480px) {
-      .quiz-options { grid-template-columns: 1fr; }
-    }
-
-    .quiz-option {
-      background: var(--bg-card);
-      border: 1.5px solid var(--border);
+    .opt {
+      background: var(--surface);
+      border: 1.5px solid var(--surface-2);
       border-radius: 12px;
-      padding: 1.1rem 1.25rem;
-      text-align: left;
-      font-size: 1rem;
+      padding: 16px 18px;
+      font-size: 15px;
       font-weight: 500;
       color: var(--text);
       cursor: pointer;
-      transition: all 0.25s ease;
-      font-family: var(--font-sans);
+      transition: border-color 0.2s, background 0.2s;
+      font-family: var(--font);
+      -webkit-tap-highlight-color: transparent;
+      text-align: left;
     }
-    .quiz-option:hover {
+    .opt:active {
       border-color: var(--accent);
-      background: var(--bg-card-hover);
-      transform: translateY(-2px);
-      box-shadow: 0 4px 15px var(--accent-glow);
+      background: var(--surface-2);
     }
 
-    /* === LOADING-SCREEN === */
-    .loading-screen {
-      text-align: center;
-    }
+    /* === LOADING === */
+    .ld { text-align: center; }
     .spinner {
-      width: 72px;
-      height: 72px;
-      border: 3px solid rgba(201,137,154,0.15);
+      width: 48px; height: 48px;
+      border: 3px solid var(--surface-2);
       border-top-color: var(--accent);
       border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin: 0 auto 1.5rem;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 20px;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
-    .loading-screen h2 {
-      font-family: var(--font-serif);
-      font-size: 1.4rem;
-      margin-bottom: 0.5rem;
-    }
-    .loading-screen p { color: var(--text-muted); }
-    .loading-checks {
-      margin-top: 1.5rem;
-      text-align: left;
-      max-width: 320px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-    .loading-check {
+    .ld h2 { font-size: 18px; margin-bottom: 6px; }
+    .ld p { font-size: 14px; color: var(--text-2); margin-bottom: 20px; }
+    .checks { text-align: left; max-width: 260px; margin: 0 auto; }
+    .chk {
       display: flex;
       align-items: center;
-      gap: 0.6rem;
-      padding: 0.5rem 0;
-      font-size: 0.9rem;
-      color: var(--text-muted);
+      gap: 10px;
+      padding: 6px 0;
+      font-size: 13px;
+      color: var(--text-2);
       opacity: 0;
-      transition: opacity 0.4s ease;
+      transition: opacity 0.3s;
     }
-    .loading-check.show { opacity: 1; }
-    .loading-check .check {
-      width: 20px;
-      height: 20px;
+    .chk.show { opacity: 1; }
+    .chk i {
+      width: 18px; height: 18px;
       border-radius: 50%;
-      background: var(--accent);
+      background: var(--green);
+      color: #0b0b0f;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.7rem;
-      color: #fff;
+      font-size: 10px;
+      font-style: normal;
+      font-weight: 700;
       flex-shrink: 0;
     }
 
-    /* === LEAD-FORMULAR === */
-    .lead-form {
-      text-align: center;
+    /* === LEAD FORM === */
+    .form { text-align: center; }
+    .form .tag {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--green);
+      margin-bottom: 6px;
     }
-    .lead-form h2 {
-      font-family: var(--font-serif);
-      font-size: clamp(1.3rem, 4vw, 1.7rem);
-      margin-bottom: 0.5rem;
+    .form h2 { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+    .form .sub {
+      font-size: 14px;
+      color: var(--text-2);
+      margin-bottom: 24px;
     }
-    .lead-form .subtitle {
-      color: var(--text-muted);
-      margin-bottom: 2rem;
-      font-size: 0.95rem;
-    }
-    .lead-form .subtitle strong {
-      color: var(--accent-light);
-    }
-    .form-fields {
+    .fields {
       display: flex;
       flex-direction: column;
-      gap: 0.75rem;
-      max-width: 400px;
-      margin: 0 auto 1.5rem;
+      gap: 10px;
+      margin-bottom: 14px;
     }
-    .form-field {
+    .field {
+      background: var(--surface);
+      border: 1.5px solid var(--surface-2);
+      border-radius: 12px;
+      padding: 0 14px;
       display: flex;
       align-items: center;
-      gap: 0.75rem;
-      background: var(--bg-card);
-      border: 1.5px solid var(--border);
-      border-radius: 12px;
-      padding: 0 1rem;
-      transition: border-color 0.3s;
+      gap: 10px;
+      transition: border-color 0.2s;
     }
-    .form-field:focus-within {
-      border-color: var(--accent);
-    }
-    .form-field .icon { font-size: 1.1rem; flex-shrink: 0; }
-    .form-field input {
+    .field:focus-within { border-color: var(--accent); }
+    .field .ic { font-size: 16px; flex-shrink: 0; opacity: 0.5; }
+    .field input {
       flex: 1;
       background: transparent;
       border: none;
       outline: none;
       color: var(--text);
-      font-family: var(--font-sans);
-      font-size: 1rem;
-      padding: 0.9rem 0;
+      font-family: var(--font);
+      font-size: 15px;
+      padding: 14px 0;
     }
-    .form-field input::placeholder { color: var(--text-muted); }
-
-    .phone-prefix {
-      display: flex;
-      align-items: center;
-      gap: 0.35rem;
-      color: var(--text-muted);
-      font-size: 0.95rem;
+    .field input::placeholder { color: var(--text-3); }
+    .field .pre {
+      font-size: 14px;
+      color: var(--text-3);
       flex-shrink: 0;
     }
 
-    .checkbox-row {
+    .cb-row {
       display: flex;
       align-items: flex-start;
-      gap: 0.6rem;
-      max-width: 400px;
-      margin: 0 auto 1.25rem;
+      gap: 8px;
+      margin-bottom: 16px;
       text-align: left;
     }
-    .checkbox-row input[type="checkbox"] {
-      margin-top: 3px;
+    .cb-row input[type="checkbox"] {
       accent-color: var(--accent);
-      width: 16px;
-      height: 16px;
+      width: 16px; height: 16px;
+      margin-top: 2px;
       flex-shrink: 0;
     }
-    .checkbox-row label {
-      font-size: 0.8rem;
-      color: var(--text-muted);
+    .cb-row label {
+      font-size: 11px;
+      color: var(--text-3);
       line-height: 1.4;
     }
-    .checkbox-row label a { color: var(--accent-light); text-decoration: underline; }
+    .cb-row label a { color: var(--text-2); }
 
-    .submit-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      background: linear-gradient(135deg, var(--accent), #b07585);
-      color: #fff;
-      font-size: 1.15rem;
-      font-weight: 700;
-      padding: 1.1rem 3rem;
-      border: none;
-      border-radius: 60px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 20px var(--accent-glow);
-      font-family: var(--font-sans);
+    .submit {
+      display: block;
       width: 100%;
-      max-width: 400px;
-      justify-content: center;
+      background: var(--accent);
+      color: #fff;
+      font-family: var(--font);
+      font-size: 16px;
+      font-weight: 700;
+      padding: 16px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: opacity 0.2s;
     }
-    .submit-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 35px rgba(201,137,154,0.4);
-    }
-    .submit-btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      transform: none;
+    .submit:disabled { opacity: 0.4; cursor: not-allowed; }
+    .submit:not(:disabled):active { opacity: 0.85; }
+    .form-trust {
+      font-size: 11px;
+      color: var(--text-3);
+      margin-top: 10px;
     }
 
-    .form-trust {
-      margin-top: 1rem;
+    /* === DANKE-SEITE === */
+    .thanks { text-align: center; }
+    .thanks .check-big {
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      background: rgba(74,222,128,0.12);
+      color: var(--green);
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 0.4rem;
-      font-size: 0.78rem;
-      color: var(--text-muted);
+      font-size: 24px;
+      margin: 0 auto 16px;
     }
-    .form-trust svg { width: 12px; height: 12px; color: var(--gold); }
-
-    /* === DANKE-SEITE === */
-    .thank-you {
+    .thanks h2 { font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+    .thanks .info {
+      font-size: 14px;
+      color: var(--text-2);
+      margin-bottom: 24px;
+      line-height: 1.5;
+    }
+    .thanks .book-box {
+      background: var(--surface);
+      border: 1px solid rgba(196,105,122,0.25);
+      border-radius: var(--r);
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+    .thanks .book-box h3 {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .thanks .book-box p {
+      font-size: 13px;
+      color: var(--text-2);
+      margin-bottom: 14px;
+    }
+    .thanks .book-btn {
+      display: block;
+      width: 100%;
+      background: var(--accent);
+      color: #fff;
+      font-family: var(--font);
+      font-size: 15px;
+      font-weight: 700;
+      padding: 14px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      text-decoration: none;
       text-align: center;
     }
-    .thank-you .emoji { font-size: 3rem; margin-bottom: 1rem; }
-    .thank-you h2 {
-      font-family: var(--font-serif);
-      font-size: 1.7rem;
-      margin-bottom: 0.75rem;
+    .thanks .book-btn:active { opacity: 0.85; }
+    .thanks .book-hint {
+      font-size: 11px;
+      color: var(--text-3);
+      margin-top: 8px;
+      font-style: italic;
     }
-    .thank-you p { color: var(--text-muted); max-width: 400px; margin: 0 auto; }
+    .thanks .alt {
+      font-size: 12px;
+      color: var(--text-3);
+      margin-top: 16px;
+    }
 
-    /* === RESPONSIVE === */
-    @media (max-width: 600px) {
-      .gender-grid { max-width: 100%; }
-      .urgency { padding: 1.5rem; }
+    /* === DESKTOP ADJUST === */
+    @media (min-width: 600px) {
+      .hero h1 { font-size: 30px; }
+      .mini h2 { font-size: 24px; }
+      .step h2 { font-size: 24px; }
+      .opts {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+      }
     }
   </style>
 </head>
 <body>
 
-  <!-- ===== LANDING PAGE ===== -->
-  <div id="landing-page">
-    <div class="container">
-      <!-- Logo -->
-      <div class="logo-bar">
-        <img src="/images/logo.png" alt="Fit on Time" />
-      </div>
+  <!-- ===== LANDING ===== -->
+  <div id="lp">
+    <div class="wrap">
+      <div class="logo"><img src="/images/logo.png" alt="Fit on Time" /></div>
 
-      <!-- Hero -->
       <section class="hero">
-        <div class="hero-badge">Kostenloser Schilddrüsen-Check</div>
-        <h1>Hält deine Schilddrüse dich vom Abnehmen ab?</h1>
-        <p>Erhalte in 2 Minuten deinen persönlichen Schilddrüsen-Report und einen Plan, um sofort bis zu 100g Fett pro Tag abzubauen.</p>
+        <h1>Blockiert deine Schilddrüse <em>deinen Fettabbau?</em></h1>
+        <p>Finde es in <strong>90 Sekunden</strong> heraus — und erhalte deinen persönlichen Abnehm-Plan. Kostenlos.</p>
 
-        <div class="gender-label">Verrate uns vorab dein Geschlecht:</div>
-        <div class="gender-grid">
-          <div class="gender-card" onclick="startQuiz('frau')">
-            <img src="https://images.unsplash.com/photo-1594744803329-e58b31de8bf5?w=400&h=530&fit=crop&crop=face" alt="Frau" loading="lazy" />
-            <div class="label">Frau</div>
+        <div class="gender-q">Ich bin:</div>
+        <div class="gender-row">
+          <div class="g-card" onclick="go('frau')">
+            <img src="https://images.unsplash.com/photo-1594744803329-e58b31de8bf5?w=400&h=500&fit=crop&crop=face&q=80" alt="Frau" />
+            <span>Frau</span>
           </div>
-          <div class="gender-card" onclick="startQuiz('mann')">
-            <img src="https://images.unsplash.com/photo-1594672830234-ba4cfe1202dc?w=400&h=530&fit=crop&crop=face" alt="Mann" loading="lazy" />
-            <div class="label">Mann</div>
+          <div class="g-card" onclick="go('mann')">
+            <img src="https://images.unsplash.com/photo-1594672830234-ba4cfe1202dc?w=400&h=500&fit=crop&crop=face&q=80" alt="Mann" />
+            <span>Mann</span>
           </div>
         </div>
-
-        <div class="social-proof">
-          <div class="count">Über 3.357 Frauen haben ihren Report bereits erhalten!</div>
-          <div class="badge">
-            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
-            Von Ernährungsexperten entwickelt
-          </div>
-        </div>
+        <div class="proof"><b>3.357+</b> Analysen durchgeführt</div>
       </section>
 
-      <!-- Warnung: Kurz- und Langzeitfolgen -->
-      <section class="section">
-        <div class="section-divider"></div>
-        <div class="section-tag">Wichtig zu wissen</div>
-        <h2>Was passiert, wenn du deine Schilddrüsenfunktion nicht optimierst?</h2>
+      <div class="divider"></div>
 
-        <div class="warning-card">
-          <h3>Scheiternde Abnehmversuche</h3>
-          <ul>
-            <li>Du verbrennst weniger Kalorien im Ruhezustand</li>
-            <li>Wassereinlagerungen & aufgeschwemmtes Gefühl</li>
-            <li>Müdigkeit & Antriebslosigkeit</li>
-            <li>Insulinresistenz & Blutzuckerprobleme</li>
-          </ul>
-        </div>
-
-        <div class="warning-card">
-          <h3>Gesundheitliche Langzeitfolgen</h3>
-          <ul>
-            <li>Erhöhte Blutfette & Herz-Kreislauf-Risiko</li>
-            <li>Depressive Verstimmungen</li>
-            <li>Haarausfall & brüchige Nägel</li>
-            <li>Kognitive Probleme & Konzentrationsschwäche</li>
-            <li>Libidoverlust</li>
-          </ul>
-        </div>
-
-        <p style="color: var(--text-muted); font-size: 0.92rem; margin-top: 1rem;">
-          Das Abnehmen wird trotz Diät und Training wesentlich schwieriger oder stagniert komplett.
-          Dein Körper kann dauerhaft im Energiesparmodus bleiben.
-        </p>
+      <!-- Risiko — kurz & knackig -->
+      <section class="mini">
+        <h2>Was passiert, wenn du nichts tust</h2>
+        <ul class="risks">
+          <li><span class="ic">!</span>Dein Stoffwechsel bleibt im Sparmodus — jede Diät scheitert</li>
+          <li><span class="ic">!</span>Müdigkeit, Heisshunger & Gewichtszunahme werden schlimmer</li>
+          <li><span class="ic">!</span>Langfristig: Herz-Kreislauf-Risiko, Haarausfall, Depression</li>
+        </ul>
       </section>
 
-      <!-- CTA Wiederholung -->
-      <div class="cta-wrap">
-        <button class="cta-btn" onclick="document.querySelector('.hero').scrollIntoView({behavior:'smooth'})">
-          Jetzt Report erhalten
-          <span>→</span>
-        </button>
+      <div class="divider"></div>
+
+      <!-- Lösung — kurz -->
+      <section class="mini">
+        <h2>Das muss nicht so bleiben</h2>
+        <ul class="benefits">
+          <li><span class="ic">&#10003;</span>Verstehe, warum dein Körper Fett festhält</li>
+          <li><span class="ic">&#10003;</span>Bekomme einen Plan, der auf dich zugeschnitten ist</li>
+          <li><span class="ic">&#10003;</span>Starte mit Klarheit statt Frust</li>
+        </ul>
+      </section>
+
+      <!-- Urgency CTA -->
+      <div class="urg">
+        <h3>Dein Körper sendet dir Signale</h3>
+        <p>Je früher du handelst, desto einfacher wird es.</p>
+        <div class="signals">
+          <div class="sig"><span class="dot"></span>Ständige Müdigkeit trotz genug Schlaf</div>
+          <div class="sig"><span class="dot"></span>Gewicht stagniert oder steigt ohne Grund</div>
+          <div class="sig"><span class="dot"></span>Heisshunger, den du nicht kontrollieren kannst</div>
+        </div>
+        <button class="cta" onclick="document.querySelector('.hero').scrollIntoView({behavior:'smooth'})">Jetzt kostenlosen Check starten</button>
+        <div class="cta-sub">Dauert 90 Sekunden · 100% kostenlos</div>
       </div>
 
-      <!-- Positiv: Doch es kann auch anders kommen -->
-      <section class="section">
-        <div class="section-divider"></div>
-        <div class="section-tag">Doch es kann auch anders kommen</div>
-        <h2>Deine Schilddrüse arbeitet gegen dich — aber das lässt sich ändern.</h2>
-
-        <div class="benefit-card">
-          <h3>Abnehmen ohne Kampf</h3>
-          <p>Deine Abnehmversuche funktionieren endlich so, wie du es bei anderen siehst. Ohne Stress, ohne übermässigen Aufwand.</p>
-        </div>
-
-        <div class="benefit-card">
-          <h3>Deine Gesundheit dankt es dir</h3>
-          <p>Durch eine optimierte Schilddrüse, die für dich arbeitet, beugst du vielen Krankheitserscheinungen vor — jetzt und im Alter.</p>
-        </div>
-
-        <div class="benefit-card">
-          <h3>Mehr Energie für dein Leben</h3>
-          <p>Mit einem funktionierenden Stoffwechsel wirst du die Powerfrau, die du mal warst oder immer sein wolltest.</p>
-        </div>
-      </section>
-
-      <!-- Urgency -->
-      <section class="section">
-        <div class="urgency">
-          <h3>Der richtige Zeitpunkt ist genau jetzt</h3>
-          <p style="color: var(--text-muted); font-size: 0.92rem; margin-bottom: 1rem;">
-            Wenn deine Schilddrüse bereits abbaut, sendet dir dein Körper Warnsignale:
-          </p>
-          <div class="urgency-items">
-            <div class="urgency-item"><span class="dot"></span> Ständige Müdigkeit</div>
-            <div class="urgency-item"><span class="dot"></span> Heisshungerattacken</div>
-            <div class="urgency-item"><span class="dot"></span> Stagnierendes oder steigendes Gewicht</div>
-          </div>
-          <button class="cta-btn" onclick="document.querySelector('.hero').scrollIntoView({behavior:'smooth'})">
-            Kostenlos testen — Report erhalten
-            <span>→</span>
-          </button>
-        </div>
-      </section>
-
-      <!-- Wieso wir das machen -->
-      <section class="why-section">
-        <div class="section-tag">Wieso wir das machen</div>
-        <h2>Was du hier bekommst, ist <span class="gold" style="color: var(--gold);">Gold wert</span></h2>
-        <p style="color: var(--text-muted); max-width: 520px; margin: 0 auto 1rem;">
-          Wir bieten dir eine kostenlose Analyse anhand deiner Antworten.
-          Jeder sollte seinen individuellen Weg zu einem gesunden Körper kostenfrei erhalten.
-        </p>
-        <p style="color: var(--text-muted); max-width: 520px; margin: 0 auto; font-size: 0.9rem;">
-          Nach deinem Report bist du bereit, auf eigene Faust loszulegen.
-          <strong style="color: var(--accent-light);">Aber du musst es nicht allein tun</strong> —
-          wir helfen dir, die empfohlenen Schritte schnell und effektiv umzusetzen.
-        </p>
-      </section>
-
-      <!-- Footer -->
       <footer>
         <a href="https://fitontime.ch/impressum-datenschutz" target="_blank" rel="noopener">Impressum</a> ·
-        <a href="https://fitontime.ch/impressum-datenschutz" target="_blank" rel="noopener">Datenschutzerklärung</a>
+        <a href="https://fitontime.ch/impressum-datenschutz" target="_blank" rel="noopener">Datenschutz</a>
       </footer>
     </div>
   </div>
 
-  <!-- ===== QUIZ OVERLAY ===== -->
-  <div id="quiz-overlay" class="quiz-overlay">
-    <div class="quiz-header">
-      <img src="/images/logo.png" alt="Fit on Time" />
-    </div>
-    <div class="progress-wrap">
-      <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
-      <div class="progress-text" id="progress-text">Frage 1 von 9</div>
-    </div>
-    <div class="quiz-body">
-      <!-- Frage 1 -->
-      <div class="quiz-step active" data-step="1">
-        <h2>Wie schwer fällt es dir aktuell, Gewicht zu verlieren, obwohl du auf deine Ernährung achtest?</h2>
-        <div class="quiz-options">
-          <button class="quiz-option" onclick="nextStep(1)">Extrem schwer</button>
-          <button class="quiz-option" onclick="nextStep(1)">Es geht so</button>
-          <button class="quiz-option" onclick="nextStep(1)">Gar nicht schwer</button>
-          <button class="quiz-option" onclick="nextStep(1)">Weiss ich nicht</button>
+  <!-- ===== QUIZ ===== -->
+  <div id="quiz">
+    <div class="q-head"><img src="/images/logo.png" alt="Fit on Time" /></div>
+    <div class="q-progress"><div class="q-bar"><div class="q-fill" id="qf"></div></div><div class="q-num" id="qn">1 / 9</div></div>
+    <div class="q-body">
+
+      <div class="step on" data-s="1">
+        <h2>Wie schwer fällt dir Abnehmen — obwohl du auf deine Ernährung achtest?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(1)">Extrem schwer</button>
+          <button class="opt" onclick="nxt(1)">Es geht so</button>
+          <button class="opt" onclick="nxt(1)">Gar nicht schwer</button>
+          <button class="opt" onclick="nxt(1)">Weiss ich nicht</button>
         </div>
       </div>
 
-      <!-- Frage 2 -->
-      <div class="quiz-step" data-step="2">
-        <h2>Wie reagiert dein Körper auf Kälte (z.B. kalte Hände oder Füsse)?</h2>
-        <div class="quiz-options">
-          <button class="quiz-option" onclick="nextStep(2)">Friere ständig</button>
-          <button class="quiz-option" onclick="nextStep(2)">Mir ist eher warm</button>
-          <button class="quiz-option" onclick="nextStep(2)">Habe oft kalte Füsse</button>
-          <button class="quiz-option" onclick="nextStep(2)">Nur im Winter</button>
+      <div class="step" data-s="2">
+        <h2>Frierst du oft — z.B. kalte Hände oder Füsse?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(2)">Ja, ständig</button>
+          <button class="opt" onclick="nxt(2)">Mir ist eher warm</button>
+          <button class="opt" onclick="nxt(2)">Oft kalte Füsse</button>
+          <button class="opt" onclick="nxt(2)">Nur im Winter</button>
         </div>
       </div>
 
-      <!-- Frage 3 -->
-      <div class="quiz-step" data-step="3">
-        <h2>Wie oft fühlst du dich tagsüber erschöpft oder antriebslos?</h2>
-        <div class="quiz-options">
-          <button class="quiz-option" onclick="nextStep(3)">Fast immer</button>
-          <button class="quiz-option" onclick="nextStep(3)">Oft nachmittags</button>
-          <button class="quiz-option" onclick="nextStep(3)">Nur nach Stress</button>
-          <button class="quiz-option" onclick="nextStep(3)">Selten</button>
+      <div class="step" data-s="3">
+        <h2>Wie oft fühlst du dich tagsüber erschöpft?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(3)">Fast immer</button>
+          <button class="opt" onclick="nxt(3)">Oft nachmittags</button>
+          <button class="opt" onclick="nxt(3)">Nur nach Stress</button>
+          <button class="opt" onclick="nxt(3)">Selten</button>
         </div>
       </div>
 
-      <!-- Frage 4 -->
-      <div class="quiz-step" data-step="4">
-        <h2>Hast du Probleme mit Wassereinlagerungen (z.B. geschwollenes Gesicht)?</h2>
-        <div class="quiz-options">
-          <button class="quiz-option" onclick="nextStep(4)">Eigentlich nie</button>
-          <button class="quiz-option" onclick="nextStep(4)">Ja, sehr oft</button>
-          <button class="quiz-option" onclick="nextStep(4)">Gelegentlich</button>
-          <button class="quiz-option" onclick="nextStep(4)">Nur bei Hitze</button>
+      <div class="step" data-s="4">
+        <h2>Hast du Wassereinlagerungen — z.B. geschwollenes Gesicht?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(4)">Ja, sehr oft</button>
+          <button class="opt" onclick="nxt(4)">Gelegentlich</button>
+          <button class="opt" onclick="nxt(4)">Eigentlich nie</button>
+          <button class="opt" onclick="nxt(4)">Nur bei Hitze</button>
         </div>
       </div>
 
-      <!-- Frage 5 -->
-      <div class="quiz-step" data-step="5">
-        <h2>Wie würdest du den Zustand deiner Haare und Nägel beschreiben?</h2>
-        <div class="quiz-options">
-          <button class="quiz-option" onclick="nextStep(5)">Eher trocken</button>
-          <button class="quiz-option" onclick="nextStep(5)">Ganz normal</button>
-          <button class="quiz-option" onclick="nextStep(5)">Wachsen sehr schnell</button>
-          <button class="quiz-option" onclick="nextStep(5)">Brüchig / Haarausfall</button>
+      <div class="step" data-s="5">
+        <h2>Wie sind deine Haare & Nägel?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(5)">Trocken / dünn</button>
+          <button class="opt" onclick="nxt(5)">Ganz normal</button>
+          <button class="opt" onclick="nxt(5)">Brüchig / Haarausfall</button>
+          <button class="opt" onclick="nxt(5)">Wachsen gut</button>
         </div>
       </div>
 
-      <!-- Frage 6 -->
-      <div class="quiz-step" data-step="6">
-        <h2>Leidest du unter Konzentrationsproblemen oder Brain Fog?</h2>
-        <div class="quiz-options">
-          <button class="quiz-option" onclick="nextStep(6)">Nein, bin fokussiert</button>
-          <button class="quiz-option" onclick="nextStep(6)">Ja, regelmässig</button>
-          <button class="quiz-option" onclick="nextStep(6)">Nur bei wenig Schlaf</button>
-          <button class="quiz-option" onclick="nextStep(6)">Ab und zu</button>
+      <div class="step" data-s="6">
+        <h2>Hast du oft Brain Fog oder Konzentrationsprobleme?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(6)">Ja, regelmässig</button>
+          <button class="opt" onclick="nxt(6)">Ab und zu</button>
+          <button class="opt" onclick="nxt(6)">Nur bei wenig Schlaf</button>
+          <button class="opt" onclick="nxt(6)">Nein, bin fokussiert</button>
         </div>
       </div>
 
-      <!-- Frage 7 -->
-      <div class="quiz-step" data-step="7">
-        <h2>Wie ist deine Verdauung meistens eingestellt?</h2>
-        <div class="quiz-options">
-          <button class="quiz-option" onclick="nextStep(7)">Ganz normal</button>
-          <button class="quiz-option" onclick="nextStep(7)">Eher träge</button>
-          <button class="quiz-option" onclick="nextStep(7)">Wechselhaft</button>
-          <button class="quiz-option" onclick="nextStep(7)">Weiss ich nicht</button>
+      <div class="step" data-s="7">
+        <h2>Wie ist deine Verdauung?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(7)">Eher träge</button>
+          <button class="opt" onclick="nxt(7)">Wechselhaft</button>
+          <button class="opt" onclick="nxt(7)">Ganz normal</button>
+          <button class="opt" onclick="nxt(7)">Weiss nicht</button>
         </div>
       </div>
 
-      <!-- Frage 8 -->
-      <div class="quiz-step" data-step="8">
-        <h2>Welche Aussage beschreibt deine Ernährung am besten?</h2>
-        <div class="quiz-options">
-          <button class="quiz-option" onclick="nextStep(8)">Ich esse gesund und ausgewogen</button>
-          <button class="quiz-option" onclick="nextStep(8)">Ich achte nicht auf meine Ernährung</button>
-          <button class="quiz-option" onclick="nextStep(8)">Ich achte auf Kalorien</button>
-          <button class="quiz-option" onclick="nextStep(8)">Unsicher was mir gut tut</button>
+      <div class="step" data-s="8">
+        <h2>Wie ernährst du dich?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(8)">Gesund & ausgewogen</button>
+          <button class="opt" onclick="nxt(8)">Achte auf Kalorien</button>
+          <button class="opt" onclick="nxt(8)">Achte nicht gross drauf</button>
+          <button class="opt" onclick="nxt(8)">Unsicher was mir gut tut</button>
         </div>
       </div>
 
-      <!-- Frage 9 -->
-      <div class="quiz-step" data-step="9">
-        <h2>Was ist dein wichtigstes Ziel in den nächsten 3 Monaten?</h2>
-        <div class="quiz-options">
-          <button class="quiz-option" onclick="nextStep(9)">Gewicht reduzieren</button>
-          <button class="quiz-option" onclick="nextStep(9)">Mehr Energie im Alltag</button>
-          <button class="quiz-option" onclick="nextStep(9)">Hormonbalance und Wohlbefinden</button>
-          <button class="quiz-option" onclick="nextStep(9)">Selbstbewusst auftreten</button>
+      <div class="step" data-s="9">
+        <h2>Was ist dein Ziel in den nächsten 3 Monaten?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(9)">Gewicht verlieren</button>
+          <button class="opt" onclick="nxt(9)">Mehr Energie</button>
+          <button class="opt" onclick="nxt(9)">Hormone in Balance</button>
+          <button class="opt" onclick="nxt(9)">Wieder wohlfühlen</button>
         </div>
       </div>
 
       <!-- Loading -->
-      <div class="quiz-step loading-screen" data-step="loading">
+      <div class="step ld" data-s="ld">
         <div class="spinner"></div>
-        <h2>Deine Antworten werden ausgewertet...</h2>
-        <p>Das dauert nur einen Moment</p>
-        <div class="loading-checks">
-          <div class="loading-check" id="lc1"><span class="check">&#10003;</span> Symptome analysiert</div>
-          <div class="loading-check" id="lc2"><span class="check">&#10003;</span> Schilddrüsen-Profil erstellt</div>
-          <div class="loading-check" id="lc3"><span class="check">&#10003;</span> Persönlicher Plan generiert</div>
+        <h2>Wird ausgewertet...</h2>
+        <p>Dein persönlicher Report wird erstellt</p>
+        <div class="checks">
+          <div class="chk" id="c1"><i>&#10003;</i>Symptome analysiert</div>
+          <div class="chk" id="c2"><i>&#10003;</i>Schilddrüsen-Profil erstellt</div>
+          <div class="chk" id="c3"><i>&#10003;</i>Abnehm-Plan generiert</div>
         </div>
       </div>
 
-      <!-- Lead-Formular -->
-      <div class="quiz-step lead-form" data-step="form">
-        <p style="color: var(--gold); font-weight: 600; margin-bottom: 0.5rem;">Geschafft!</p>
-        <h2>Dein Report steht bereit</h2>
-        <p class="subtitle">Erhalte <strong>kostenlos</strong> dein Ergebnis und deine persönliche Strategie.</p>
-
-        <div class="form-fields">
-          <div class="form-field">
-            <span class="icon">&#128075;</span>
-            <input type="text" id="fname" placeholder="Dein Vorname" required />
-          </div>
-          <div class="form-field">
-            <span class="icon">&#128075;</span>
-            <input type="text" id="lname" placeholder="Dein Nachname" required />
-          </div>
-          <div class="form-field">
-            <span class="icon">&#128231;</span>
-            <input type="email" id="email" placeholder="Deine E-Mail" required />
-          </div>
-          <div class="form-field">
-            <span class="icon">&#128222;</span>
-            <div class="phone-prefix">
-              <span>&#127464;&#127469;</span>
-              <span>+41</span>
-            </div>
-            <input type="tel" id="phone" placeholder="Deine Telefonnummer" />
-          </div>
+      <!-- Formular -->
+      <div class="step form" data-s="form">
+        <div class="tag">&#10003; Analyse abgeschlossen</div>
+        <h2>Dein Report ist fertig</h2>
+        <p class="sub">Wohin sollen wir ihn schicken?</p>
+        <div class="fields">
+          <div class="field"><span class="ic">&#128100;</span><input type="text" id="fn" placeholder="Vorname" /></div>
+          <div class="field"><span class="ic">&#128100;</span><input type="text" id="ln" placeholder="Nachname" /></div>
+          <div class="field"><span class="ic">&#9993;</span><input type="email" id="em" placeholder="E-Mail Adresse" /></div>
+          <div class="field"><span class="ic">&#128222;</span><span class="pre">+41</span><input type="tel" id="ph" placeholder="Telefonnummer" /></div>
         </div>
-
-        <div class="checkbox-row">
-          <input type="checkbox" id="privacy" />
-          <label for="privacy">Ich akzeptiere die <a href="https://fitontime.ch/impressum-datenschutz" target="_blank" rel="noopener">Datenschutzbestimmungen</a></label>
+        <div class="cb-row">
+          <input type="checkbox" id="ds" />
+          <label for="ds">Ich akzeptiere die <a href="https://fitontime.ch/impressum-datenschutz" target="_blank">Datenschutzbestimmungen</a></label>
         </div>
-
-        <button class="submit-btn" id="submit-btn" onclick="submitLead()" disabled>
-          Jetzt Ergebnis erfahren
-          <span>&#10024;</span>
-        </button>
-
-        <div class="form-trust">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
-          100% kostenlos & unverbindlich
-        </div>
+        <button class="submit" id="sbtn" disabled onclick="send()">Report kostenlos erhalten</button>
+        <div class="form-trust">&#128274; Deine Daten sind sicher & werden nicht weitergegeben</div>
       </div>
 
       <!-- Danke -->
-      <div class="quiz-step thank-you" data-step="thanks">
-        <div class="emoji">&#127881;</div>
-        <h2>Vielen Dank!</h2>
-        <p>Dein persönlicher Schilddrüsen-Report wird gerade erstellt. Du erhältst ihn in Kürze per E-Mail.</p>
+      <div class="step thanks" data-s="thx">
+        <div class="check-big">&#10003;</div>
+        <h2>Dein Report ist unterwegs!</h2>
+        <p class="info">Du erhältst ihn in wenigen Minuten per E-Mail.<br/>Jetzt kommt der wichtigste Schritt:</p>
+
+        <div class="book-box">
+          <h3>Ergebnis persönlich besprechen</h3>
+          <p>Lass dir deinen Report erklären — individuell auf dich zugeschnitten. Kostenlos & unverbindlich.</p>
+          <a class="book-btn" id="cal-link" href="#" target="_blank" rel="noopener">Termin wählen</a>
+          <div class="book-hint">Begrenzte Plätze — nur wer bucht, bekommt die persönliche Analyse.</div>
+        </div>
+        <div class="alt">Kein Termin? Du erhältst deinen Report trotzdem per E-Mail.</div>
       </div>
+
     </div>
   </div>
 
+  <script is:inline define:vars={{ calendlyUrl }}>
+    document.getElementById('cal-link').href = calendlyUrl;
+  </script>
   <script is:inline>
-    // === Tracking-Helfer ===
-    function track(event, data = {}) {
+    // === Tracking ===
+    function tk(e, d) {
       fetch('/api/track', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ event, page: 'schilddruesen-report', ...data }),
-      }).catch(() => {});
-
-      // Meta Pixel Events
+        body: JSON.stringify({ event: e, page: 'schilddruesen-report', ...d }),
+      }).catch(function(){});
       if (typeof fbq !== 'undefined') {
-        if (event === 'quiz_start') fbq('track', 'ViewContent', { content_name: 'Quiz Start' });
-        if (event === 'quiz_complete') fbq('track', 'CompleteRegistration');
-        if (event === 'lead_submit') fbq('track', 'Lead');
+        if (e === 'quiz_start') fbq('track', 'ViewContent');
+        if (e === 'quiz_complete') fbq('track', 'CompleteRegistration');
+        if (e === 'lead_submit') fbq('track', 'Lead');
       }
     }
+    tk('page_view');
 
-    // Seitenaufruf tracken
-    track('page_view');
-
-    const totalSteps = 9;
-    let currentStep = 0;
-
-    // Quiz starten
-    function startQuiz(gender) {
-      track('quiz_start', { detail: gender });
-      document.getElementById('landing-page').style.display = 'none';
-      document.getElementById('quiz-overlay').classList.add('active');
-      updateProgress(1);
+    // === Quiz starten ===
+    function go(g) {
+      tk('quiz_start', { detail: g });
+      document.getElementById('lp').style.display = 'none';
+      document.getElementById('quiz').classList.add('on');
     }
 
-    // Nächste Frage
-    function nextStep(step) {
-      track('quiz_answer', { detail: `q${step}` });
-
-      const current = document.querySelector(`.quiz-step[data-step="${step}"]`);
-      current.classList.remove('active');
-
-      if (step < totalSteps) {
-        const next = document.querySelector(`.quiz-step[data-step="${step + 1}"]`);
-        next.classList.add('active');
-        updateProgress(step + 1);
+    // === Nächste Frage ===
+    function nxt(s) {
+      tk('quiz_answer', { detail: 'q' + s });
+      document.querySelector('.step[data-s="' + s + '"]').classList.remove('on');
+      if (s < 9) {
+        document.querySelector('.step[data-s="' + (s + 1) + '"]').classList.add('on');
+        var p = Math.round(((s + 1) / 9) * 100);
+        document.getElementById('qf').style.width = p + '%';
+        document.getElementById('qn').textContent = (s + 1) + ' / 9';
       } else {
-        // Quiz fertig — Loading anzeigen
-        track('quiz_complete');
-        showLoading();
+        tk('quiz_complete');
+        load();
       }
     }
 
-    // Fortschrittsbalken aktualisieren
-    function updateProgress(step) {
-      const pct = Math.round((step / totalSteps) * 100);
-      document.getElementById('progress-fill').style.width = pct + '%';
-      document.getElementById('progress-text').textContent = `Frage ${step} von ${totalSteps}`;
+    // === Loading ===
+    function load() {
+      var ld = document.querySelector('.step[data-s="ld"]');
+      ld.classList.add('on');
+      document.getElementById('qf').style.width = '100%';
+      document.getElementById('qn').textContent = 'Auswertung...';
+      setTimeout(function(){ document.getElementById('c1').classList.add('show'); }, 600);
+      setTimeout(function(){ document.getElementById('c2').classList.add('show'); }, 1400);
+      setTimeout(function(){ document.getElementById('c3').classList.add('show'); }, 2200);
+      setTimeout(function(){
+        ld.classList.remove('on');
+        document.querySelector('.step[data-s="form"]').classList.add('on');
+        document.getElementById('qn').textContent = 'Fast fertig';
+      }, 3200);
     }
 
-    // Loading-Animation
-    function showLoading() {
-      const loading = document.querySelector('.quiz-step[data-step="loading"]');
-      loading.classList.add('active');
-      document.getElementById('progress-fill').style.width = '100%';
-      document.getElementById('progress-text').textContent = 'Auswertung...';
-
-      // Checks nacheinander einblenden
-      setTimeout(() => document.getElementById('lc1').classList.add('show'), 800);
-      setTimeout(() => document.getElementById('lc2').classList.add('show'), 1800);
-      setTimeout(() => document.getElementById('lc3').classList.add('show'), 2800);
-
-      // Zum Formular wechseln
-      setTimeout(() => {
-        loading.classList.remove('active');
-        const form = document.querySelector('.quiz-step[data-step="form"]');
-        form.classList.add('active');
-        document.getElementById('progress-text').textContent = 'Fast geschafft!';
-      }, 4000);
-    }
-
-    // Checkbox → Button aktivieren
-    document.getElementById('privacy').addEventListener('change', function() {
-      document.getElementById('submit-btn').disabled = !this.checked;
+    // === Checkbox ===
+    document.getElementById('ds').addEventListener('change', function() {
+      document.getElementById('sbtn').disabled = !this.checked;
     });
 
-    // Lead absenden
-    function submitLead() {
-      const fname = document.getElementById('fname').value.trim();
-      const lname = document.getElementById('lname').value.trim();
-      const email = document.getElementById('email').value.trim();
-      const phone = document.getElementById('phone').value.trim();
-
-      if (!fname || !email) {
-        // Felder markieren
-        if (!fname) document.getElementById('fname').parentElement.style.borderColor = '#e8a0a0';
-        if (!email) document.getElementById('email').parentElement.style.borderColor = '#e8a0a0';
+    // === Absenden ===
+    function send() {
+      var fn = document.getElementById('fn').value.trim();
+      var em = document.getElementById('em').value.trim();
+      if (!fn || !em) {
+        if (!fn) document.getElementById('fn').parentElement.style.borderColor = 'var(--accent)';
+        if (!em) document.getElementById('em').parentElement.style.borderColor = 'var(--accent)';
         return;
       }
-
-      document.getElementById('submit-btn').disabled = true;
-      document.getElementById('submit-btn').textContent = 'Wird gesendet...';
-
-      track('lead_submit', { detail: `${fname} ${lname}` });
-
-      // Danke-Seite anzeigen
-      setTimeout(() => {
-        document.querySelector('.quiz-step[data-step="form"]').classList.remove('active');
-        document.querySelector('.quiz-step[data-step="thanks"]').classList.add('active');
-        document.getElementById('progress-text').textContent = 'Fertig!';
-      }, 1000);
+      var btn = document.getElementById('sbtn');
+      btn.disabled = true;
+      btn.textContent = 'Wird gesendet...';
+      tk('lead_submit', { detail: fn });
+      setTimeout(function(){
+        document.querySelector('.step[data-s="form"]').classList.remove('on');
+        document.querySelector('.step[data-s="thx"]').classList.add('on');
+        document.getElementById('qn').textContent = 'Fertig!';
+      }, 800);
     }
   </script>
 </body>
