@@ -1,12 +1,13 @@
-// API-Route: Lead-Daten an Google Sheets senden
+// API-Route: Lead-Daten an Google Sheets senden (via Service Account)
 import type { APIRoute } from 'astro';
 import { google } from 'googleapis';
+
+const SHEET_ID = '1pKSK2fB3tjL9sxHMbM95a3NGdHZyeW0g29sIYnzh4js';
 
 export const POST: APIRoute = async ({ request }) => {
   try {
     const data = await request.json();
 
-    // Pflichtfelder prüfen
     if (!data.name || !data.email) {
       return new Response(JSON.stringify({ error: 'Name und E-Mail sind Pflicht' }), {
         status: 400,
@@ -24,11 +25,9 @@ export const POST: APIRoute = async ({ request }) => {
     });
 
     const sheets = google.sheets({ version: 'v4', auth });
-    const sheetId = import.meta.env.GOOGLE_SHEET_ID || '1pKSK2fB3tjL9sxHMbM95a3NGdHZyeW0g29sIYnzh4js';
 
-    // Datum formatieren (DD.MM.YYYY HH:MM)
-    const now = new Date();
-    const datum = now.toLocaleString('de-CH', {
+    // Datum (Schweizer Zeit)
+    const datum = new Date().toLocaleString('de-CH', {
       day: '2-digit',
       month: '2-digit',
       year: 'numeric',
@@ -37,27 +36,25 @@ export const POST: APIRoute = async ({ request }) => {
       timeZone: 'Europe/Zurich',
     });
 
-    // Zeile zusammenbauen — Reihenfolge wie im Sheet
-    // A: Datum | B: Name | C: E-Mail | D: Telefon
-    // E-M: Quiz-Antworten (Wie schwer? bis Ziel 3M)
+    const a = data.answers || {};
     const row = [
       datum,
       data.name,
       data.email,
       data.phone || '',
-      data.answers?.q1 || '',
-      data.answers?.q2 || '',
-      data.answers?.q3 || '',
-      data.answers?.q4 || '',
-      data.answers?.q5 || '',
-      data.answers?.q6 || '',
-      data.answers?.q7 || '',
-      data.answers?.q8 || '',
-      data.answers?.q9 || '',
+      a.q1 || '',
+      a.q2 || '',
+      a.q3 || '',
+      a.q4 || '',
+      a.q5 || '',
+      a.q6 || '',
+      a.q7 || '',
+      a.q8 || '',
+      a.q9 || '',
     ];
 
     await sheets.spreadsheets.values.append({
-      spreadsheetId: sheetId,
+      spreadsheetId: SHEET_ID,
       range: 'Tabellenblatt1!A:M',
       valueInputOption: 'USER_ENTERED',
       requestBody: { values: [row] },
