@@ -56,7 +56,7 @@ export const POST: APIRoute = async ({ request }) => {
     await sheets.spreadsheets.values.append({
       spreadsheetId: SHEET_ID,
       range: 'Tabellenblatt1!A:M',
-      valueInputOption: 'USER_ENTERED',
+      valueInputOption: 'RAW',
       requestBody: { values: [row] },
     });
 
