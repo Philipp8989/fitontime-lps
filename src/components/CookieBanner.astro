@@ -1,0 +1,138 @@
+---
+// DSGVO-konformer Cookie-Banner
+// Lädt Tracking-Scripts (Meta Pixel, Hyros) NUR nach Consent.
+// Consent wird in localStorage persistiert ("fot_consent" = "all" | "essential").
+export interface Props {
+  metaPixelId?: string;
+  hyrosPh?: string;
+  impressumUrl: string;
+  datenschutzUrl: string;
+}
+const { metaPixelId = '', hyrosPh = '', impressumUrl, datenschutzUrl } = Astro.props;
+---
+<div id="cc-banner" class="cc-banner" hidden>
+  <div class="cc-inner">
+    <div class="cc-text">
+      <h3>Cookies & Tracking</h3>
+      <p>
+        Wir verwenden Cookies und Tracking-Tools (Meta, Hyros), um unsere Angebote zu verbessern und
+        relevante Werbung auszuspielen. Du kannst selbst entscheiden, was du erlaubst.
+        Mehr Infos in unserer <a href={datenschutzUrl} target="_blank" rel="noopener">Datenschutzerklärung</a>.
+      </p>
+    </div>
+    <div class="cc-actions">
+      <button type="button" class="cc-btn cc-ghost" data-cc="essential">Nur Notwendige</button>
+      <button type="button" class="cc-btn cc-primary" data-cc="all">Alle akzeptieren</button>
+    </div>
+    <div class="cc-links">
+      <a href={impressumUrl} target="_blank" rel="noopener">Impressum</a>
+      <span>·</span>
+      <a href={datenschutzUrl} target="_blank" rel="noopener">Datenschutz</a>
+    </div>
+  </div>
+</div>
+
+<style is:global>
+  .cc-banner {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 99999;
+    background: rgba(15, 15, 20, 0.97);
+    backdrop-filter: saturate(140%) blur(8px);
+    -webkit-backdrop-filter: saturate(140%) blur(8px);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    color: #f0eff2;
+    font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+    animation: cc-up .35s ease-out;
+  }
+  @keyframes cc-up { from { transform: translateY(100%); } to { transform: translateY(0); } }
+  .cc-inner {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 20px 20px 16px;
+    display: grid;
+    gap: 14px;
+  }
+  .cc-text h3 { font-size: 15px; font-weight: 600; margin-bottom: 6px; color: #fff; }
+  .cc-text p { font-size: 13px; line-height: 1.55; color: #a09cac; }
+  .cc-text a { color: #d4949f; text-decoration: underline; }
+  .cc-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+  .cc-btn {
+    flex: 1 1 auto;
+    min-width: 140px;
+    padding: 12px 18px;
+    border-radius: 10px;
+    font: 600 14px/1 'DM Sans', system-ui, sans-serif;
+    cursor: pointer;
+    border: 0;
+    transition: transform .15s, opacity .15s;
+  }
+  .cc-btn:active { transform: scale(.98); }
+  .cc-primary { background: #c4697a; color: #fff; }
+  .cc-primary:hover { background: #d4949f; }
+  .cc-ghost { background: transparent; color: #f0eff2; border: 1px solid rgba(255, 255, 255, 0.18); }
+  .cc-ghost:hover { border-color: rgba(255, 255, 255, 0.32); }
+  .cc-links { font-size: 11px; color: #6b6778; text-align: center; display: flex; gap: 8px; justify-content: center; }
+  .cc-links a { color: #6b6778; text-decoration: none; }
+  .cc-links a:hover { color: #a09cac; }
+  @media (min-width: 720px) {
+    .cc-inner { grid-template-columns: 1fr auto; align-items: center; padding: 22px 28px 18px; }
+    .cc-text { grid-column: 1 / 2; }
+    .cc-actions { grid-column: 2 / 3; flex-wrap: nowrap; }
+    .cc-btn { min-width: 160px; flex: 0 0 auto; }
+    .cc-links { grid-column: 1 / -1; margin-top: 4px; }
+  }
+</style>
+
+<script is:inline define:vars={{ metaPixelId, hyrosPh }}>
+  (function () {
+    var KEY = 'fot_consent';
+    var banner = document.getElementById('cc-banner');
+    var current = null;
+    try { current = localStorage.getItem(KEY); } catch (e) {}
+
+    function loadMetaPixel() {
+      if (!metaPixelId || window.fbq) return;
+      !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+      n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+      n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+      t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s);}(window,
+      document,'script','https://connect.facebook.net/en_US/fbevents.js');
+      window.fbq('init', metaPixelId);
+      window.fbq('track', 'PageView');
+    }
+
+    function loadHyros() {
+      if (!hyrosPh) return;
+      var s = document.createElement('script');
+      s.type = 'text/javascript';
+      s.async = true;
+      s.src = 'https://180866.t.hyros.com/v1/lst/universal-script?ph=' + hyrosPh + '&tag=!clicked&ref_url=' + encodeURIComponent(document.URL);
+      document.head.appendChild(s);
+    }
+
+    function applyConsent(level) {
+      try { localStorage.setItem(KEY, level); } catch (e) {}
+      if (banner) banner.hidden = true;
+      if (level === 'all') {
+        loadMetaPixel();
+        loadHyros();
+      }
+    }
+
+    if (current === 'all') {
+      loadMetaPixel();
+      loadHyros();
+    } else if (current !== 'essential') {
+      if (banner) banner.hidden = false;
+    }
+
+    document.querySelectorAll('[data-cc]').forEach(function (el) {
+      el.addEventListener('click', function () {
+        applyConsent(el.getAttribute('data-cc'));
+      });
+    });
+  })();
+</script>

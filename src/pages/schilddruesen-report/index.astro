@@ -1,5 +1,8 @@
 ---
 // Schilddrüsen-Report Funnel v3 — Mobile-First, Proof, Booking-Prio
+import CookieBanner from '../../components/CookieBanner.astro';
+const impressumUrl = 'https://fitontime.ch/impressum-datenschutz';
+const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
 ---
 <html lang="de">
 <head>
@@ -12,25 +15,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
-  <!-- Meta Pixel -->
-  <script is:inline define:vars={{ pixelId: import.meta.env.PUBLIC_META_PIXEL_ID || '' }}>
-    if (pixelId) {
-      !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-      n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
-      n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
-      t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
-      document,'script','https://connect.facebook.net/en_US/fbevents.js');
-      fbq('init', pixelId); fbq('track', 'PageView');
-    }
-  </script>
-  <!-- Hyros -->
-  <script is:inline>
-    var head = document.head;
-    var script = document.createElement('script');
-    script.type = 'text/javascript';
-    script.src = "https://180866.t.hyros.com/v1/lst/universal-script?ph=689a71ca1ab3be1cb1caddbe6b7902a4ad2c51a228f4ec9ea7fef3123a705f63&tag=!clicked&ref_url=" + encodeURI(document.URL);
-    head.appendChild(script);
-  </script>
+  <!-- Tracking (Meta Pixel + Hyros) wird von CookieBanner nach Consent geladen -->
 
   <style is:global>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -744,5 +729,12 @@
       }, 800);
     }
   </script>
+
+  <CookieBanner
+    metaPixelId="1349136525891811"
+    hyrosPh="689a71ca1ab3be1cb1caddbe6b7902a4ad2c51a228f4ec9ea7fef3123a705f63"
+    impressumUrl={impressumUrl}
+    datenschutzUrl={datenschutzUrl}
+  />
 </body>
 </html>
