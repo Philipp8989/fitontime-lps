@@ -5,8 +5,12 @@ import { put, list } from '@vercel/blob';
 export const POST: APIRoute = async ({ request }) => {
   try {
     const body = await request.json();
+    // Schema-Mapping: Dashboard erwartet lp/step/session
     const event = {
       ...body,
+      lp: body.lp || body.page,
+      step: body.step || body.event,
+      session: body.session || request.headers.get('x-forwarded-for') || 'anon',
       timestamp: new Date().toISOString(),
       ua: request.headers.get('user-agent') || '',
     };
