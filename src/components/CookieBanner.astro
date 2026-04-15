@@ -118,13 +118,14 @@ const { metaPixelId = '', hyrosPh = '', impressumUrl, datenschutzUrl } = Astro.p
       if (banner) banner.hidden = true;
       if (level === 'all') {
         loadMetaPixel();
-        loadHyros();
       }
     }
 
+    // Hyros zählt als essenziell (First-Party-Attribution) — lädt immer
+    loadHyros();
+
     if (current === 'all') {
       loadMetaPixel();
-      loadHyros();
     } else if (current !== 'essential') {
       if (banner) banner.hidden = false;
     }
