@@ -14,17 +14,22 @@ export const GET: APIRoute = async ({ url }) => {
   for (let i = 0; i < days; i++) {
     const date = new Date();
     date.setDate(date.getDate() - i);
-    const filename = `events/${date.toISOString().split('T')[0]}.jsonl`;
+    const prefix = `events/${date.toISOString().split('T')[0]}/`;
 
     try {
-      const blobs = await list({ prefix: filename });
-      if (blobs.blobs.length > 0) {
-        const res = await fetch(blobs.blobs[0].url);
-        const text = await res.text();
-        text.split('\n').filter(Boolean).forEach(line => {
-          try { events.push(JSON.parse(line)); } catch {}
-        });
-      }
+      const { blobs } = await list({ prefix });
+      // Alle Event-Blobs des Tages parallel laden
+      const results = await Promise.all(
+        blobs.map(async (b) => {
+          try {
+            const res = await fetch(b.url);
+            return JSON.parse(await res.text());
+          } catch {
+            return null;
+          }
+        })
+      );
+      results.forEach((e) => e && events.push(e));
     } catch {}
   }
 

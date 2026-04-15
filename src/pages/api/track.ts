@@ -1,6 +1,6 @@
-// Tracking-API: Events in Vercel Blob speichern
+// Tracking-API: ein Blob pro Event (keine Race-Conditions, kein CDN-Cache-Problem)
 import type { APIRoute } from 'astro';
-import { put, list } from '@vercel/blob';
+import { put } from '@vercel/blob';
 
 export const POST: APIRoute = async ({ request }) => {
   try {
@@ -15,22 +15,10 @@ export const POST: APIRoute = async ({ request }) => {
       ua: request.headers.get('user-agent') || '',
     };
 
-    // Events als JSONL in tägliche Datei
+    // Eindeutiger Pfad pro Event unter events/YYYY-MM-DD/
     const today = new Date().toISOString().split('T')[0];
-    const filename = `events/${today}.jsonl`;
-
-    // Bestehende Datei laden oder neu
-    let existing = '';
-    try {
-      const blobs = await list({ prefix: filename });
-      if (blobs.blobs.length > 0) {
-        const res = await fetch(blobs.blobs[0].url);
-        existing = await res.text();
-      }
-    } catch {}
-
-    const content = existing + JSON.stringify(event) + '\n';
-    await put(filename, content, { access: 'public', addRandomSuffix: false, allowOverwrite: true });
+    const filename = `events/${today}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.json`;
+    await put(filename, JSON.stringify(event), { access: 'public', addRandomSuffix: false });
 
     return new Response(JSON.stringify({ ok: true }), { status: 200 });
   } catch (e: any) {
