@@ -30,7 +30,7 @@ export const POST: APIRoute = async ({ request }) => {
     } catch {}
 
     const content = existing + JSON.stringify(event) + '\n';
-    await put(filename, content, { access: 'public', addRandomSuffix: false });
+    await put(filename, content, { access: 'public', addRandomSuffix: false, allowOverwrite: true });
 
     return new Response(JSON.stringify({ ok: true }), { status: 200 });
   } catch (e: any) {
