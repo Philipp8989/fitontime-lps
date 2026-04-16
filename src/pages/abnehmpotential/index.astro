@@ -541,7 +541,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
           <!-- Wird dynamisch befüllt -->
         </div>
 
-        <a href="https://fitontime.ch" class="result-cta" id="result-cta-btn">Jetzt kostenloses Beratungsgespräch buchen</a>
+        <div id="ycbm-container" style="margin-top:20px;"></div>
         <div class="result-spots">&#128293; Nur noch wenige Plätze diese Woche</div>
       </div>
 
@@ -815,6 +815,13 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
         document.querySelector('.step[data-s="result"]').classList.add('on');
         document.getElementById('qn').textContent = 'Dein Ergebnis';
         tk('result_shown', { detail: pot.min + '-' + pot.max + 'kg' });
+        // YCBM Kalender laden
+        var s = document.createElement('script');
+        s.src = 'https://embed.ycb.me';
+        s.async = true;
+        s.setAttribute('data-domain', 'fitontime-abnehm-blockaden-check');
+        s.setAttribute('data-displaymode', 'auto');
+        document.getElementById('ycbm-container').appendChild(s);
       }, 1200);
     }
   </script>

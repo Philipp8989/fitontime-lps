@@ -322,24 +322,36 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
         </div>
       </div>
 
-      <!-- Ergebnis: Einheitliche Ergebnisseite -->
+      <!-- Ergebnis-Seite mit Video + Booking -->
       <div class="step result" data-s="result" style="display:none;">
-        <span class="result-badge">&#9889; Dein Ergebnis</span>
-        <h2>Dein Stoffwechsel-Profil ist erstellt</h2>
-        <p class="result-type" id="result-title"></p>
+        <span class="result-badge">&#9889; Dein Ergebnis ist da!</span>
+        <h2>Sieh dir das Ergebnis an</h2>
+        <p class="result-type">Um zu verstehen, was dir das Wissen über deinen Stoffwechsel-Typen bringt!</p>
+
+        <!-- Wistia Video (wird dynamisch per ID geladen) -->
+        <div id="wistia-container" style="margin:20px 0; border-radius:12px; overflow:hidden;"></div>
+
         <div class="result-desc">
-          <h3>Was dein Profil über dich verrät</h3>
-          <p id="result-summary"></p>
-          <p style="margin-top:8px;" id="result-approach"></p>
+          <h3>Zur kostenlosen Standortbestimmung</h3>
+          <p>Wir gehen mit dir zusammen alle für dich relevanten Stoffwechselthemen durch und bestimmen, an welchem Punkt dein Stoffwechsel gerade steht und was du sofort tun kannst, um ihn zu verbessern!</p>
+          <p style="margin-top:8px;"><strong>Ohne diese Standortbestimmung bringt dir dein Ergebnis wenig.</strong> Buche dir jetzt einen Termin!</p>
         </div>
-        <div class="result-grid">
-          <div class="result-card"><div class="rc-icon">&#127860;</div><h4>Ernährung</h4><p id="rc-food"></p></div>
-          <div class="result-card"><div class="rc-icon">&#128170;</div><h4>Bewegung</h4><p id="rc-move"></p></div>
-          <div class="result-card"><div class="rc-icon">&#9203;</div><h4>Timing</h4><p id="rc-time"></p></div>
-          <div class="result-card"><div class="rc-icon">&#9888;</div><h4>Grösster Fehler</h4><p id="rc-mistake"></p></div>
+
+        <div id="ycbm-container" style="margin:20px 0;"></div>
+
+        <div style="display:flex;flex-direction:column;gap:6px;margin:16px 0;text-align:center;">
+          <span style="font-size:13px;color:var(--amber);font-weight:600;">&#128293; Freie Plätze schnell vergeben</span>
+          <span style="font-size:12px;color:var(--text-3);">Nur noch kurze Zeit kostenlos</span>
+          <span style="font-size:12px;color:var(--text-3);">Rückmeldung in 24 Stunden · 100% KOSTENLOS</span>
         </div>
-        <a href="https://fitontime.ch" class="result-cta" id="result-cta-btn">Jetzt kostenloses Beratungsgespräch buchen</a>
-        <div class="result-spots">&#128293; Nur noch wenige Plätze diese Woche</div>
+
+        <div class="result-desc" style="text-align:left;">
+          <h3 style="text-align:left;">JA, ich möchte kontaktiert werden und das hier haben:</h3>
+          <p>&#10003; Einen individuellen Fahrplan für die nächsten 6 Wochen<br/>
+          &#10003; Wie du ohne Kalorienzählen oder viel Disziplin abnimmst<br/>
+          &#10003; Wie du nie wieder an deinen "Problemzonen" Fett zulegst<br/>
+          &#10003; Wie du ohne Jojo-Effekt langfristig schlank bleibst</p>
+        </div>
       </div>
 
     </div>
@@ -487,20 +499,40 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
       }).catch(function(){});
 
       setTimeout(function(){
-        // Ergebnis-Seite befüllen
-        document.getElementById('result-title').textContent = profile.title;
-        document.getElementById('result-summary').textContent = profile.summary;
-        document.getElementById('result-approach').innerHTML = profile.approach;
-        document.getElementById('rc-food').textContent = profile.food;
-        document.getElementById('rc-move').textContent = profile.move;
-        document.getElementById('rc-time').textContent = profile.time;
-        document.getElementById('rc-mistake').textContent = profile.mistake;
+        // Wistia Video basierend auf Ziel (Q7) laden
+        var goal = quizAnswers.q7_val || '6-10';
+        var videoMap = {
+          '3-5': 'zuef2ev1j4',
+          '6-10': 'g7g5ttzij5',
+          '10+': 'b6bkslxgxy',
+          'fitter': 'zuef2ev1j4'
+        };
+        var videoId = videoMap[goal] || 'g7g5ttzij5';
+
+        // Wistia Embed laden
+        var wc = document.getElementById('wistia-container');
+        var wd = document.createElement('div');
+        wd.className = 'wistia_embed wistia_async_' + videoId;
+        wd.style.cssText = 'width:100%;aspect-ratio:16/9;';
+        wc.appendChild(wd);
+        var ws = document.createElement('script');
+        ws.src = 'https://fast.wistia.com/assets/external/E-v1.js';
+        ws.async = true;
+        wc.appendChild(ws);
+
+        // YCBM Kalender laden
+        var ys = document.createElement('script');
+        ys.src = 'https://embed.ycb.me';
+        ys.async = true;
+        ys.setAttribute('data-domain', 'fitontime-stoffwechsel-report');
+        ys.setAttribute('data-displaymode', 'auto');
+        document.getElementById('ycbm-container').appendChild(ys);
 
         document.querySelector('.step[data-s="form"]').classList.remove('on');
         document.querySelector('.step[data-s="result"]').style.display = 'block';
         document.querySelector('.step[data-s="result"]').classList.add('on');
         document.getElementById('qn').textContent = 'Dein Ergebnis';
-        tk('result_shown', { detail: quizAnswers.q1_val });
+        tk('result_shown', { detail: goal + '_video_' + videoId });
       }, 1200);
     }
   </script>
