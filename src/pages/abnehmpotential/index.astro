@@ -1,5 +1,5 @@
 ---
-// Blockadenlöser-Quiz — Abnehmpotential & Blockaden-Analyse
+// Blockadenlöser-Quiz  -  Abnehmpotential & Blockaden-Analyse
 // Importiert von: fit-on-time.ch/blockadenloeser/
 // CRO: Progress-Bar, Social Proof, Urgency, animierte Elemente, Dark-Theme
 import CookieBanner from '../../components/CookieBanner.astro';
@@ -330,7 +330,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
         <div class="info-item"><span class="ic">&#10003;</span><span><strong>Dein realistisches Abnehmpotential</strong> für die nächsten 4 Monate</span></div>
         <div class="info-item"><span class="ic">&#10003;</span><span><strong>Deine Top-3 Blockaden</strong> die dich am Abnehmen hindern</span></div>
         <div class="info-item"><span class="ic">&#10003;</span><span><strong>Konkrete Empfehlungen</strong> um jede Blockade zu lösen</span></div>
-        <div class="info-item"><span class="ic">&#10003;</span><span><strong>Warum Diäten bei dir scheitern</strong> — und was stattdessen funktioniert</span></div>
+        <div class="info-item"><span class="ic">&#10003;</span><span><strong>Warum Diäten bei dir scheitern</strong>, und was stattdessen funktioniert</span></div>
         <div class="info-item"><span class="ic">&#10003;</span><span><strong>Dein persönlicher Aktionsplan</strong> basierend auf deinen Antworten</span></div>
       </div>
 
@@ -339,14 +339,14 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
       <!-- Problem-Section -->
       <div class="pain">
         <h2>Kommt dir das bekannt vor?</h2>
-        <p class="pain-sub">Du versuchst alles — aber die Kilos bleiben. Vielleicht liegt es nicht an dir, sondern an <strong>unsichtbaren Blockaden</strong>.</p>
+        <p class="pain-sub">Du versuchst alles, aber die Kilos bleiben. Vielleicht liegt es nicht an dir, sondern an <strong>unsichtbaren Blockaden</strong>.</p>
         <ul class="pain-list">
           <li><span class="ic">&#10007;</span>Heisshungerattacken trotz gesunder Ernährung</li>
           <li><span class="ic">&#10007;</span>Motivation hält nur wenige Wochen</li>
           <li><span class="ic">&#10007;</span>Stress und Schlafmangel sabotieren dich</li>
           <li><span class="ic">&#10007;</span>Jede Diät endet im Jojo-Effekt</li>
         </ul>
-        <p class="pain-sub" style="margin-top:12px;"><strong>In 8 Fragen finden wir heraus, was dich WIRKLICH blockiert</strong> — und wie du es lösen kannst.</p>
+        <p class="pain-sub" style="margin-top:12px;"><strong>In 8 Fragen finden wir heraus, was dich WIRKLICH blockiert</strong>, und wie du es lösen kannst.</p>
       </div>
 
       <!-- Blockaden-Vorschau -->
@@ -412,8 +412,8 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
         <h2>Wie viele Diäten hast du schon probiert?</h2>
         <div class="opts">
           <button class="opt" onclick="nxt(2,this,'keine')">Keine</button>
-          <button class="opt" onclick="nxt(2,this,'1-3')">1–3</button>
-          <button class="opt" onclick="nxt(2,this,'4-6')">4–6</button>
+          <button class="opt" onclick="nxt(2,this,'1-3')">1-3</button>
+          <button class="opt" onclick="nxt(2,this,'4-6')">4-6</button>
           <button class="opt" onclick="nxt(2,this,'6+')">Mehr als 6</button>
         </div>
       </div>
@@ -466,9 +466,9 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
       <div class="step" data-s="7">
         <h2>Wie viel möchtest du abnehmen?</h2>
         <div class="opts">
-          <button class="opt" onclick="nxt(7,this,'3-5')">3–5 kg</button>
-          <button class="opt" onclick="nxt(7,this,'6-10')">6–10 kg</button>
-          <button class="opt" onclick="nxt(7,this,'11-20')">11–20 kg</button>
+          <button class="opt" onclick="nxt(7,this,'3-5')">3-5 kg</button>
+          <button class="opt" onclick="nxt(7,this,'6-10')">6-10 kg</button>
+          <button class="opt" onclick="nxt(7,this,'11-20')">11-20 kg</button>
           <button class="opt" onclick="nxt(7,this,'20+')">Mehr als 20 kg</button>
         </div>
       </div>
@@ -525,7 +525,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
 
         <!-- Abnehmpotential Anzeige -->
         <div class="potential-display">
-          <div class="potential-number" id="potential-kg">–</div>
+          <div class="potential-number" id="potential-kg">-</div>
           <div class="potential-label">realistisches Abnehmpotential in 4 Monaten</div>
           <div class="potential-bar"><div class="potential-fill" id="potential-bar-fill" style="width:0%"></div></div>
         </div>
@@ -617,11 +617,11 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
       var readiness = { sofort: 1.0, bald: 0.85, vielleicht: 0.7, weiss_nicht: 0.6 };
       var mod = readiness[quizAnswers.q8] || 0.8;
 
-      // Schlaf-Modifier (Q5) — guter Schlaf = bessere Ergebnisse
+      // Schlaf-Modifier (Q5)  -  guter Schlaf = bessere Ergebnisse
       var sleepMod = { schlecht: 0.8, mittel: 0.9, gut: 1.0, sehr_gut: 1.05 };
       mod *= (sleepMod[quizAnswers.q5] || 0.9);
 
-      // Stress-Modifier (Q6) — weniger Stress = bessere Ergebnisse
+      // Stress-Modifier (Q6)  -  weniger Stress = bessere Ergebnisse
       var stressMod = { sehr_hoch: 0.8, hoch: 0.85, mittel: 0.95, niedrig: 1.0 };
       mod *= (stressMod[quizAnswers.q6] || 0.9);
 
@@ -642,7 +642,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
         blockades.push({
           title: 'Emotionales Essen & Heisshunger',
           icon: '&#127852;',
-          desc: 'Du isst oft aus emotionalen Gründen — nicht aus Hunger. Das führt zu unkontrollierten Kalorienüberschüssen, die jede Diät sabotieren.',
+          desc: 'Du isst oft aus emotionalen Gründen, nicht aus Hunger. Das führt zu unkontrollierten Kalorienüberschüssen, die jede Diät sabotieren.',
           tip: 'Lösung: Blutzucker stabilisieren durch proteinreiches Frühstück, 3 feste Mahlzeiten und bewusste Stress-Bewältigung statt Essen.'
         });
       }
@@ -653,7 +653,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
           title: 'Schlafmangel stört deine Hormone',
           icon: '&#128164;',
           desc: 'Schlechter Schlaf erhöht Ghrelin (Hungerhormon) und senkt Leptin (Sättigungshormon). Dein Körper verlangt dadurch nach mehr Kalorien.',
-          tip: 'Lösung: Schlafhygiene verbessern — kein Bildschirm 1h vor dem Schlafen, feste Schlafzeiten, Magnesium als Unterstützung.'
+          tip: 'Lösung: Schlafhygiene verbessern, kein Bildschirm 1h vor dem Schlafen, feste Schlafzeiten, Magnesium als Unterstützung.'
         });
       }
 
@@ -682,7 +682,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
         blockades.push({
           title: 'Motivation allein reicht nicht',
           icon: '&#128170;',
-          desc: 'Motivation ist wie ein Feuer — sie brennt hell, aber erlischt schnell. Du brauchst Systeme und Gewohnheiten, nicht nur Willenskraft.',
+          desc: 'Motivation ist wie ein Feuer, sie brennt hell, aber erlischt schnell. Du brauchst Systeme und Gewohnheiten, nicht nur Willenskraft.',
           tip: 'Lösung: Kleine, tägliche Gewohnheiten statt radikaler Änderungen. Eine Accountability-Partnerin und messbare Zwischenziele.'
         });
       }
@@ -693,7 +693,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
           title: 'Information Overload & falsches Wissen',
           icon: '&#128218;',
           desc: 'Zu viele widersprüchliche Ratschläge im Internet verwirren dich. Du weisst nicht, was WIRKLICH für deinen Körper funktioniert.',
-          tip: 'Lösung: Ein klarer, personalisierter Plan von Experten — kein YouTube-Roulette. Fokus auf die Basics, die nachweislich wirken.'
+          tip: 'Lösung: Ein klarer, personalisierter Plan von Experten, kein YouTube-Roulette. Fokus auf die Basics, die nachweislich wirken.'
         });
       }
 
@@ -703,7 +703,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
           title: 'Dein Stoffwechsel ist durch Diäten geschädigt',
           icon: '&#9888;',
           desc: 'Viele gescheiterte Diäten haben deinen Stoffwechsel verlangsamt. Dein Körper hat gelernt, mit weniger Kalorien auszukommen.',
-          tip: 'Lösung: Reverse Dieting — Kalorien langsam steigern, Stoffwechsel reparieren. Krafttraining für mehr Muskelmasse und höheren Grundumsatz.'
+          tip: 'Lösung: Reverse Dieting, Kalorien langsam steigern, Stoffwechsel reparieren. Krafttraining für mehr Muskelmasse und höheren Grundumsatz.'
         });
       }
 
@@ -711,7 +711,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
       if (blockades.length === 0) {
         blockades.push(
           { title: 'Fehlende Struktur im Alltag', icon: '&#128203;', desc: 'Ohne klaren Plan isst du unregelmässig und triffst spontane Entscheidungen, die dich vom Ziel abhalten.', tip: 'Lösung: Feste Essenszeiten, Wochenplan und eine klare Morgenroutine als Fundament.' },
-          { title: 'Zu wenig Bewegung im Alltag', icon: '&#128694;', desc: 'Sitzender Lebensstil senkt deinen Kalorienverbrauch drastisch — selbst wenn du "gesund" isst, nimmst du nicht ab.', tip: 'Lösung: 8.000 Schritte pro Tag als Basis, kurze Bewegungspausen alle 2 Stunden, aktiver Arbeitsweg.' },
+          { title: 'Zu wenig Bewegung im Alltag', icon: '&#128694;', desc: 'Sitzender Lebensstil senkt deinen Kalorienverbrauch drastisch, selbst wenn du "gesund" isst, nimmst du nicht ab.', tip: 'Lösung: 8.000 Schritte pro Tag als Basis, kurze Bewegungspausen alle 2 Stunden, aktiver Arbeitsweg.' },
           { title: 'Unterschätzte Kalorienmenge', icon: '&#127860;', desc: 'Die meisten Menschen unterschätzen ihre tägliche Kalorienaufnahme um 30-50%. Kleine Snacks summieren sich.', tip: 'Lösung: 2 Wochen Food-Tracking, bewusst Portionsgrössen lernen, versteckte Kalorien in Getränken eliminieren.' }
         );
       }
@@ -730,7 +730,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
       document.getElementById('result-name').textContent = firstName + ', dein Abnehmpotential';
 
       // KG-Anzeige
-      document.getElementById('potential-kg').textContent = pot.min + '–' + pot.max + ' kg';
+      document.getElementById('potential-kg').textContent = pot.min + '-' + pot.max + ' kg';
 
       // Progress-Bar (proportional zum Maximum)
       var fillPercent = Math.min(Math.round((pot.max / 18) * 100), 100);
@@ -752,7 +752,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
 
       // Empfehlungs-Karten basierend auf Antworten
       var tips = '';
-      tips += '<div class="result-card"><div class="rc-icon">&#127860;</div><h4>Ernährung</h4><p>Kein Kalorienzählen — sondern die richtigen Lebensmittel zur richtigen Zeit. Dein Körper braucht Nährstoffe, kein Defizit.</p></div>';
+      tips += '<div class="result-card"><div class="rc-icon">&#127860;</div><h4>Ernährung</h4><p>Kein Kalorienzählen, sondern die richtigen Lebensmittel zur richtigen Zeit. Dein Körper braucht Nährstoffe, kein Defizit.</p></div>';
       tips += '<div class="result-card"><div class="rc-icon">&#128170;</div><h4>Bewegung</h4><p>Kurze, effektive Einheiten statt stundenlangem Cardio. 3x pro Woche reicht, wenn es die richtigen Übungen sind.</p></div>';
 
       if (quizAnswers.q5 === 'schlecht' || quizAnswers.q5 === 'mittel') {
@@ -790,7 +790,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
       btn.textContent = 'Wird ausgewertet...';
 
       var pot = calcPotential();
-      tk('lead_submit', { detail: fn + ' — ' + pot.min + '-' + pot.max + 'kg' });
+      tk('lead_submit', { detail: fn + ' - ' + pot.min + '-' + pot.max + 'kg' });
 
       // Lead an Google Sheets senden
       fetch('/api/sheets', {
@@ -826,7 +826,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
     }
   </script>
 
-  {/* Hyros als First-Party-Attribution essentiell — laedt ohne Consent */}
+  {/* Hyros als First-Party-Attribution essentiell  -  laedt ohne Consent */}
   <script is:inline src="https://t.hyros.com/v1/lst/universal-script?ph=689a71ca1ab3be1cb1caddbe6b7902a4ad2c51a228f4ec9ea7fef3123a705f63"></script>
 
   <CookieBanner

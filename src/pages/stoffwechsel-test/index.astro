@@ -1,5 +1,5 @@
 ---
-// Stoffwechsel-Profil Quiz — Metabolischer Körpertyp-Test
+// Stoffwechsel-Profil Quiz - Metabolischer Körpertyp-Test
 // Importiert von: fit-on-time.ch/stoffwechsel-test/
 // CRO: Progress-Bar, Social Proof, Urgency, elegantes Design
 import CookieBanner from '../../components/CookieBanner.astro';
@@ -172,7 +172,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
       <div class="logo"><img src="/images/logo.png" alt="Fit on Time" /></div>
 
       <section class="hero">
-        <h1>Was wäre, wenn Abnehmen endlich zu deinem Leben passt — und <em>nicht umgekehrt?</em></h1>
+        <h1>Was wäre, wenn Abnehmen endlich zu deinem Leben passt, und <em>nicht umgekehrt?</em></h1>
         <p class="sub">Mit nur <strong>7 kurzen Fragen</strong> erfährst du, wie du deinem natürlichen Körpertyp folgst. Für nachhaltiges Abnehmen ohne quälende Diäten, ohne ständigen Verzicht, ohne Zeitfresser.</p>
         <p class="time-hint">&#9201; In 60 Sekunden weisst du, ob unser individueller Ansatz genau für deinen Körper und deinen Alltag gemacht ist.</p>
 
@@ -230,7 +230,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
       <div class="step" data-s="2">
         <h2>Was ist dein grösstes Problem beim Abnehmen?</h2>
         <div class="opts">
-          <button class="opt" onclick="nxt(2,this,'jojo')"><strong>Jojo-Effekt</strong><span>Ich nehme ab, dann wieder zu — ein endloser Kreislauf.</span></button>
+          <button class="opt" onclick="nxt(2,this,'jojo')"><strong>Jojo-Effekt</strong><span>Ich nehme ab, dann wieder zu, ein endloser Kreislauf.</span></button>
           <button class="opt" onclick="nxt(2,this,'hunger')"><strong>Heisshunger</strong><span>Plötzliche Essattacken sabotieren jeden Fortschritt.</span></button>
           <button class="opt" onclick="nxt(2,this,'sport')"><strong>Keine Resultate trotz Sport</strong><span>Ich bewege mich viel, aber auf der Waage tut sich nichts.</span></button>
           <button class="opt" onclick="nxt(2,this,'moti')"><strong>Motivation</strong><span>Ich starte motiviert, gebe aber nach wenigen Wochen auf.</span></button>
@@ -252,9 +252,9 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
         <h2>Wie oft isst du pro Tag?</h2>
         <div class="opts">
           <button class="opt" onclick="nxt(4,this,'1-2')"><strong>1&ndash;2 Mahlzeiten</strong><span>Ich esse selten frühstücke und komme mit wenig Mahlzeiten aus.</span></button>
-          <button class="opt" onclick="nxt(4,this,'3')"><strong>3 Mahlzeiten</strong><span>Frühstück, Mittag, Abendessen — relativ regelmässig.</span></button>
+          <button class="opt" onclick="nxt(4,this,'3')"><strong>3 Mahlzeiten</strong><span>Frühstück, Mittag, Abendessen, relativ regelmässig.</span></button>
           <button class="opt" onclick="nxt(4,this,'3+')"><strong>Mehr als 3</strong><span>Ich snacke zwischendurch oder esse häufig kleine Portionen.</span></button>
-          <button class="opt" onclick="nxt(4,this,'unreg')"><strong>Unregelmässig</strong><span>Mal viel, mal gar nichts — kein festes Muster.</span></button>
+          <button class="opt" onclick="nxt(4,this,'unreg')"><strong>Unregelmässig</strong><span>Mal viel, mal gar nichts, kein festes Muster.</span></button>
         </div>
       </div>
 
@@ -282,7 +282,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
       <div class="step" data-s="7">
         <h2>Was ist dein Ziel in den nächsten 3 Monaten?</h2>
         <div class="opts">
-          <button class="opt" onclick="nxt(7,this,'3-5')"><strong>3&ndash;5 kg verlieren</strong><span>Feinschliff — die letzten hartnäckigen Kilos.</span></button>
+          <button class="opt" onclick="nxt(7,this,'3-5')"><strong>3&ndash;5 kg verlieren</strong><span>Feinschliff, die letzten hartnäckigen Kilos.</span></button>
           <button class="opt" onclick="nxt(7,this,'6-10')"><strong>6&ndash;10 kg verlieren</strong><span>Deutlich sichtbare Veränderung am Körper.</span></button>
           <button class="opt" onclick="nxt(7,this,'10+')"><strong>Mehr als 10 kg</strong><span>Eine echte Transformation, die alles verändert.</span></button>
           <button class="opt" onclick="nxt(7,this,'fitter')"><strong>Einfach fitter werden</strong><span>Mehr Energie, besseres Körpergefühl.</span></button>
@@ -358,7 +358,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
   </div>
 
   <script is:inline>
-    // Stoffwechsel-Profil Quiz — Antworten-Speicher
+    // Stoffwechsel-Profil Quiz  -  Antworten-Speicher
     var quizAnswers = {};
     var TOTAL = 7;
 
@@ -423,7 +423,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
       // Profil-Daten je nach Körperbau + individuellen Faktoren
       var profiles = {
         ecto: {
-          title: 'Schneller Stoffwechsel — Der Verbrennungstyp',
+          title: 'Schneller Stoffwechsel: Der Verbrennungstyp',
           summary: 'Dein Stoffwechsel arbeitet schnell, verbrennt aber oft die falschen Energiequellen. Du nimmst zwar nicht leicht zu, aber wenn du abnehmen willst, verlierst du häufig Muskeln statt Fett. Dein Körper braucht regelmässige, nährstoffreiche Mahlzeiten, um stabil zu bleiben.',
           approach: '<strong>Dein individueller Ansatz:</strong> Regelmässige, proteinreiche Mahlzeiten in festen Abständen. Krafttraining statt exzessivem Cardio. So formst du deinen Körper, ohne Energie zu verlieren.',
           food: 'Proteinreiche Mahlzeiten, komplexe Kohlenhydrate, gesunde Fette. Nie eine Mahlzeit auslassen.',
@@ -432,21 +432,21 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
           mistake: 'Mahlzeiten auslassen oder nur Salat essen. Dein Körper schaltet in den Sparmodus und hält an jeder Kalorie fest.'
         },
         meso: {
-          title: 'Ausgewogener Stoffwechsel — Der Allrounder',
-          summary: 'Dein Körper reagiert gut auf Training und Ernährungsumstellungen. Du baust leicht Muskeln auf und kannst auch abnehmen — wenn du den richtigen Reiz setzt. Dein Problem ist oft nicht der Körper, sondern die Konstanz.',
-          approach: '<strong>Dein individueller Ansatz:</strong> Strukturierte Trainingseinheiten kombiniert mit ausgewogener Ernährung. Dein Körper belohnt Disziplin schneller als bei anderen Typen — das ist dein Vorteil.',
+          title: 'Ausgewogener Stoffwechsel: Der Allrounder',
+          summary: 'Dein Körper reagiert gut auf Training und Ernährungsumstellungen. Du baust leicht Muskeln auf und kannst auch abnehmen, wenn du den richtigen Reiz setzt. Dein Problem ist oft nicht der Körper, sondern die Konstanz.',
+          approach: '<strong>Dein individueller Ansatz:</strong> Strukturierte Trainingseinheiten kombiniert mit ausgewogener Ernährung. Dein Körper belohnt Disziplin schneller als bei anderen Typen, das ist dein Vorteil.',
           food: 'Ausgewogene Makros: 40% Kohlenhydrate, 30% Protein, 30% Fett. Viel Gemüse und magere Proteinquellen.',
           move: 'Mix aus Kraft und Cardio. HIIT-Einheiten 2x, Krafttraining 2-3x pro Woche.',
           time: '3 feste Mahlzeiten, optional 1 Protein-Snack nach dem Training. Abends leichter essen.',
           mistake: 'Sich auf natürliche Fitness verlassen und nachlässig werden. Ohne Struktur kommt auch beim Allrounder der Stillstand.'
         },
         endo: {
-          title: 'Langsamer Stoffwechsel — Der Speichertyp',
-          summary: 'Dein Körper speichert Energie besonders effizient — evolutionär ein Vorteil, heute eine Herausforderung. Standard-Diäten mit Kaloriendefizit funktionieren bei dir kaum, weil dein Körper sofort in den Sparmodus schaltet und jede Kalorie festhält.',
+          title: 'Langsamer Stoffwechsel: Der Speichertyp',
+          summary: 'Dein Körper speichert Energie besonders effizient, evolutionär ein Vorteil, heute eine Herausforderung. Standard-Diäten mit Kaloriendefizit funktionieren bei dir kaum, weil dein Körper sofort in den Sparmodus schaltet und jede Kalorie festhält.',
           approach: '<strong>Dein individueller Ansatz:</strong> Statt weniger essen, anders essen. Stoffwechselaktivierende Lebensmittel, strategisches Timing und die richtige Bewegung bringen deinen trägen Metabolismus auf Touren.',
           food: 'Leichte, warme Kost. Viel Gemüse, Hülsenfrüchte, Ingwer-Tee. Wenig Weizen, Zucker und Milchprodukte.',
           move: 'Tägliche Bewegung ist Pflicht. Krafttraining + zügiges Walken. Gerade dann trainieren, wenn die Motivation fehlt.',
-          time: 'Leichtes Frühstück oder 16:8-Fasten. Hauptmahlzeit mittags. Nichts nach 18 Uhr — dein Stoffwechsel schläft abends ein.',
+          time: 'Leichtes Frühstück oder 16:8-Fasten. Hauptmahlzeit mittags. Nichts nach 18 Uhr, dein Stoffwechsel schläft abends ein.',
           mistake: 'Zu wenig essen und sich kaum bewegen. Crash-Diäten verlangsamen deinen Stoffwechsel nur noch weiter.'
         }
       };
@@ -455,7 +455,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
 
       // Personalisierung anhand Problem + Ziel
       if (problem === 'hunger') {
-        p.summary += ' Dein Hauptproblem — Heisshunger — deutet auf schwankenden Blutzucker hin. Das lässt sich mit dem richtigen Mahlzeiten-Timing lösen.';
+        p.summary += ' Dein Hauptproblem, Heisshunger, deutet auf schwankenden Blutzucker hin. Das lässt sich mit dem richtigen Mahlzeiten-Timing lösen.';
       } else if (problem === 'jojo') {
         p.summary += ' Der Jojo-Effekt zeigt, dass bisherige Ansätze deinen Stoffwechsel nicht respektiert haben. Unser Ansatz setzt genau da an.';
       } else if (problem === 'sport') {
@@ -484,7 +484,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
       btn.textContent = 'Wird ausgewertet...';
 
       var profile = getProfile();
-      tk('lead_submit', { detail: fn + ' — ' + (quizAnswers.q1_val || 'unknown') });
+      tk('lead_submit', { detail: fn + ' - ' + (quizAnswers.q1_val || 'unknown') });
 
       // Lead an Google Sheets senden
       fetch('/api/sheets', {
@@ -537,7 +537,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
     }
   </script>
 
-  {/* Hyros als First-Party-Attribution essentiell — laedt ohne Consent */}
+  {/* Hyros als First-Party-Attribution essentiell  -  laedt ohne Consent */}
   <script is:inline src="https://t.hyros.com/v1/lst/universal-script?ph=689a71ca1ab3be1cb1caddbe6b7902a4ad2c51a228f4ec9ea7fef3123a705f63"></script>
 
   <CookieBanner

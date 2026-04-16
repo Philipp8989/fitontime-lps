@@ -1,5 +1,5 @@
 ---
-// Doshatyp-Quiz — Ayurveda Körpertyp-Quiz (Vata/Pitta/Kapha)
+// Doshatyp-Quiz  -  Ayurveda Körpertyp-Quiz (Vata/Pitta/Kapha)
 // Importiert von: fit-on-time.ch/doshatyp/
 // CRO-Verbesserungen: Progress-Bar, Social Proof, Urgency, schnellere Ladezeiten
 import CookieBanner from '../../components/CookieBanner.astro';
@@ -193,9 +193,9 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
       <div class="logo"><img src="/images/logo.png" alt="Fit on Time" /></div>
 
       <section class="hero">
-        <h1>Warum 80% aller Diäten scheitern — und was das mit <em>Ayurveda</em> zu tun hat</h1>
+        <h1>Warum 80% aller Diäten scheitern, und was das mit <em>Ayurveda</em> zu tun hat</h1>
         <p class="sub">Bist du <strong>Vata, Pitta oder Kapha?</strong></p>
-        <p class="sub">Finde in 2 Minuten heraus, warum dein Körper anders auf Ernährung reagiert als der von anderen Frauen — und wie dir diese 5.000 Jahre alte Weisheit endlich beim Abnehmen hilft.</p>
+        <p class="sub">Finde in 2 Minuten heraus, warum dein Körper anders auf Ernährung reagiert als der von anderen Frauen, und wie dir diese 5.000 Jahre alte Weisheit endlich beim Abnehmen hilft.</p>
 
         <div class="proof-bar">
           <div class="proof-avatars">
@@ -210,7 +210,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
           </div>
         </div>
 
-        <div class="gender-q">Jetzt in 2 min. Klarheit schaffen — Verrate uns vorab dein Geschlecht:</div>
+        <div class="gender-q">Jetzt in 2 min. Klarheit schaffen, Verrate uns vorab dein Geschlecht:</div>
         <div class="gender-row">
           <div class="g-card" onclick="go('frau')">
             <span style="font-size:48px;">&#9792;</span>
@@ -228,10 +228,10 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
         <h3>Das sagt dir dieser Test:</h3>
         <div class="info-item"><span class="ic">&#10003;</span><span><strong>Dein Dosha-Typ:</strong> Bist du Vata, Pitta oder Kapha?</span></div>
         <div class="info-item"><span class="ic">&#10003;</span><span><strong>Warum dein Körper Fett speichert:</strong> Die Ayurveda-Erklärung</span></div>
-        <div class="info-item"><span class="ic">&#10003;</span><span><strong>Welche Lebensmittel dich dick machen</strong> — und welche nicht</span></div>
+        <div class="info-item"><span class="ic">&#10003;</span><span><strong>Welche Lebensmittel dich dick machen</strong>, und welche nicht</span></div>
         <div class="info-item"><span class="ic">&#10003;</span><span><strong>Dein optimales Training:</strong> Cardio, Kraft oder beides?</span></div>
         <div class="info-item"><span class="ic">&#10003;</span><span><strong>Dein Stoffwechsel-Zeitplan:</strong> Wann solltest du essen?</span></div>
-        <div class="info-item"><span class="ic">&#10003;</span><span><strong>Die grössten Fehler deines Typs</strong> — und wie du sie vermeidest</span></div>
+        <div class="info-item"><span class="ic">&#10003;</span><span><strong>Die grössten Fehler deines Typs</strong>, und wie du sie vermeidest</span></div>
       </div>
 
       <div class="divider"></div>
@@ -239,7 +239,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
       <!-- Problem-Section -->
       <div class="pain">
         <h2>Kennst du das Gefühl?</h2>
-        <p class="pain-sub">Du machst die gleiche Diät wie deine Freundin — sie nimmt 8 Kilo ab, bei dir tut sich... nichts.</p>
+        <p class="pain-sub">Du machst die gleiche Diät wie deine Freundin, sie nimmt 8 Kilo ab, bei dir tut sich... nichts.</p>
         <ul class="pain-list">
           <li><span class="ic">&#10007;</span>Gleiche Kalorien-Ziele für alle</li>
           <li><span class="ic">&#10007;</span>Gleiche Makro-Verteilung</li>
@@ -256,17 +256,17 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
           <div class="dosha-card">
             <div class="dosha-icon">&#127756;</div>
             <h4>Vata</h4>
-            <p>Luft & Raum — Kreativ, energisch, unruhig</p>
+            <p>Luft & Raum: Kreativ, energisch, unruhig</p>
           </div>
           <div class="dosha-card">
             <div class="dosha-icon">&#128293;</div>
             <h4>Pitta</h4>
-            <p>Feuer & Wasser — Zielstrebig, intensiv, fokussiert</p>
+            <p>Feuer & Wasser: Zielstrebig, intensiv, fokussiert</p>
           </div>
           <div class="dosha-card">
             <div class="dosha-icon">&#127967;</div>
             <h4>Kapha</h4>
-            <p>Erde & Wasser — Stabil, geduldig, beständig</p>
+            <p>Erde & Wasser: Stabil, geduldig, beständig</p>
           </div>
         </div>
       </div>
@@ -317,7 +317,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
         <div class="opts">
           <button class="opt" onclick="nxt(2,this,'v')"><strong>Überall ein bisschen, aber nie wirklich viel</strong><span>Mein Gewicht schwankt ständig um 2-3 Kilo, aber ich bin grundsätzlich eher schlank.</span></button>
           <button class="opt" onclick="nxt(2,this,'p')"><strong>Gleichmässig am ganzen Körper, vor allem am Bauch</strong><span>Wenn ich zunehme, sehe ich es zuerst am Bauch und der Taille.</span></button>
-          <button class="opt" onclick="nxt(2,this,'k')"><strong>Hüften, Oberschenkel, Po — die klassischen Problemzonen</strong><span>Mein Unterkörper speichert Fett am schnellsten. Obenrum bin ich schlanker.</span></button>
+          <button class="opt" onclick="nxt(2,this,'k')"><strong>Hüften, Oberschenkel, Po, die klassischen Problemzonen</strong><span>Mein Unterkörper speichert Fett am schnellsten. Obenrum bin ich schlanker.</span></button>
         </div>
       </div>
 
@@ -366,7 +366,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
         <h2>Worauf hast du am ehesten Heisshunger?</h2>
         <div class="opts">
           <button class="opt" onclick="nxt(7,this,'v')"><strong>Knuspriges, Salziges, Kaffee.</strong><span>Chips, Cracker, Kaffee. Ich mag trockene, knusprige Sachen.</span></button>
-          <button class="opt" onclick="nxt(7,this,'p')"><strong>Kaltes, Süsses, Erfrischendes.</strong><span>Eis, Schokolade, kalte Getränke — ich mag kühlende, süsse Sachen.</span></button>
+          <button class="opt" onclick="nxt(7,this,'p')"><strong>Kaltes, Süsses, Erfrischendes.</strong><span>Eis, Schokolade, kalte Getränke, ich mag kühlende, süsse Sachen.</span></button>
           <button class="opt" onclick="nxt(7,this,'k')"><strong>Cremiges, Schweres, Brot & Pasta</strong><span>Käse, Pasta, Brot, Kuchen. Ich liebe herzhafte, schwere Comfort-Foods.</span></button>
         </div>
       </div>
@@ -386,7 +386,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
         <h2>Was beschreibt deine Trainings-Vorlieben am besten?</h2>
         <div class="opts">
           <button class="opt" onclick="nxt(9,this,'v')"><strong>Abwechslung, neue Kurse, Tanz, Yoga.</strong><span>Routine langweilt mich. Ich brauche ständig neue Reize und Bewegungsformen.</span></button>
-          <button class="opt" onclick="nxt(9,this,'p')"><strong>Wettkampf, Challenges, intensives Training.</strong><span>Ich liebe es, meine Grenzen zu pushen. HIIT, Crossfit, Laufen — je intensiver, desto besser.</span></button>
+          <button class="opt" onclick="nxt(9,this,'p')"><strong>Wettkampf, Challenges, intensives Training.</strong><span>Ich liebe es, meine Grenzen zu pushen. HIIT, Crossfit, Laufen, je intensiver, desto besser.</span></button>
           <button class="opt" onclick="nxt(9,this,'k')"><strong>Sanftes, konstantes Training wie Walken.</strong><span>Ich mag gemütliches Training. Zu intensiv demotiviert mich eher.</span></button>
         </div>
       </div>
@@ -438,10 +438,10 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
       <div class="step result" data-s="vata" style="display:none;">
         <span class="result-badge">&#127756; Dein Ergebnis</span>
         <h2>Du bist ein <em style="color:var(--accent);">Vata-Typ</em></h2>
-        <p class="result-type">Luft & Raum — Der kreative Wirbelwind</p>
+        <p class="result-type">Luft & Raum: Der kreative Wirbelwind</p>
         <div class="result-desc">
           <h3>Was bedeutet das für dich?</h3>
-          <p>Dein Körper ist von Bewegung und Veränderung geprägt. Du bist kreativ, energiegeladen in Schüben und liebst Abwechslung. Dein Stoffwechsel ist schnell aber unregelmässig — genau deshalb funktionieren Standard-Diäten bei dir <strong>nicht</strong>.</p>
+          <p>Dein Körper ist von Bewegung und Veränderung geprägt. Du bist kreativ, energiegeladen in Schüben und liebst Abwechslung. Dein Stoffwechsel ist schnell aber unregelmässig, genau deshalb funktionieren Standard-Diäten bei dir <strong>nicht</strong>.</p>
           <p style="margin-top:8px;">Dein Körper braucht <strong>wärmende, nährende Nahrung</strong> und regelmässige Routinen. Kalte Rohkost und Intervallfasten sind Gift für deinen Typ.</p>
         </div>
         <div class="result-grid">
@@ -458,10 +458,10 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
       <div class="step result" data-s="pitta" style="display:none;">
         <span class="result-badge">&#128293; Dein Ergebnis</span>
         <h2>Du bist ein <em style="color:var(--accent);">Pitta-Typ</em></h2>
-        <p class="result-type">Feuer & Wasser — Die ehrgeizige Powerfrau</p>
+        <p class="result-type">Feuer & Wasser: Die ehrgeizige Powerfrau</p>
         <div class="result-desc">
           <h3>Was bedeutet das für dich?</h3>
-          <p>Dein Körper ist von Intensität und Feuer geprägt. Du bist zielstrebig, ehrgeizig und hast einen starken Stoffwechsel. Aber genau dieses Feuer kann sich gegen dich wenden — Übertraining und Stress-Essen sind deine grössten Fallen.</p>
+          <p>Dein Körper ist von Intensität und Feuer geprägt. Du bist zielstrebig, ehrgeizig und hast einen starken Stoffwechsel. Aber genau dieses Feuer kann sich gegen dich wenden, Übertraining und Stress-Essen sind deine grössten Fallen.</p>
           <p style="margin-top:8px;">Dein Körper braucht <strong>kühlende, leichte Nahrung</strong> und genügend Erholungsphasen. Zu scharfes Essen und zu viel HIIT verbrennen dich von innen.</p>
         </div>
         <div class="result-grid">
@@ -478,15 +478,15 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
       <div class="step result" data-s="kapha" style="display:none;">
         <span class="result-badge">&#127967; Dein Ergebnis</span>
         <h2>Du bist ein <em style="color:var(--accent);">Kapha-Typ</em></h2>
-        <p class="result-type">Erde & Wasser — Die geduldige Beständige</p>
+        <p class="result-type">Erde & Wasser: Die geduldige Beständige</p>
         <div class="result-desc">
           <h3>Was bedeutet das für dich?</h3>
-          <p>Dein Körper ist stabil, stark und beständig. Du hast Ausdauer und Geduld — aber dein Stoffwechsel ist langsam. Das bedeutet: Standard-Kaloriendefizite funktionieren bei dir <strong>kaum</strong>, weil dein Körper sofort in den Sparmodus schaltet.</p>
+          <p>Dein Körper ist stabil, stark und beständig. Du hast Ausdauer und Geduld, aber dein Stoffwechsel ist langsam. Das bedeutet: Standard-Kaloriendefizite funktionieren bei dir <strong>kaum</strong>, weil dein Körper sofort in den Sparmodus schaltet.</p>
           <p style="margin-top:8px;">Dein Körper braucht <strong>leichte, scharfe, warme Nahrung</strong> und aktivierende Bewegung. Schwere Comfort-Foods und zu viel Ruhe verstärken die Trägheit.</p>
         </div>
         <div class="result-grid">
           <div class="result-card"><div class="rc-icon">&#127860;</div><h4>Deine Ernährung</h4><p>Leichte Kost, Ingwer-Tee, gedünstetes Gemüse, Hülsenfrüchte. Wenig Milchprodukte, wenig Weizen, wenig Zucker.</p></div>
-          <div class="result-card"><div class="rc-icon">&#128170;</div><h4>Dein Training</h4><p>Krafttraining, zügiges Walken, Tanzen. Regelmässig und aktivierend — gerade wenn du keine Lust hast!</p></div>
+          <div class="result-card"><div class="rc-icon">&#128170;</div><h4>Dein Training</h4><p>Krafttraining, zügiges Walken, Tanzen. Regelmässig und aktivierend, gerade wenn du keine Lust hast!</p></div>
           <div class="result-card"><div class="rc-icon">&#9203;</div><h4>Dein Timing</h4><p>Leichtes Frühstück oder Intervallfasten (16:8). Hauptmahlzeit mittags. Nichts nach 18 Uhr.</p></div>
           <div class="result-card"><div class="rc-icon">&#9888;</div><h4>Grösster Fehler</h4><p>Zu viel Käse, Brot, Pasta. Zu wenig Bewegung. Zu spät essen. Das verlangsamt deinen bereits trägen Stoffwechsel.</p></div>
         </div>
@@ -581,7 +581,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
       btn.textContent = 'Wird ausgewertet...';
 
       var dosha = getDosha();
-      tk('lead_submit', { detail: fn + ' — ' + dosha });
+      tk('lead_submit', { detail: fn + ' - ' + dosha });
 
       // Lead an Google Sheets senden
       fetch('/api/sheets', {
@@ -605,7 +605,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
     }
   </script>
 
-  {/* Hyros als First-Party-Attribution essentiell — laedt ohne Consent */}
+  {/* Hyros als First-Party-Attribution essentiell  -  laedt ohne Consent */}
   <script is:inline src="https://t.hyros.com/v1/lst/universal-script?ph=689a71ca1ab3be1cb1caddbe6b7902a4ad2c51a228f4ec9ea7fef3123a705f63"></script>
 
   <CookieBanner
