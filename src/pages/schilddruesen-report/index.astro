@@ -578,10 +578,10 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
         <h2>Dein Report ist fertig</h2>
         <p class="sub">Wohin sollen wir ihn schicken?</p>
         <div class="fields">
-          <div class="field"><span class="ic">&#128100;</span><input type="text" id="fn" placeholder="Vorname" /></div>
-          <div class="field"><span class="ic">&#128100;</span><input type="text" id="ln" placeholder="Nachname" /></div>
-          <div class="field"><span class="ic">&#9993;</span><input type="email" id="em" placeholder="E-Mail Adresse" /></div>
-          <div class="field"><span class="ic">&#128222;</span><span class="pre">+41</span><input type="tel" id="ph" placeholder="Telefonnummer" /></div>
+          <div class="field"><span class="ic">&#128100;</span><input type="text" id="fn" placeholder="Vorname" required /></div>
+          <div class="field"><span class="ic">&#128100;</span><input type="text" id="ln" placeholder="Nachname" required /></div>
+          <div class="field"><span class="ic">&#9993;</span><input type="email" id="em" placeholder="E-Mail Adresse" required /></div>
+          <div class="field"><span class="ic">&#128222;</span><span class="pre">+41</span><input type="tel" id="ph" placeholder="Telefonnummer" required /></div>
         </div>
         <div class="cb-row">
           <input type="checkbox" id="ds" />
@@ -692,9 +692,13 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
       var ln = document.getElementById('ln').value.trim();
       var em = document.getElementById('em').value.trim();
       var ph = document.getElementById('ph').value.trim();
-      if (!fn || !em) {
-        if (!fn) document.getElementById('fn').parentElement.style.borderColor = 'var(--accent)';
-        if (!em) document.getElementById('em').parentElement.style.borderColor = 'var(--accent)';
+      var missing = [];
+      if (!fn) missing.push('fn');
+      if (!ln) missing.push('ln');
+      if (!em) missing.push('em');
+      if (!ph) missing.push('ph');
+      if (missing.length) {
+        missing.forEach(function(id){ document.getElementById(id).parentElement.style.borderColor = 'var(--accent)'; });
         return;
       }
       var btn = document.getElementById('sbtn');

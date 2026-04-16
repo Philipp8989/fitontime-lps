@@ -8,8 +8,8 @@ export const POST: APIRoute = async ({ request }) => {
   try {
     const data = await request.json();
 
-    if (!data.name || !data.email) {
-      return new Response(JSON.stringify({ error: 'Name und E-Mail sind Pflicht' }), {
+    if (!data.name || !data.email || !data.phone) {
+      return new Response(JSON.stringify({ error: 'Name, E-Mail und Telefon sind Pflicht' }), {
         status: 400,
         headers: { 'Content-Type': 'application/json' },
       });
