@@ -1,0 +1,515 @@
+---
+// Stoffwechsel-Profil Quiz — Metabolischer Körpertyp-Test
+// Importiert von: fit-on-time.ch/stoffwechsel-test/
+// CRO: Progress-Bar, Social Proof, Urgency, elegantes Design
+import CookieBanner from '../../components/CookieBanner.astro';
+const impressumUrl = 'https://fitontime.ch/impressum-datenschutz';
+const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
+---
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Dein Stoffwechsel-Profil in 60 Sekunden | Fit on Time</title>
+  <link rel="icon" type="image/png" href="/images/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <style is:global>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #fafaf8;
+      --surface: #f0ebe0;
+      --surface-2: #e5dfd2;
+      --accent: #2b7de9;
+      --accent-dark: #1a5bb8;
+      --green: #22c55e;
+      --amber: #f59e0b;
+      --red: #ef4444;
+      --text: #1a1a1a;
+      --text-2: #4a4a4a;
+      --text-3: #888;
+      --r: 14px;
+      --font: 'DM Sans', system-ui, -apple-system, sans-serif;
+    }
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+    body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.5; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    .wrap { max-width: 720px; margin: 0 auto; padding: 0 20px; }
+
+    /* Logo */
+    .logo { text-align: center; padding: 16px 0 8px; }
+    .logo img { height: 40px; }
+
+    /* Hero */
+    .hero { text-align: center; padding: 16px 0 20px; }
+    .hero h1 { font-size: 26px; font-weight: 800; line-height: 1.25; letter-spacing: -0.5px; margin-bottom: 12px; }
+    .hero h1 em { font-style: normal; color: var(--accent); }
+    .hero .sub { font-size: 15px; color: var(--text-2); margin-bottom: 8px; line-height: 1.5; }
+    .hero .sub strong { color: var(--text); font-weight: 600; }
+    .hero .time-hint { font-size: 13px; color: var(--accent); font-weight: 600; margin-bottom: 12px; }
+
+    /* Proof Bar */
+    .proof-bar { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 0; margin-bottom: 8px; }
+    .proof-avatars { display: flex; }
+    .proof-avatars img { width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--bg); margin-left: -8px; object-fit: cover; }
+    .proof-avatars img:first-child { margin-left: 0; }
+    .proof-info { font-size: 12px; color: var(--text-3); line-height: 1.3; }
+    .proof-info b { color: var(--text); }
+    .proof-stars { color: var(--amber); font-size: 12px; letter-spacing: 1px; }
+
+    /* Benefit-Liste */
+    .benefit-list { text-align: left; margin: 16px auto; max-width: 480px; }
+    .benefit-item { display: flex; align-items: center; gap: 10px; padding: 8px 0; font-size: 14px; color: var(--text-2); }
+    .benefit-item .ic { color: var(--green); font-size: 16px; flex-shrink: 0; }
+
+    /* CTA Button auf LP */
+    .cta-btn { display: block; width: 100%; max-width: 480px; margin: 20px auto 0; background: var(--accent); color: #fff; font-family: var(--font); font-size: 17px; font-weight: 700; padding: 18px; border: none; border-radius: 12px; cursor: pointer; transition: all 0.2s; text-align: center; }
+    .cta-btn:hover { background: var(--accent-dark); }
+    .cta-btn:active { opacity: 0.85; }
+    .cta-sub { text-align: center; font-size: 12px; color: var(--text-3); margin-top: 8px; }
+
+    /* Divider */
+    .divider { width: 40px; height: 2px; background: var(--accent); margin: 24px auto; opacity: 0.3; }
+
+    /* Footer */
+    footer { text-align: center; padding: 20px; font-size: 11px; color: var(--text-3); border-top: 1px solid #e8e4da; }
+    footer a { color: var(--text-3); text-decoration: none; }
+
+    /* ===== QUIZ ===== */
+    #quiz { display: none; position: fixed; inset: 0; background: var(--bg); z-index: 100; flex-direction: column; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+    #quiz.on { display: flex; }
+    .q-head { display: flex; align-items: center; justify-content: center; padding: 14px 20px; border-bottom: 1px solid #e8e4da; position: sticky; top: 0; background: var(--bg); z-index: 10; }
+    .q-head img { height: 32px; }
+    .q-progress { padding: 12px 20px 0; max-width: 600px; margin: 0 auto; width: 100%; position: sticky; top: 57px; background: var(--bg); z-index: 10; }
+    .q-bar { height: 6px; background: #e8e4da; border-radius: 3px; overflow: hidden; }
+    .q-fill { height: 100%; background: var(--accent); border-radius: 3px; transition: width 0.4s ease; width: 0%; }
+    .q-num { font-size: 12px; color: var(--text-3); text-align: right; margin-top: 4px; font-weight: 500; }
+    .q-body { flex: 1; display: flex; align-items: flex-start; justify-content: center; padding: 40px 20px; }
+
+    .step { display: none; max-width: 600px; width: 100%; animation: up 0.3s ease; }
+    .step.on { display: block; }
+    @keyframes up { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+    .step h2 { font-size: 22px; font-weight: 800; text-align: center; margin-bottom: 24px; line-height: 1.3; letter-spacing: -0.3px; }
+    .opts { display: flex; flex-direction: column; gap: 10px; }
+    .opt { background: var(--surface); border: 2px solid transparent; border-radius: 12px; padding: 16px 18px; font-size: 15px; font-weight: 500; color: var(--text); cursor: pointer; transition: all 0.2s; font-family: var(--font); -webkit-tap-highlight-color: transparent; text-align: left; }
+    .opt:hover { border-color: var(--accent); background: #fff; }
+    .opt:active { transform: scale(0.98); border-color: var(--accent); }
+    .opt strong { display: block; font-weight: 700; margin-bottom: 2px; }
+    .opt span { font-size: 13px; color: var(--text-2); }
+
+    /* Loading */
+    .ld { text-align: center; }
+    .spinner { width: 56px; height: 56px; border: 3px solid #e8e4da; border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 20px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .ld h2 { font-size: 18px; margin-bottom: 6px; }
+    .ld p { font-size: 14px; color: var(--text-2); margin-bottom: 20px; }
+    .checks { text-align: left; max-width: 280px; margin: 0 auto; }
+    .chk { display: flex; align-items: center; gap: 10px; padding: 6px 0; font-size: 14px; color: var(--text-2); opacity: 0; transition: opacity 0.3s; }
+    .chk.show { opacity: 1; }
+    .chk i { width: 20px; height: 20px; border-radius: 50%; background: var(--green); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 11px; font-style: normal; font-weight: 700; flex-shrink: 0; }
+
+    /* Formular */
+    .form { text-align: center; }
+    .form .tag { font-size: 13px; font-weight: 600; color: var(--green); margin-bottom: 6px; }
+    .form h2 { font-size: 22px; font-weight: 800; margin-bottom: 6px; }
+    .form .sub { font-size: 14px; color: var(--text-2); margin-bottom: 20px; }
+    .fields { display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px; max-width: 440px; margin-left: auto; margin-right: auto; }
+    .field { background: #fff; border: 2px solid #e8e4da; border-radius: 12px; padding: 0 14px; display: flex; align-items: center; gap: 10px; transition: border-color 0.2s; }
+    .field:focus-within { border-color: var(--accent); }
+    .field .ic { font-size: 16px; flex-shrink: 0; opacity: 0.5; }
+    .field input { flex: 1; background: transparent; border: none; outline: none; color: var(--text); font-family: var(--font); font-size: 15px; padding: 14px 0; }
+    .field input::placeholder { color: var(--text-3); }
+    .field .pre { font-size: 14px; color: var(--text-3); flex-shrink: 0; }
+    .cb-row { display: flex; align-items: flex-start; gap: 8px; margin: 0 auto 16px; text-align: left; max-width: 440px; }
+    .cb-row input[type="checkbox"] { accent-color: var(--accent); width: 16px; height: 16px; margin-top: 2px; flex-shrink: 0; }
+    .cb-row label { font-size: 11px; color: var(--text-3); line-height: 1.4; }
+    .cb-row label a { color: var(--text-2); }
+    .submit { display: block; width: 100%; max-width: 440px; margin: 0 auto; background: var(--accent); color: #fff; font-family: var(--font); font-size: 16px; font-weight: 700; padding: 16px; border: none; border-radius: 12px; cursor: pointer; transition: all 0.2s; }
+    .submit:disabled { opacity: 0.4; cursor: not-allowed; }
+    .submit:not(:disabled):hover { background: var(--accent-dark); }
+    .submit:not(:disabled):active { opacity: 0.85; }
+    .form-proof { margin-top: 16px; padding-top: 16px; border-top: 1px solid #e8e4da; max-width: 440px; margin-left: auto; margin-right: auto; }
+    .form-proof .fp-row { display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 11px; color: var(--text-3); margin-bottom: 4px; }
+    .form-proof .fp-row b { color: var(--text-2); }
+
+    /* ===== ERGEBNIS-SEITE ===== */
+    .result { text-align: center; max-width: 600px; width: 100%; padding-bottom: 40px; }
+    .result-badge { display: inline-block; background: rgba(43,125,233,0.1); color: var(--accent); font-size: 12px; font-weight: 700; padding: 4px 14px; border-radius: 20px; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .result h2 { font-size: 26px; font-weight: 800; margin-bottom: 8px; }
+    .result .result-type { font-size: 18px; color: var(--accent); font-weight: 700; margin-bottom: 16px; }
+    .result .result-desc { font-size: 14px; color: var(--text-2); line-height: 1.6; text-align: left; margin-bottom: 20px; padding: 16px; background: #fff; border-radius: var(--r); border: 1px solid #e8e4da; }
+    .result .result-desc h3 { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 8px; text-align: center; }
+    .result-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; text-align: left; }
+    .result-card { background: #fff; border-radius: 12px; padding: 14px; border: 1px solid #e8e4da; }
+    .result-card .rc-icon { font-size: 20px; margin-bottom: 6px; }
+    .result-card h4 { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+    .result-card p { font-size: 12px; color: var(--text-2); line-height: 1.4; }
+    .result-cta { background: var(--accent); color: #fff; font-family: var(--font); font-size: 16px; font-weight: 700; padding: 16px 32px; border: none; border-radius: 12px; cursor: pointer; display: block; width: 100%; text-decoration: none; text-align: center; transition: background 0.2s; margin-bottom: 8px; }
+    .result-cta:hover { background: var(--accent-dark); }
+    .result-spots { font-size: 11px; color: var(--amber); font-weight: 600; }
+
+    /* Desktop */
+    @media (min-width: 600px) {
+      .hero h1 { font-size: 38px; }
+      .hero .sub { font-size: 17px; }
+      .step h2 { font-size: 28px; }
+      .opts { display: grid; grid-template-columns: 1fr; gap: 12px; }
+      .opt { font-size: 16px; padding: 18px 20px; }
+      .result h2 { font-size: 32px; }
+    }
+    @media (min-width: 900px) {
+      .hero h1 { font-size: 44px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== LANDING ===== -->
+  <div id="lp">
+    <div class="wrap">
+      <div class="logo"><img src="/images/logo.png" alt="Fit on Time" /></div>
+
+      <section class="hero">
+        <h1>Was wäre, wenn Abnehmen endlich zu deinem Leben passt — und <em>nicht umgekehrt?</em></h1>
+        <p class="sub">Mit nur <strong>7 kurzen Fragen</strong> erfährst du, wie du deinem natürlichen Körpertyp folgst. Für nachhaltiges Abnehmen ohne quälende Diäten, ohne ständigen Verzicht, ohne Zeitfresser.</p>
+        <p class="time-hint">&#9201; In 60 Sekunden weisst du, ob unser individueller Ansatz genau für deinen Körper und deinen Alltag gemacht ist.</p>
+
+        <div class="proof-bar">
+          <div class="proof-avatars">
+            <img src="https://images.unsplash.com/photo-1594744803329-e58b31de8bf5?w=56&h=56&fit=crop&crop=face&q=80" alt="" />
+            <img src="https://images.unsplash.com/photo-1628869503963-6ce8de674c58?w=56&h=56&fit=crop&crop=face&q=80" alt="" />
+            <img src="https://images.unsplash.com/photo-1607962837359-5e7e89f86776?w=56&h=56&fit=crop&crop=face&q=80" alt="" />
+            <img src="https://images.unsplash.com/photo-1519834785169-98be25ec3f84?w=56&h=56&fit=crop&crop=face&q=80" alt="" />
+          </div>
+          <div class="proof-info">
+            <div class="proof-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            <b>5.000+</b> Teilnehmer &mdash; <b>1.600</b> halten ihr Wunschgewicht
+          </div>
+        </div>
+
+        <!-- Benefit-Bullets -->
+        <div class="benefit-list">
+          <div class="benefit-item"><span class="ic">&#10003;</span><span>Endlich essen ohne schlechtes Gewissen</span></div>
+          <div class="benefit-item"><span class="ic">&#10003;</span><span>Dein Wunschgewicht halten</span></div>
+          <div class="benefit-item"><span class="ic">&#10003;</span><span>Weniger Zeit für Pläne, mehr Zeit für dich</span></div>
+          <div class="benefit-item"><span class="ic">&#10003;</span><span>Dauerhaft schlank, ohne den Jojo-Effekt</span></div>
+        </div>
+
+        <button class="cta-btn" onclick="startQuiz()">Jetzt Stoffwechsel-Profil entdecken &#10024;</button>
+        <p class="cta-sub">&#128274; Kostenlos &middot; Keine Anmeldung nötig &middot; Ergebnis sofort</p>
+      </section>
+
+      <div class="divider"></div>
+
+      <footer>
+        <a href={impressumUrl} target="_blank" rel="noopener">Impressum</a> &middot;
+        <a href={datenschutzUrl} target="_blank" rel="noopener">Datenschutzerklärung</a>
+      </footer>
+    </div>
+  </div>
+
+  <!-- ===== QUIZ ===== -->
+  <div id="quiz">
+    <div class="q-head"><img src="/images/logo.png" alt="Fit on Time" /></div>
+    <div class="q-progress"><div class="q-bar"><div class="q-fill" id="qf"></div></div><div class="q-num" id="qn">1 / 7</div></div>
+    <div class="q-body">
+
+      <!-- Frage 1: Körperbau -->
+      <div class="step on" data-s="1">
+        <h2>Welcher Körperbau beschreibt dich am besten?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(1,this,'ecto')"><strong>Schlank &amp; zierlich</strong><span>Schmale Schultern, nehme schwer zu, verliere schnell Gewicht.</span></button>
+          <button class="opt" onclick="nxt(1,this,'meso')"><strong>Mittel &amp; athletisch</strong><span>Ausgewogene Proportionen, baue leicht Muskeln auf.</span></button>
+          <button class="opt" onclick="nxt(1,this,'endo')"><strong>Kräftiger Bau</strong><span>Breitere Hüften, nehme leicht zu, vor allem an Bauch und Hüfte.</span></button>
+        </div>
+      </div>
+
+      <!-- Frage 2: Grösstes Problem -->
+      <div class="step" data-s="2">
+        <h2>Was ist dein grösstes Problem beim Abnehmen?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(2,this,'jojo')"><strong>Jojo-Effekt</strong><span>Ich nehme ab, dann wieder zu — ein endloser Kreislauf.</span></button>
+          <button class="opt" onclick="nxt(2,this,'hunger')"><strong>Heisshunger</strong><span>Plötzliche Essattacken sabotieren jeden Fortschritt.</span></button>
+          <button class="opt" onclick="nxt(2,this,'sport')"><strong>Keine Resultate trotz Sport</strong><span>Ich bewege mich viel, aber auf der Waage tut sich nichts.</span></button>
+          <button class="opt" onclick="nxt(2,this,'moti')"><strong>Motivation</strong><span>Ich starte motiviert, gebe aber nach wenigen Wochen auf.</span></button>
+        </div>
+      </div>
+
+      <!-- Frage 3: Energielevel -->
+      <div class="step" data-s="3">
+        <h2>Wie würdest du dein Energielevel beschreiben?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(3,this,'schwankend')"><strong>Schwankend</strong><span>Mal super energiegeladen, dann komplett platt.</span></button>
+          <button class="opt" onclick="nxt(3,this,'hoch')"><strong>Konstant hoch</strong><span>Ich habe meistens genug Energie für den Tag.</span></button>
+          <button class="opt" onclick="nxt(3,this,'niedrig')"><strong>Eher niedrig</strong><span>Ich fühle mich oft müde und schlapp.</span></button>
+        </div>
+      </div>
+
+      <!-- Frage 4: Mahlzeiten -->
+      <div class="step" data-s="4">
+        <h2>Wie oft isst du pro Tag?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(4,this,'1-2')"><strong>1&ndash;2 Mahlzeiten</strong><span>Ich esse selten frühstücke und komme mit wenig Mahlzeiten aus.</span></button>
+          <button class="opt" onclick="nxt(4,this,'3')"><strong>3 Mahlzeiten</strong><span>Frühstück, Mittag, Abendessen — relativ regelmässig.</span></button>
+          <button class="opt" onclick="nxt(4,this,'3+')"><strong>Mehr als 3</strong><span>Ich snacke zwischendurch oder esse häufig kleine Portionen.</span></button>
+          <button class="opt" onclick="nxt(4,this,'unreg')"><strong>Unregelmässig</strong><span>Mal viel, mal gar nichts — kein festes Muster.</span></button>
+        </div>
+      </div>
+
+      <!-- Frage 5: Alltag -->
+      <div class="step" data-s="5">
+        <h2>Was beschreibt deinen Alltag?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(5,this,'sitzend')"><strong>Sitzend (Büro)</strong><span>Ich verbringe den Grossteil des Tages im Sitzen.</span></button>
+          <button class="opt" onclick="nxt(5,this,'maessig')"><strong>Mässig aktiv</strong><span>Ich bewege mich regelmässig, aber nicht täglich intensiv.</span></button>
+          <button class="opt" onclick="nxt(5,this,'aktiv')"><strong>Sehr aktiv</strong><span>Ich bin fast jeden Tag körperlich aktiv.</span></button>
+        </div>
+      </div>
+
+      <!-- Frage 6: Wasser -->
+      <div class="step" data-s="6">
+        <h2>Wie viel Wasser trinkst du täglich?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(6,this,'wenig')"><strong>Weniger als 1 Liter</strong><span>Ich vergesse oft zu trinken.</span></button>
+          <button class="opt" onclick="nxt(6,this,'mittel')"><strong>1&ndash;2 Liter</strong><span>Ich trinke regelmässig, aber nicht übermässig.</span></button>
+          <button class="opt" onclick="nxt(6,this,'viel')"><strong>Mehr als 2 Liter</strong><span>Ich achte bewusst darauf, viel zu trinken.</span></button>
+        </div>
+      </div>
+
+      <!-- Frage 7: Ziel -->
+      <div class="step" data-s="7">
+        <h2>Was ist dein Ziel in den nächsten 3 Monaten?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(7,this,'3-5')"><strong>3&ndash;5 kg verlieren</strong><span>Feinschliff — die letzten hartnäckigen Kilos.</span></button>
+          <button class="opt" onclick="nxt(7,this,'6-10')"><strong>6&ndash;10 kg verlieren</strong><span>Deutlich sichtbare Veränderung am Körper.</span></button>
+          <button class="opt" onclick="nxt(7,this,'10+')"><strong>Mehr als 10 kg</strong><span>Eine echte Transformation, die alles verändert.</span></button>
+          <button class="opt" onclick="nxt(7,this,'fitter')"><strong>Einfach fitter werden</strong><span>Mehr Energie, besseres Körpergefühl.</span></button>
+        </div>
+      </div>
+
+      <!-- Loading -->
+      <div class="step ld" data-s="ld">
+        <div class="spinner"></div>
+        <h2>Dein Stoffwechsel-Profil wird erstellt...</h2>
+        <p>Das dauert nur ein paar Sekunden</p>
+        <div class="checks">
+          <div class="chk" id="c1"><i>&#10003;</i>Antworten analysiert</div>
+          <div class="chk" id="c2"><i>&#10003;</i>Stoffwechsel-Typ bestimmt</div>
+          <div class="chk" id="c3"><i>&#10003;</i>Persönliche Empfehlung erstellt</div>
+        </div>
+      </div>
+
+      <!-- Formular (Opt-in) -->
+      <div class="step form" data-s="form">
+        <div class="tag">&#10003; Geschafft!</div>
+        <h2>Dein Stoffwechsel-Profil ist fertig.</h2>
+        <p class="sub">Trage dich ein, um dein persönliches Ergebnis und deinen individuellen Ernährungsansatz zu erhalten.</p>
+        <div class="fields">
+          <div class="field"><span class="ic">&#128075;</span><input type="text" id="fn" placeholder="Dein Vor- und Nachname" required /></div>
+          <div class="field"><span class="ic">&#128236;</span><input type="email" id="em" placeholder="Deine E-Mail" required /></div>
+          <div class="field"><span class="ic">&#128222;</span><span class="pre">+49</span><input type="tel" id="ph" placeholder="Deine Telefonnummer" required /></div>
+        </div>
+        <div class="cb-row">
+          <input type="checkbox" id="ds" />
+          <label for="ds">Ich akzeptiere die <a href={datenschutzUrl} target="_blank">Datenschutzbestimmungen</a></label>
+        </div>
+        <button class="submit" id="sbtn" disabled onclick="send()">Jetzt Ergebnis erfahren! &#10024;</button>
+        <div class="form-proof">
+          <div class="fp-row"><span>&#128274;</span> Deine Daten sind sicher &amp; werden nicht weitergegeben</div>
+          <div class="fp-row"><span class="proof-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span> <b>5.000+</b> zufriedene Teilnehmer</div>
+        </div>
+      </div>
+
+      <!-- Ergebnis: Einheitliche Ergebnisseite -->
+      <div class="step result" data-s="result" style="display:none;">
+        <span class="result-badge">&#9889; Dein Ergebnis</span>
+        <h2>Dein Stoffwechsel-Profil ist erstellt</h2>
+        <p class="result-type" id="result-title"></p>
+        <div class="result-desc">
+          <h3>Was dein Profil über dich verrät</h3>
+          <p id="result-summary"></p>
+          <p style="margin-top:8px;" id="result-approach"></p>
+        </div>
+        <div class="result-grid">
+          <div class="result-card"><div class="rc-icon">&#127860;</div><h4>Ernährung</h4><p id="rc-food"></p></div>
+          <div class="result-card"><div class="rc-icon">&#128170;</div><h4>Bewegung</h4><p id="rc-move"></p></div>
+          <div class="result-card"><div class="rc-icon">&#9203;</div><h4>Timing</h4><p id="rc-time"></p></div>
+          <div class="result-card"><div class="rc-icon">&#9888;</div><h4>Grösster Fehler</h4><p id="rc-mistake"></p></div>
+        </div>
+        <a href="https://fitontime.ch" class="result-cta" id="result-cta-btn">Jetzt kostenloses Beratungsgespräch buchen</a>
+        <div class="result-spots">&#128293; Nur noch wenige Plätze diese Woche</div>
+      </div>
+
+    </div>
+  </div>
+
+  <script is:inline>
+    // Stoffwechsel-Profil Quiz — Antworten-Speicher
+    var quizAnswers = {};
+    var TOTAL = 7;
+
+    // Tracking (gleiches Pattern wie doshatyp)
+    function tk(e, d) {
+      if (window.__lp) {
+        window.__lp.track(e, Object.assign({ page: 'stoffwechsel-test' }, d || {}), 'fot', 'Stoffwechsel-Profil Quiz');
+      }
+      if (window.__lp) {
+        if (e === 'quiz_start') window.__lp.meta('ViewContent', { content_name: 'Stoffwechsel Quiz Start', currency: 'EUR' });
+        if (e === 'quiz_complete') window.__lp.meta('CompleteRegistration', { content_name: 'Stoffwechsel Quiz Complete', currency: 'EUR' });
+        if (e === 'lead_submit') window.__lp.meta('Lead', { content_name: 'Stoffwechsel Lead', currency: 'EUR' });
+      }
+    }
+    tk('page_view');
+
+    function startQuiz() {
+      tk('quiz_start');
+      document.getElementById('lp').style.display = 'none';
+      document.getElementById('quiz').classList.add('on');
+    }
+
+    function nxt(s, el, val) {
+      quizAnswers['q' + s] = el ? el.querySelector('strong').textContent.trim() : '';
+      quizAnswers['q' + s + '_val'] = val;
+      tk('quiz_answer', { detail: 'q' + s + '_' + val });
+
+      document.querySelector('.step[data-s="' + s + '"]').classList.remove('on');
+      if (s < TOTAL) {
+        document.querySelector('.step[data-s="' + (s + 1) + '"]').classList.add('on');
+        var p = Math.round(((s) / TOTAL) * 100);
+        document.getElementById('qf').style.width = p + '%';
+        document.getElementById('qn').textContent = (s + 1) + ' / ' + TOTAL;
+      } else {
+        tk('quiz_complete');
+        load();
+      }
+    }
+
+    function load() {
+      var ld = document.querySelector('.step[data-s="ld"]');
+      ld.classList.add('on');
+      document.getElementById('qf').style.width = '100%';
+      document.getElementById('qn').textContent = 'Auswertung...';
+      setTimeout(function(){ document.getElementById('c1').classList.add('show'); }, 600);
+      setTimeout(function(){ document.getElementById('c2').classList.add('show'); }, 1400);
+      setTimeout(function(){ document.getElementById('c3').classList.add('show'); }, 2200);
+      setTimeout(function(){
+        ld.classList.remove('on');
+        document.querySelector('.step[data-s="form"]').classList.add('on');
+        document.getElementById('qn').textContent = 'Fast fertig';
+      }, 3200);
+    }
+
+    // Profil-Ergebnis basierend auf Antworten generieren
+    function getProfile() {
+      var body = quizAnswers.q1_val || 'meso';
+      var problem = quizAnswers.q2_val || 'jojo';
+      var energy = quizAnswers.q3_val || 'schwankend';
+      var goal = quizAnswers.q7_val || '6-10';
+
+      // Profil-Daten je nach Körperbau + individuellen Faktoren
+      var profiles = {
+        ecto: {
+          title: 'Schneller Stoffwechsel — Der Verbrennungstyp',
+          summary: 'Dein Stoffwechsel arbeitet schnell, verbrennt aber oft die falschen Energiequellen. Du nimmst zwar nicht leicht zu, aber wenn du abnehmen willst, verlierst du häufig Muskeln statt Fett. Dein Körper braucht regelmässige, nährstoffreiche Mahlzeiten, um stabil zu bleiben.',
+          approach: '<strong>Dein individueller Ansatz:</strong> Regelmässige, proteinreiche Mahlzeiten in festen Abständen. Krafttraining statt exzessivem Cardio. So formst du deinen Körper, ohne Energie zu verlieren.',
+          food: 'Proteinreiche Mahlzeiten, komplexe Kohlenhydrate, gesunde Fette. Nie eine Mahlzeit auslassen.',
+          move: 'Krafttraining 3x pro Woche, leichtes Cardio. Zu viel Ausdauer verbrennt wertvolle Muskelmasse.',
+          time: '3 Hauptmahlzeiten + 2 Snacks. Frühstück innerhalb von 30 Minuten nach dem Aufstehen.',
+          mistake: 'Mahlzeiten auslassen oder nur Salat essen. Dein Körper schaltet in den Sparmodus und hält an jeder Kalorie fest.'
+        },
+        meso: {
+          title: 'Ausgewogener Stoffwechsel — Der Allrounder',
+          summary: 'Dein Körper reagiert gut auf Training und Ernährungsumstellungen. Du baust leicht Muskeln auf und kannst auch abnehmen — wenn du den richtigen Reiz setzt. Dein Problem ist oft nicht der Körper, sondern die Konstanz.',
+          approach: '<strong>Dein individueller Ansatz:</strong> Strukturierte Trainingseinheiten kombiniert mit ausgewogener Ernährung. Dein Körper belohnt Disziplin schneller als bei anderen Typen — das ist dein Vorteil.',
+          food: 'Ausgewogene Makros: 40% Kohlenhydrate, 30% Protein, 30% Fett. Viel Gemüse und magere Proteinquellen.',
+          move: 'Mix aus Kraft und Cardio. HIIT-Einheiten 2x, Krafttraining 2-3x pro Woche.',
+          time: '3 feste Mahlzeiten, optional 1 Protein-Snack nach dem Training. Abends leichter essen.',
+          mistake: 'Sich auf natürliche Fitness verlassen und nachlässig werden. Ohne Struktur kommt auch beim Allrounder der Stillstand.'
+        },
+        endo: {
+          title: 'Langsamer Stoffwechsel — Der Speichertyp',
+          summary: 'Dein Körper speichert Energie besonders effizient — evolutionär ein Vorteil, heute eine Herausforderung. Standard-Diäten mit Kaloriendefizit funktionieren bei dir kaum, weil dein Körper sofort in den Sparmodus schaltet und jede Kalorie festhält.',
+          approach: '<strong>Dein individueller Ansatz:</strong> Statt weniger essen, anders essen. Stoffwechselaktivierende Lebensmittel, strategisches Timing und die richtige Bewegung bringen deinen trägen Metabolismus auf Touren.',
+          food: 'Leichte, warme Kost. Viel Gemüse, Hülsenfrüchte, Ingwer-Tee. Wenig Weizen, Zucker und Milchprodukte.',
+          move: 'Tägliche Bewegung ist Pflicht. Krafttraining + zügiges Walken. Gerade dann trainieren, wenn die Motivation fehlt.',
+          time: 'Leichtes Frühstück oder 16:8-Fasten. Hauptmahlzeit mittags. Nichts nach 18 Uhr — dein Stoffwechsel schläft abends ein.',
+          mistake: 'Zu wenig essen und sich kaum bewegen. Crash-Diäten verlangsamen deinen Stoffwechsel nur noch weiter.'
+        }
+      };
+
+      var p = profiles[body] || profiles.meso;
+
+      // Personalisierung anhand Problem + Ziel
+      if (problem === 'hunger') {
+        p.summary += ' Dein Hauptproblem — Heisshunger — deutet auf schwankenden Blutzucker hin. Das lässt sich mit dem richtigen Mahlzeiten-Timing lösen.';
+      } else if (problem === 'jojo') {
+        p.summary += ' Der Jojo-Effekt zeigt, dass bisherige Ansätze deinen Stoffwechsel nicht respektiert haben. Unser Ansatz setzt genau da an.';
+      } else if (problem === 'sport') {
+        p.summary += ' Wenn trotz Sport nichts passiert, stimmt oft das Verhältnis zwischen Training und Ernährung nicht. Genau das optimieren wir.';
+      }
+
+      return p;
+    }
+
+    document.getElementById('ds').addEventListener('change', function() {
+      document.getElementById('sbtn').disabled = !this.checked;
+    });
+
+    function send() {
+      var fn = document.getElementById('fn').value.trim();
+      var em = document.getElementById('em').value.trim();
+      var ph = document.getElementById('ph').value.trim();
+      if (!fn || !em || !ph) {
+        if (!fn) document.getElementById('fn').parentElement.style.borderColor = 'var(--red)';
+        if (!em) document.getElementById('em').parentElement.style.borderColor = 'var(--red)';
+        if (!ph) document.getElementById('ph').parentElement.style.borderColor = 'var(--red)';
+        return;
+      }
+      var btn = document.getElementById('sbtn');
+      btn.disabled = true;
+      btn.textContent = 'Wird ausgewertet...';
+
+      var profile = getProfile();
+      tk('lead_submit', { detail: fn + ' — ' + (quizAnswers.q1_val || 'unknown') });
+
+      // Lead an Google Sheets senden
+      fetch('/api/sheets', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: fn,
+          email: em,
+          phone: ph ? '+49' + ph : '',
+          answers: Object.assign({}, quizAnswers, { profile_type: quizAnswers.q1_val })
+        })
+      }).catch(function(){});
+
+      setTimeout(function(){
+        // Ergebnis-Seite befüllen
+        document.getElementById('result-title').textContent = profile.title;
+        document.getElementById('result-summary').textContent = profile.summary;
+        document.getElementById('result-approach').innerHTML = profile.approach;
+        document.getElementById('rc-food').textContent = profile.food;
+        document.getElementById('rc-move').textContent = profile.move;
+        document.getElementById('rc-time').textContent = profile.time;
+        document.getElementById('rc-mistake').textContent = profile.mistake;
+
+        document.querySelector('.step[data-s="form"]').classList.remove('on');
+        document.querySelector('.step[data-s="result"]').style.display = 'block';
+        document.querySelector('.step[data-s="result"]').classList.add('on');
+        document.getElementById('qn').textContent = 'Dein Ergebnis';
+        tk('result_shown', { detail: quizAnswers.q1_val });
+      }, 1200);
+    }
+  </script>
+
+  <CookieBanner
+    metaPixelId="1349136525891811"
+    consentKey="fot_stoffwechsel_consent"
+    impressumUrl={impressumUrl}
+    datenschutzUrl={datenschutzUrl}
+  />
+</body>
+</html>

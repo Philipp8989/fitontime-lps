@@ -1,0 +1,615 @@
+---
+// Doshatyp-Quiz — Ayurveda Körpertyp-Quiz (Vata/Pitta/Kapha)
+// Importiert von: fit-on-time.ch/doshatyp/
+// CRO-Verbesserungen: Progress-Bar, Social Proof, Urgency, schnellere Ladezeiten
+import CookieBanner from '../../components/CookieBanner.astro';
+const impressumUrl = 'https://fitontime.ch/impressum-datenschutz';
+const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
+---
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Welcher Körper-Typ bist du? | Fit on Time</title>
+  <link rel="icon" type="image/png" href="/images/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <style is:global>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #fafaf8;
+      --surface: #f0ebe0;
+      --surface-2: #e5dfd2;
+      --accent: #2b7de9;
+      --accent-dark: #1a5bb8;
+      --green: #22c55e;
+      --amber: #f59e0b;
+      --red: #ef4444;
+      --text: #1a1a1a;
+      --text-2: #4a4a4a;
+      --text-3: #888;
+      --r: 14px;
+      --font: 'DM Sans', system-ui, -apple-system, sans-serif;
+    }
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+    body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.5; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    .wrap { max-width: 720px; margin: 0 auto; padding: 0 20px; }
+
+    /* Logo */
+    .logo { text-align: center; padding: 16px 0 8px; }
+    .logo img { height: 40px; }
+
+    /* Hero */
+    .hero { text-align: center; padding: 16px 0 20px; }
+    .hero h1 { font-size: 26px; font-weight: 800; line-height: 1.25; letter-spacing: -0.5px; margin-bottom: 12px; }
+    .hero h1 em { font-style: normal; color: var(--accent); }
+    .hero .sub { font-size: 15px; color: var(--text-2); margin-bottom: 8px; line-height: 1.5; }
+    .hero .sub strong { color: var(--text); font-weight: 600; }
+
+    /* Proof Bar */
+    .proof-bar { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 0; margin-bottom: 8px; }
+    .proof-avatars { display: flex; }
+    .proof-avatars img { width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--bg); margin-left: -8px; object-fit: cover; }
+    .proof-avatars img:first-child { margin-left: 0; }
+    .proof-info { font-size: 12px; color: var(--text-3); line-height: 1.3; }
+    .proof-info b { color: var(--text); }
+    .proof-stars { color: var(--amber); font-size: 12px; letter-spacing: 1px; }
+
+    /* Gender */
+    .gender-q { font-size: 15px; font-weight: 700; margin-bottom: 14px; }
+    .gender-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; max-width: 500px; margin-left: auto; margin-right: auto; }
+    .g-card { border-radius: var(--r); cursor: pointer; border: 2px solid var(--surface-2); transition: all 0.2s; -webkit-tap-highlight-color: transparent; background: var(--surface); display: flex; flex-direction: column; align-items: center; padding: 20px 16px 16px; gap: 10px; overflow: hidden; }
+    .g-card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(43,125,233,0.15); }
+    .g-card:active { transform: scale(0.97); }
+    .g-card img { width: 100%; max-width: 160px; height: 160px; object-fit: contain; }
+    .g-card .g-label { font-size: 16px; font-weight: 700; }
+
+    /* Info-Liste (was du lernst) */
+    .info-list { text-align: left; margin: 20px auto; max-width: 480px; }
+    .info-list h3 { font-size: 16px; font-weight: 700; margin-bottom: 12px; text-align: center; }
+    .info-item { display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; font-size: 14px; color: var(--text-2); }
+    .info-item .ic { color: var(--green); font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+
+    /* Pain/Problem Section */
+    .pain { background: #fff; border-radius: var(--r); padding: 24px 20px; margin: 20px 0; border: 1px solid #e8e4da; }
+    .pain h2 { font-size: 20px; font-weight: 800; text-align: center; margin-bottom: 6px; }
+    .pain .pain-sub { font-size: 14px; color: var(--text-2); text-align: center; margin-bottom: 16px; line-height: 1.5; }
+    .pain-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+    .pain-list li { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--text-2); padding: 8px 12px; background: #fef2f2; border-radius: 8px; }
+    .pain-list li .ic { color: var(--red); font-size: 14px; }
+
+    /* Dosha Vorschau */
+    .dosha-preview { margin: 24px 0; text-align: center; }
+    .dosha-preview h2 { font-size: 20px; font-weight: 800; margin-bottom: 16px; }
+    .dosha-cards { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+    .dosha-card { background: #fff; border-radius: 12px; padding: 16px 10px; border: 1px solid #e8e4da; text-align: center; }
+    .dosha-card .dosha-icon { font-size: 36px; margin-bottom: 8px; }
+    .dosha-card h4 { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+    .dosha-card p { font-size: 11px; color: var(--text-3); line-height: 1.3; }
+
+    /* Divider */
+    .divider { width: 40px; height: 2px; background: var(--accent); margin: 24px auto; opacity: 0.3; }
+
+    /* Footer */
+    footer { text-align: center; padding: 20px; font-size: 11px; color: var(--text-3); border-top: 1px solid #e8e4da; }
+    footer a { color: var(--text-3); text-decoration: none; }
+
+    /* ===== QUIZ ===== */
+    #quiz { display: none; position: fixed; inset: 0; background: var(--bg); z-index: 100; flex-direction: column; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+    #quiz.on { display: flex; }
+    .q-head { display: flex; align-items: center; justify-content: center; padding: 14px 20px; border-bottom: 1px solid #e8e4da; position: sticky; top: 0; background: var(--bg); z-index: 10; }
+    .q-head img { height: 32px; }
+    .q-progress { padding: 12px 20px 0; max-width: 600px; margin: 0 auto; width: 100%; position: sticky; top: 57px; background: var(--bg); z-index: 10; }
+    .q-bar { height: 6px; background: #e8e4da; border-radius: 3px; overflow: hidden; }
+    .q-fill { height: 100%; background: var(--accent); border-radius: 3px; transition: width 0.4s ease; width: 0%; }
+    .q-num { font-size: 12px; color: var(--text-3); text-align: right; margin-top: 4px; font-weight: 500; }
+    .q-body { flex: 1; display: flex; align-items: flex-start; justify-content: center; padding: 40px 20px; }
+
+    .step { display: none; max-width: 600px; width: 100%; animation: up 0.3s ease; }
+    .step.on { display: block; }
+    @keyframes up { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+    .step h2 { font-size: 22px; font-weight: 800; text-align: center; margin-bottom: 24px; line-height: 1.3; letter-spacing: -0.3px; }
+    .opts { display: flex; flex-direction: column; gap: 10px; }
+    .opt { background: var(--surface); border: 2px solid transparent; border-radius: 12px; padding: 16px 18px; font-size: 15px; font-weight: 500; color: var(--text); cursor: pointer; transition: all 0.2s; font-family: var(--font); -webkit-tap-highlight-color: transparent; text-align: left; }
+    .opt:hover { border-color: var(--accent); background: #fff; }
+    .opt:active { transform: scale(0.98); border-color: var(--accent); }
+    .opt strong { display: block; font-weight: 700; margin-bottom: 2px; }
+    .opt span { font-size: 13px; color: var(--text-2); }
+
+    /* Loading */
+    .ld { text-align: center; }
+    .spinner { width: 56px; height: 56px; border: 3px solid #e8e4da; border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 20px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .ld h2 { font-size: 18px; margin-bottom: 6px; }
+    .ld p { font-size: 14px; color: var(--text-2); margin-bottom: 20px; }
+    .checks { text-align: left; max-width: 280px; margin: 0 auto; }
+    .chk { display: flex; align-items: center; gap: 10px; padding: 6px 0; font-size: 14px; color: var(--text-2); opacity: 0; transition: opacity 0.3s; }
+    .chk.show { opacity: 1; }
+    .chk i { width: 20px; height: 20px; border-radius: 50%; background: var(--green); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 11px; font-style: normal; font-weight: 700; flex-shrink: 0; }
+
+    /* Formular */
+    .form { text-align: center; }
+    .form .tag { font-size: 13px; font-weight: 600; color: var(--green); margin-bottom: 6px; }
+    .form h2 { font-size: 22px; font-weight: 800; margin-bottom: 6px; }
+    .form .sub { font-size: 14px; color: var(--text-2); margin-bottom: 20px; }
+    .fields { display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px; max-width: 440px; margin-left: auto; margin-right: auto; }
+    .field { background: #fff; border: 2px solid #e8e4da; border-radius: 12px; padding: 0 14px; display: flex; align-items: center; gap: 10px; transition: border-color 0.2s; }
+    .field:focus-within { border-color: var(--accent); }
+    .field .ic { font-size: 16px; flex-shrink: 0; opacity: 0.5; }
+    .field input { flex: 1; background: transparent; border: none; outline: none; color: var(--text); font-family: var(--font); font-size: 15px; padding: 14px 0; }
+    .field input::placeholder { color: var(--text-3); }
+    .field .pre { font-size: 14px; color: var(--text-3); flex-shrink: 0; }
+    .cb-row { display: flex; align-items: flex-start; gap: 8px; margin: 0 auto 16px; text-align: left; max-width: 440px; }
+    .cb-row input[type="checkbox"] { accent-color: var(--accent); width: 16px; height: 16px; margin-top: 2px; flex-shrink: 0; }
+    .cb-row label { font-size: 11px; color: var(--text-3); line-height: 1.4; }
+    .cb-row label a { color: var(--text-2); }
+    .submit { display: block; width: 100%; max-width: 440px; margin: 0 auto; background: var(--accent); color: #fff; font-family: var(--font); font-size: 16px; font-weight: 700; padding: 16px; border: none; border-radius: 12px; cursor: pointer; transition: all 0.2s; }
+    .submit:disabled { opacity: 0.4; cursor: not-allowed; }
+    .submit:not(:disabled):hover { background: var(--accent-dark); }
+    .submit:not(:disabled):active { opacity: 0.85; }
+    .form-proof { margin-top: 16px; padding-top: 16px; border-top: 1px solid #e8e4da; max-width: 440px; margin-left: auto; margin-right: auto; }
+    .form-proof .fp-row { display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 11px; color: var(--text-3); margin-bottom: 4px; }
+    .form-proof .fp-row b { color: var(--text-2); }
+
+    /* ===== ERGEBNIS-SEITE ===== */
+    .result { text-align: center; max-width: 600px; width: 100%; padding-bottom: 40px; }
+    .result-badge { display: inline-block; background: rgba(43,125,233,0.1); color: var(--accent); font-size: 12px; font-weight: 700; padding: 4px 14px; border-radius: 20px; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .result h2 { font-size: 26px; font-weight: 800; margin-bottom: 8px; }
+    .result .result-type { font-size: 18px; color: var(--accent); font-weight: 700; margin-bottom: 16px; }
+    .result .result-desc { font-size: 14px; color: var(--text-2); line-height: 1.6; text-align: left; margin-bottom: 20px; padding: 16px; background: #fff; border-radius: var(--r); border: 1px solid #e8e4da; }
+    .result .result-desc h3 { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 8px; text-align: center; }
+    .result-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; text-align: left; }
+    .result-card { background: #fff; border-radius: 12px; padding: 14px; border: 1px solid #e8e4da; }
+    .result-card .rc-icon { font-size: 20px; margin-bottom: 6px; }
+    .result-card h4 { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+    .result-card p { font-size: 12px; color: var(--text-2); line-height: 1.4; }
+    .result-cta { background: var(--accent); color: #fff; font-family: var(--font); font-size: 16px; font-weight: 700; padding: 16px 32px; border: none; border-radius: 12px; cursor: pointer; display: block; width: 100%; text-decoration: none; text-align: center; transition: background 0.2s; margin-bottom: 8px; }
+    .result-cta:hover { background: var(--accent-dark); }
+    .result-spots { font-size: 11px; color: var(--amber); font-weight: 600; }
+
+    /* Desktop */
+    @media (min-width: 600px) {
+      .hero h1 { font-size: 38px; }
+      .hero .sub { font-size: 17px; }
+      .step h2 { font-size: 28px; }
+      .opts { display: grid; grid-template-columns: 1fr; gap: 12px; }
+      .opt { font-size: 16px; padding: 18px 20px; }
+      .result h2 { font-size: 32px; }
+    }
+    @media (min-width: 900px) {
+      .hero h1 { font-size: 44px; }
+      .dosha-cards { gap: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== LANDING ===== -->
+  <div id="lp">
+    <div class="wrap">
+      <div class="logo"><img src="/images/logo.png" alt="Fit on Time" /></div>
+
+      <section class="hero">
+        <h1>Warum 80% aller Diäten scheitern — und was das mit <em>Ayurveda</em> zu tun hat</h1>
+        <p class="sub">Bist du <strong>Vata, Pitta oder Kapha?</strong></p>
+        <p class="sub">Finde in 2 Minuten heraus, warum dein Körper anders auf Ernährung reagiert als der von anderen Frauen — und wie dir diese 5.000 Jahre alte Weisheit endlich beim Abnehmen hilft.</p>
+
+        <div class="proof-bar">
+          <div class="proof-avatars">
+            <img src="https://images.unsplash.com/photo-1594744803329-e58b31de8bf5?w=56&h=56&fit=crop&crop=face&q=80" alt="" />
+            <img src="https://images.unsplash.com/photo-1628869503963-6ce8de674c58?w=56&h=56&fit=crop&crop=face&q=80" alt="" />
+            <img src="https://images.unsplash.com/photo-1607962837359-5e7e89f86776?w=56&h=56&fit=crop&crop=face&q=80" alt="" />
+            <img src="https://images.unsplash.com/photo-1519834785169-98be25ec3f84?w=56&h=56&fit=crop&crop=face&q=80" alt="" />
+          </div>
+          <div class="proof-info">
+            <div class="proof-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            <b>4.200+</b> Frauen haben ihren Typ entdeckt
+          </div>
+        </div>
+
+        <div class="gender-q">Jetzt in 2 min. Klarheit schaffen — Verrate uns vorab dein Geschlecht:</div>
+        <div class="gender-row">
+          <div class="g-card" onclick="go('frau')">
+            <span style="font-size:48px;">&#9792;</span>
+            <span class="g-label">Frau</span>
+          </div>
+          <div class="g-card" onclick="go('mann')">
+            <span style="font-size:48px;">&#9794;</span>
+            <span class="g-label">Mann</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Was du lernst -->
+      <div class="info-list">
+        <h3>Das sagt dir dieser Test:</h3>
+        <div class="info-item"><span class="ic">&#10003;</span><span><strong>Dein Dosha-Typ:</strong> Bist du Vata, Pitta oder Kapha?</span></div>
+        <div class="info-item"><span class="ic">&#10003;</span><span><strong>Warum dein Körper Fett speichert:</strong> Die Ayurveda-Erklärung</span></div>
+        <div class="info-item"><span class="ic">&#10003;</span><span><strong>Welche Lebensmittel dich dick machen</strong> — und welche nicht</span></div>
+        <div class="info-item"><span class="ic">&#10003;</span><span><strong>Dein optimales Training:</strong> Cardio, Kraft oder beides?</span></div>
+        <div class="info-item"><span class="ic">&#10003;</span><span><strong>Dein Stoffwechsel-Zeitplan:</strong> Wann solltest du essen?</span></div>
+        <div class="info-item"><span class="ic">&#10003;</span><span><strong>Die grössten Fehler deines Typs</strong> — und wie du sie vermeidest</span></div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Problem-Section -->
+      <div class="pain">
+        <h2>Kennst du das Gefühl?</h2>
+        <p class="pain-sub">Du machst die gleiche Diät wie deine Freundin — sie nimmt 8 Kilo ab, bei dir tut sich... nichts.</p>
+        <ul class="pain-list">
+          <li><span class="ic">&#10007;</span>Gleiche Kalorien-Ziele für alle</li>
+          <li><span class="ic">&#10007;</span>Gleiche Makro-Verteilung</li>
+          <li><span class="ic">&#10007;</span>Gleiche Trainings-Programme</li>
+          <li><span class="ic">&#10007;</span>Gleiche "Eat Less, Move More"-Mantras</li>
+        </ul>
+        <p class="pain-sub" style="margin-top:12px;"><strong>Aber dein Körper ist NICHT wie jeder andere.</strong> Was bei deiner Freundin funktioniert, kann bei dir das <em>genaue Gegenteil</em> bewirken.</p>
+      </div>
+
+      <!-- Dosha Vorschau -->
+      <div class="dosha-preview">
+        <h2>Die 3 ayurvedischen Körpertypen</h2>
+        <div class="dosha-cards">
+          <div class="dosha-card">
+            <div class="dosha-icon">&#127756;</div>
+            <h4>Vata</h4>
+            <p>Luft & Raum — Kreativ, energisch, unruhig</p>
+          </div>
+          <div class="dosha-card">
+            <div class="dosha-icon">&#128293;</div>
+            <h4>Pitta</h4>
+            <p>Feuer & Wasser — Zielstrebig, intensiv, fokussiert</p>
+          </div>
+          <div class="dosha-card">
+            <div class="dosha-icon">&#127967;</div>
+            <h4>Kapha</h4>
+            <p>Erde & Wasser — Stabil, geduldig, beständig</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- 2. CTA -->
+      <section class="hero" style="padding-top:0;">
+        <div class="gender-q">Jetzt in 2 min. Klarheit schaffen:</div>
+        <div class="gender-row">
+          <div class="g-card" onclick="go('frau')">
+            <span style="font-size:48px;">&#9792;</span>
+            <span class="g-label">Frau</span>
+          </div>
+          <div class="g-card" onclick="go('mann')">
+            <span style="font-size:48px;">&#9794;</span>
+            <span class="g-label">Mann</span>
+          </div>
+        </div>
+      </section>
+
+      <footer>
+        <a href={impressumUrl} target="_blank" rel="noopener">Impressum</a> ·
+        <a href={datenschutzUrl} target="_blank" rel="noopener">Datenschutzerklärung</a>
+      </footer>
+    </div>
+  </div>
+
+  <!-- ===== QUIZ ===== -->
+  <div id="quiz">
+    <div class="q-head"><img src="/images/logo.png" alt="Fit on Time" /></div>
+    <div class="q-progress"><div class="q-bar"><div class="q-fill" id="qf"></div></div><div class="q-num" id="qn">1 / 10</div></div>
+    <div class="q-body">
+
+      <!-- Frage 1 -->
+      <div class="step on" data-s="1">
+        <h2>Welcher Körperbau beschreibt dich am besten?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(1,this,'v')"><strong>Schlank, zierlich, schmale Schultern</strong><span>Ich nehme schwer zu, verliere aber auch schnell wieder Gewicht. Mein Körper ist eher dünn und ich habe wenig Kurven.</span></button>
+          <button class="opt" onclick="nxt(1,this,'p')"><strong>Mittlerer, muskulöser Bau, athletisch</strong><span>Ich baue leicht Muskeln auf und habe eine gute Körperspannung. Meine Proportionen sind ausgewogen.</span></button>
+          <button class="opt" onclick="nxt(1,this,'k')"><strong>Kräftiger, rundlicher Bau, breite Hüften</strong><span>Ich nehme leicht zu, besonders an Hüften und Oberschenkeln. Mein Körper ist eher weich und rund.</span></button>
+        </div>
+      </div>
+
+      <!-- Frage 2 -->
+      <div class="step" data-s="2">
+        <h2>Wo nimmst du als ERSTES zu?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(2,this,'v')"><strong>Überall ein bisschen, aber nie wirklich viel</strong><span>Mein Gewicht schwankt ständig um 2-3 Kilo, aber ich bin grundsätzlich eher schlank.</span></button>
+          <button class="opt" onclick="nxt(2,this,'p')"><strong>Gleichmässig am ganzen Körper, vor allem am Bauch</strong><span>Wenn ich zunehme, sehe ich es zuerst am Bauch und der Taille.</span></button>
+          <button class="opt" onclick="nxt(2,this,'k')"><strong>Hüften, Oberschenkel, Po — die klassischen Problemzonen</strong><span>Mein Unterkörper speichert Fett am schnellsten. Obenrum bin ich schlanker.</span></button>
+        </div>
+      </div>
+
+      <!-- Frage 3 -->
+      <div class="step" data-s="3">
+        <h2>Wie würdest du deinen Appetit beschreiben?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(3,this,'v')"><strong>Unregelmässig, mal Heisshunger, mal vergesse ich zu essen</strong><span>Mein Hunger kommt in Wellen. Manchmal habe ich riesigen Hunger, dann wieder stundenlang gar keinen.</span></button>
+          <button class="opt" onclick="nxt(3,this,'p')"><strong>Stark & regelmässig. Ich MUSS pünktlich essen.</strong><span>Wenn ich Hunger habe, wird es schnell ernst. Ich werde gereizt und brauche JETZT Essen.</span></button>
+          <button class="opt" onclick="nxt(3,this,'k')"><strong>Moderat & stabil, ich könnte Mahlzeiten auslassen</strong><span>Ich habe selten richtigen Hunger. Oft esse ich aus Gewohnheit oder Gesellschaft, nicht aus Hunger.</span></button>
+        </div>
+      </div>
+
+      <!-- Frage 4 -->
+      <div class="step" data-s="4">
+        <h2>Was beschreibt dein Energielevel am besten?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(4,this,'v')"><strong>In Schüben. Mal super energiegeladen, dann vollkommen platt.</strong><span>Meine Energie ist wie eine Achterbahn. Ich kann hyperaktiv sein und dann komplett erschöpft.</span></button>
+          <button class="opt" onclick="nxt(4,this,'p')"><strong>Konstant hoch, aber ich brenne schnell aus.</strong><span>Ich bin meistens sehr aktiv und kann viel leisten. Aber wenn ich übertreibe, komme ich ins Burn-out.</span></button>
+          <button class="opt" onclick="nxt(4,this,'k')"><strong>Gleichmässig, aber eher niedrig, ich bin oft müde.</strong><span>Morgens komme ich schwer in die Gänge. Meine Energie ist stabil, aber nie wirklich hoch.</span></button>
+        </div>
+      </div>
+
+      <!-- Frage 5 -->
+      <div class="step" data-s="5">
+        <h2>Wie schläfst du?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(5,this,'v')"><strong>Leichter Schlaf, wache oft auf, Gedankenkarussell.</strong><span>Ich habe Schwierigkeiten einzuschlafen, weil meine Gedanken rasen. Jedes Geräusch weckt mich.</span></button>
+          <button class="opt" onclick="nxt(5,this,'p')"><strong>Mittlerer Schlaf, brauche 6-7 Stunden, wache ausgeruht auf.</strong><span>Ich schlafe gut, aber nicht zu tief. Ich wache erholt auf und brauche nicht viel Schlaf.</span></button>
+          <button class="opt" onclick="nxt(5,this,'k')"><strong>Tiefer, langer Schlaf, könnte 9+ Stunden schlafen.</strong><span>Ich liebe Schlafen und könnte ewig weiterschlafen. Morgens werde ich schwer wach.</span></button>
+        </div>
+      </div>
+
+      <!-- Frage 6 -->
+      <div class="step" data-s="6">
+        <h2>Wie reagierst du auf Stress?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(6,this,'v')"><strong>Nervosität, Angst, innere Unruhe.</strong><span>Stress macht mich ängstlich und nervös. Ich mache mir Sorgen und kann nicht abschalten.</span></button>
+          <button class="opt" onclick="nxt(6,this,'p')"><strong>Gereiztheit, Wut, Perfektionismus.</strong><span>Unter Stress werde ich schnell ungeduldig und kritisch, mit mir und anderen.</span></button>
+          <button class="opt" onclick="nxt(6,this,'k')"><strong>Rückzug, Antriebslosigkeit, Emotional Eating.</strong><span>Stress lässt mich emotional essen. Ich ziehe mich zurück und habe keine Motivation.</span></button>
+        </div>
+      </div>
+
+      <!-- Frage 7 -->
+      <div class="step" data-s="7">
+        <h2>Worauf hast du am ehesten Heisshunger?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(7,this,'v')"><strong>Knuspriges, Salziges, Kaffee.</strong><span>Chips, Cracker, Kaffee. Ich mag trockene, knusprige Sachen.</span></button>
+          <button class="opt" onclick="nxt(7,this,'p')"><strong>Kaltes, Süsses, Erfrischendes.</strong><span>Eis, Schokolade, kalte Getränke — ich mag kühlende, süsse Sachen.</span></button>
+          <button class="opt" onclick="nxt(7,this,'k')"><strong>Cremiges, Schweres, Brot & Pasta</strong><span>Käse, Pasta, Brot, Kuchen. Ich liebe herzhafte, schwere Comfort-Foods.</span></button>
+        </div>
+      </div>
+
+      <!-- Frage 8 -->
+      <div class="step" data-s="8">
+        <h2>Wie ist dir meistens?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(8,this,'v')"><strong>Oft kalt, kalte Hände & Füsse</strong><span>Ich friere schnell und brauche immer eine Jacke. Meine Hände und Füsse sind oft eiskalt.</span></button>
+          <button class="opt" onclick="nxt(8,this,'p')"><strong>Eher warm, schwitze schnell</strong><span>Mir ist selten kalt. Ich schwitze leicht und mag kühle Räume.</span></button>
+          <button class="opt" onclick="nxt(8,this,'k')"><strong>Wechselnd, aber generell robust</strong><span>Ich komme mit verschiedenen Temperaturen klar. Mir ist selten extrem kalt oder warm.</span></button>
+        </div>
+      </div>
+
+      <!-- Frage 9 -->
+      <div class="step" data-s="9">
+        <h2>Was beschreibt deine Trainings-Vorlieben am besten?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(9,this,'v')"><strong>Abwechslung, neue Kurse, Tanz, Yoga.</strong><span>Routine langweilt mich. Ich brauche ständig neue Reize und Bewegungsformen.</span></button>
+          <button class="opt" onclick="nxt(9,this,'p')"><strong>Wettkampf, Challenges, intensives Training.</strong><span>Ich liebe es, meine Grenzen zu pushen. HIIT, Crossfit, Laufen — je intensiver, desto besser.</span></button>
+          <button class="opt" onclick="nxt(9,this,'k')"><strong>Sanftes, konstantes Training wie Walken.</strong><span>Ich mag gemütliches Training. Zu intensiv demotiviert mich eher.</span></button>
+        </div>
+      </div>
+
+      <!-- Frage 10 -->
+      <div class="step" data-s="10">
+        <h2>Was beschreibt deine Abnehm-Erfahrung am besten?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(10,this,'v')"><strong>Mein Gewicht schwankt ständig. (Jojo-Effekt)</strong><span>Ich nehme schnell ab, aber genauso schnell wieder zu. Mein Gewicht ist nie stabil.</span></button>
+          <button class="opt" onclick="nxt(10,this,'p')"><strong>Wenn ich will, schaffe ich es, aber nur mit extremer Disziplin.</strong><span>Ich kann abnehmen, wenn ich einen Plan habe. Aber nur mit knallharter Konsequenz.</span></button>
+          <button class="opt" onclick="nxt(10,this,'k')"><strong>Ich tue mir SEHR schwer mit dem Abnehmen.</strong><span>Egal was ich versuche, mein Körper hält das Gewicht wie festgeklebt. Jedes Kilo ist ein Kampf.</span></button>
+        </div>
+      </div>
+
+      <!-- Loading -->
+      <div class="step ld" data-s="ld">
+        <div class="spinner"></div>
+        <h2>Wir analysieren deine Antworten...</h2>
+        <p>Das dauert nur ein paar Sekunden</p>
+        <div class="checks">
+          <div class="chk" id="c1"><i>&#10003;</i>Antworten analysiert</div>
+          <div class="chk" id="c2"><i>&#10003;</i>Dosha-Typ bestimmt</div>
+          <div class="chk" id="c3"><i>&#10003;</i>Persönlicher Plan erstellt</div>
+        </div>
+      </div>
+
+      <!-- Formular -->
+      <div class="step form" data-s="form">
+        <div class="tag">&#10003; Geschafft!</div>
+        <h2>Um zu erfahren, welcher Ayurveda-Typ du bist, trage dich hier ein.</h2>
+        <p class="sub">Im nächsten Schritt erhältst du dein Ergebnis und einen Plan, der auf deinen Typ zugeschnitten ist!</p>
+        <div class="fields">
+          <div class="field"><span class="ic">&#128075;</span><input type="text" id="fn" placeholder="Dein Vor- und Nachname" required /></div>
+          <div class="field"><span class="ic">&#128236;</span><input type="email" id="em" placeholder="Deine E-Mail" required /></div>
+          <div class="field"><span class="ic">&#128222;</span><span class="pre">+49</span><input type="tel" id="ph" placeholder="Deine Telefonnummer" required /></div>
+        </div>
+        <div class="cb-row">
+          <input type="checkbox" id="ds" />
+          <label for="ds">Ich akzeptiere die <a href={datenschutzUrl} target="_blank">Datenschutzbestimmungen</a></label>
+        </div>
+        <button class="submit" id="sbtn" disabled onclick="send()">Jetzt Ergebnis erfahren! &#10024;</button>
+        <div class="form-proof">
+          <div class="fp-row"><span>&#128274;</span> Deine Daten sind sicher & werden nicht weitergegeben</div>
+          <div class="fp-row"><span class="proof-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span> <b>4.200+</b> zufriedene Teilnehmerinnen</div>
+        </div>
+      </div>
+
+      <!-- Ergebnis: VATA -->
+      <div class="step result" data-s="vata" style="display:none;">
+        <span class="result-badge">&#127756; Dein Ergebnis</span>
+        <h2>Du bist ein <em style="color:var(--accent);">Vata-Typ</em></h2>
+        <p class="result-type">Luft & Raum — Der kreative Wirbelwind</p>
+        <div class="result-desc">
+          <h3>Was bedeutet das für dich?</h3>
+          <p>Dein Körper ist von Bewegung und Veränderung geprägt. Du bist kreativ, energiegeladen in Schüben und liebst Abwechslung. Dein Stoffwechsel ist schnell aber unregelmässig — genau deshalb funktionieren Standard-Diäten bei dir <strong>nicht</strong>.</p>
+          <p style="margin-top:8px;">Dein Körper braucht <strong>wärmende, nährende Nahrung</strong> und regelmässige Routinen. Kalte Rohkost und Intervallfasten sind Gift für deinen Typ.</p>
+        </div>
+        <div class="result-grid">
+          <div class="result-card"><div class="rc-icon">&#127860;</div><h4>Deine Ernährung</h4><p>Warme Suppen, gekochtes Gemüse, gesunde Fette (Ghee, Avocado). Regelmässige Mahlzeiten sind Pflicht.</p></div>
+          <div class="result-card"><div class="rc-icon">&#128170;</div><h4>Dein Training</h4><p>Yoga, Tanzen, Pilates. Abwechslungsreich aber nicht zu intensiv. Kraft vor Cardio.</p></div>
+          <div class="result-card"><div class="rc-icon">&#9203;</div><h4>Dein Timing</h4><p>3 warme Mahlzeiten täglich. Frühstück nie auslassen! Abendessen vor 19 Uhr.</p></div>
+          <div class="result-card"><div class="rc-icon">&#9888;</div><h4>Grösster Fehler</h4><p>Mahlzeiten auslassen, Rohkost-Diäten, zu viel Kaffee. Das destabilisiert deinen ohnehin unruhigen Stoffwechsel.</p></div>
+        </div>
+        <a href="https://fitontime.ch" class="result-cta" id="vata-cta">Jetzt kostenloses Beratungsgespräch buchen</a>
+        <div class="result-spots">&#128293; Nur noch wenige Plätze diese Woche</div>
+      </div>
+
+      <!-- Ergebnis: PITTA -->
+      <div class="step result" data-s="pitta" style="display:none;">
+        <span class="result-badge">&#128293; Dein Ergebnis</span>
+        <h2>Du bist ein <em style="color:var(--accent);">Pitta-Typ</em></h2>
+        <p class="result-type">Feuer & Wasser — Die ehrgeizige Powerfrau</p>
+        <div class="result-desc">
+          <h3>Was bedeutet das für dich?</h3>
+          <p>Dein Körper ist von Intensität und Feuer geprägt. Du bist zielstrebig, ehrgeizig und hast einen starken Stoffwechsel. Aber genau dieses Feuer kann sich gegen dich wenden — Übertraining und Stress-Essen sind deine grössten Fallen.</p>
+          <p style="margin-top:8px;">Dein Körper braucht <strong>kühlende, leichte Nahrung</strong> und genügend Erholungsphasen. Zu scharfes Essen und zu viel HIIT verbrennen dich von innen.</p>
+        </div>
+        <div class="result-grid">
+          <div class="result-card"><div class="rc-icon">&#127860;</div><h4>Deine Ernährung</h4><p>Frische Salate, Gurken, Kokoswasser, süsses Obst. Wenig Scharfes, wenig Alkohol, wenig rotes Fleisch.</p></div>
+          <div class="result-card"><div class="rc-icon">&#128170;</div><h4>Dein Training</h4><p>Schwimmen, moderates Laufen, Yoga. Intensiv ja, aber mit Pausen. Abends kein Training.</p></div>
+          <div class="result-card"><div class="rc-icon">&#9203;</div><h4>Dein Timing</h4><p>Mittagessen ist deine Hauptmahlzeit (12-13 Uhr). Leichtes Abendessen. Nie hungrig trainieren.</p></div>
+          <div class="result-card"><div class="rc-icon">&#9888;</div><h4>Grösster Fehler</h4><p>Zu viel HIIT, scharfes Essen, Alkohol, Perfektionismus bei der Diät. Das überhitzt deinen Stoffwechsel.</p></div>
+        </div>
+        <a href="https://fitontime.ch" class="result-cta" id="pitta-cta">Jetzt kostenloses Beratungsgespräch buchen</a>
+        <div class="result-spots">&#128293; Nur noch wenige Plätze diese Woche</div>
+      </div>
+
+      <!-- Ergebnis: KAPHA -->
+      <div class="step result" data-s="kapha" style="display:none;">
+        <span class="result-badge">&#127967; Dein Ergebnis</span>
+        <h2>Du bist ein <em style="color:var(--accent);">Kapha-Typ</em></h2>
+        <p class="result-type">Erde & Wasser — Die geduldige Beständige</p>
+        <div class="result-desc">
+          <h3>Was bedeutet das für dich?</h3>
+          <p>Dein Körper ist stabil, stark und beständig. Du hast Ausdauer und Geduld — aber dein Stoffwechsel ist langsam. Das bedeutet: Standard-Kaloriendefizite funktionieren bei dir <strong>kaum</strong>, weil dein Körper sofort in den Sparmodus schaltet.</p>
+          <p style="margin-top:8px;">Dein Körper braucht <strong>leichte, scharfe, warme Nahrung</strong> und aktivierende Bewegung. Schwere Comfort-Foods und zu viel Ruhe verstärken die Trägheit.</p>
+        </div>
+        <div class="result-grid">
+          <div class="result-card"><div class="rc-icon">&#127860;</div><h4>Deine Ernährung</h4><p>Leichte Kost, Ingwer-Tee, gedünstetes Gemüse, Hülsenfrüchte. Wenig Milchprodukte, wenig Weizen, wenig Zucker.</p></div>
+          <div class="result-card"><div class="rc-icon">&#128170;</div><h4>Dein Training</h4><p>Krafttraining, zügiges Walken, Tanzen. Regelmässig und aktivierend — gerade wenn du keine Lust hast!</p></div>
+          <div class="result-card"><div class="rc-icon">&#9203;</div><h4>Dein Timing</h4><p>Leichtes Frühstück oder Intervallfasten (16:8). Hauptmahlzeit mittags. Nichts nach 18 Uhr.</p></div>
+          <div class="result-card"><div class="rc-icon">&#9888;</div><h4>Grösster Fehler</h4><p>Zu viel Käse, Brot, Pasta. Zu wenig Bewegung. Zu spät essen. Das verlangsamt deinen bereits trägen Stoffwechsel.</p></div>
+        </div>
+        <a href="https://fitontime.ch" class="result-cta" id="kapha-cta">Jetzt kostenloses Beratungsgespräch buchen</a>
+        <div class="result-spots">&#128293; Nur noch wenige Plätze diese Woche</div>
+      </div>
+
+    </div>
+  </div>
+
+  <script is:inline>
+    // Dosha-Scoring: v=Vata, p=Pitta, k=Kapha
+    var scores = { v: 0, p: 0, k: 0 };
+    var quizAnswers = {};
+    var TOTAL = 10;
+
+    // Tracking
+    function tk(e, d) {
+      if (window.__lp) {
+        window.__lp.track(e, Object.assign({ page: 'doshatyp' }, d || {}), 'fot', 'Doshatyp-Quiz');
+      }
+      if (window.__lp) {
+        if (e === 'quiz_start') window.__lp.meta('ViewContent', { content_name: 'Doshatyp Quiz Start', currency: 'EUR' });
+        if (e === 'quiz_complete') window.__lp.meta('CompleteRegistration', { content_name: 'Doshatyp Quiz Complete', currency: 'EUR' });
+        if (e === 'lead_submit') window.__lp.meta('Lead', { content_name: 'Doshatyp Lead', currency: 'EUR' });
+      }
+    }
+    tk('page_view');
+
+    function go(g) {
+      tk('quiz_start', { detail: g });
+      document.getElementById('lp').style.display = 'none';
+      document.getElementById('quiz').classList.add('on');
+    }
+
+    function nxt(s, el, dosha) {
+      // Score zählen
+      if (dosha) scores[dosha]++;
+      quizAnswers['q' + s] = el ? el.querySelector('strong').textContent.trim() : '';
+      tk('quiz_answer', { detail: 'q' + s + '_' + dosha });
+
+      document.querySelector('.step[data-s="' + s + '"]').classList.remove('on');
+      if (s < TOTAL) {
+        document.querySelector('.step[data-s="' + (s + 1) + '"]').classList.add('on');
+        var p = Math.round(((s) / TOTAL) * 100);
+        document.getElementById('qf').style.width = p + '%';
+        document.getElementById('qn').textContent = (s + 1) + ' / ' + TOTAL;
+      } else {
+        tk('quiz_complete');
+        load();
+      }
+    }
+
+    function load() {
+      var ld = document.querySelector('.step[data-s="ld"]');
+      ld.classList.add('on');
+      document.getElementById('qf').style.width = '100%';
+      document.getElementById('qn').textContent = 'Auswertung...';
+      setTimeout(function(){ document.getElementById('c1').classList.add('show'); }, 600);
+      setTimeout(function(){ document.getElementById('c2').classList.add('show'); }, 1400);
+      setTimeout(function(){ document.getElementById('c3').classList.add('show'); }, 2200);
+      setTimeout(function(){
+        ld.classList.remove('on');
+        document.querySelector('.step[data-s="form"]').classList.add('on');
+        document.getElementById('qn').textContent = 'Fast fertig';
+      }, 3200);
+    }
+
+    // Dosha-Typ bestimmen
+    function getDosha() {
+      if (scores.v >= scores.p && scores.v >= scores.k) return 'vata';
+      if (scores.p >= scores.v && scores.p >= scores.k) return 'pitta';
+      return 'kapha';
+    }
+
+    document.getElementById('ds').addEventListener('change', function() {
+      document.getElementById('sbtn').disabled = !this.checked;
+    });
+
+    function send() {
+      var fn = document.getElementById('fn').value.trim();
+      var em = document.getElementById('em').value.trim();
+      var ph = document.getElementById('ph').value.trim();
+      if (!fn || !em || !ph) {
+        if (!fn) document.getElementById('fn').parentElement.style.borderColor = 'var(--red)';
+        if (!em) document.getElementById('em').parentElement.style.borderColor = 'var(--red)';
+        if (!ph) document.getElementById('ph').parentElement.style.borderColor = 'var(--red)';
+        return;
+      }
+      var btn = document.getElementById('sbtn');
+      btn.disabled = true;
+      btn.textContent = 'Wird ausgewertet...';
+
+      var dosha = getDosha();
+      tk('lead_submit', { detail: fn + ' — ' + dosha });
+
+      // Lead an Google Sheets senden
+      fetch('/api/sheets', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: fn,
+          email: em,
+          phone: ph ? '+49' + ph : '',
+          answers: Object.assign(quizAnswers, { dosha: dosha, scores: JSON.stringify(scores) })
+        })
+      }).catch(function(){});
+
+      setTimeout(function(){
+        document.querySelector('.step[data-s="form"]').classList.remove('on');
+        document.querySelector('.step[data-s="' + dosha + '"]').style.display = 'block';
+        document.querySelector('.step[data-s="' + dosha + '"]').classList.add('on');
+        document.getElementById('qn').textContent = 'Dein Ergebnis';
+        tk('result_shown', { detail: dosha });
+      }, 1200);
+    }
+  </script>
+
+  <CookieBanner
+    metaPixelId="1349136525891811"
+    consentKey="fot_doshatyp_consent"
+    impressumUrl={impressumUrl}
+    datenschutzUrl={datenschutzUrl}
+  />
+</body>
+</html>

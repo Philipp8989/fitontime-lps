@@ -1,0 +1,829 @@
+---
+// Blockadenlöser-Quiz — Abnehmpotential & Blockaden-Analyse
+// Importiert von: fit-on-time.ch/blockadenloeser/
+// CRO: Progress-Bar, Social Proof, Urgency, animierte Elemente, Dark-Theme
+import CookieBanner from '../../components/CookieBanner.astro';
+const impressumUrl = 'https://fitontime.ch/impressum-datenschutz';
+const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
+---
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Wie hoch ist dein Abnehmpotential? | Fit on Time</title>
+  <link rel="icon" type="image/png" href="/images/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <style is:global>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #0f0a1a;
+      --surface: #1a1228;
+      --surface-2: #251d35;
+      --accent: #a855f7;
+      --accent-dark: #9333ea;
+      --pink: #ec4899;
+      --green: #22c55e;
+      --amber: #f59e0b;
+      --red: #ef4444;
+      --text: #f0e6ff;
+      --text-2: #b8a4d6;
+      --text-3: #7c6a9a;
+      --r: 14px;
+      --font: 'Inter', system-ui, -apple-system, sans-serif;
+      --glow: linear-gradient(135deg, #a855f7, #ec4899);
+    }
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+    body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.5; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    .wrap { max-width: 720px; margin: 0 auto; padding: 0 20px; }
+
+    /* Logo */
+    .logo { text-align: center; padding: 16px 0 8px; }
+    .logo img { height: 40px; filter: brightness(1.2); }
+
+    /* Hero */
+    .hero { text-align: center; padding: 16px 0 20px; }
+    .hero h1 { font-size: 28px; font-weight: 900; line-height: 1.2; letter-spacing: -0.5px; margin-bottom: 14px; }
+    .hero h1 em { font-style: normal; background: var(--glow); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .hero .sub { font-size: 15px; color: var(--text-2); margin-bottom: 8px; line-height: 1.6; }
+    .hero .sub strong { color: var(--text); font-weight: 600; }
+    .hero .note { font-size: 11px; color: var(--text-3); margin-top: 6px; font-style: italic; }
+
+    /* Animierte Silhouette */
+    .silhouette-wrap { position: relative; width: 200px; height: 320px; margin: 24px auto; }
+    .silhouette {
+      width: 100%; height: 100%;
+      background: var(--glow);
+      clip-path: polygon(
+        50% 0%, 55% 2%, 58% 5%, 58% 10%, 56% 14%, 54% 16%,
+        60% 18%, 65% 20%, 68% 22%, 68% 24%, 65% 26%, 58% 27%,
+        56% 28%, 58% 32%, 60% 38%, 62% 45%, 63% 50%,
+        66% 55%, 70% 62%, 72% 70%, 70% 75%, 68% 80%,
+        66% 85%, 65% 90%, 64% 95%, 62% 100%,
+        38% 100%, 36% 95%, 35% 90%, 34% 85%, 32% 80%,
+        30% 75%, 28% 70%, 30% 62%, 34% 55%,
+        37% 50%, 38% 45%, 40% 38%, 42% 32%,
+        44% 28%, 42% 27%, 35% 26%, 32% 24%,
+        32% 22%, 35% 20%, 40% 18%, 46% 16%,
+        44% 14%, 42% 10%, 42% 5%, 45% 2%
+      );
+      opacity: 0.7;
+      animation: breathe 4s ease-in-out infinite;
+      filter: blur(1px);
+    }
+    .silhouette-glow {
+      position: absolute; inset: -20px;
+      background: radial-gradient(ellipse at center, rgba(168,85,247,0.3) 0%, rgba(236,72,153,0.15) 40%, transparent 70%);
+      animation: pulse-glow 4s ease-in-out infinite;
+      pointer-events: none;
+    }
+    @keyframes breathe {
+      0%, 100% { transform: scaleY(1) scaleX(1); opacity: 0.7; }
+      50% { transform: scaleY(1.015) scaleX(0.99); opacity: 0.85; }
+    }
+    @keyframes pulse-glow {
+      0%, 100% { opacity: 0.6; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.05); }
+    }
+
+    /* Sparkle-Partikel */
+    .sparkles { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+    .sparkle {
+      position: absolute; width: 4px; height: 4px; border-radius: 50%;
+      background: #fff;
+      animation: sparkle-float 3s ease-in-out infinite;
+      opacity: 0;
+    }
+    .sparkle:nth-child(1) { left: 20%; top: 30%; animation-delay: 0s; }
+    .sparkle:nth-child(2) { left: 70%; top: 20%; animation-delay: 0.5s; }
+    .sparkle:nth-child(3) { left: 40%; top: 60%; animation-delay: 1s; }
+    .sparkle:nth-child(4) { left: 80%; top: 50%; animation-delay: 1.5s; }
+    .sparkle:nth-child(5) { left: 15%; top: 70%; animation-delay: 2s; }
+    .sparkle:nth-child(6) { left: 60%; top: 80%; animation-delay: 0.8s; }
+    .sparkle:nth-child(7) { left: 35%; top: 15%; animation-delay: 1.3s; }
+    .sparkle:nth-child(8) { left: 85%; top: 35%; animation-delay: 2.2s; }
+    @keyframes sparkle-float {
+      0%, 100% { opacity: 0; transform: translateY(0) scale(0.5); }
+      50% { opacity: 1; transform: translateY(-12px) scale(1.2); }
+    }
+
+    /* CTA Button */
+    .cta-btn {
+      display: inline-block; width: 100%; max-width: 400px;
+      background: var(--glow); color: #fff;
+      font-family: var(--font); font-size: 18px; font-weight: 700;
+      padding: 18px 32px; border: none; border-radius: 50px;
+      cursor: pointer; text-align: center; text-decoration: none;
+      transition: all 0.3s; position: relative; overflow: hidden;
+      box-shadow: 0 4px 20px rgba(168,85,247,0.4);
+    }
+    .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 30px rgba(168,85,247,0.5); }
+    .cta-btn:active { transform: scale(0.98); }
+    .cta-btn::after {
+      content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+      background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%);
+      animation: shimmer 3s infinite;
+    }
+    @keyframes shimmer { 0% { transform: translateX(-100%) rotate(45deg); } 100% { transform: translateX(100%) rotate(45deg); } }
+
+    /* Social Proof */
+    .proof-bar { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 0; margin-bottom: 8px; }
+    .proof-avatars { display: flex; }
+    .proof-avatars img { width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--bg); margin-left: -8px; object-fit: cover; }
+    .proof-avatars img:first-child { margin-left: 0; }
+    .proof-info { font-size: 12px; color: var(--text-3); line-height: 1.3; }
+    .proof-info b { color: var(--text-2); }
+    .proof-stars { color: var(--amber); font-size: 12px; letter-spacing: 1px; }
+    .proof-check { font-size: 13px; color: var(--green); margin-top: 4px; }
+
+    /* Info-Liste */
+    .info-list { text-align: left; margin: 24px auto; max-width: 480px; }
+    .info-list h3 { font-size: 16px; font-weight: 700; margin-bottom: 12px; text-align: center; color: var(--text); }
+    .info-item { display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; font-size: 14px; color: var(--text-2); }
+    .info-item .ic { color: var(--green); font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+
+    /* Pain Section */
+    .pain { background: var(--surface); border-radius: var(--r); padding: 24px 20px; margin: 20px 0; border: 1px solid #2a1f40; }
+    .pain h2 { font-size: 20px; font-weight: 800; text-align: center; margin-bottom: 6px; }
+    .pain .pain-sub { font-size: 14px; color: var(--text-2); text-align: center; margin-bottom: 16px; line-height: 1.5; }
+    .pain-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+    .pain-list li { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--text-2); padding: 8px 12px; background: rgba(239,68,68,0.1); border-radius: 8px; }
+    .pain-list li .ic { color: var(--red); font-size: 14px; }
+
+    /* Blockaden-Vorschau */
+    .blockade-preview { margin: 24px 0; text-align: center; }
+    .blockade-preview h2 { font-size: 20px; font-weight: 800; margin-bottom: 16px; }
+    .blockade-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .blockade-card { background: var(--surface); border-radius: 12px; padding: 16px 12px; border: 1px solid #2a1f40; text-align: center; }
+    .blockade-card .b-icon { font-size: 32px; margin-bottom: 8px; }
+    .blockade-card h4 { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+    .blockade-card p { font-size: 11px; color: var(--text-3); line-height: 1.3; }
+
+    /* Divider */
+    .divider { width: 40px; height: 2px; background: var(--glow); margin: 24px auto; opacity: 0.4; }
+
+    /* Footer */
+    footer { text-align: center; padding: 20px; font-size: 11px; color: var(--text-3); border-top: 1px solid #2a1f40; }
+    footer a { color: var(--text-3); text-decoration: none; }
+
+    /* ===== QUIZ ===== */
+    #quiz { display: none; position: fixed; inset: 0; background: var(--bg); z-index: 100; flex-direction: column; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+    #quiz.on { display: flex; }
+    .q-head { display: flex; align-items: center; justify-content: center; padding: 14px 20px; border-bottom: 1px solid #2a1f40; position: sticky; top: 0; background: var(--bg); z-index: 10; }
+    .q-head img { height: 32px; filter: brightness(1.2); }
+    .q-progress { padding: 12px 20px 0; max-width: 600px; margin: 0 auto; width: 100%; position: sticky; top: 57px; background: var(--bg); z-index: 10; }
+    .q-bar { height: 6px; background: var(--surface-2); border-radius: 3px; overflow: hidden; }
+    .q-fill { height: 100%; background: var(--glow); border-radius: 3px; transition: width 0.4s ease; width: 0%; }
+    .q-num { font-size: 12px; color: var(--text-3); text-align: right; margin-top: 4px; font-weight: 500; }
+    .q-body { flex: 1; display: flex; align-items: flex-start; justify-content: center; padding: 40px 20px; }
+
+    .step { display: none; max-width: 600px; width: 100%; animation: up 0.3s ease; }
+    .step.on { display: block; }
+    @keyframes up { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+    .step h2 { font-size: 22px; font-weight: 800; text-align: center; margin-bottom: 24px; line-height: 1.3; letter-spacing: -0.3px; }
+    .opts { display: flex; flex-direction: column; gap: 10px; }
+    .opt { background: var(--surface); border: 2px solid transparent; border-radius: 12px; padding: 16px 18px; font-size: 15px; font-weight: 500; color: var(--text); cursor: pointer; transition: all 0.2s; font-family: var(--font); -webkit-tap-highlight-color: transparent; text-align: left; }
+    .opt:hover { border-color: var(--accent); background: var(--surface-2); }
+    .opt:active { transform: scale(0.98); border-color: var(--accent); }
+
+    /* Loading */
+    .ld { text-align: center; }
+    .spinner { width: 56px; height: 56px; border: 3px solid var(--surface-2); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 20px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .ld h2 { font-size: 18px; margin-bottom: 6px; }
+    .ld p { font-size: 14px; color: var(--text-2); margin-bottom: 20px; }
+    .checks { text-align: left; max-width: 280px; margin: 0 auto; }
+    .chk { display: flex; align-items: center; gap: 10px; padding: 6px 0; font-size: 14px; color: var(--text-2); opacity: 0; transition: opacity 0.3s; }
+    .chk.show { opacity: 1; }
+    .chk i { width: 20px; height: 20px; border-radius: 50%; background: var(--green); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 11px; font-style: normal; font-weight: 700; flex-shrink: 0; }
+
+    /* Formular */
+    .form { text-align: center; }
+    .form .tag { font-size: 13px; font-weight: 600; color: var(--green); margin-bottom: 6px; }
+    .form h2 { font-size: 22px; font-weight: 800; margin-bottom: 6px; }
+    .form .sub { font-size: 14px; color: var(--text-2); margin-bottom: 20px; }
+    .fields { display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px; max-width: 440px; margin-left: auto; margin-right: auto; }
+    .field { background: var(--surface); border: 2px solid #2a1f40; border-radius: 12px; padding: 0 14px; display: flex; align-items: center; gap: 10px; transition: border-color 0.2s; }
+    .field:focus-within { border-color: var(--accent); }
+    .field .ic { font-size: 16px; flex-shrink: 0; opacity: 0.5; }
+    .field input { flex: 1; background: transparent; border: none; outline: none; color: var(--text); font-family: var(--font); font-size: 15px; padding: 14px 0; }
+    .field input::placeholder { color: var(--text-3); }
+    .field .pre { font-size: 14px; color: var(--text-3); flex-shrink: 0; }
+    .cb-row { display: flex; align-items: flex-start; gap: 8px; margin: 0 auto 16px; text-align: left; max-width: 440px; }
+    .cb-row input[type="checkbox"] { accent-color: var(--accent); width: 16px; height: 16px; margin-top: 2px; flex-shrink: 0; }
+    .cb-row label { font-size: 11px; color: var(--text-3); line-height: 1.4; }
+    .cb-row label a { color: var(--text-2); }
+    .submit { display: block; width: 100%; max-width: 440px; margin: 0 auto; background: var(--glow); color: #fff; font-family: var(--font); font-size: 16px; font-weight: 700; padding: 16px; border: none; border-radius: 12px; cursor: pointer; transition: all 0.2s; }
+    .submit:disabled { opacity: 0.4; cursor: not-allowed; }
+    .submit:not(:disabled):hover { box-shadow: 0 4px 20px rgba(168,85,247,0.4); }
+    .submit:not(:disabled):active { opacity: 0.85; }
+    .form-proof { margin-top: 16px; padding-top: 16px; border-top: 1px solid #2a1f40; max-width: 440px; margin-left: auto; margin-right: auto; }
+    .form-proof .fp-row { display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 11px; color: var(--text-3); margin-bottom: 4px; }
+    .form-proof .fp-row b { color: var(--text-2); }
+
+    /* ===== ERGEBNIS-SEITE ===== */
+    .result { text-align: center; max-width: 600px; width: 100%; padding-bottom: 40px; }
+    .result-badge { display: inline-block; background: rgba(168,85,247,0.15); color: var(--accent); font-size: 12px; font-weight: 700; padding: 4px 14px; border-radius: 20px; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .result h2 { font-size: 26px; font-weight: 800; margin-bottom: 8px; }
+    .result .result-type { font-size: 18px; background: var(--glow); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-weight: 700; margin-bottom: 16px; }
+
+    /* Abnehmpotential-Anzeige */
+    .potential-display { background: var(--surface); border-radius: var(--r); padding: 24px; margin-bottom: 20px; border: 1px solid #2a1f40; position: relative; overflow: hidden; }
+    .potential-display::before { content: ''; position: absolute; inset: 0; background: var(--glow); opacity: 0.05; }
+    .potential-number { font-size: 48px; font-weight: 900; background: var(--glow); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1.1; }
+    .potential-label { font-size: 14px; color: var(--text-2); margin-top: 4px; }
+    .potential-bar { height: 8px; background: var(--surface-2); border-radius: 4px; margin-top: 16px; overflow: hidden; }
+    .potential-fill { height: 100%; background: var(--glow); border-radius: 4px; animation: fill-bar 1.5s ease forwards; }
+    @keyframes fill-bar { from { width: 0; } }
+
+    /* Blockaden-Analyse */
+    .blockade-analysis { text-align: left; margin-bottom: 20px; }
+    .blockade-analysis h3 { font-size: 18px; font-weight: 800; text-align: center; margin-bottom: 16px; }
+    .blockade-item { background: var(--surface); border-radius: 12px; padding: 16px; margin-bottom: 10px; border-left: 3px solid var(--accent); }
+    .blockade-item .b-title { font-size: 15px; font-weight: 700; margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }
+    .blockade-item .b-title .b-num { background: var(--glow); color: #fff; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; }
+    .blockade-item .b-desc { font-size: 13px; color: var(--text-2); line-height: 1.5; }
+    .blockade-item .b-tip { font-size: 13px; color: var(--green); margin-top: 8px; padding-top: 8px; border-top: 1px solid #2a1f40; }
+    .blockade-item .b-tip strong { color: var(--green); }
+
+    /* Empfehlungen */
+    .result-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; text-align: left; }
+    .result-card { background: var(--surface); border-radius: 12px; padding: 14px; border: 1px solid #2a1f40; }
+    .result-card .rc-icon { font-size: 20px; margin-bottom: 6px; }
+    .result-card h4 { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+    .result-card p { font-size: 12px; color: var(--text-2); line-height: 1.4; }
+
+    .result-cta { display: block; width: 100%; background: var(--glow); color: #fff; font-family: var(--font); font-size: 16px; font-weight: 700; padding: 16px 32px; border: none; border-radius: 12px; cursor: pointer; text-decoration: none; text-align: center; transition: all 0.2s; margin-bottom: 8px; box-shadow: 0 4px 20px rgba(168,85,247,0.4); }
+    .result-cta:hover { box-shadow: 0 6px 30px rgba(168,85,247,0.5); transform: translateY(-1px); }
+    .result-spots { font-size: 11px; color: var(--amber); font-weight: 600; }
+
+    /* Desktop */
+    @media (min-width: 600px) {
+      .hero h1 { font-size: 38px; }
+      .hero .sub { font-size: 17px; }
+      .step h2 { font-size: 28px; }
+      .opts { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+      .opt { font-size: 15px; padding: 18px 20px; }
+      .result h2 { font-size: 32px; }
+      .potential-number { font-size: 56px; }
+    }
+    @media (min-width: 900px) {
+      .hero h1 { font-size: 44px; }
+      .silhouette-wrap { width: 240px; height: 380px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== LANDING ===== -->
+  <div id="lp">
+    <div class="wrap">
+      <div class="logo"><img src="/images/logo.png" alt="Fit on Time" /></div>
+
+      <section class="hero">
+        <h1>Wie hoch ist dein <em>Abnehmpotential*</em> in den nächsten 4 Monaten?</h1>
+        <p class="sub">Und was <strong>blockiert dich momentan</strong> dieses Ziel zu erreichen?</p>
+
+        <!-- Animierte Silhouette -->
+        <div class="silhouette-wrap">
+          <div class="silhouette-glow"></div>
+          <div class="silhouette"></div>
+          <div class="sparkles">
+            <div class="sparkle"></div>
+            <div class="sparkle"></div>
+            <div class="sparkle"></div>
+            <div class="sparkle"></div>
+            <div class="sparkle"></div>
+            <div class="sparkle"></div>
+            <div class="sparkle"></div>
+            <div class="sparkle"></div>
+          </div>
+        </div>
+
+        <p class="note">*Alle Zahlen beziehen sich auf gesundes Abnehmen ohne Jojo-Effekt</p>
+
+        <div class="proof-bar">
+          <div class="proof-avatars">
+            <img src="https://images.unsplash.com/photo-1594744803329-e58b31de8bf5?w=56&h=56&fit=crop&crop=face&q=80" alt="" />
+            <img src="https://images.unsplash.com/photo-1628869503963-6ce8de674c58?w=56&h=56&fit=crop&crop=face&q=80" alt="" />
+            <img src="https://images.unsplash.com/photo-1607962837359-5e7e89f86776?w=56&h=56&fit=crop&crop=face&q=80" alt="" />
+            <img src="https://images.unsplash.com/photo-1519834785169-98be25ec3f84?w=56&h=56&fit=crop&crop=face&q=80" alt="" />
+          </div>
+          <div class="proof-info">
+            <div class="proof-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            <b>3.400+</b> Frauen haben ihren Plan erhalten
+          </div>
+        </div>
+        <div class="proof-check">&#10003; Von Ernährungsexperten entwickelt</div>
+
+        <div style="margin-top:24px;">
+          <button class="cta-btn" onclick="startQuiz()">Jetzt starten! &#10024;</button>
+        </div>
+      </section>
+
+      <!-- Was du erfährst -->
+      <div class="info-list">
+        <h3>Das erfährst du in 2 Minuten:</h3>
+        <div class="info-item"><span class="ic">&#10003;</span><span><strong>Dein realistisches Abnehmpotential</strong> für die nächsten 4 Monate</span></div>
+        <div class="info-item"><span class="ic">&#10003;</span><span><strong>Deine Top-3 Blockaden</strong> die dich am Abnehmen hindern</span></div>
+        <div class="info-item"><span class="ic">&#10003;</span><span><strong>Konkrete Empfehlungen</strong> um jede Blockade zu lösen</span></div>
+        <div class="info-item"><span class="ic">&#10003;</span><span><strong>Warum Diäten bei dir scheitern</strong> — und was stattdessen funktioniert</span></div>
+        <div class="info-item"><span class="ic">&#10003;</span><span><strong>Dein persönlicher Aktionsplan</strong> basierend auf deinen Antworten</span></div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Problem-Section -->
+      <div class="pain">
+        <h2>Kommt dir das bekannt vor?</h2>
+        <p class="pain-sub">Du versuchst alles — aber die Kilos bleiben. Vielleicht liegt es nicht an dir, sondern an <strong>unsichtbaren Blockaden</strong>.</p>
+        <ul class="pain-list">
+          <li><span class="ic">&#10007;</span>Heisshungerattacken trotz gesunder Ernährung</li>
+          <li><span class="ic">&#10007;</span>Motivation hält nur wenige Wochen</li>
+          <li><span class="ic">&#10007;</span>Stress und Schlafmangel sabotieren dich</li>
+          <li><span class="ic">&#10007;</span>Jede Diät endet im Jojo-Effekt</li>
+        </ul>
+        <p class="pain-sub" style="margin-top:12px;"><strong>In 8 Fragen finden wir heraus, was dich WIRKLICH blockiert</strong> — und wie du es lösen kannst.</p>
+      </div>
+
+      <!-- Blockaden-Vorschau -->
+      <div class="blockade-preview">
+        <h2>Die 4 häufigsten Abnehm-Blockaden</h2>
+        <div class="blockade-cards">
+          <div class="blockade-card">
+            <div class="b-icon">&#127852;</div>
+            <h4>Heisshunger</h4>
+            <p>Unkontrolliertes Essen durch Blutzucker-Schwankungen</p>
+          </div>
+          <div class="blockade-card">
+            <div class="b-icon">&#9200;</div>
+            <h4>Zeitmangel</h4>
+            <p>Kein Plan für gesunde Mahlzeiten im Alltag</p>
+          </div>
+          <div class="blockade-card">
+            <div class="b-icon">&#128164;</div>
+            <h4>Schlechter Schlaf</h4>
+            <p>Hormonelles Ungleichgewicht durch Schlafmangel</p>
+          </div>
+          <div class="blockade-card">
+            <div class="b-icon">&#128548;</div>
+            <h4>Stress</h4>
+            <p>Cortisol stoppt die Fettverbrennung</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- 2. CTA -->
+      <section class="hero" style="padding-top:0;">
+        <button class="cta-btn" onclick="startQuiz()">Jetzt Blockaden aufdecken! &#128161;</button>
+      </section>
+
+      <footer>
+        <a href={impressumUrl} target="_blank" rel="noopener">Impressum</a> ·
+        <a href={datenschutzUrl} target="_blank" rel="noopener">Datenschutzerklärung</a>
+      </footer>
+    </div>
+  </div>
+
+  <!-- ===== QUIZ ===== -->
+  <div id="quiz">
+    <div class="q-head"><img src="/images/logo.png" alt="Fit on Time" /></div>
+    <div class="q-progress"><div class="q-bar"><div class="q-fill" id="qf"></div></div><div class="q-num" id="qn">1 / 8</div></div>
+    <div class="q-body">
+
+      <!-- Frage 1 -->
+      <div class="step on" data-s="1">
+        <h2>Was ist dein Hauptziel?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(1,this,'abnehmen')">&#127919; Abnehmen</button>
+          <button class="opt" onclick="nxt(1,this,'straffer')">&#128170; Straffer werden</button>
+          <button class="opt" onclick="nxt(1,this,'energie')">&#9889; Mehr Energie</button>
+          <button class="opt" onclick="nxt(1,this,'gesund')">&#128154; Gesünder leben</button>
+        </div>
+      </div>
+
+      <!-- Frage 2 -->
+      <div class="step" data-s="2">
+        <h2>Wie viele Diäten hast du schon probiert?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(2,this,'keine')">Keine</button>
+          <button class="opt" onclick="nxt(2,this,'1-3')">1–3</button>
+          <button class="opt" onclick="nxt(2,this,'4-6')">4–6</button>
+          <button class="opt" onclick="nxt(2,this,'6+')">Mehr als 6</button>
+        </div>
+      </div>
+
+      <!-- Frage 3 -->
+      <div class="step" data-s="3">
+        <h2>Was ist deine grösste Blockade?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(3,this,'heisshunger')">&#127852; Heisshunger</button>
+          <button class="opt" onclick="nxt(3,this,'zeit')">&#9200; Keine Zeit</button>
+          <button class="opt" onclick="nxt(3,this,'motivation')">&#128170; Motivation</button>
+          <button class="opt" onclick="nxt(3,this,'wissen')">&#128218; Wissen fehlt</button>
+        </div>
+      </div>
+
+      <!-- Frage 4 -->
+      <div class="step" data-s="4">
+        <h2>Wie oft isst du aus Frust oder Langeweile?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(4,this,'taeglich')">Täglich</button>
+          <button class="opt" onclick="nxt(4,this,'mehrmals')">Mehrmals pro Woche</button>
+          <button class="opt" onclick="nxt(4,this,'selten')">Selten</button>
+          <button class="opt" onclick="nxt(4,this,'nie')">Nie</button>
+        </div>
+      </div>
+
+      <!-- Frage 5 -->
+      <div class="step" data-s="5">
+        <h2>Wie gut schläfst du?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(5,this,'schlecht')">&#128564; Schlecht</button>
+          <button class="opt" onclick="nxt(5,this,'mittel')">&#128528; Mittel</button>
+          <button class="opt" onclick="nxt(5,this,'gut')">&#128522; Gut</button>
+          <button class="opt" onclick="nxt(5,this,'sehr_gut')">&#128524; Sehr gut</button>
+        </div>
+      </div>
+
+      <!-- Frage 6 -->
+      <div class="step" data-s="6">
+        <h2>Wie hoch ist dein Stresslevel?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(6,this,'sehr_hoch')">&#128548; Sehr hoch</button>
+          <button class="opt" onclick="nxt(6,this,'hoch')">&#128544; Hoch</button>
+          <button class="opt" onclick="nxt(6,this,'mittel')">&#128528; Mittel</button>
+          <button class="opt" onclick="nxt(6,this,'niedrig')">&#128522; Niedrig</button>
+        </div>
+      </div>
+
+      <!-- Frage 7 -->
+      <div class="step" data-s="7">
+        <h2>Wie viel möchtest du abnehmen?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(7,this,'3-5')">3–5 kg</button>
+          <button class="opt" onclick="nxt(7,this,'6-10')">6–10 kg</button>
+          <button class="opt" onclick="nxt(7,this,'11-20')">11–20 kg</button>
+          <button class="opt" onclick="nxt(7,this,'20+')">Mehr als 20 kg</button>
+        </div>
+      </div>
+
+      <!-- Frage 8 -->
+      <div class="step" data-s="8">
+        <h2>Bist du bereit, jetzt etwas zu ändern?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(8,this,'sofort')">&#128293; Ja, sofort!</button>
+          <button class="opt" onclick="nxt(8,this,'bald')">&#128077; Ja, bald</button>
+          <button class="opt" onclick="nxt(8,this,'vielleicht')">&#129300; Vielleicht</button>
+          <button class="opt" onclick="nxt(8,this,'weiss_nicht')">&#128528; Weiss nicht</button>
+        </div>
+      </div>
+
+      <!-- Loading -->
+      <div class="step ld" data-s="ld">
+        <div class="spinner"></div>
+        <h2>Wir analysieren deine Blockaden...</h2>
+        <p>Das dauert nur ein paar Sekunden</p>
+        <div class="checks">
+          <div class="chk" id="c1"><i>&#10003;</i>Antworten analysiert</div>
+          <div class="chk" id="c2"><i>&#10003;</i>Blockaden identifiziert</div>
+          <div class="chk" id="c3"><i>&#10003;</i>Abnehmpotential berechnet</div>
+          <div class="chk" id="c4"><i>&#10003;</i>Persönlicher Plan erstellt</div>
+        </div>
+      </div>
+
+      <!-- Formular -->
+      <div class="step form" data-s="form">
+        <div class="tag">&#10003; Analyse abgeschlossen!</div>
+        <h2>Trag dich ein, um dein Ergebnis zu sehen</h2>
+        <p class="sub">Dein persönliches Abnehmpotential + deine Top-3 Blockaden warten auf dich!</p>
+        <div class="fields">
+          <div class="field"><span class="ic">&#128075;</span><input type="text" id="fn" placeholder="Dein Vor- und Nachname" required /></div>
+          <div class="field"><span class="ic">&#128236;</span><input type="email" id="em" placeholder="Deine E-Mail" required /></div>
+          <div class="field"><span class="ic">&#128222;</span><span class="pre">+49</span><input type="tel" id="ph" placeholder="Deine Telefonnummer" required /></div>
+        </div>
+        <div class="cb-row">
+          <input type="checkbox" id="ds" />
+          <label for="ds">Ich akzeptiere die <a href={datenschutzUrl} target="_blank">Datenschutzbestimmungen</a></label>
+        </div>
+        <button class="submit" id="sbtn" disabled onclick="send()">Jetzt Ergebnis erfahren! &#10024;</button>
+        <div class="form-proof">
+          <div class="fp-row"><span>&#128274;</span> Deine Daten sind sicher & werden nicht weitergegeben</div>
+          <div class="fp-row"><span class="proof-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span> <b>3.400+</b> zufriedene Teilnehmerinnen</div>
+        </div>
+      </div>
+
+      <!-- Ergebnis -->
+      <div class="step result" data-s="result" style="display:none;">
+        <span class="result-badge">&#10024; Dein Ergebnis</span>
+        <h2 id="result-name">Dein Abnehmpotential</h2>
+
+        <!-- Abnehmpotential Anzeige -->
+        <div class="potential-display">
+          <div class="potential-number" id="potential-kg">–</div>
+          <div class="potential-label">realistisches Abnehmpotential in 4 Monaten</div>
+          <div class="potential-bar"><div class="potential-fill" id="potential-bar-fill" style="width:0%"></div></div>
+        </div>
+
+        <!-- Blockaden-Analyse -->
+        <div class="blockade-analysis" id="blockade-list">
+          <h3>&#128269; Deine Top-3 Blockaden</h3>
+          <!-- Wird dynamisch befüllt -->
+        </div>
+
+        <!-- Empfehlungen -->
+        <div class="result-grid" id="result-tips">
+          <!-- Wird dynamisch befüllt -->
+        </div>
+
+        <a href="https://fitontime.ch" class="result-cta" id="result-cta-btn">Jetzt kostenloses Beratungsgespräch buchen</a>
+        <div class="result-spots">&#128293; Nur noch wenige Plätze diese Woche</div>
+      </div>
+
+    </div>
+  </div>
+
+  <script is:inline>
+    // Blockaden-Quiz Scoring & Logik
+    var quizAnswers = {};
+    var TOTAL = 8;
+
+    // Tracking-Funktion
+    function tk(e, d) {
+      if (window.__lp) {
+        window.__lp.track(e, Object.assign({ page: 'blockadenloeser' }, d || {}), 'fot', 'Blockadenloeser-Quiz');
+      }
+      if (window.__lp) {
+        if (e === 'quiz_start') window.__lp.meta('ViewContent', { content_name: 'Blockadenloeser Quiz Start', currency: 'EUR' });
+        if (e === 'quiz_complete') window.__lp.meta('CompleteRegistration', { content_name: 'Blockadenloeser Quiz Complete', currency: 'EUR' });
+        if (e === 'lead_submit') window.__lp.meta('Lead', { content_name: 'Blockadenloeser Lead', currency: 'EUR' });
+      }
+      // TikTok-Tracking Placeholder
+      // if (window.ttq) { ... }
+    }
+    tk('page_view');
+
+    function startQuiz() {
+      tk('quiz_start');
+      document.getElementById('lp').style.display = 'none';
+      document.getElementById('quiz').classList.add('on');
+    }
+
+    function nxt(s, el, val) {
+      quizAnswers['q' + s] = val;
+      tk('quiz_answer', { detail: 'q' + s + '_' + val });
+
+      document.querySelector('.step[data-s="' + s + '"]').classList.remove('on');
+      if (s < TOTAL) {
+        document.querySelector('.step[data-s="' + (s + 1) + '"]').classList.add('on');
+        var p = Math.round(((s) / TOTAL) * 100);
+        document.getElementById('qf').style.width = p + '%';
+        document.getElementById('qn').textContent = (s + 1) + ' / ' + TOTAL;
+      } else {
+        tk('quiz_complete');
+        load();
+      }
+    }
+
+    function load() {
+      var ld = document.querySelector('.step[data-s="ld"]');
+      ld.classList.add('on');
+      document.getElementById('qf').style.width = '100%';
+      document.getElementById('qn').textContent = 'Auswertung...';
+      setTimeout(function(){ document.getElementById('c1').classList.add('show'); }, 600);
+      setTimeout(function(){ document.getElementById('c2').classList.add('show'); }, 1400);
+      setTimeout(function(){ document.getElementById('c3').classList.add('show'); }, 2200);
+      setTimeout(function(){ document.getElementById('c4').classList.add('show'); }, 3000);
+      setTimeout(function(){
+        ld.classList.remove('on');
+        document.querySelector('.step[data-s="form"]').classList.add('on');
+        document.getElementById('qn').textContent = 'Fast fertig';
+      }, 3800);
+    }
+
+    // Abnehmpotential berechnen basierend auf Antworten
+    function calcPotential() {
+      // Basis-KG basierend auf Abnehmziel (Q7)
+      var ranges = { '3-5': [3,5], '6-10': [5,8], '11-20': [7,14], '20+': [10,18] };
+      var range = ranges[quizAnswers.q7] || [5,10];
+      var minKg = range[0], maxKg = range[1];
+
+      // Bereitschafts-Modifier (Q8)
+      var readiness = { sofort: 1.0, bald: 0.85, vielleicht: 0.7, weiss_nicht: 0.6 };
+      var mod = readiness[quizAnswers.q8] || 0.8;
+
+      // Schlaf-Modifier (Q5) — guter Schlaf = bessere Ergebnisse
+      var sleepMod = { schlecht: 0.8, mittel: 0.9, gut: 1.0, sehr_gut: 1.05 };
+      mod *= (sleepMod[quizAnswers.q5] || 0.9);
+
+      // Stress-Modifier (Q6) — weniger Stress = bessere Ergebnisse
+      var stressMod = { sehr_hoch: 0.8, hoch: 0.85, mittel: 0.95, niedrig: 1.0 };
+      mod *= (stressMod[quizAnswers.q6] || 0.9);
+
+      var resultMin = Math.round(minKg * mod);
+      var resultMax = Math.round(maxKg * mod);
+      if (resultMin < 2) resultMin = 2;
+      if (resultMax <= resultMin) resultMax = resultMin + 2;
+
+      return { min: resultMin, max: resultMax };
+    }
+
+    // Blockaden identifizieren basierend auf Antworten
+    function getBlockades() {
+      var blockades = [];
+
+      // Blockade 1: Heisshunger / Emotional Eating (Q3 + Q4)
+      if (quizAnswers.q3 === 'heisshunger' || quizAnswers.q4 === 'taeglich' || quizAnswers.q4 === 'mehrmals') {
+        blockades.push({
+          title: 'Emotionales Essen & Heisshunger',
+          icon: '&#127852;',
+          desc: 'Du isst oft aus emotionalen Gründen — nicht aus Hunger. Das führt zu unkontrollierten Kalorienüberschüssen, die jede Diät sabotieren.',
+          tip: 'Lösung: Blutzucker stabilisieren durch proteinreiches Frühstück, 3 feste Mahlzeiten und bewusste Stress-Bewältigung statt Essen.'
+        });
+      }
+
+      // Blockade 2: Schlafmangel (Q5)
+      if (quizAnswers.q5 === 'schlecht' || quizAnswers.q5 === 'mittel') {
+        blockades.push({
+          title: 'Schlafmangel stört deine Hormone',
+          icon: '&#128164;',
+          desc: 'Schlechter Schlaf erhöht Ghrelin (Hungerhormon) und senkt Leptin (Sättigungshormon). Dein Körper verlangt dadurch nach mehr Kalorien.',
+          tip: 'Lösung: Schlafhygiene verbessern — kein Bildschirm 1h vor dem Schlafen, feste Schlafzeiten, Magnesium als Unterstützung.'
+        });
+      }
+
+      // Blockade 3: Stress (Q6)
+      if (quizAnswers.q6 === 'sehr_hoch' || quizAnswers.q6 === 'hoch') {
+        blockades.push({
+          title: 'Chronischer Stress blockiert Fettabbau',
+          icon: '&#128548;',
+          desc: 'Hohes Cortisol fördert Bauchfett-Einlagerung und verhindert den Abbau. Dein Körper ist im "Überlebensmodus" und hält an Reserven fest.',
+          tip: 'Lösung: Tägliche 10-min Atemübung, Spaziergänge in der Natur, Koffein reduzieren, bewusste Pausen im Alltag einbauen.'
+        });
+      }
+
+      // Blockade 4: Zeitmangel (Q3)
+      if (quizAnswers.q3 === 'zeit') {
+        blockades.push({
+          title: 'Zeitmangel führt zu schlechten Entscheidungen',
+          icon: '&#9200;',
+          desc: 'Wenn keine Zeit für Planung bleibt, greifst du zu Fertigprodukten und Fast Food. Das macht jede Ernährungsumstellung unmöglich.',
+          tip: 'Lösung: Meal Prep am Sonntag (2h reichen!), einfache 15-Minuten-Rezepte, gesunde Snacks immer griffbereit.'
+        });
+      }
+
+      // Blockade 5: Fehlende Motivation (Q3)
+      if (quizAnswers.q3 === 'motivation') {
+        blockades.push({
+          title: 'Motivation allein reicht nicht',
+          icon: '&#128170;',
+          desc: 'Motivation ist wie ein Feuer — sie brennt hell, aber erlischt schnell. Du brauchst Systeme und Gewohnheiten, nicht nur Willenskraft.',
+          tip: 'Lösung: Kleine, tägliche Gewohnheiten statt radikaler Änderungen. Eine Accountability-Partnerin und messbare Zwischenziele.'
+        });
+      }
+
+      // Blockade 6: Fehlendes Wissen (Q3)
+      if (quizAnswers.q3 === 'wissen') {
+        blockades.push({
+          title: 'Information Overload & falsches Wissen',
+          icon: '&#128218;',
+          desc: 'Zu viele widersprüchliche Ratschläge im Internet verwirren dich. Du weisst nicht, was WIRKLICH für deinen Körper funktioniert.',
+          tip: 'Lösung: Ein klarer, personalisierter Plan von Experten — kein YouTube-Roulette. Fokus auf die Basics, die nachweislich wirken.'
+        });
+      }
+
+      // Blockade 7: Diät-Vorgeschichte (Q2)
+      if (quizAnswers.q2 === '4-6' || quizAnswers.q2 === '6+') {
+        blockades.push({
+          title: 'Dein Stoffwechsel ist durch Diäten geschädigt',
+          icon: '&#9888;',
+          desc: 'Viele gescheiterte Diäten haben deinen Stoffwechsel verlangsamt. Dein Körper hat gelernt, mit weniger Kalorien auszukommen.',
+          tip: 'Lösung: Reverse Dieting — Kalorien langsam steigern, Stoffwechsel reparieren. Krafttraining für mehr Muskelmasse und höheren Grundumsatz.'
+        });
+      }
+
+      // Falls keine spezifischen Blockaden: Standard-Blockaden
+      if (blockades.length === 0) {
+        blockades.push(
+          { title: 'Fehlende Struktur im Alltag', icon: '&#128203;', desc: 'Ohne klaren Plan isst du unregelmässig und triffst spontane Entscheidungen, die dich vom Ziel abhalten.', tip: 'Lösung: Feste Essenszeiten, Wochenplan und eine klare Morgenroutine als Fundament.' },
+          { title: 'Zu wenig Bewegung im Alltag', icon: '&#128694;', desc: 'Sitzender Lebensstil senkt deinen Kalorienverbrauch drastisch — selbst wenn du "gesund" isst, nimmst du nicht ab.', tip: 'Lösung: 8.000 Schritte pro Tag als Basis, kurze Bewegungspausen alle 2 Stunden, aktiver Arbeitsweg.' },
+          { title: 'Unterschätzte Kalorienmenge', icon: '&#127860;', desc: 'Die meisten Menschen unterschätzen ihre tägliche Kalorienaufnahme um 30-50%. Kleine Snacks summieren sich.', tip: 'Lösung: 2 Wochen Food-Tracking, bewusst Portionsgrössen lernen, versteckte Kalorien in Getränken eliminieren.' }
+        );
+      }
+
+      // Maximal 3 Blockaden zurückgeben
+      return blockades.slice(0, 3);
+    }
+
+    // Ergebnis-Seite rendern
+    function showResult(userName) {
+      var pot = calcPotential();
+      var blockades = getBlockades();
+
+      // Name personalisieren
+      var firstName = userName.split(' ')[0];
+      document.getElementById('result-name').textContent = firstName + ', dein Abnehmpotential';
+
+      // KG-Anzeige
+      document.getElementById('potential-kg').textContent = pot.min + '–' + pot.max + ' kg';
+
+      // Progress-Bar (proportional zum Maximum)
+      var fillPercent = Math.min(Math.round((pot.max / 18) * 100), 100);
+      setTimeout(function() {
+        document.getElementById('potential-bar-fill').style.width = fillPercent + '%';
+      }, 300);
+
+      // Blockaden rendern
+      var blockadeHtml = '<h3>&#128269; Deine Top-3 Blockaden</h3>';
+      for (var i = 0; i < blockades.length; i++) {
+        var b = blockades[i];
+        blockadeHtml += '<div class="blockade-item">' +
+          '<div class="b-title"><span class="b-num">' + (i + 1) + '</span>' + b.icon + ' ' + b.title + '</div>' +
+          '<div class="b-desc">' + b.desc + '</div>' +
+          '<div class="b-tip"><strong>&#10024; ' + b.tip + '</strong></div>' +
+          '</div>';
+      }
+      document.getElementById('blockade-list').innerHTML = blockadeHtml;
+
+      // Empfehlungs-Karten basierend auf Antworten
+      var tips = '';
+      tips += '<div class="result-card"><div class="rc-icon">&#127860;</div><h4>Ernährung</h4><p>Kein Kalorienzählen — sondern die richtigen Lebensmittel zur richtigen Zeit. Dein Körper braucht Nährstoffe, kein Defizit.</p></div>';
+      tips += '<div class="result-card"><div class="rc-icon">&#128170;</div><h4>Bewegung</h4><p>Kurze, effektive Einheiten statt stundenlangem Cardio. 3x pro Woche reicht, wenn es die richtigen Übungen sind.</p></div>';
+
+      if (quizAnswers.q5 === 'schlecht' || quizAnswers.q5 === 'mittel') {
+        tips += '<div class="result-card"><div class="rc-icon">&#128164;</div><h4>Schlaf</h4><p>Schlaf ist dein geheimer Abnehm-Booster. 7-8 Stunden regulieren Hunger und Stoffwechsel automatisch.</p></div>';
+      } else {
+        tips += '<div class="result-card"><div class="rc-icon">&#9203;</div><h4>Timing</h4><p>Wann du isst ist fast so wichtig wie was du isst. Feste Essenszeiten helfen deinem Stoffwechsel in den Rhythmus.</p></div>';
+      }
+
+      if (quizAnswers.q6 === 'sehr_hoch' || quizAnswers.q6 === 'hoch') {
+        tips += '<div class="result-card"><div class="rc-icon">&#128524;</div><h4>Stressabbau</h4><p>Ohne Stressmanagement bremst Cortisol deinen Fettabbau. 10 Minuten Atemübung pro Tag machen den Unterschied.</p></div>';
+      } else {
+        tips += '<div class="result-card"><div class="rc-icon">&#127775;</div><h4>Mindset</h4><p>Langfristiger Erfolg beginnt im Kopf. Kleine tägliche Gewohnheiten schlagen jede radikale Diät.</p></div>';
+      }
+
+      document.getElementById('result-tips').innerHTML = tips;
+    }
+
+    // Checkbox-Handler
+    document.getElementById('ds').addEventListener('change', function() {
+      document.getElementById('sbtn').disabled = !this.checked;
+    });
+
+    function send() {
+      var fn = document.getElementById('fn').value.trim();
+      var em = document.getElementById('em').value.trim();
+      var ph = document.getElementById('ph').value.trim();
+      if (!fn || !em || !ph) {
+        if (!fn) document.getElementById('fn').parentElement.style.borderColor = 'var(--red)';
+        if (!em) document.getElementById('em').parentElement.style.borderColor = 'var(--red)';
+        if (!ph) document.getElementById('ph').parentElement.style.borderColor = 'var(--red)';
+        return;
+      }
+      var btn = document.getElementById('sbtn');
+      btn.disabled = true;
+      btn.textContent = 'Wird ausgewertet...';
+
+      var pot = calcPotential();
+      tk('lead_submit', { detail: fn + ' — ' + pot.min + '-' + pot.max + 'kg' });
+
+      // Lead an Google Sheets senden
+      fetch('/api/sheets', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: fn,
+          email: em,
+          phone: ph ? '+49' + ph : '',
+          answers: Object.assign({}, quizAnswers, {
+            potential_min: pot.min,
+            potential_max: pot.max,
+            blockades: JSON.stringify(getBlockades().map(function(b){ return b.title; }))
+          })
+        })
+      }).catch(function(){});
+
+      setTimeout(function(){
+        showResult(fn);
+        document.querySelector('.step[data-s="form"]').classList.remove('on');
+        document.querySelector('.step[data-s="result"]').style.display = 'block';
+        document.querySelector('.step[data-s="result"]').classList.add('on');
+        document.getElementById('qn').textContent = 'Dein Ergebnis';
+        tk('result_shown', { detail: pot.min + '-' + pot.max + 'kg' });
+      }, 1200);
+    }
+  </script>
+
+  <CookieBanner
+    metaPixelId="1349136525891811"
+    consentKey="fot_blockadenloeser_consent"
+    impressumUrl={impressumUrl}
+    datenschutzUrl={datenschutzUrl}
+  />
+</body>
+</html>
