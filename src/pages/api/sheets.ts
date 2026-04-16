@@ -1,6 +1,5 @@
 import type { APIRoute } from 'astro';
 import { google } from 'googleapis';
-import { Resend } from 'resend';
 
 const SHEET_ID = '1pKSK2fB3tjL9sxHMbM95a3NGdHZyeW0g29sIYnzh4js';
 
@@ -60,21 +59,22 @@ export const POST: APIRoute = async ({ request }) => {
       requestBody: { values: [row] },
     });
 
-    const resend = new Resend(import.meta.env.RESEND_API_KEY);
-    await resend.emails.send({
-      from: 'Fit on Time Leads <onboarding@resend.dev>',
-      to: 'analyse@fitontime.ch',
-      subject: `Neuer Lead: ${data.name}`,
-      html: `
-        <h2>Neuer Lead eingegangen</h2>
-        <table style="border-collapse:collapse">
-          <tr><td style="padding:4px 12px 4px 0;font-weight:bold">Name</td><td>${data.name}</td></tr>
-          <tr><td style="padding:4px 12px 4px 0;font-weight:bold">E-Mail</td><td>${data.email}</td></tr>
-          <tr><td style="padding:4px 12px 4px 0;font-weight:bold">Telefon</td><td>${data.phone}</td></tr>
-          <tr><td style="padding:4px 12px 4px 0;font-weight:bold">Datum</td><td>${datum}</td></tr>
-        </table>
-      `,
-    }).catch((e: any) => console.error('Resend Fehler:', e));
+    // Lead an zentrale Dashboard-API senden (Notification + CRM laeuft dort)
+    const dashUrl = import.meta.env.DASHBOARD_LEADS_URL;
+    const dashKey = import.meta.env.DASHBOARD_LEADS_KEY;
+    if (dashUrl && dashKey) {
+      fetch(dashUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-api-key': dashKey },
+        body: JSON.stringify({
+          name: data.name,
+          email: data.email,
+          phone: data.phone || '',
+          lp_slug: 'schilddruesen-report',
+          quiz_answers: data.answers || {},
+        }),
+      }).catch((e: any) => console.error('Dashboard Lead Fehler:', e));
+    }
 
     return new Response(JSON.stringify({ ok: true }), {
       status: 200,
