@@ -353,12 +353,12 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
     // Tracking (gleiches Pattern wie doshatyp)
     function tk(e, d) {
       if (window.__lp) {
-        window.__lp.track(e, Object.assign({ page: 'stoffwechsel-test' }, d || {}), 'fot', 'Stoffwechsel-Profil Quiz');
+        window.__lp.track(e, Object.assign({ page: 'stoffwechsel-test' }, d || {}), 'fot', 'Stoffwechsel Test');
       }
       if (window.__lp) {
-        if (e === 'quiz_start') window.__lp.meta('ViewContent', { content_name: 'Stoffwechsel Quiz Start', currency: 'EUR' });
-        if (e === 'quiz_complete') window.__lp.meta('CompleteRegistration', { content_name: 'Stoffwechsel Quiz Complete', currency: 'EUR' });
-        if (e === 'lead_submit') window.__lp.meta('Lead', { content_name: 'Stoffwechsel Lead', currency: 'EUR' });
+        if (e === 'quiz_start') window.__lp.meta('ViewContent', { content_name: 'Stoffwechsel Test Quiz Start', currency: 'EUR' });
+        if (e === 'quiz_complete') window.__lp.meta('CompleteRegistration', { content_name: 'Stoffwechsel Test Quiz Complete', currency: 'EUR' });
+        if (e === 'lead_submit') window.__lp.meta('Lead', { content_name: 'Stoffwechsel Test Lead', currency: 'EUR' });
       }
     }
     tk('page_view');

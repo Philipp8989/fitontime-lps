@@ -506,12 +506,12 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
     // Tracking
     function tk(e, d) {
       if (window.__lp) {
-        window.__lp.track(e, Object.assign({ page: 'doshatyp' }, d || {}), 'fot', 'Doshatyp-Quiz');
+        window.__lp.track(e, Object.assign({ page: 'blockaden-report' }, d || {}), 'fot', 'Blockaden Report');
       }
       if (window.__lp) {
-        if (e === 'quiz_start') window.__lp.meta('ViewContent', { content_name: 'Doshatyp Quiz Start', currency: 'EUR' });
-        if (e === 'quiz_complete') window.__lp.meta('CompleteRegistration', { content_name: 'Doshatyp Quiz Complete', currency: 'EUR' });
-        if (e === 'lead_submit') window.__lp.meta('Lead', { content_name: 'Doshatyp Lead', currency: 'EUR' });
+        if (e === 'quiz_start') window.__lp.meta('ViewContent', { content_name: 'Blockaden Report Quiz Start', currency: 'EUR' });
+        if (e === 'quiz_complete') window.__lp.meta('CompleteRegistration', { content_name: 'Blockaden Report Quiz Complete', currency: 'EUR' });
+        if (e === 'lead_submit') window.__lp.meta('Lead', { content_name: 'Blockaden Report Lead', currency: 'EUR' });
       }
     }
     tk('page_view');
@@ -607,7 +607,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
 
   <CookieBanner
     metaPixelId="1349136525891811"
-    consentKey="fot_doshatyp_consent"
+    consentKey="fot_blockaden_report_consent"
     impressumUrl={impressumUrl}
     datenschutzUrl={datenschutzUrl}
   />

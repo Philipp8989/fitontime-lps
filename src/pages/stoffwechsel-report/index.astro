@@ -490,12 +490,12 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
     // Tracking-Helfer
     function tk(e, d) {
       if (window.__lp) {
-        window.__lp.track(e, Object.assign({ page: 'blockaden-loesen' }, d || {}), 'fot', 'Stoffwechsel-Report');
+        window.__lp.track(e, Object.assign({ page: 'stoffwechsel-report' }, d || {}), 'fot', 'Stoffwechsel Report');
       }
       if (window.__lp) {
-        if (e === 'quiz_start') window.__lp.meta('ViewContent', { content_name: 'Stoffwechsel-Report Quiz Start', currency: 'CHF' });
-        if (e === 'quiz_complete') window.__lp.meta('CompleteRegistration', { content_name: 'Stoffwechsel-Report Quiz Complete', currency: 'CHF' });
-        if (e === 'lead_submit') window.__lp.meta('Lead', { content_name: 'Stoffwechsel-Report Lead', currency: 'CHF' });
+        if (e === 'quiz_start') window.__lp.meta('ViewContent', { content_name: 'Stoffwechsel Report Quiz Start', currency: 'CHF' });
+        if (e === 'quiz_complete') window.__lp.meta('CompleteRegistration', { content_name: 'Stoffwechsel Report Quiz Complete', currency: 'CHF' });
+        if (e === 'lead_submit') window.__lp.meta('Lead', { content_name: 'Stoffwechsel Report Lead', currency: 'CHF' });
       }
     }
     tk('page_view');
@@ -584,7 +584,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
 
   <CookieBanner
     metaPixelId="1349136525891811"
-    consentKey="fot_blockaden_consent"
+    consentKey="fot_stoffwechsel_report_consent"
     impressumUrl={impressumUrl}
     datenschutzUrl={datenschutzUrl}
   />

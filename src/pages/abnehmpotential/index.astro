@@ -556,12 +556,12 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
     // Tracking-Funktion
     function tk(e, d) {
       if (window.__lp) {
-        window.__lp.track(e, Object.assign({ page: 'blockadenloeser' }, d || {}), 'fot', 'Blockadenloeser-Quiz');
+        window.__lp.track(e, Object.assign({ page: 'abnehmpotential' }, d || {}), 'fot', 'Abnehmpotential');
       }
       if (window.__lp) {
-        if (e === 'quiz_start') window.__lp.meta('ViewContent', { content_name: 'Blockadenloeser Quiz Start', currency: 'EUR' });
-        if (e === 'quiz_complete') window.__lp.meta('CompleteRegistration', { content_name: 'Blockadenloeser Quiz Complete', currency: 'EUR' });
-        if (e === 'lead_submit') window.__lp.meta('Lead', { content_name: 'Blockadenloeser Lead', currency: 'EUR' });
+        if (e === 'quiz_start') window.__lp.meta('ViewContent', { content_name: 'Abnehmpotential Quiz Start', currency: 'EUR' });
+        if (e === 'quiz_complete') window.__lp.meta('CompleteRegistration', { content_name: 'Abnehmpotential Quiz Complete', currency: 'EUR' });
+        if (e === 'lead_submit') window.__lp.meta('Lead', { content_name: 'Abnehmpotential Lead', currency: 'EUR' });
       }
       // TikTok-Tracking Placeholder
       // if (window.ttq) { ... }
@@ -821,7 +821,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
 
   <CookieBanner
     metaPixelId="1349136525891811"
-    consentKey="fot_blockadenloeser_consent"
+    consentKey="fot_abnehmpotential_consent"
     impressumUrl={impressumUrl}
     datenschutzUrl={datenschutzUrl}
   />
