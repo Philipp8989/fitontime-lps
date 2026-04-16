@@ -1,14 +1,21 @@
 ---
-// DSGVO-konformer Cookie-Banner
-// Lädt Tracking-Scripts (Meta Pixel, Hyros) NUR nach Consent.
-// Consent wird in localStorage persistiert ("fot_consent" = "all" | "essential").
+// DSGVO-konformer Cookie-Banner — LP Machine (v2)
+// Meta Pixel + Hyros NUR nach Consent.
+// Verbesserungen v2: event_id, sendBeacon, noscript-Fallback, consent-Key pro Kunde
 export interface Props {
   metaPixelId?: string;
   hyrosPh?: string;
   impressumUrl: string;
   datenschutzUrl: string;
+  consentKey?: string;
 }
-const { metaPixelId = '', hyrosPh = '', impressumUrl, datenschutzUrl } = Astro.props;
+const {
+  metaPixelId = '',
+  hyrosPh = '',
+  impressumUrl,
+  datenschutzUrl,
+  consentKey = 'lp_consent',
+} = Astro.props;
 ---
 <div id="cc-banner" class="cc-banner" hidden>
   <div class="cc-inner">
@@ -32,6 +39,15 @@ const { metaPixelId = '', hyrosPh = '', impressumUrl, datenschutzUrl } = Astro.p
   </div>
 </div>
 
+{/* noscript-Fallback: feuert PageView ohne JS (DSGVO: nur wenn Consent vorliegt, daher minimal) */}
+{metaPixelId && (
+  <noscript>
+    <img height="1" width="1" style="display:none"
+      src={`https://www.facebook.com/tr?id=${metaPixelId}&ev=PageView&noscript=1`}
+      alt="" />
+  </noscript>
+)}
+
 <style is:global>
   .cc-banner {
     position: fixed;
@@ -39,12 +55,12 @@ const { metaPixelId = '', hyrosPh = '', impressumUrl, datenschutzUrl } = Astro.p
     left: 0;
     right: 0;
     z-index: 99999;
-    background: rgba(15, 15, 20, 0.97);
+    background: rgba(10, 10, 10, 0.97);
     backdrop-filter: saturate(140%) blur(8px);
     -webkit-backdrop-filter: saturate(140%) blur(8px);
     border-top: 1px solid rgba(255, 255, 255, 0.08);
-    color: #f0eff2;
-    font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+    color: #ffffff;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
     animation: cc-up .35s ease-out;
   }
   @keyframes cc-up { from { transform: translateY(100%); } to { transform: translateY(0); } }
@@ -55,28 +71,28 @@ const { metaPixelId = '', hyrosPh = '', impressumUrl, datenschutzUrl } = Astro.p
     display: grid;
     gap: 14px;
   }
-  .cc-text h3 { font-size: 15px; font-weight: 600; margin-bottom: 6px; color: #fff; }
-  .cc-text p { font-size: 13px; line-height: 1.55; color: #a09cac; }
-  .cc-text a { color: #d4949f; text-decoration: underline; }
+  .cc-text h3 { font-size: 15px; font-weight: 700; margin-bottom: 6px; color: #fff; }
+  .cc-text p { font-size: 13px; line-height: 1.55; color: #999999; }
+  .cc-text a { color: #FF8534; text-decoration: underline; }
   .cc-actions { display: flex; gap: 10px; flex-wrap: wrap; }
   .cc-btn {
     flex: 1 1 auto;
     min-width: 140px;
     padding: 12px 18px;
     border-radius: 10px;
-    font: 600 14px/1 'DM Sans', system-ui, sans-serif;
+    font: 700 14px/1 'Inter', system-ui, sans-serif;
     cursor: pointer;
     border: 0;
-    transition: transform .15s, opacity .15s;
+    transition: transform .15s, opacity .15s, background .15s;
   }
   .cc-btn:active { transform: scale(.98); }
-  .cc-primary { background: #c4697a; color: #fff; }
-  .cc-primary:hover { background: #d4949f; }
-  .cc-ghost { background: transparent; color: #f0eff2; border: 1px solid rgba(255, 255, 255, 0.18); }
+  .cc-primary { background: #E8630A; color: #fff; }
+  .cc-primary:hover { background: #FF8534; }
+  .cc-ghost { background: transparent; color: #ffffff; border: 1px solid rgba(255, 255, 255, 0.18); }
   .cc-ghost:hover { border-color: rgba(255, 255, 255, 0.32); }
-  .cc-links { font-size: 11px; color: #6b6778; text-align: center; display: flex; gap: 8px; justify-content: center; }
-  .cc-links a { color: #6b6778; text-decoration: none; }
-  .cc-links a:hover { color: #a09cac; }
+  .cc-links { font-size: 11px; color: #666; text-align: center; display: flex; gap: 8px; justify-content: center; }
+  .cc-links a { color: #666; text-decoration: none; }
+  .cc-links a:hover { color: #999; }
   @media (min-width: 720px) {
     .cc-inner { grid-template-columns: 1fr auto; align-items: center; padding: 22px 28px 18px; }
     .cc-text { grid-column: 1 / 2; }
@@ -86,12 +102,17 @@ const { metaPixelId = '', hyrosPh = '', impressumUrl, datenschutzUrl } = Astro.p
   }
 </style>
 
-<script is:inline define:vars={{ metaPixelId, hyrosPh }}>
+<script is:inline define:vars={{ metaPixelId, hyrosPh, consentKey }}>
   (function () {
-    var KEY = 'fot_consent';
+    var KEY = consentKey;
     var banner = document.getElementById('cc-banner');
     var current = null;
     try { current = localStorage.getItem(KEY); } catch (e) {}
+
+    // Event-ID Generator fuer Meta-Deduplizierung
+    function eid() {
+      return Date.now() + '-' + Math.random().toString(36).slice(2, 10);
+    }
 
     function loadMetaPixel() {
       if (!metaPixelId || window.fbq) return;
@@ -101,7 +122,7 @@ const { metaPixelId = '', hyrosPh = '', impressumUrl, datenschutzUrl } = Astro.p
       t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s);}(window,
       document,'script','https://connect.facebook.net/en_US/fbevents.js');
       window.fbq('init', metaPixelId);
-      window.fbq('track', 'PageView');
+      window.fbq('track', 'PageView', {}, { eventID: eid() });
     }
 
     function loadHyros() {
@@ -109,7 +130,7 @@ const { metaPixelId = '', hyrosPh = '', impressumUrl, datenschutzUrl } = Astro.p
       var s = document.createElement('script');
       s.type = 'text/javascript';
       s.async = true;
-      s.src = 'https://180866.t.hyros.com/v1/lst/universal-script?ph=' + hyrosPh + '&tag=!clicked&ref_url=' + encodeURIComponent(document.URL);
+      s.src = 'https://t.hyros.com/v1/lst/universal-script?ph=' + hyrosPh;
       document.head.appendChild(s);
     }
 
@@ -118,14 +139,13 @@ const { metaPixelId = '', hyrosPh = '', impressumUrl, datenschutzUrl } = Astro.p
       if (banner) banner.hidden = true;
       if (level === 'all') {
         loadMetaPixel();
+        loadHyros();
       }
     }
 
-    // Hyros zählt als essenziell (First-Party-Attribution) — lädt immer
-    loadHyros();
-
     if (current === 'all') {
       loadMetaPixel();
+      loadHyros();
     } else if (current !== 'essential') {
       if (banner) banner.hidden = false;
     }
@@ -135,5 +155,39 @@ const { metaPixelId = '', hyrosPh = '', impressumUrl, datenschutzUrl } = Astro.p
         applyConsent(el.getAttribute('data-cc'));
       });
     });
+
+    // Globale Tracking-Helfer auf window fuer inline-Scripts
+    window.__lp = {
+      eid: eid,
+      // Meta-Event mit event_id feuern
+      meta: function(eventName, params) {
+        var id = eid();
+        if (typeof fbq === 'function') {
+          fbq('track', eventName, params || {}, { eventID: id });
+        }
+        return id;
+      },
+      // Dashboard-Event per sendBeacon (navigations-sicher)
+      track: function(event, data, funnel, funnelName) {
+        var sid = sessionStorage.getItem('lp_sid');
+        if (!sid) { sid = crypto.randomUUID(); sessionStorage.setItem('lp_sid', sid); }
+        var payload = JSON.stringify(Object.assign({
+          event: event,
+          sessionId: sid,
+          funnel: funnel || '',
+          funnelName: funnelName || '',
+          timestamp: new Date().toISOString(),
+        }, data || {}));
+        var sent = navigator.sendBeacon('/api/track', new Blob([payload], { type: 'application/json' }));
+        if (!sent) {
+          fetch('/api/track', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: payload,
+            keepalive: true,
+          }).catch(function(){});
+        }
+      }
+    };
   })();
 </script>

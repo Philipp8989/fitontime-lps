@@ -636,12 +636,15 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
     // Quiz-Antworten speichern
     var quizAnswers = {};
 
+    // Tracking-Helfer — nutzt window.__lp aus CookieBanner
     function tk(e, d) {
-      fetch('/api/track', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ event: e, page: 'schilddruesen-report', ...d }) }).catch(function(){});
-      if (typeof fbq !== 'undefined') {
-        if (e === 'quiz_start') fbq('track', 'ViewContent');
-        if (e === 'quiz_complete') fbq('track', 'CompleteRegistration');
-        if (e === 'lead_submit') fbq('track', 'Lead');
+      if (window.__lp) {
+        window.__lp.track(e, Object.assign({ page: 'schilddruesen-report' }, d || {}), 'fot', 'Schilddruesen-Report');
+      }
+      if (window.__lp) {
+        if (e === 'quiz_start') window.__lp.meta('ViewContent', { content_name: 'Schilddruesen-Report Quiz Start', currency: 'EUR' });
+        if (e === 'quiz_complete') window.__lp.meta('CompleteRegistration', { content_name: 'Schilddruesen-Report Quiz Complete', currency: 'EUR' });
+        if (e === 'lead_submit') window.__lp.meta('Lead', { content_name: 'Schilddruesen-Report Lead', currency: 'EUR' });
       }
     }
     tk('page_view');
@@ -737,6 +740,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
   <CookieBanner
     metaPixelId="1349136525891811"
     hyrosPh="689a71ca1ab3be1cb1caddbe6b7902a4ad2c51a228f4ec9ea7fef3123a705f63"
+    consentKey="fot_consent"
     impressumUrl={impressumUrl}
     datenschutzUrl={datenschutzUrl}
   />
