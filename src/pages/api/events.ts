@@ -62,18 +62,29 @@ export const GET: APIRoute = async ({ url }) => {
     const counts = { views: 0, leads: 0, sessions: new Set<string>() };
     const byDay = new Map<string, { views: number; leads: number }>();
     const byLp = new Map<string, { views: number; leads: number; sessions: Set<string> }>();
+    // byLpSteps: pro LP + Step → unique sessions (fuer Funnel-Visualisierung)
+    const byLpSteps = new Map<string, Map<string, Set<string>>>();
 
     for (const e of results) {
       const ev = (e.event || '').toLowerCase();
+      const step = (e.step || '').toLowerCase();
       const day = (e.timestamp || '').slice(0, 10);
       const lp = e.lp || 'unknown';
 
       if (!byDay.has(day)) byDay.set(day, { views: 0, leads: 0 });
       if (!byLp.has(lp)) byLp.set(lp, { views: 0, leads: 0, sessions: new Set() });
+      if (!byLpSteps.has(lp)) byLpSteps.set(lp, new Map());
 
       if (e.session) {
         counts.sessions.add(e.session);
         byLp.get(lp)!.sessions.add(e.session);
+        // Step-Tracking: sowohl "step" Feld als auch "event" Feld als Step zaehlen
+        const stepKey = step || ev;
+        if (stepKey) {
+          const stepMap = byLpSteps.get(lp)!;
+          if (!stepMap.has(stepKey)) stepMap.set(stepKey, new Set());
+          stepMap.get(stepKey)!.add(e.session);
+        }
       }
 
       const isView = ev === 'page_view' || ev === 'view' || ev === 'quiz_start';
@@ -100,6 +111,10 @@ export const GET: APIRoute = async ({ url }) => {
       byDay: Array.from(byDay.entries()).sort(([a], [b]) => a.localeCompare(b)).map(([day, v]) => [day, v]),
       byLp: Array.from(byLp.entries()).map(([lp, v]) => ({
         lp, views: v.views, leads: v.leads, sessions: v.sessions.size,
+      })),
+      byLpSteps: Array.from(byLpSteps.entries()).map(([lp, stepMap]) => ({
+        lp,
+        steps: Object.fromEntries(Array.from(stepMap.entries()).map(([s, set]) => [s, set.size])),
       })),
     };
     return new Response(JSON.stringify(result), { headers: cacheHeaders });
