@@ -1,57 +1,58 @@
-// Events-API: Dashboard-Daten lesen (Key-geschützt)
-// Optimiert: filtert Blobs nach Filename-Timestamp VOR dem Fetch — spart N+1 latenz
+// Events-API: Dashboard-Daten lesen (Key-geschuetzt)
+// Liest events-daily/YYYY-MM-DD.ndjson — 1 Blob pro Tag, maximal (days) Fetches
 import type { APIRoute } from 'astro';
 import { list } from '@vercel/blob';
 
 export const prerender = false;
+export const config = { maxDuration: 30 };
+
+function ymd(d: Date) {
+  return d.toISOString().slice(0, 10);
+}
 
 export const GET: APIRoute = async ({ url }) => {
+  try {
   const key = url.searchParams.get('key');
   if (!key || key !== import.meta.env.DASHBOARD_KEY) {
     return new Response('Unauthorized', { status: 401 });
   }
 
   const days = parseInt(url.searchParams.get('days') || '7');
-  const cutoffMs = Date.now() - days * 86400000;
-  const cutoffStr = new Date(cutoffMs).toISOString();
   const summary = url.searchParams.get('summary') === 'true';
 
-  // Schritt 1: Blob-Metadaten paginiert sammeln (schnell, nur Metadata)
-  const relevant: { url: string; pathname: string }[] = [];
+  // Welche Tage brauchen wir?
+  const wantDays = new Set<string>();
+  for (let i = 0; i < days; i++) {
+    const d = new Date();
+    d.setUTCDate(d.getUTCDate() - i);
+    wantDays.add(ymd(d));
+  }
+
+  // Alle daily-Blobs listen, nur relevante fetchen
+  const relevant: string[] = [];
   let cursor: string | undefined;
   do {
-    const result = await list({ prefix: 'events/', cursor, limit: 1000 });
-    for (const b of result.blobs) {
-      // Filename-Format: events/<ms>-<rand>.json
-      const match = b.pathname.match(/events\/(\d+)-/);
-      if (match) {
-        const ms = parseInt(match[1]);
-        if (ms >= cutoffMs) relevant.push({ url: b.url, pathname: b.pathname });
-      } else {
-        // Unbekanntes Format — trotzdem mitnehmen (altes Schema)
-        relevant.push({ url: b.url, pathname: b.pathname });
-      }
+    const r = await list({ prefix: 'events-daily/', cursor, limit: 1000 });
+    for (const b of r.blobs) {
+      const m = b.pathname.match(/events-daily\/(\d{4}-\d{2}-\d{2})\.ndjson/);
+      if (m && wantDays.has(m[1])) relevant.push(b.url);
     }
-    cursor = result.hasMore ? result.cursor : undefined;
+    cursor = r.hasMore ? r.cursor : undefined;
   } while (cursor);
 
-  // Schritt 2: Nur relevante Blobs fetchen (parallel, mit Concurrency-Limit)
-  const CONCURRENCY = 30;
-  const results: any[] = [];
-  for (let i = 0; i < relevant.length; i += CONCURRENCY) {
-    const batch = relevant.slice(i, i + CONCURRENCY);
-    const fetched = await Promise.all(batch.map(async (b) => {
-      try {
-        const r = await fetch(b.url);
-        const e = await r.json();
-        if (e.timestamp && e.timestamp < cutoffStr) return null;
-        return e;
-      } catch {
-        return null;
+  // Parallel fetchen
+  const events: any[] = [];
+  await Promise.all(relevant.map(async (u) => {
+    try {
+      const r = await fetch(u, { cache: 'no-store' });
+      if (!r.ok) return;
+      const text = await r.text();
+      for (const line of text.split('\n')) {
+        if (!line.trim()) continue;
+        try { events.push(JSON.parse(line)); } catch {}
       }
-    }));
-    for (const e of fetched) if (e) results.push(e);
-  }
+    } catch {}
+  }));
 
   const cacheHeaders = {
     'content-type': 'application/json',
@@ -62,14 +63,13 @@ export const GET: APIRoute = async ({ url }) => {
     const counts = { views: 0, leads: 0, sessions: new Set<string>() };
     const byDay = new Map<string, { views: number; leads: number }>();
     const byLp = new Map<string, { views: number; leads: number; sessions: Set<string> }>();
-    // byLpSteps: pro LP + Step → unique sessions (fuer Funnel-Visualisierung)
     const byLpSteps = new Map<string, Map<string, Set<string>>>();
 
-    for (const e of results) {
-      const ev = (e.event || '').toLowerCase();
-      const step = (e.step || '').toLowerCase();
-      const day = (e.timestamp || '').slice(0, 10);
-      const lp = e.lp || 'unknown';
+    for (const e of events) {
+      const ev = String(e.event ?? '').toLowerCase();
+      const step = String(e.step ?? '').toLowerCase();
+      const day = String(e.timestamp ?? '').slice(0, 10);
+      const lp = String(e.lp ?? 'unknown');
 
       if (!byDay.has(day)) byDay.set(day, { views: 0, leads: 0 });
       if (!byLp.has(lp)) byLp.set(lp, { views: 0, leads: 0, sessions: new Set() });
@@ -78,7 +78,6 @@ export const GET: APIRoute = async ({ url }) => {
       if (e.session) {
         counts.sessions.add(e.session);
         byLp.get(lp)!.sessions.add(e.session);
-        // Step-Tracking: sowohl "step" Feld als auch "event" Feld als Step zaehlen
         const stepKey = step || ev;
         if (stepKey) {
           const stepMap = byLpSteps.get(lp)!;
@@ -120,5 +119,10 @@ export const GET: APIRoute = async ({ url }) => {
     return new Response(JSON.stringify(result), { headers: cacheHeaders });
   }
 
-  return new Response(JSON.stringify(results), { headers: cacheHeaders });
+  return new Response(JSON.stringify(events), { headers: cacheHeaders });
+  } catch (e: any) {
+    return new Response(JSON.stringify({ error: e?.message || String(e), stack: e?.stack }), {
+      status: 500, headers: { 'content-type': 'application/json' },
+    });
+  }
 };
