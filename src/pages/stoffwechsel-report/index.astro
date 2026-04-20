@@ -97,16 +97,49 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
     .urgency-list li { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--text-2); padding: 8px 12px; background: #fff; border-radius: 8px; border: 1px solid #fde68a; }
     .urgency-list li .ic { color: var(--amber); font-weight: 700; flex-shrink: 0; }
 
-    /* Twist-Block (Doch es kann auch anders kommen) */
-    .twist { background: linear-gradient(135deg, #eef6ff 0%, #e0ecff 100%); border-radius: var(--r); padding: 22px 20px; text-align: center; margin: 20px 0; }
+    /* Twist-Block */
+    .twist { background: linear-gradient(135deg, #eef6ff 0%, #e0ecff 100%); border-radius: var(--r); padding: 22px 20px; text-align: center; margin: 20px 0; position: relative; overflow: hidden; }
     .twist h2 { font-size: 20px; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.3px; }
-    .twist p { font-size: 14px; color: var(--text-2); line-height: 1.55; }
+    .twist p { font-size: 14px; color: var(--text-2); line-height: 1.55; position: relative; z-index: 1; }
+    .twist .twist-emoji { font-size: 38px; margin-bottom: 4px; display: block; }
 
-    /* Authority-Block */
-    .authority { background: var(--surface); border-radius: var(--r); padding: 22px 20px; margin: 20px 0; }
-    .authority h2 { font-size: 20px; font-weight: 800; margin-bottom: 8px; text-align: center; }
-    .authority p { font-size: 14px; color: var(--text-2); line-height: 1.6; margin-bottom: 10px; }
-    .authority p:last-child { margin-bottom: 0; }
+    /* Icon-Card-Grid (Pain/Benefit kompakt) */
+    .icon-cards { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 6px; }
+    .icon-card { background: #fff; border: 1px solid #e8e4da; border-radius: 12px; padding: 14px 8px; text-align: center; position: relative; }
+    .icon-card.pain { border-top: 3px solid var(--red); }
+    .icon-card.benefit { border-top: 3px solid var(--green); }
+    .icon-card .ic-emoji { font-size: 32px; display: block; margin-bottom: 4px; line-height: 1; }
+    .icon-card h4 { font-size: 12px; font-weight: 800; margin-bottom: 4px; line-height: 1.25; letter-spacing: -0.1px; }
+    .icon-card p { font-size: 11px; color: var(--text-3); line-height: 1.4; }
+
+    /* Stat-Block (3 big numbers) */
+    .stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin: 20px 0; }
+    .stat { background: #fff; border: 1px solid #e8e4da; border-radius: 12px; padding: 14px 6px; text-align: center; }
+    .stat .stat-num { font-size: 24px; font-weight: 800; color: var(--accent); letter-spacing: -0.5px; line-height: 1; }
+    .stat .stat-label { font-size: 10px; color: var(--text-3); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.3px; font-weight: 600; }
+
+    /* Testimonial Cards mit Face */
+    .testis { display: flex; flex-direction: column; gap: 10px; margin: 16px 0; }
+    .testi { background: #fff; border: 1px solid #e8e4da; border-radius: 12px; padding: 14px; display: flex; gap: 12px; align-items: flex-start; }
+    .testi-img { width: 56px; height: 56px; border-radius: 10px; object-fit: cover; flex-shrink: 0; }
+    .testi-body { flex: 1; min-width: 0; }
+    .testi-stars { color: var(--amber); font-size: 11px; letter-spacing: 1px; margin-bottom: 2px; }
+    .testi-quote { font-size: 13px; color: var(--text-2); line-height: 1.5; margin-bottom: 6px; }
+    .testi-quote strong { color: var(--text); font-weight: 700; }
+    .testi-name { font-size: 11px; color: var(--text-3); font-weight: 600; }
+    .testi-name b { color: var(--text-2); }
+
+    /* Urgency Badges (inline) */
+    .warn-badges { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 12px; }
+    .warn-badge { background: #fff; border: 1px solid #fde68a; border-radius: 10px; padding: 12px 6px; text-align: center; }
+    .warn-badge .wb-emoji { font-size: 24px; display: block; margin-bottom: 4px; }
+    .warn-badge .wb-text { font-size: 11px; color: var(--text-2); font-weight: 600; line-height: 1.3; }
+
+    /* Trust-Badges (ersetzt langer Authority-Block) */
+    .trust-badges { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin: 20px 0; }
+    .trust-badge { background: var(--surface); border-radius: 12px; padding: 14px 8px; text-align: center; }
+    .trust-badge .tb-emoji { font-size: 24px; display: block; margin-bottom: 4px; }
+    .trust-badge .tb-text { font-size: 11px; color: var(--text-2); font-weight: 600; line-height: 1.35; }
 
     /* Tipp-Hinweis */
     .tipp-hint { background: #eef6ff; border-left: 3px solid var(--accent); border-radius: 8px; padding: 12px 14px; margin: 16px 0; font-size: 13px; color: var(--text-2); line-height: 1.5; }
@@ -277,88 +310,104 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
 
       <div class="divider"></div>
 
-      <!-- Pain Section (3 Cards, wie Original) -->
-      <p class="sec-eyebrow">&#9888; Kurz- und Langzeitfolgen</p>
-      <h2 class="sec-title">Was passiert, wenn du deinen Stoffwechsel nicht optimierst?</h2>
-      <div class="info-stack">
-        <div class="info-card pain">
-          <h3>Scheiternde Abnehmversuche</h3>
-          <p>Deine Abnehmversuche werden weiterhin scheitern. Die Diäten bringen deinen Stoffwechsel auf ein absolutes Minimum. Sport greift bei dir nicht wie bei anderen Menschen das Fett an.</p>
+      <!-- Stat-Block: Social Proof visuell -->
+      <div class="stats">
+        <div class="stat"><div class="stat-num">2.847</div><div class="stat-label">Reports erstellt</div></div>
+        <div class="stat"><div class="stat-num">1.600</div><div class="stat-label">Halten ihr Gewicht</div></div>
+        <div class="stat"><div class="stat-num">4.9&#9733;</div><div class="stat-label">Bewertung</div></div>
+      </div>
+
+      <!-- Pain: 3 Icon-Cards kompakt -->
+      <p class="sec-eyebrow">&#9888; Wenn du nichts änderst</p>
+      <h2 class="sec-title">Was dein blockierter Stoffwechsel kostet</h2>
+      <div class="icon-cards">
+        <div class="icon-card pain">
+          <span class="ic-emoji">&#128546;</span>
+          <h4>Diäten scheitern</h4>
+          <p>Trotz Disziplin, kein Erfolg</p>
         </div>
-        <div class="info-card pain">
-          <h3>Stoffwechsel kann irreparabel geschädigt werden</h3>
-          <p>Durch falsche Ernährung, den falschen Sport und radikale Abnehmversuche wird dein Stoffwechsel bei jedem Versuch angegriffen, bis er irgendwann nicht mehr zu retten ist.</p>
+        <div class="icon-card pain">
+          <span class="ic-emoji">&#128148;</span>
+          <h4>Stoffwechsel-Schaden</h4>
+          <p>Crash-Diäten, Jojo-Spirale</p>
         </div>
-        <div class="info-card pain">
-          <h3>Gesundheitliche Kurz- und Langzeit Folgen</h3>
-          <p>Herz-Kreislauf-Probleme, Diabetes und Hormonstörungen treten mit erhöhtem Risiko bei übergewichtigen Menschen auf, und damit bei allen, deren Stoffwechsel nicht richtig oder gar nicht mehr funktioniert.</p>
+        <div class="icon-card pain">
+          <span class="ic-emoji">&#129302;</span>
+          <h4>Gesundheit</h4>
+          <p>Diabetes, Hormone, Herz</p>
         </div>
       </div>
 
-      <div class="divider"></div>
-
-      <!-- 2. CTA -->
-      <section class="hero" style="padding-top:0;">
-        <p class="sub">Beantworte diese <strong>7 Fragen</strong> und erhalte deine individuelle Auswertung, kostenfrei!</p>
-        <div class="start-block">
-          <div class="sb-q">Verrate uns vorab dein Geschlecht:</div>
-          <div class="start-row">
-            <button class="start-btn" onclick="startQuiz('frau')">Frau</button>
-            <button class="start-btn secondary" onclick="startQuiz('mann')">Mann</button>
-          </div>
-        </div>
-        <div class="tipp-hint">
-          <strong>Bonus:</strong> Unter jeder Frage findest du Tipps und Fakten, die du sofort anwenden kannst, um deinen Stoffwechsel zu optimieren.<br/><span style="font-size:11px;color:var(--text-3);">*Diese Tipps sind allgemeine Tipps, die nicht auf jeden zutreffen müssen.</span>
-        </div>
-      </section>
-
-      <div class="divider"></div>
-
-      <!-- Twist-Block: Doch es kann anders kommen -->
+      <!-- Twist-Block mit Emoji -->
       <div class="twist">
-        <h2>Doch es kann auch anders kommen</h2>
-        <p><strong>Dein Stoffwechsel arbeitet GEGEN dich!</strong> Nicht weil du etwas falsch machst, sondern weil dein Körper im Sparmodus festhängt. Das lässt sich ändern.</p>
+        <span class="twist-emoji">&#128165;</span>
+        <h2>Es liegt nicht an dir</h2>
+        <p><strong>Dein Stoffwechsel arbeitet GEGEN dich!</strong> Nicht weil du etwas falsch machst, sondern weil dein Körper im Sparmodus festhängt, das lässt sich ändern.</p>
       </div>
 
-      <!-- Benefit Section (3 Cards, wie Original) -->
-      <p class="sec-eyebrow green">&#10003; Was moeglich ist</p>
-      <h2 class="sec-title">Dein Leben mit einem aktiven Stoffwechsel</h2>
-      <div class="info-stack">
-        <div class="info-card benefit">
-          <h3>Abnehmen und körperliches Wohlbefinden</h3>
-          <p>Deine Abnehmversuche funktionieren so, wie du es bei anderen siehst. Abnehmen gelingt ohne Stress und funktioniert ohne grossen Aufwand.</p>
+      <!-- Benefit: 3 Icon-Cards kompakt -->
+      <p class="sec-eyebrow green">&#10003; Was möglich ist</p>
+      <h2 class="sec-title">Dein Leben mit aktivem Stoffwechsel</h2>
+      <div class="icon-cards">
+        <div class="icon-card benefit">
+          <span class="ic-emoji">&#9878;</span>
+          <h4>Abnehmen</h4>
+          <p>Ohne Stress, ohne Diät</p>
         </div>
-        <div class="info-card benefit">
-          <h3>Deine Gesundheit wird es dir danken</h3>
-          <p>Durch einen funktionierenden Stoffwechsel, der für dich arbeitet, kannst du vielen Krankheitserscheinungen im Alter und schon jetzt vorbeugen.</p>
+        <div class="icon-card benefit">
+          <span class="ic-emoji">&#128154;</span>
+          <h4>Gesundheit</h4>
+          <p>Stabile Hormone, Schlaf</p>
         </div>
-        <div class="info-card benefit">
-          <h3>Mehr Energie für ein erfolgreiches Leben</h3>
-          <p>Ein schlechter Stoffwechsel sorgt für Trägheit, Energielosigkeit und Müdigkeit im Alltag. Mit einem funktionierenden Stoffwechsel wirst du die Powerfrau, die du mal warst oder immer sein wolltest.</p>
+        <div class="icon-card benefit">
+          <span class="ic-emoji">&#9889;</span>
+          <h4>Energie</h4>
+          <p>Kein Mittagstief mehr</p>
         </div>
+      </div>
+
+      <!-- Testimonials mit echten Gesichtern -->
+      <div class="testis">
+        <div class="testi">
+          <img class="testi-img" src="/images/transformations/t5.jpg" alt="" loading="lazy" />
+          <div class="testi-body">
+            <div class="testi-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            <p class="testi-quote">"Nach 20 Jahren Jojo endlich ein Ansatz, der zu mir passt, <strong>14 kg in 16 Wochen</strong>, ohne Hunger!"</p>
+            <div class="testi-name"><b>Silvia M.</b> &middot; Zürich</div>
+          </div>
+        </div>
+        <div class="testi">
+          <img class="testi-img" src="/images/transformations/t7.jpg" alt="" loading="lazy" />
+          <div class="testi-body">
+            <div class="testi-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            <p class="testi-quote">"Der Report hat mir die Augen geöffnet, mein Stoffwechsel war tot. Jetzt bin ich <strong>9 kg leichter</strong> und fühle mich wieder wie 30."</p>
+            <div class="testi-name"><b>Andrea K.</b> &middot; Bern</div>
+          </div>
+        </div>
+        <div class="testi">
+          <img class="testi-img" src="/images/transformations/t8.jpg" alt="" loading="lazy" />
+          <div class="testi-body">
+            <div class="testi-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            <p class="testi-quote">"Endlich ohne Kalorienzählen. <strong>7 kg weg</strong>, halte mein Gewicht seit 8 Monaten, mein Mann fragt sich, was los ist."</p>
+            <div class="testi-name"><b>Nicole B.</b> &middot; Luzern</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Urgency Badges statt Text -->
+      <p class="sec-eyebrow amber">&#9888; Warnsignale</p>
+      <h2 class="sec-title">Dein Körper sendet dir Warnsignale</h2>
+      <div class="warn-badges">
+        <div class="warn-badge"><span class="wb-emoji">&#128564;</span><span class="wb-text">Ständige Müdigkeit</span></div>
+        <div class="warn-badge"><span class="wb-emoji">&#127850;</span><span class="wb-text">Heisshunger</span></div>
+        <div class="warn-badge"><span class="wb-emoji">&#9878;</span><span class="wb-text">Gewicht stagniert</span></div>
       </div>
 
       <div class="divider"></div>
 
-      <!-- Urgency Section -->
-      <p class="sec-eyebrow amber">&#9888; Der richtige Zeitpunkt ist genau jetzt</p>
-      <h2 class="sec-title">Wieso du jetzt handeln solltest</h2>
-      <div class="info-stack">
-        <div class="info-card urgency">
-          <p>Ist dein Stoffwechsel schon angegriffen oder gerade dabei abzubauen, schickt dir dein Körper Warnsignale. Er schaltet in den Notfallmodus und klammert sich an jede Kalorie als Fettreserve:</p>
-          <ul class="urgency-list">
-            <li><span class="ic">&#9888;</span>Ständige Müdigkeit</li>
-            <li><span class="ic">&#9888;</span>Heisshunger-Attacken</li>
-            <li><span class="ic">&#9888;</span>Stagnierendes oder steigendes Gewicht, meist als schleichender Prozess</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="divider"></div>
-
-      <!-- 3. CTA -->
+      <!-- Final CTA -->
       <section class="hero" style="padding-top:0;">
-        <p class="sub">Beantworte diese <strong>7 Fragen</strong> und erhalte deine individuelle Auswertung, kostenfrei!</p>
+        <p class="sub"><strong>In 3 Minuten</strong> weisst du, was deinen Stoffwechsel blockiert.</p>
         <div class="start-block">
           <div class="sb-q">Verrate uns vorab dein Geschlecht:</div>
           <div class="start-row">
@@ -366,23 +415,13 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
             <button class="start-btn secondary" onclick="startQuiz('mann')">Mann</button>
           </div>
         </div>
-        <div class="proof-bar">
-          <div class="proof-info">
-            <div class="proof-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-            Über <b>2.847</b> Frauen haben ihren Report bereits erhalten!
-          </div>
-        </div>
-        <div class="proof-trust"><span class="ic">&#10003;</span> Von Ernährungsexperten entwickelt</div>
       </section>
 
-      <div class="divider"></div>
-
-      <!-- Authority / Wieso wir das machen -->
-      <div class="authority">
-        <h2>Wieso wir das machen?</h2>
-        <p>Was du hier individuell auf dich zugeschnitten bekommst, ist Gold wert! Wir bieten dir eine kostenlose Analyse anhand deiner Antworten. Zudem erhältst du wichtige und wertvolle Tipps zu jeder Frage.</p>
-        <p>Wir sind davon überzeugt, dass jeder das Recht haben sollte, seinen individuellen Weg zu einem gesunden Körper kostenfrei zu erhalten.</p>
-        <p>Nachdem du deinen persönlichen Stoffwechsel-Report erhalten hast, bist du theoretisch bereit, auf eigene Faust loszulegen. Aber du musst es nicht allein tun! Viele wünschen sich nach der Diagnose Unterstützung, um die empfohlenen Schritte schnell und effektiv umzusetzen, genau dafür gibt es uns.</p>
+      <!-- Trust-Badges statt Authority-Paragraph -->
+      <div class="trust-badges">
+        <div class="trust-badge"><span class="tb-emoji">&#127891;</span><span class="tb-text">Von Experten<br/>entwickelt</span></div>
+        <div class="trust-badge"><span class="tb-emoji">&#128176;</span><span class="tb-text">100%<br/>kostenlos</span></div>
+        <div class="trust-badge"><span class="tb-emoji">&#128274;</span><span class="tb-text">Deine Daten<br/>sind sicher</span></div>
       </div>
 
       <footer>
