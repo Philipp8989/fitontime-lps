@@ -1,71 +1,260 @@
 ---
-// Analytics Dashboard  -  Key-geschützt
+// Analytics Dashboard, Key-geschuetzt.
+// ?lp=<slug> zeigt Deep-Stats einer einzelnen LP (Funnel, Timeline).
+// Ohne ?lp= Uebersicht ueber alle LPs.
 const key = Astro.url.searchParams.get('key');
 const validKey = import.meta.env.DASHBOARD_KEY;
 if (key !== validKey) {
   return new Response('Unauthorized', { status: 401 });
 }
+
+const lpFilter = Astro.url.searchParams.get('lp') || '';
+
+// Friendly Labels + Funnel-Step-Reihenfolge pro LP.
+// Step-Keys kommen aus event.step (gesetzt von den LPs selbst).
+const LP_META: Record<string, { label: string; steps: string[] }> = {
+  'abnehmpotential': {
+    label: 'Abnehmpotential',
+    steps: ['view', 'step_view', 'answer', 'optin_view', 'lead_submit', 'ergebnis_view'],
+  },
+  'schilddruesen-report':  { label: 'Schilddrüsen-Report',  steps: ['page_view','quiz_start','quiz_complete','lead_submit','result_shown'] },
+  'stoffwechsel-report':   { label: 'Stoffwechsel-Report',  steps: ['page_view','quiz_start','quiz_complete','lead_submit','result_shown'] },
+  'blockaden-report':      { label: 'Blockaden-Report',     steps: ['page_view','quiz_start','quiz_complete','lead_submit','result_shown'] },
+  'stoffwechsel-test':     { label: 'Stoffwechsel-Test',    steps: ['page_view','quiz_start','quiz_complete','lead_submit','result_shown'] },
+};
+const lpLabel = LP_META[lpFilter]?.label || lpFilter;
 ---
 <html lang="de">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width" />
   <meta name="robots" content="noindex, nofollow" />
-  <title>FOT LP Dashboard</title>
+  <title>{lpFilter ? `${lpLabel} · Stats` : 'Fit on Time · LP Stats'}</title>
   <style is:global>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: system-ui, sans-serif; background: #0a0a0f; color: #e0e0e0; padding: 2rem; }
-    h1 { margin-bottom: 1.5rem; color: #fff; }
-    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
-    .card { background: #1a1a2e; border-radius: 12px; padding: 1.5rem; }
-    .card h3 { font-size: 0.85rem; color: #888; margin-bottom: 0.5rem; }
-    .card .value { font-size: 2rem; font-weight: 700; color: #d4a0b9; }
-    table { width: 100%; border-collapse: collapse; }
-    th, td { padding: 0.75rem; text-align: left; border-bottom: 1px solid #222; }
-    th { color: #888; font-size: 0.85rem; }
-    #loading { text-align: center; padding: 3rem; color: #888; }
+    :root {
+      --bg:#f5f5f7; --card:#fff; --card-hover:#fafafa; --line:rgba(0,0,0,.08);
+      --text:#1d1d1f; --muted:#86868b; --dim:#aeaeb2;
+      --acc:#0071e3; --ok:#34c759;
+      --radius:16px; --radius-sm:12px;
+      --shadow-sm:0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+    }
+    * { box-sizing:border-box; margin:0; padding:0; }
+    html { font-size:16px; }
+    body {
+      background:var(--bg); color:var(--text);
+      font-family:-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', system-ui, sans-serif;
+      line-height:1.47; -webkit-font-smoothing:antialiased; letter-spacing:-.022em;
+      padding:2rem 1.25rem;
+    }
+    .wrap { max-width:1100px; margin:0 auto; }
+    .header { display:flex; align-items:baseline; justify-content:space-between; margin-bottom:1.5rem; gap:1rem; flex-wrap:wrap; }
+    h1 { font-size:1.5rem; font-weight:600; letter-spacing:-.018em; }
+    .sub { color:var(--muted); font-size:.875rem; }
+    .back { font-size:.8125rem; color:var(--acc); text-decoration:none; margin-bottom:.35rem; display:inline-block; }
+    .back:hover { text-decoration:underline; }
+    .row { display:flex; align-items:center; gap:8px; }
+    select {
+      font:inherit; font-size:.8125rem; padding:6px 10px;
+      border:1px solid var(--line); border-radius:8px;
+      background:var(--card); color:var(--text); cursor:pointer;
+    }
+    .kpis { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:12px; margin-bottom:1.75rem; }
+    .kpi { background:var(--card); border-radius:var(--radius-sm); padding:1rem 1.15rem; box-shadow:var(--shadow-sm); }
+    .kpi h3 { font-size:.75rem; color:var(--muted); font-weight:500; letter-spacing:.02em; text-transform:uppercase; margin-bottom:.35rem; }
+    .kpi .value { font-size:1.85rem; font-weight:600; letter-spacing:-.022em; }
+    .kpi .delta { font-size:.75rem; color:var(--muted); margin-top:.2rem; }
+
+    h2 { font-size:1.05rem; font-weight:600; margin:1.75rem 0 .75rem; letter-spacing:-.018em; }
+
+    /* Overview mode */
+    .lp-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+    .lp-card { background:var(--card); border-radius:var(--radius); padding:1.15rem 1.25rem; box-shadow:var(--shadow-sm); text-decoration:none; color:inherit; display:block; transition:box-shadow .15s; }
+    .lp-card:hover { box-shadow:0 4px 14px rgba(0,0,0,.08); }
+    .lp-card h3 { font-size:.95rem; font-weight:600; margin-bottom:.15rem; }
+    .lp-card .slug { font-size:.7rem; color:var(--dim); font-family:ui-monospace,SFMono-Regular,Menlo,monospace; margin-bottom:.85rem; }
+    .lp-stats { display:grid; grid-template-columns:1fr 1fr; gap:8px 18px; }
+    .lp-stats .k { font-size:.7rem; color:var(--muted); text-transform:uppercase; letter-spacing:.02em; }
+    .lp-stats .v { font-size:1.15rem; font-weight:600; }
+    .cr { display:inline-flex; align-items:baseline; gap:4px; margin-top:.75rem; padding-top:.75rem; border-top:1px solid var(--line); font-size:.8125rem; color:var(--muted); }
+    .cr b { color:var(--ok); font-weight:600; font-size:.95rem; }
+
+    /* Deep mode */
+    .panel { background:var(--card); border-radius:var(--radius); padding:1.5rem; box-shadow:var(--shadow-sm); margin-bottom:1.25rem; }
+    .funnel-step { display:grid; grid-template-columns:180px 1fr 120px; align-items:center; gap:1rem; padding:.75rem 0; border-bottom:1px solid var(--line); }
+    .funnel-step:last-child { border-bottom:none; }
+    .funnel-step .label { font-size:.875rem; font-weight:500; }
+    .funnel-step .bar { height:20px; background:rgba(0,113,227,.08); border-radius:10px; overflow:hidden; position:relative; }
+    .funnel-step .bar-fill { height:100%; background:var(--acc); border-radius:10px; transition:width .4s ease; }
+    .funnel-step .meta { text-align:right; font-size:.8125rem; color:var(--muted); }
+    .funnel-step .meta b { color:var(--text); font-weight:600; }
+    .funnel-step .drop { font-size:.7rem; color:var(--muted); }
+    .funnel-step.terminal .bar-fill { background:var(--ok); }
+
+    .timeline { display:grid; grid-template-columns:repeat(auto-fit,minmax(100px,1fr)); gap:4px; }
+    .tl-day { background:var(--card); border-radius:8px; padding:.6rem .5rem; text-align:center; border:1px solid var(--line); }
+    .tl-day .d { font-size:.7rem; color:var(--muted); }
+    .tl-day .v { font-size:1rem; font-weight:600; margin-top:.2rem; }
+    .tl-day .l { font-size:.7rem; color:var(--ok); margin-top:.1rem; }
+
+    #loading, #empty { text-align:center; padding:3rem 1rem; color:var(--muted); font-size:.875rem; }
   </style>
 </head>
 <body>
-  <h1>Schilddrüsen-Report Dashboard</h1>
-  <div id="loading">Lade Daten...</div>
-  <div id="stats" class="grid" style="display:none"></div>
-  <div id="events" style="display:none">
-    <h2 style="margin-bottom:1rem">Letzte Events</h2>
-    <table><thead><tr><th>Zeit</th><th>Event</th><th>Seite</th><th>Details</th></tr></thead><tbody id="tbody"></tbody></table>
+  <div class="wrap">
+    <div class="header">
+      <div>
+        {lpFilter && <a class="back" href={`?key=${encodeURIComponent(key || '')}`}>← alle LPs</a>}
+        <h1>{lpFilter ? `${lpLabel} · Stats` : 'Fit on Time · LP Stats'}</h1>
+        {lpFilter && <div class="sub">Slug: <code>{lpFilter}</code></div>}
+        {!lpFilter && <div class="sub">Tracking-Daten aus Vercel Blob, Key-geschützt</div>}
+      </div>
+      <div class="row">
+        <label class="sub">Zeitraum</label>
+        <select id="days">
+          <option value="1">heute</option>
+          <option value="7" selected>7 Tage</option>
+          <option value="14">14 Tage</option>
+          <option value="30">30 Tage</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="loading">Lade Daten…</div>
+    <div id="content" style="display:none"></div>
   </div>
-  <script define:vars={{ key }}>
-    fetch(`/api/events?key=${key}&days=7`)
-      .then(r => r.json())
-      .then(events => {
-        document.getElementById('loading').style.display = 'none';
-        const stats = document.getElementById('stats');
-        stats.style.display = 'grid';
-        document.getElementById('events').style.display = 'block';
 
-        const views = events.filter(e => e.event === 'page_view').length;
-        const quizStarts = events.filter(e => e.event === 'quiz_start').length;
-        const quizCompletes = events.filter(e => e.event === 'quiz_complete').length;
-        const leads = events.filter(e => e.event === 'lead_submit').length;
+  <script define:vars={{ key, lpFilter, LP_META }}>
+    const daysSel = document.getElementById('days');
+    const $loading = document.getElementById('loading');
+    const $content = document.getElementById('content');
 
-        stats.innerHTML = `
-          <div class="card"><h3>Seitenaufrufe</h3><div class="value">${views}</div></div>
-          <div class="card"><h3>Quiz gestartet</h3><div class="value">${quizStarts}</div></div>
-          <div class="card"><h3>Quiz abgeschlossen</h3><div class="value">${quizCompletes}</div></div>
-          <div class="card"><h3>Leads</h3><div class="value">${leads}</div></div>
-          <div class="card"><h3>Start-Rate</h3><div class="value">${views ? Math.round(quizStarts/views*100) : 0}%</div></div>
-          <div class="card"><h3>Completion-Rate</h3><div class="value">${quizStarts ? Math.round(quizCompletes/quizStarts*100) : 0}%</div></div>
-          <div class="card"><h3>Lead-Rate</h3><div class="value">${quizCompletes ? Math.round(leads/quizCompletes*100) : 0}%</div></div>
-          <div class="card"><h3>Gesamt-CR</h3><div class="value">${views ? Math.round(leads/views*100) : 0}%</div></div>
+    const num = n => Number(n || 0).toLocaleString('de-DE');
+    const pct = (a, b) => b ? Math.round((a / b) * 100) : 0;
+    const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+    async function load() {
+      $loading.style.display = 'block';
+      $content.style.display = 'none';
+      $content.innerHTML = '';
+
+      const days = daysSel.value;
+      const res = await fetch(`/api/events?key=${encodeURIComponent(key)}&summary=true&days=${days}`);
+      if (!res.ok) {
+        $loading.textContent = 'Fehler beim Laden (' + res.status + ')';
+        return;
+      }
+      const data = await res.json();
+
+      if (lpFilter) renderDeep(data);
+      else renderOverview(data);
+
+      $loading.style.display = 'none';
+      $content.style.display = 'block';
+    }
+
+    function renderOverview(data) {
+      const byLp = (data.byLp || []).filter(r => r.lp && r.lp !== 'unknown').sort((a, b) => b.views - a.views);
+      const kpis = `
+        <div class="kpis">
+          <div class="kpi"><h3>Sessions</h3><div class="value">${num(data.sessions)}</div></div>
+          <div class="kpi"><h3>Seitenaufrufe</h3><div class="value">${num(data.views)}</div></div>
+          <div class="kpi"><h3>Leads</h3><div class="value">${num(data.leads)}</div></div>
+          <div class="kpi"><h3>Conversion-Rate</h3><div class="value">${data.cr ? data.cr.toFixed(1) : '0,0'}%</div></div>
+        </div>
+      `;
+      const cards = byLp.length === 0
+        ? '<div id="empty">Noch keine Events im ausgewählten Zeitraum.</div>'
+        : `<h2>Pro Landing Page</h2><div class="lp-grid">${
+            byLp.map(r => {
+              const label = (LP_META[r.lp]?.label) || r.lp;
+              const cr = pct(r.leads, r.views);
+              return `
+                <a class="lp-card" href="?key=${encodeURIComponent(key)}&lp=${encodeURIComponent(r.lp)}">
+                  <h3>${esc(label)}</h3>
+                  <div class="slug">${esc(r.lp)}</div>
+                  <div class="lp-stats">
+                    <div><div class="k">Sessions</div><div class="v">${num(r.sessions)}</div></div>
+                    <div><div class="k">Views</div><div class="v">${num(r.views)}</div></div>
+                    <div><div class="k">Leads</div><div class="v">${num(r.leads)}</div></div>
+                    <div><div class="k">CR</div><div class="v">${cr}%</div></div>
+                  </div>
+                  <div class="cr">Conversion-Rate <b>${cr}%</b></div>
+                </a>
+              `;
+            }).join('')
+          }</div>`;
+      $content.innerHTML = kpis + cards;
+    }
+
+    function renderDeep(data) {
+      const lpRow = (data.byLp || []).find(r => r.lp === lpFilter);
+      const stepEntry = (data.byLpSteps || []).find(r => r.lp === lpFilter);
+      const stepsData = stepEntry?.steps || {};
+
+      if (!lpRow) {
+        $content.innerHTML = '<div id="empty">Noch keine Events für diese LP im ausgewählten Zeitraum.</div>';
+        return;
+      }
+
+      const cr = pct(lpRow.leads, lpRow.views);
+      const stepOrder = LP_META[lpFilter]?.steps || Object.keys(stepsData).sort((a, b) => (stepsData[b]||0) - (stepsData[a]||0));
+      const top = Math.max(1, ...stepOrder.map(s => stepsData[s] || 0));
+
+      const kpis = `
+        <div class="kpis">
+          <div class="kpi"><h3>Sessions</h3><div class="value">${num(lpRow.sessions)}</div></div>
+          <div class="kpi"><h3>Views</h3><div class="value">${num(lpRow.views)}</div></div>
+          <div class="kpi"><h3>Leads</h3><div class="value">${num(lpRow.leads)}</div></div>
+          <div class="kpi"><h3>Conversion-Rate</h3><div class="value">${cr}%</div><div class="delta">Leads pro View</div></div>
+        </div>
+      `;
+
+      let prevCount = null;
+      const funnelRows = stepOrder.map((step, i) => {
+        const count = stepsData[step] || 0;
+        const width = Math.round((count / top) * 100);
+        const drop = prevCount != null && prevCount > 0 ? ` · ${pct(count, prevCount)}% vom vorherigen` : '';
+        prevCount = count;
+        const terminal = step === 'lead_submit' || step === 'ergebnis_view' || step === 'result_shown';
+        return `
+          <div class="funnel-step ${terminal ? 'terminal' : ''}">
+            <div class="label">${esc(step)}</div>
+            <div class="bar"><div class="bar-fill" style="width:${width}%"></div></div>
+            <div class="meta"><b>${num(count)}</b> sessions<div class="drop">${drop.replace(' · ', '')}</div></div>
+          </div>
         `;
+      }).join('');
 
-        const tbody = document.getElementById('tbody');
-        events.sort((a,b) => b.timestamp.localeCompare(a.timestamp)).slice(0,50).forEach(e => {
-          const tr = document.createElement('tr');
-          tr.innerHTML = `<td>${new Date(e.timestamp).toLocaleString('de-CH')}</td><td>${e.event}</td><td>${e.page||'-'}</td><td>${e.detail||'-'}</td>`;
-          tbody.appendChild(tr);
-        });
-      });
+      const funnel = `
+        <h2>Funnel (Sessions pro Step)</h2>
+        <div class="panel">${funnelRows}</div>
+      `;
+
+      // Timeline pro Tag, nur fuer diese LP nicht trivial ohne extra API-Call,
+      // wir zeigen globale byDay + Hinweis, dass sie alle LPs umfasst,
+      // falls data.byDay existiert. Fuer LP-spezifisch muesste /api/events?summary=true
+      // auch byDay pro LP liefern. Aktuell nur Gesamtsumme.
+      let tl = '';
+      if (data.byDay && data.byDay.length) {
+        tl = `
+          <h2 style="margin-top:1.5rem">Gesamt-Timeline <span class="sub" style="font-weight:400">(alle LPs)</span></h2>
+          <div class="timeline">${
+            data.byDay.map(([day, v]) => `
+              <div class="tl-day">
+                <div class="d">${esc(day.slice(5))}</div>
+                <div class="v">${num(v.views)}</div>
+                <div class="l">${num(v.leads)} Leads</div>
+              </div>
+            `).join('')
+          }</div>
+        `;
+      }
+
+      $content.innerHTML = kpis + funnel + tl;
+    }
+
+    daysSel.addEventListener('change', load);
+    load();
   </script>
 </body>
 </html>

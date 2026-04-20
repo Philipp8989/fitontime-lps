@@ -1,7 +1,7 @@
 ---
-// Stoffwechsel-Report Quiz - FitonTime
-// Angleichung an proven Winner stoffwechsel-test: personalisiertes Ergebnis + Wistia-Video + YCBM
-// CRO: echte Vorher-Nachher-Bilder, Pain/Benefit/Urgency fuer Cold Traffic
+// Stoffwechsel-Report (Blockaden-Loesen) - FitonTime
+// Struktur 1:1 an Live-Winner fit-on-time.ch/blockaden-loesen/ orientiert
+// UI/UX-Upgrade: echte Vorher-Nachher-Bilder, cleaneres Typo-System, bessere Mobile-UX
 import CookieBanner from '../../components/CookieBanner.astro';
 const impressumUrl = 'https://fitontime.ch/impressum-datenschutz';
 const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
@@ -11,7 +11,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="robots" content="noindex, nofollow" />
-  <title>Dein Stoffwechsel-Report in 60 Sekunden | Fit on Time</title>
+  <title>Welcher Körper-Typ bist Du? | Fit on Time</title>
   <link rel="icon" type="image/png" href="/images/logo.png" />
   <link rel="preload" as="image" href="/images/transformations/t5.jpg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -39,13 +39,6 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
     body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.5; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
     .wrap { max-width: 720px; margin: 0 auto; padding: 0 20px; }
 
-    /* Sticky Trust-Badge oben */
-    .top-bar { background: #fff; border-bottom: 1px solid #e8e4da; padding: 8px 0; position: sticky; top: 0; z-index: 50; }
-    .top-bar .tb-inner { max-width: 720px; margin: 0 auto; padding: 0 20px; display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 12px; color: var(--text-2); }
-    .top-bar .tb-inner b { color: var(--text); }
-    .top-bar .tb-dot { display: inline-block; width: 8px; height: 8px; background: var(--green); border-radius: 50%; margin-right: 6px; animation: pulse 2s infinite; }
-    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
-
     /* Logo */
     .logo { text-align: center; padding: 16px 0 8px; }
     .logo img { height: 40px; }
@@ -54,30 +47,29 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
     .hero { text-align: center; padding: 16px 0 20px; }
     .hero h1 { font-size: 26px; font-weight: 800; line-height: 1.25; letter-spacing: -0.5px; margin-bottom: 12px; }
     .hero h1 em { font-style: normal; color: var(--accent); }
-    .hero .sub { font-size: 15px; color: var(--text-2); margin-bottom: 8px; line-height: 1.5; }
+    .hero .sub { font-size: 15px; color: var(--text-2); margin-bottom: 12px; line-height: 1.5; }
     .hero .sub strong { color: var(--text); font-weight: 600; }
-    .hero .time-hint { font-size: 13px; color: var(--accent); font-weight: 600; margin-bottom: 12px; }
 
-    /* Proof Bar mit echten Teilnehmerinnen */
-    .proof-bar { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 10px 0; margin-bottom: 8px; flex-wrap: wrap; }
+    /* CTA-Block: Geschlechter-Auswahl als Start */
+    .start-block { background: #fff; border: 1px solid #e8e4da; border-radius: var(--r); padding: 20px 18px; margin: 12px 0; box-shadow: 0 2px 12px rgba(0,0,0,0.04); }
+    .start-block .sb-q { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 12px; }
+    .start-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .start-btn { background: var(--accent); color: #fff; border: none; border-radius: 12px; padding: 16px 12px; font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.2s; font-family: var(--font); -webkit-tap-highlight-color: transparent; box-shadow: 0 4px 14px rgba(43,125,233,0.25); }
+    .start-btn:hover { background: var(--accent-dark); transform: translateY(-1px); box-shadow: 0 6px 18px rgba(43,125,233,0.35); }
+    .start-btn:active { transform: scale(0.98); }
+    .start-btn.secondary { background: #fff; color: var(--accent); border: 2px solid var(--accent); box-shadow: none; }
+    .start-btn.secondary:hover { background: #eef6ff; }
+
+    /* Social Proof */
+    .proof-bar { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 14px 0 6px; flex-wrap: wrap; }
     .proof-avatars { display: flex; }
-    .proof-avatars img { width: 34px; height: 34px; border-radius: 50%; border: 2px solid var(--bg); margin-left: -10px; object-fit: cover; object-position: center 30%; }
+    .proof-avatars img { width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--bg); margin-left: -10px; object-fit: cover; object-position: center 30%; }
     .proof-avatars img:first-child { margin-left: 0; }
     .proof-info { font-size: 12px; color: var(--text-3); line-height: 1.3; text-align: left; }
     .proof-info b { color: var(--text); }
     .proof-stars { color: var(--amber); font-size: 12px; letter-spacing: 1px; }
-
-    /* CTA Button */
-    .cta-btn { display: block; width: 100%; max-width: 480px; margin: 20px auto 0; background: var(--accent); color: #fff; font-family: var(--font); font-size: 17px; font-weight: 700; padding: 18px; border: none; border-radius: 12px; cursor: pointer; transition: all 0.2s; text-align: center; box-shadow: 0 4px 14px rgba(43,125,233,0.25); }
-    .cta-btn:hover { background: var(--accent-dark); transform: translateY(-1px); box-shadow: 0 6px 18px rgba(43,125,233,0.35); }
-    .cta-btn:active { transform: scale(0.98); }
-    .cta-sub { text-align: center; font-size: 12px; color: var(--text-3); margin-top: 8px; }
-
-    /* Benefit-Liste */
-    .benefit-list { text-align: left; margin: 20px auto; max-width: 480px; }
-    .benefit-item { display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; font-size: 14px; color: var(--text-2); }
-    .benefit-item .ic { color: var(--green); font-size: 16px; flex-shrink: 0; margin-top: 1px; }
-    .benefit-item strong { color: var(--text); font-weight: 600; }
+    .proof-trust { display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 12px; color: var(--text-2); margin-top: 6px; font-weight: 500; }
+    .proof-trust .ic { color: var(--green); font-weight: 700; }
 
     /* Transformation Grid */
     .trans { margin: 28px 0; }
@@ -85,38 +77,46 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
     .trans-sub { font-size: 13px; color: var(--text-3); text-align: center; margin-bottom: 16px; }
     .trans-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
     .trans-grid img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 10px; background: #fff; }
-    .trans-cap { font-size: 11px; color: var(--text-3); text-align: center; margin-top: 8px; }
+    .trans-cap { font-size: 11px; color: var(--text-3); text-align: center; margin-top: 10px; }
 
-    /* Pain Section */
-    .pain { background: #fff; border-radius: var(--r); padding: 22px 20px; margin: 20px 0; border: 1px solid #e8e4da; }
-    .pain h2 { font-size: 19px; font-weight: 800; text-align: center; margin-bottom: 6px; }
-    .pain .pain-sub { font-size: 13px; color: var(--text-2); text-align: center; margin-bottom: 14px; line-height: 1.5; }
-    .pain-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
-    .pain-list li { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-2); padding: 8px 12px; background: #fef2f2; border-radius: 8px; }
-    .pain-list li .ic { color: var(--red); font-size: 13px; flex-shrink: 0; }
+    /* Section Titles */
+    .sec-eyebrow { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--red); font-weight: 700; text-align: center; margin-bottom: 6px; }
+    .sec-eyebrow.amber { color: var(--amber); }
+    .sec-eyebrow.green { color: var(--green); }
+    .sec-title { font-size: 22px; font-weight: 800; text-align: center; margin-bottom: 18px; letter-spacing: -0.3px; line-height: 1.25; }
 
-    /* Benefit Cards */
-    .benefits { margin: 24px 0; text-align: center; }
-    .benefits h2 { font-size: 19px; font-weight: 800; margin-bottom: 14px; }
-    .benefit-cards { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
-    .benefit-card { background: #fff; border-radius: 12px; padding: 14px 8px; border: 1px solid #e8e4da; text-align: center; }
-    .benefit-card .benefit-icon { font-size: 30px; margin-bottom: 6px; }
-    .benefit-card h4 { font-size: 13px; font-weight: 700; margin-bottom: 3px; }
-    .benefit-card p { font-size: 11px; color: var(--text-3); line-height: 1.35; }
+    /* Info-Card-Stack (Pain / Benefit / Urgency) */
+    .info-stack { display: flex; flex-direction: column; gap: 12px; }
+    .info-card { background: #fff; border: 1px solid #e8e4da; border-radius: var(--r); padding: 18px; }
+    .info-card.pain { border-left: 4px solid var(--red); }
+    .info-card.benefit { border-left: 4px solid var(--green); }
+    .info-card.urgency { background: #fffbeb; border: 1px solid #fde68a; border-left: 4px solid var(--amber); }
+    .info-card h3 { font-size: 16px; font-weight: 800; margin-bottom: 6px; letter-spacing: -0.2px; }
+    .info-card p { font-size: 14px; color: var(--text-2); line-height: 1.55; }
+    .urgency-list { list-style: none; display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
+    .urgency-list li { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--text-2); padding: 8px 12px; background: #fff; border-radius: 8px; border: 1px solid #fde68a; }
+    .urgency-list li .ic { color: var(--amber); font-weight: 700; flex-shrink: 0; }
 
-    /* Urgency */
-    .urgency { background: #fff8ed; border-radius: var(--r); padding: 22px 20px; margin: 20px 0; border: 1px solid #fde68a; }
-    .urgency h2 { font-size: 19px; font-weight: 800; text-align: center; margin-bottom: 6px; }
-    .urgency .urgency-sub { font-size: 13px; color: var(--text-2); text-align: center; margin-bottom: 14px; line-height: 1.5; }
-    .urgency-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
-    .urgency-list li { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-2); padding: 8px 12px; background: #fffbeb; border-radius: 8px; }
-    .urgency-list li .ic { color: var(--amber); font-size: 13px; flex-shrink: 0; }
+    /* Twist-Block (Doch es kann auch anders kommen) */
+    .twist { background: linear-gradient(135deg, #eef6ff 0%, #e0ecff 100%); border-radius: var(--r); padding: 22px 20px; text-align: center; margin: 20px 0; }
+    .twist h2 { font-size: 20px; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.3px; }
+    .twist p { font-size: 14px; color: var(--text-2); line-height: 1.55; }
+
+    /* Authority-Block */
+    .authority { background: var(--surface); border-radius: var(--r); padding: 22px 20px; margin: 20px 0; }
+    .authority h2 { font-size: 20px; font-weight: 800; margin-bottom: 8px; text-align: center; }
+    .authority p { font-size: 14px; color: var(--text-2); line-height: 1.6; margin-bottom: 10px; }
+    .authority p:last-child { margin-bottom: 0; }
+
+    /* Tipp-Hinweis */
+    .tipp-hint { background: #eef6ff; border-left: 3px solid var(--accent); border-radius: 8px; padding: 12px 14px; margin: 16px 0; font-size: 13px; color: var(--text-2); line-height: 1.5; }
+    .tipp-hint strong { color: var(--accent); font-weight: 700; }
 
     /* Divider */
-    .divider { width: 40px; height: 2px; background: var(--accent); margin: 24px auto; opacity: 0.3; }
+    .divider { width: 40px; height: 2px; background: var(--accent); margin: 28px auto; opacity: 0.3; }
 
     /* Footer */
-    footer { text-align: center; padding: 20px; font-size: 11px; color: var(--text-3); border-top: 1px solid #e8e4da; }
+    footer { text-align: center; padding: 20px; font-size: 11px; color: var(--text-3); border-top: 1px solid #e8e4da; margin-top: 20px; }
     footer a { color: var(--text-3); text-decoration: none; }
 
     /* ===== QUIZ ===== */
@@ -141,11 +141,24 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
     .opt strong { display: block; font-weight: 700; margin-bottom: 2px; }
     .opt span { font-size: 13px; color: var(--text-2); }
 
-    /* Micro-Tipp nach jeder Frage */
+    /* Ja/Nein Buttons */
+    .yn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; max-width: 400px; margin: 0 auto; }
+    .yn-btn { background: var(--accent); color: #fff; border: 2px solid var(--accent); border-radius: 12px; padding: 18px 16px; font-size: 18px; font-weight: 700; cursor: pointer; transition: all 0.2s; font-family: var(--font); -webkit-tap-highlight-color: transparent; text-align: center; }
+    .yn-btn:hover { background: var(--accent-dark); border-color: var(--accent-dark); transform: translateY(-2px); }
+    .yn-btn:active { transform: scale(0.97); }
+
+    /* Tipp-Box unter jeder Frage */
     .tipp { background: #eef6ff; border: 1px solid #c4ddff; border-radius: 10px; padding: 12px 14px; margin-top: 16px; display: flex; align-items: flex-start; gap: 10px; }
     .tipp .tipp-icon { font-size: 16px; flex-shrink: 0; }
     .tipp .tipp-text { font-size: 12px; color: var(--text-2); line-height: 1.5; }
     .tipp .tipp-text strong { color: var(--accent); font-weight: 700; }
+
+    /* Card-Optionen */
+    .card-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .card-opt { background: var(--surface); border: 2px solid transparent; border-radius: 12px; padding: 18px 12px; font-size: 14px; font-weight: 600; color: var(--text); cursor: pointer; transition: all 0.2s; font-family: var(--font); -webkit-tap-highlight-color: transparent; text-align: center; line-height: 1.3; }
+    .card-opt:hover { border-color: var(--accent); background: #fff; transform: translateY(-2px); }
+    .card-opt:active { transform: scale(0.97); border-color: var(--accent); }
+    .card-opt .card-emoji { font-size: 26px; display: block; margin-bottom: 6px; }
 
     /* Loading */
     .ld { text-align: center; }
@@ -182,46 +195,36 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
     .form-proof .fp-row { display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 11px; color: var(--text-3); margin-bottom: 4px; }
     .form-proof .fp-row b { color: var(--text-2); }
 
-    /* ===== ERGEBNIS-SEITE ===== */
-    .result { text-align: center; max-width: 600px; width: 100%; padding-bottom: 40px; }
-    .result-badge { display: inline-block; background: rgba(43,125,233,0.1); color: var(--accent); font-size: 12px; font-weight: 700; padding: 4px 14px; border-radius: 20px; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
-    .result h2 { font-size: 26px; font-weight: 800; margin-bottom: 8px; }
-    .result .result-type { font-size: 17px; color: var(--accent); font-weight: 700; margin-bottom: 16px; }
-    .result-summary { font-size: 14px; color: var(--text-2); line-height: 1.6; text-align: left; margin-bottom: 20px; padding: 16px; background: #fff; border-radius: var(--r); border: 1px solid #e8e4da; }
-    .result-cta-box { background: var(--accent); color: #fff; border-radius: var(--r); padding: 20px; margin: 20px 0; }
-    .result-cta-box h3 { font-size: 18px; font-weight: 800; margin-bottom: 6px; }
-    .result-cta-box p { font-size: 13px; opacity: 0.92; line-height: 1.5; }
-    .result-bullets { list-style: none; text-align: left; margin: 16px 0; padding: 0; }
-    .result-bullets li { padding: 6px 0; font-size: 13px; display: flex; gap: 8px; }
-    .result-bullets li::before { content: "✓"; color: var(--green); font-weight: 700; flex-shrink: 0; }
-    .result-meta { display: flex; flex-direction: column; gap: 4px; margin: 14px 0; text-align: center; }
-    .result-meta .rm-hot { font-size: 13px; color: var(--amber); font-weight: 600; }
-    .result-meta .rm-sm { font-size: 12px; color: var(--text-3); }
+    /* Danke-Seite */
+    .thankyou { text-align: center; max-width: 600px; width: 100%; padding-bottom: 40px; }
+    .thankyou-badge { display: inline-block; background: rgba(34,197,94,0.1); color: var(--green); font-size: 12px; font-weight: 700; padding: 4px 14px; border-radius: 20px; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .thankyou h2 { font-size: 26px; font-weight: 800; margin-bottom: 8px; }
+    .thankyou .ty-sub { font-size: 15px; color: var(--text-2); line-height: 1.6; margin-bottom: 20px; }
+    .thankyou .ty-box { background: #fff; border-radius: var(--r); padding: 20px; border: 1px solid #e8e4da; margin-bottom: 20px; text-align: left; }
+    .thankyou .ty-box h3 { font-size: 16px; font-weight: 700; margin-bottom: 10px; text-align: center; }
+    .ty-steps { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .ty-steps li { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; color: var(--text-2); }
+    .ty-steps li .num { width: 24px; height: 24px; border-radius: 50%; background: var(--accent); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; }
+    .thankyou-cta { background: var(--accent); color: #fff; font-family: var(--font); font-size: 16px; font-weight: 700; padding: 16px 32px; border: none; border-radius: 12px; cursor: pointer; display: block; width: 100%; text-decoration: none; text-align: center; transition: background 0.2s; margin-bottom: 8px; }
+    .thankyou-cta:hover { background: var(--accent-dark); }
+    .thankyou-spots { font-size: 11px; color: var(--amber); font-weight: 600; }
 
     /* Desktop */
     @media (min-width: 600px) {
-      .hero h1 { font-size: 38px; }
+      .hero h1 { font-size: 36px; }
       .hero .sub { font-size: 17px; }
       .step h2 { font-size: 28px; }
       .opts { display: grid; grid-template-columns: 1fr; gap: 12px; }
       .opt { font-size: 16px; padding: 18px 20px; }
-      .result h2 { font-size: 32px; }
+      .thankyou h2 { font-size: 32px; }
       .trans-grid { grid-template-columns: repeat(6, 1fr); }
     }
     @media (min-width: 900px) {
-      .hero h1 { font-size: 44px; }
+      .hero h1 { font-size: 42px; }
     }
   </style>
 </head>
 <body>
-
-  <!-- Sticky Live-Trust-Bar -->
-  <div class="top-bar">
-    <div class="tb-inner">
-      <span><span class="tb-dot"></span>Aktuell bewertet dein Ergebnis</span>
-      <span><b>2.847+</b> Reports &middot; 4.9 &#9733;</span>
-    </div>
-  </div>
 
   <!-- ===== LANDING ===== -->
   <div id="lp">
@@ -229,9 +232,16 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
       <div class="logo"><img src="/images/logo.png" alt="Fit on Time" /></div>
 
       <section class="hero">
-        <h1>Dein individueller <em>Stoffwechsel-Report</em>: Entdecke in 60 Sekunden, warum dein Körper nicht abnimmt, und was du in 4 Wochen ändern kannst</h1>
-        <p class="sub">Mit <strong>7 kurzen Fragen</strong> erfährst du, wie dein Stoffwechsel tickt und welcher Ansatz zu deinem Körper passt. Kostenlos und unverbindlich.</p>
-        <p class="time-hint">&#9201; 60 Sekunden. Keine Anmeldung, bevor du dein Ergebnis siehst.</p>
+        <h1>Dein individueller <em>Stoffwechsel-Fahrplan</em>: Entdecke in 3 Minuten, warum dein Körper nicht abnimmt und wie du es in 4 Wochen änderst</h1>
+        <p class="sub">Beantworte diese <strong>7 Fragen</strong> und erhalte deine individuelle Auswertung von unseren Ernährungsexperten, Fitness Coaches und Hormonspezialisten, kostenfrei!</p>
+
+        <div class="start-block">
+          <div class="sb-q">Verrate uns vorab dein Geschlecht:</div>
+          <div class="start-row">
+            <button class="start-btn" onclick="startQuiz('frau')">Frau</button>
+            <button class="start-btn secondary" onclick="startQuiz('mann')">Mann</button>
+          </div>
+        </div>
 
         <div class="proof-bar">
           <div class="proof-avatars">
@@ -242,24 +252,15 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
           </div>
           <div class="proof-info">
             <div class="proof-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-            <b>2.847+</b> Frauen haben ihren Report erhalten
+            Über <b>2.847</b> Frauen haben ihren Report bereits erhalten!
           </div>
         </div>
-
-        <div class="benefit-list">
-          <div class="benefit-item"><span class="ic">&#10003;</span><span><strong>Warum dein Körper nicht abnimmt</strong>, trotz Sport und Disziplin</span></div>
-          <div class="benefit-item"><span class="ic">&#10003;</span><span><strong>Dein persönlicher 4-Wochen-Fahrplan</strong> zum Stoffwechsel-Reset</span></div>
-          <div class="benefit-item"><span class="ic">&#10003;</span><span><strong>Welche Lebensmittel deinen Stoffwechsel bremsen</strong>, und welche ihn ankurbeln</span></div>
-          <div class="benefit-item"><span class="ic">&#10003;</span><span><strong>Einfache Alltagstipps</strong>, die sofort wirken, ohne Diät und ohne Verzicht</span></div>
-        </div>
-
-        <button class="cta-btn" onclick="startQuiz()">Jetzt Stoffwechsel-Report starten &#10024;</button>
-        <p class="cta-sub">&#128274; Kostenlos &middot; Keine Anmeldung vor dem Ergebnis &middot; Ergebnis sofort</p>
+        <div class="proof-trust"><span class="ic">&#10003;</span> Von Ernährungsexperten entwickelt</div>
       </section>
 
       <div class="divider"></div>
 
-      <!-- Echte Vorher-Nachher Transformationen -->
+      <!-- Vorher-Nachher Grid -->
       <div class="trans">
         <h3 class="trans-title">Echte Teilnehmerinnen. Echte Resultate.</h3>
         <p class="trans-sub">Ein kleiner Ausschnitt aus über 1.600 erfolgreichen Transformationen</p>
@@ -276,59 +277,113 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
 
       <div class="divider"></div>
 
-      <!-- Problem-Section -->
-      <div class="pain">
-        <h2>Was passiert, wenn du nichts änderst?</h2>
-        <p class="pain-sub">Ein blockierter Stoffwechsel hat Folgen, und sie werden mit der Zeit schlimmer.</p>
-        <ul class="pain-list">
-          <li><span class="ic">&#10007;</span>Scheiternde Abnehmversuche trotz Disziplin und Verzicht</li>
-          <li><span class="ic">&#10007;</span>Jojo-Effekt und Crash-Diäten, die den Stoffwechsel weiter bremsen</li>
-          <li><span class="ic">&#10007;</span>Schlafstörungen, Stimmungstiefs, Heisshunger-Attacken</li>
-          <li><span class="ic">&#10007;</span>Frustration und sinkender Selbstwert durch ausbleibende Ergebnisse</li>
-        </ul>
-      </div>
-
-      <!-- Benefits -->
-      <div class="benefits">
-        <h2>Was ein aktiver Stoffwechsel für dich bedeutet</h2>
-        <div class="benefit-cards">
-          <div class="benefit-card">
-            <div class="benefit-icon">&#9878;</div>
-            <h4>Abnehmen ohne Stress</h4>
-            <p>Dein Körper verbrennt wieder effizient, ohne Hungern</p>
-          </div>
-          <div class="benefit-card">
-            <div class="benefit-icon">&#128154;</div>
-            <h4>Bessere Gesundheit</h4>
-            <p>Stabilere Hormone, besserer Schlaf, starkes Immunsystem</p>
-          </div>
-          <div class="benefit-card">
-            <div class="benefit-icon">&#9889;</div>
-            <h4>Mehr Energie</h4>
-            <p>Kein Mittagstief, konstante Energie den ganzen Tag</p>
-          </div>
+      <!-- Pain Section (3 Cards, wie Original) -->
+      <p class="sec-eyebrow">&#9888; Kurz- und Langzeitfolgen</p>
+      <h2 class="sec-title">Was passiert, wenn du deinen Stoffwechsel nicht optimierst?</h2>
+      <div class="info-stack">
+        <div class="info-card pain">
+          <h3>Scheiternde Abnehmversuche</h3>
+          <p>Deine Abnehmversuche werden weiterhin scheitern. Die Diäten bringen deinen Stoffwechsel auf ein absolutes Minimum. Sport greift bei dir nicht wie bei anderen Menschen das Fett an.</p>
+        </div>
+        <div class="info-card pain">
+          <h3>Stoffwechsel kann irreparabel geschädigt werden</h3>
+          <p>Durch falsche Ernährung, den falschen Sport und radikale Abnehmversuche wird dein Stoffwechsel bei jedem Versuch angegriffen, bis er irgendwann nicht mehr zu retten ist.</p>
+        </div>
+        <div class="info-card pain">
+          <h3>Gesundheitliche Kurz- und Langzeit Folgen</h3>
+          <p>Herz-Kreislauf-Probleme, Diabetes und Hormonstörungen treten mit erhöhtem Risiko bei übergewichtigen Menschen auf, und damit bei allen, deren Stoffwechsel nicht richtig oder gar nicht mehr funktioniert.</p>
         </div>
       </div>
 
-      <!-- Urgency -->
-      <div class="urgency">
-        <h2>&#9888; Wieso du jetzt handeln solltest</h2>
-        <p class="urgency-sub">Diese Warnsignale zeigen dir, dass dein Stoffwechsel bereits gebremst ist:</p>
-        <ul class="urgency-list">
-          <li><span class="ic">&#9888;</span><strong>Ständige Müdigkeit</strong>, besonders nachmittags</li>
-          <li><span class="ic">&#9888;</span><strong>Unkontrollierbarer Heisshunger</strong>, vor allem auf Süsses</li>
-          <li><span class="ic">&#9888;</span><strong>Stagnierendes Gewicht</strong> trotz Sport und bewusster Ernährung</li>
-          <li><span class="ic">&#9888;</span><strong>Verdauungsprobleme</strong>, Blähungen, Völlegefühl</li>
-        </ul>
-        <p class="urgency-sub" style="margin-top:14px;margin-bottom:0;"><strong>Je länger du wartest, desto schwieriger wird es.</strong> Dein Stoffwechsel gewöhnt sich an den Sparmodus.</p>
-      </div>
+      <div class="divider"></div>
 
       <!-- 2. CTA -->
       <section class="hero" style="padding-top:0;">
-        <p class="sub" style="margin-bottom:4px;"><strong>In 60 Sekunden</strong> weisst du, was deinen Stoffwechsel blockiert, und wie du es änderst.</p>
-        <button class="cta-btn" onclick="startQuiz()">Jetzt Stoffwechsel-Report starten &#10024;</button>
-        <p class="cta-sub">&#128274; Kostenlos &middot; Keine Anmeldung vor dem Ergebnis</p>
+        <p class="sub">Beantworte diese <strong>7 Fragen</strong> und erhalte deine individuelle Auswertung, kostenfrei!</p>
+        <div class="start-block">
+          <div class="sb-q">Verrate uns vorab dein Geschlecht:</div>
+          <div class="start-row">
+            <button class="start-btn" onclick="startQuiz('frau')">Frau</button>
+            <button class="start-btn secondary" onclick="startQuiz('mann')">Mann</button>
+          </div>
+        </div>
+        <div class="tipp-hint">
+          <strong>Bonus:</strong> Unter jeder Frage findest du Tipps und Fakten, die du sofort anwenden kannst, um deinen Stoffwechsel zu optimieren.<br/><span style="font-size:11px;color:var(--text-3);">*Diese Tipps sind allgemeine Tipps, die nicht auf jeden zutreffen müssen.</span>
+        </div>
       </section>
+
+      <div class="divider"></div>
+
+      <!-- Twist-Block: Doch es kann anders kommen -->
+      <div class="twist">
+        <h2>Doch es kann auch anders kommen</h2>
+        <p><strong>Dein Stoffwechsel arbeitet GEGEN dich!</strong> Nicht weil du etwas falsch machst, sondern weil dein Körper im Sparmodus festhängt. Das lässt sich ändern.</p>
+      </div>
+
+      <!-- Benefit Section (3 Cards, wie Original) -->
+      <p class="sec-eyebrow green">&#10003; Was moeglich ist</p>
+      <h2 class="sec-title">Dein Leben mit einem aktiven Stoffwechsel</h2>
+      <div class="info-stack">
+        <div class="info-card benefit">
+          <h3>Abnehmen und körperliches Wohlbefinden</h3>
+          <p>Deine Abnehmversuche funktionieren so, wie du es bei anderen siehst. Abnehmen gelingt ohne Stress und funktioniert ohne grossen Aufwand.</p>
+        </div>
+        <div class="info-card benefit">
+          <h3>Deine Gesundheit wird es dir danken</h3>
+          <p>Durch einen funktionierenden Stoffwechsel, der für dich arbeitet, kannst du vielen Krankheitserscheinungen im Alter und schon jetzt vorbeugen.</p>
+        </div>
+        <div class="info-card benefit">
+          <h3>Mehr Energie für ein erfolgreiches Leben</h3>
+          <p>Ein schlechter Stoffwechsel sorgt für Trägheit, Energielosigkeit und Müdigkeit im Alltag. Mit einem funktionierenden Stoffwechsel wirst du die Powerfrau, die du mal warst oder immer sein wolltest.</p>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Urgency Section -->
+      <p class="sec-eyebrow amber">&#9888; Der richtige Zeitpunkt ist genau jetzt</p>
+      <h2 class="sec-title">Wieso du jetzt handeln solltest</h2>
+      <div class="info-stack">
+        <div class="info-card urgency">
+          <p>Ist dein Stoffwechsel schon angegriffen oder gerade dabei abzubauen, schickt dir dein Körper Warnsignale. Er schaltet in den Notfallmodus und klammert sich an jede Kalorie als Fettreserve:</p>
+          <ul class="urgency-list">
+            <li><span class="ic">&#9888;</span>Ständige Müdigkeit</li>
+            <li><span class="ic">&#9888;</span>Heisshunger-Attacken</li>
+            <li><span class="ic">&#9888;</span>Stagnierendes oder steigendes Gewicht, meist als schleichender Prozess</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- 3. CTA -->
+      <section class="hero" style="padding-top:0;">
+        <p class="sub">Beantworte diese <strong>7 Fragen</strong> und erhalte deine individuelle Auswertung, kostenfrei!</p>
+        <div class="start-block">
+          <div class="sb-q">Verrate uns vorab dein Geschlecht:</div>
+          <div class="start-row">
+            <button class="start-btn" onclick="startQuiz('frau')">Frau</button>
+            <button class="start-btn secondary" onclick="startQuiz('mann')">Mann</button>
+          </div>
+        </div>
+        <div class="proof-bar">
+          <div class="proof-info">
+            <div class="proof-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            Über <b>2.847</b> Frauen haben ihren Report bereits erhalten!
+          </div>
+        </div>
+        <div class="proof-trust"><span class="ic">&#10003;</span> Von Ernährungsexperten entwickelt</div>
+      </section>
+
+      <div class="divider"></div>
+
+      <!-- Authority / Wieso wir das machen -->
+      <div class="authority">
+        <h2>Wieso wir das machen?</h2>
+        <p>Was du hier individuell auf dich zugeschnitten bekommst, ist Gold wert! Wir bieten dir eine kostenlose Analyse anhand deiner Antworten. Zudem erhältst du wichtige und wertvolle Tipps zu jeder Frage.</p>
+        <p>Wir sind davon überzeugt, dass jeder das Recht haben sollte, seinen individuellen Weg zu einem gesunden Körper kostenfrei zu erhalten.</p>
+        <p>Nachdem du deinen persönlichen Stoffwechsel-Report erhalten hast, bist du theoretisch bereit, auf eigene Faust loszulegen. Aber du musst es nicht allein tun! Viele wünschen sich nach der Diagnose Unterstützung, um die empfohlenen Schritte schnell und effektiv umzusetzen, genau dafür gibt es uns.</p>
+      </div>
 
       <footer>
         <a href={impressumUrl} target="_blank" rel="noopener">Impressum</a> &middot;
@@ -343,105 +398,106 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
     <div class="q-progress"><div class="q-bar"><div class="q-fill" id="qf"></div></div><div class="q-num" id="qn">1 / 7</div></div>
     <div class="q-body">
 
-      <!-- Frage 1: Körperbau -->
+      <!-- Frage 1: Ja/Nein -->
       <div class="step on" data-s="1">
-        <h2>Welcher Körperbau beschreibt dich am besten?</h2>
-        <div class="opts">
-          <button class="opt" onclick="nxt(1,this,'ecto')"><strong>Schlank &amp; zierlich</strong><span>Schmale Schultern, nehme schwer zu, verliere schnell Gewicht.</span></button>
-          <button class="opt" onclick="nxt(1,this,'meso')"><strong>Mittel &amp; athletisch</strong><span>Ausgewogene Proportionen, baue leicht Muskeln auf.</span></button>
-          <button class="opt" onclick="nxt(1,this,'endo')"><strong>Kräftiger Bau</strong><span>Breitere Hüften, nehme leicht zu, vor allem an Bauch und Hüfte.</span></button>
+        <h2>Bist du beruflich sehr ausgelastet?</h2>
+        <div class="yn-row">
+          <button class="yn-btn" onclick="nxt(1,this,'ja')">&#128077; Ja</button>
+          <button class="yn-btn" onclick="nxt(1,this,'nein')">&#128078; Nein</button>
         </div>
         <div class="tipp">
           <span class="tipp-icon">&#128161;</span>
-          <div class="tipp-text"><strong>Wusstest du?</strong> Dein Körperbau bestimmt, wie dein Stoffwechsel auf Essen reagiert, und das ist bei jeder Frau anders.</div>
+          <div class="tipp-text"><strong>Tipp:</strong> Morgens Zitronenwasser trinken. Starte den Tag mit einem Glas warmem Zitronenwasser, das kurbelt die Verdauung an.</div>
         </div>
       </div>
 
-      <!-- Frage 2: Grösstes Problem -->
+      <!-- Frage 2: 4 Karten -->
       <div class="step" data-s="2">
-        <h2>Was ist dein grösstes Problem beim Abnehmen?</h2>
-        <div class="opts">
-          <button class="opt" onclick="nxt(2,this,'jojo')"><strong>Jojo-Effekt</strong><span>Ich nehme ab, dann wieder zu, ein endloser Kreislauf.</span></button>
-          <button class="opt" onclick="nxt(2,this,'hunger')"><strong>Heisshunger</strong><span>Plötzliche Essattacken sabotieren jeden Fortschritt.</span></button>
-          <button class="opt" onclick="nxt(2,this,'sport')"><strong>Keine Resultate trotz Sport</strong><span>Ich bewege mich viel, aber die Waage bewegt sich nicht.</span></button>
-          <button class="opt" onclick="nxt(2,this,'moti')"><strong>Motivation</strong><span>Ich starte motiviert, gebe aber nach wenigen Wochen auf.</span></button>
+        <h2>Was hiervon ist dir am wichtigsten?</h2>
+        <div class="card-opts">
+          <button class="card-opt" onclick="nxt(2,this,'aussehen')"><span class="card-emoji">&#128142;</span>Besseres Aussehen</button>
+          <button class="card-opt" onclick="nxt(2,this,'gesundheit')"><span class="card-emoji">&#128154;</span>Mehr Gesundheit</button>
+          <button class="card-opt" onclick="nxt(2,this,'wohlbefinden')"><span class="card-emoji">&#128522;</span>Mehr Wohlbefinden</button>
+          <button class="card-opt" onclick="nxt(2,this,'abnehmen')"><span class="card-emoji">&#9878;</span>Nachhaltig abnehmen</button>
         </div>
         <div class="tipp">
           <span class="tipp-icon">&#128161;</span>
-          <div class="tipp-text"><strong>Tipp:</strong> 92% der Frauen scheitern, weil ihr Ansatz nicht zu ihrem Stoffwechsel-Typ passt, nicht an fehlender Disziplin.</div>
+          <div class="tipp-text"><strong>Tipp:</strong> Mehr Eiweiss, weniger Heisshunger. Eiweissreiche Mahlzeiten halten länger satt und steigern den Kalorienverbrauch.</div>
         </div>
       </div>
 
-      <!-- Frage 3: Energielevel -->
+      <!-- Frage 3: Grösse -->
       <div class="step" data-s="3">
-        <h2>Wie würdest du dein Energielevel beschreiben?</h2>
+        <h2>Wie gross bist du?</h2>
         <div class="opts">
-          <button class="opt" onclick="nxt(3,this,'schwankend')"><strong>Schwankend</strong><span>Mal super energiegeladen, dann komplett platt.</span></button>
-          <button class="opt" onclick="nxt(3,this,'hoch')"><strong>Konstant hoch</strong><span>Ich habe meistens genug Energie für den Tag.</span></button>
-          <button class="opt" onclick="nxt(3,this,'niedrig')"><strong>Eher niedrig</strong><span>Ich fühle mich oft müde und schlapp.</span></button>
+          <button class="opt" onclick="nxt(3,this,'klein')"><strong>Kleiner als 1,62 m</strong></button>
+          <button class="opt" onclick="nxt(3,this,'mittel1')"><strong>1,63 m bis 1,68 m</strong></button>
+          <button class="opt" onclick="nxt(3,this,'mittel2')"><strong>1,69 m bis 1,74 m</strong></button>
+          <button class="opt" onclick="nxt(3,this,'gross')"><strong>Grösser als 1,74 m</strong></button>
         </div>
         <div class="tipp">
           <span class="tipp-icon">&#128161;</span>
-          <div class="tipp-text"><strong>Tipp:</strong> Schwankende Energie ist ein Signal für Blutzucker-Achterbahn, lässt sich mit dem richtigen Timing lösen.</div>
+          <div class="tipp-text"><strong>Tipp:</strong> 10 Minuten Spaziergang nach dem Essen helfen, den Blutzucker zu stabilisieren und die Verdauung anzuregen.</div>
         </div>
       </div>
 
-      <!-- Frage 4: Mahlzeiten -->
+      <!-- Frage 4: Gewicht -->
       <div class="step" data-s="4">
-        <h2>Wie oft isst du pro Tag?</h2>
+        <h2>Wieviel wiegst du momentan?</h2>
         <div class="opts">
-          <button class="opt" onclick="nxt(4,this,'1-2')"><strong>1 bis 2 Mahlzeiten</strong><span>Ich frühstücke selten und komme mit wenig aus.</span></button>
-          <button class="opt" onclick="nxt(4,this,'3')"><strong>3 Mahlzeiten</strong><span>Frühstück, Mittag, Abendessen, relativ regelmässig.</span></button>
-          <button class="opt" onclick="nxt(4,this,'3+')"><strong>Mehr als 3</strong><span>Ich snacke zwischendurch oder esse häufig kleine Portionen.</span></button>
-          <button class="opt" onclick="nxt(4,this,'unreg')"><strong>Unregelmässig</strong><span>Mal viel, mal gar nichts, kein festes Muster.</span></button>
+          <button class="opt" onclick="nxt(4,this,'u60')"><strong>Weniger als 60 kg</strong></button>
+          <button class="opt" onclick="nxt(4,this,'60-68')"><strong>Zwischen 60 und 68 kg</strong></button>
+          <button class="opt" onclick="nxt(4,this,'69-77')"><strong>Zwischen 69 und 77 kg</strong></button>
+          <button class="opt" onclick="nxt(4,this,'ue78')"><strong>Über 78 kg</strong></button>
         </div>
         <div class="tipp">
           <span class="tipp-icon">&#128161;</span>
-          <div class="tipp-text"><strong>Tipp:</strong> 10-Minuten-Spaziergang nach dem Essen stabilisiert den Blutzucker und kurbelt den Stoffwechsel an.</div>
+          <div class="tipp-text"><strong>Tipp:</strong> Eiskaltes Wasser trinken zwingt den Körper, Energie zum Erwärmen aufzuwenden, und verbrennt so extra Kalorien.</div>
         </div>
       </div>
 
-      <!-- Frage 5: Alltag -->
+      <!-- Frage 5: Alter -->
       <div class="step" data-s="5">
-        <h2>Was beschreibt deinen Alltag?</h2>
-        <div class="opts">
-          <button class="opt" onclick="nxt(5,this,'sitzend')"><strong>Sitzend (Büro)</strong><span>Ich verbringe den Grossteil des Tages im Sitzen.</span></button>
-          <button class="opt" onclick="nxt(5,this,'maessig')"><strong>Mässig aktiv</strong><span>Ich bewege mich regelmässig, aber nicht täglich intensiv.</span></button>
-          <button class="opt" onclick="nxt(5,this,'aktiv')"><strong>Sehr aktiv</strong><span>Ich bin fast jeden Tag körperlich aktiv.</span></button>
-        </div>
-        <div class="tipp">
-          <span class="tipp-icon">&#128161;</span>
-          <div class="tipp-text"><strong>Tipp:</strong> Schon 2 Minuten Bewegung pro Stunde im Büro steigern deinen Kalorienverbrauch um bis zu 15%.</div>
-        </div>
-      </div>
-
-      <!-- Frage 6: Alter -->
-      <div class="step" data-s="6">
         <h2>Wie alt bist du?</h2>
         <div class="opts">
-          <button class="opt" onclick="nxt(6,this,'18-29')"><strong>18 bis 29 Jahre</strong></button>
-          <button class="opt" onclick="nxt(6,this,'30-39')"><strong>30 bis 39 Jahre</strong></button>
-          <button class="opt" onclick="nxt(6,this,'40-49')"><strong>40 bis 49 Jahre</strong></button>
-          <button class="opt" onclick="nxt(6,this,'50+')"><strong>50+ Jahre</strong></button>
+          <button class="opt" onclick="nxt(5,this,'18-29')"><strong>18 bis 29 Jahre</strong></button>
+          <button class="opt" onclick="nxt(5,this,'30-39')"><strong>30 bis 39 Jahre</strong></button>
+          <button class="opt" onclick="nxt(5,this,'40-49')"><strong>40 bis 49 Jahre</strong></button>
+          <button class="opt" onclick="nxt(5,this,'50+')"><strong>50+ Jahre</strong></button>
         </div>
         <div class="tipp">
           <span class="tipp-icon">&#128161;</span>
-          <div class="tipp-text"><strong>Tipp:</strong> Ab 35 verlangsamt sich der Stoffwechsel jährlich um 1-2%, der richtige Ansatz macht den Unterschied.</div>
+          <div class="tipp-text"><strong>Tipp:</strong> Schlaf optimieren. 7-8 Stunden Schlaf sind der grösste Stoffwechsel-Booster, den es gibt.</div>
         </div>
       </div>
 
-      <!-- Frage 7: Ziel -->
-      <div class="step" data-s="7">
-        <h2>Was ist dein Ziel in den nächsten 3 Monaten?</h2>
+      <!-- Frage 6: Sport -->
+      <div class="step" data-s="6">
+        <h2>Wie oft treibst du Sport?</h2>
         <div class="opts">
-          <button class="opt" onclick="nxt(7,this,'3-5')"><strong>3 bis 5 kg verlieren</strong><span>Feinschliff, die letzten hartnäckigen Kilos.</span></button>
-          <button class="opt" onclick="nxt(7,this,'6-10')"><strong>6 bis 10 kg verlieren</strong><span>Deutlich sichtbare Veränderung am Körper.</span></button>
-          <button class="opt" onclick="nxt(7,this,'10+')"><strong>Mehr als 10 kg</strong><span>Eine echte Transformation, die alles verändert.</span></button>
-          <button class="opt" onclick="nxt(7,this,'fitter')"><strong>Einfach fitter werden</strong><span>Mehr Energie, besseres Körpergefühl.</span></button>
+          <button class="opt" onclick="nxt(6,this,'nie')"><strong>Nie</strong></button>
+          <button class="opt" onclick="nxt(6,this,'1-2x')"><strong>1 bis 2x pro Woche</strong></button>
+          <button class="opt" onclick="nxt(6,this,'3-4x')"><strong>3 bis 4x pro Woche</strong></button>
+          <button class="opt" onclick="nxt(6,this,'taeglich')"><strong>Täglich</strong></button>
         </div>
         <div class="tipp">
           <span class="tipp-icon">&#128161;</span>
-          <div class="tipp-text"><strong>Fast fertig!</strong> Wir erstellen gleich deinen persönlichen Stoffwechsel-Fahrplan basierend auf deinen Antworten.</div>
+          <div class="tipp-text"><strong>Tipp:</strong> Krafttraining schlägt Cardio. Muskeln verbrennen auch in Ruhe Kalorien. Schon 2x pro Woche macht einen Unterschied.</div>
+        </div>
+      </div>
+
+      <!-- Frage 7: Was probiert -->
+      <div class="step" data-s="7">
+        <h2>Was hast du schon probiert?</h2>
+        <div class="card-opts">
+          <button class="card-opt" onclick="nxt(7,this,'diaeten')"><span class="card-emoji">&#127869;</span>Diäten</button>
+          <button class="card-opt" onclick="nxt(7,this,'sport')"><span class="card-emoji">&#127939;</span>Sport-Programme</button>
+          <button class="card-opt" onclick="nxt(7,this,'nahrungserg')"><span class="card-emoji">&#128138;</span>Nahrungsergänzung</button>
+          <button class="card-opt" onclick="nxt(7,this,'nichts')"><span class="card-emoji">&#129300;</span>Nichts</button>
+        </div>
+        <div class="tipp">
+          <span class="tipp-icon">&#128161;</span>
+          <div class="tipp-text"><strong>Tipp:</strong> Dein Stoffwechsel ist einzigartig. Was bei anderen funktioniert, muss bei dir nicht klappen. Deshalb ist ein individueller Plan so wichtig.</div>
         </div>
       </div>
 
@@ -461,7 +517,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
       <div class="step form" data-s="form">
         <div class="tag">&#10003; Analyse abgeschlossen!</div>
         <h2>Dein Stoffwechsel-Fahrplan ist bereit!</h2>
-        <p class="sub">Trage dich ein, um dein persönliches Ergebnis zu sehen.</p>
+        <p class="sub">Trage dich ein und erhalte deinen individuellen Report, kostenlos per E-Mail.</p>
         <div class="fields">
           <div class="field"><span class="ic">&#128075;</span><input type="text" id="fn" placeholder="Dein Vor- und Nachname" required /></div>
           <div class="field"><span class="ic">&#128236;</span><input type="email" id="em" placeholder="Deine E-Mail" required /></div>
@@ -471,42 +527,28 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
           <input type="checkbox" id="ds" />
           <label for="ds">Ich akzeptiere die <a href={datenschutzUrl} target="_blank">Datenschutzbestimmungen</a></label>
         </div>
-        <button class="submit" id="sbtn" disabled onclick="send()">Jetzt Report anzeigen &#10024;</button>
+        <button class="submit" id="sbtn" disabled onclick="send()">Jetzt Report kostenlos erhalten &#10024;</button>
         <div class="form-proof">
           <div class="fp-row"><span>&#128274;</span> Deine Daten sind sicher &amp; werden nicht weitergegeben</div>
           <div class="fp-row"><span class="proof-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span> <b>2.847+</b> zufriedene Teilnehmerinnen</div>
         </div>
       </div>
 
-      <!-- Ergebnis-Seite mit Typ + Wistia + YCBM -->
-      <div class="step result" data-s="result" style="display:none;">
-        <span class="result-badge">&#9889; Dein Ergebnis ist da!</span>
-        <h2 id="r-title">Dein Stoffwechsel-Typ</h2>
-        <p class="result-type" id="r-type">, wird ermittelt &middot;</p>
-
-        <!-- Wistia Video (zielbasiert) -->
-        <div id="wistia-container" style="margin:16px 0; border-radius:12px; overflow:hidden; background:#000; aspect-ratio:16/9;"></div>
-
-        <div class="result-summary" id="r-summary"></div>
-
-        <div class="result-cta-box">
-          <h3>Jetzt kostenlose Standortbestimmung sichern</h3>
-          <p>In 30 Minuten besprechen wir gemeinsam, wo dein Stoffwechsel steht und welche Schritte für dich in den nächsten 4 Wochen den grössten Unterschied machen.</p>
-          <ul class="result-bullets">
-            <li>Dein individueller 4-Wochen-Fahrplan</li>
-            <li>Wie du ohne Kalorienzählen abnimmst</li>
-            <li>Wie du ohne Jojo-Effekt langfristig schlank bleibst</li>
-            <li>Persönliche Empfehlung, welche Schritte JETZT zählen</li>
+      <!-- Danke-Seite -->
+      <div class="step thankyou" data-s="thankyou" style="display:none;">
+        <span class="thankyou-badge">&#10003; Erfolgreich</span>
+        <h2>Vielen Dank! Dein Report ist unterwegs.</h2>
+        <p class="ty-sub">Wir haben dir deinen persönlichen Stoffwechsel-Fahrplan per E-Mail geschickt. Schau auch im Spam-Ordner nach.</p>
+        <div class="ty-box">
+          <h3>Dein nächster Schritt</h3>
+          <ul class="ty-steps">
+            <li><span class="num">1</span><span>Öffne deinen Report in der E-Mail</span></li>
+            <li><span class="num">2</span><span>Buche dein kostenloses Beratungsgespräch, wir besprechen deinen Fahrplan persönlich</span></li>
+            <li><span class="num">3</span><span>Starte in 4 Wochen mit sichtbaren Ergebnissen</span></li>
           </ul>
         </div>
-
-        <!-- YCBM Booking Embed -->
-        <div id="ycbm-container" style="margin:16px 0;"></div>
-
-        <div class="result-meta">
-          <span class="rm-hot">&#128293; Freie Plätze schnell vergeben</span>
-          <span class="rm-sm">Rückmeldung in 24h &middot; 100% kostenlos &middot; unverbindlich</span>
-        </div>
+        <a href="https://fitontime-stoffwechsel-report.youcanbook.me" class="thankyou-cta" id="ty-cta" target="_blank" rel="noopener">Jetzt kostenloses Beratungsgespräch buchen &#128197;</a>
+        <div class="thankyou-spots">&#128293; Nur noch wenige Plätze diese Woche verfügbar</div>
       </div>
 
     </div>
@@ -528,17 +570,16 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
     }
     tk('page_view');
 
-    function startQuiz() {
-      tk('quiz_start');
+    function startQuiz(gender) {
+      quizAnswers['gender'] = gender || 'frau';
+      tk('quiz_start', { detail: 'gender_' + quizAnswers.gender });
       document.getElementById('lp').style.display = 'none';
       document.getElementById('quiz').classList.add('on');
       window.scrollTo(0,0);
     }
 
     function nxt(s, el, val) {
-      var label = el && el.querySelector('strong') ? el.querySelector('strong').textContent.trim() : '';
-      quizAnswers['q' + s] = label;
-      quizAnswers['q' + s + '_val'] = val;
+      quizAnswers['q' + s] = val;
       tk('quiz_answer', { detail: 'q' + s + '_' + val });
 
       document.querySelector('.step[data-s="' + s + '"]').classList.remove('on');
@@ -570,38 +611,6 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
       }, 3200);
     }
 
-    // Personalisiertes Profil bestimmen
-    function getProfile() {
-      var body = quizAnswers.q1_val || 'meso';
-      var problem = quizAnswers.q2_val || 'jojo';
-      var profiles = {
-        ecto: {
-          title: 'Der Verbrennungstyp',
-          summary: 'Dein Stoffwechsel arbeitet schnell, verbrennt aber oft die falschen Energiequellen. Du nimmst zwar nicht leicht zu, aber wenn du abnehmen willst, verlierst du häufig Muskeln statt Fett. Dein Körper braucht regelmässige, nährstoffreiche Mahlzeiten, um stabil zu bleiben.',
-        },
-        meso: {
-          title: 'Der Allrounder',
-          summary: 'Dein Körper reagiert gut auf Training und Ernährungsumstellungen. Du baust leicht Muskeln auf und kannst auch abnehmen, wenn du den richtigen Reiz setzt. Dein Problem ist oft nicht der Körper, sondern die Konstanz, und genau da setzt unser Ansatz an.',
-        },
-        endo: {
-          title: 'Der Speichertyp',
-          summary: 'Dein Körper speichert Energie besonders effizient, evolutionär ein Vorteil, heute eine Herausforderung. Standard-Diäten mit Kaloriendefizit funktionieren bei dir kaum, weil dein Körper sofort in den Sparmodus schaltet. Statt weniger essen, anders essen, das ist der Schlüssel.',
-        }
-      };
-      var p = Object.assign({}, profiles[body] || profiles.meso);
-
-      if (problem === 'hunger') {
-        p.summary += ' Dein Hauptproblem Heisshunger deutet auf schwankenden Blutzucker hin, das lässt sich mit dem richtigen Mahlzeiten-Timing lösen.';
-      } else if (problem === 'jojo') {
-        p.summary += ' Der Jojo-Effekt zeigt, dass bisherige Ansätze deinen Stoffwechsel nicht respektiert haben. Unser Ansatz setzt genau da an.';
-      } else if (problem === 'sport') {
-        p.summary += ' Wenn trotz Sport nichts passiert, stimmt oft das Verhältnis zwischen Training und Ernährung nicht, genau das optimieren wir.';
-      } else if (problem === 'moti') {
-        p.summary += ' Fehlende Motivation ist kein Charakter-Problem, es fehlt nur der Plan, der wirklich zu dir passt. Wenn du siehst, dass es wirkt, bleibt Motivation von allein.';
-      }
-      return p;
-    }
-
     document.getElementById('ds').addEventListener('change', function() {
       document.getElementById('sbtn').disabled = !this.checked;
     });
@@ -618,10 +627,9 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
       }
       var btn = document.getElementById('sbtn');
       btn.disabled = true;
-      btn.textContent = 'Wird ausgewertet...';
+      btn.textContent = 'Wird verarbeitet...';
 
-      var profile = getProfile();
-      tk('lead_submit', { detail: fn + ' - ' + (quizAnswers.q1_val || 'unknown') });
+      tk('lead_submit', { detail: fn });
 
       fetch('/api/sheets', {
         method: 'POST',
@@ -630,52 +638,16 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
           name: fn,
           email: em,
           phone: ph ? '+41' + ph : '',
-          answers: Object.assign({}, quizAnswers, { profile_type: quizAnswers.q1_val })
+          answers: quizAnswers
         })
       }).catch(function(){});
 
       setTimeout(function(){
-        // Ergebnis-Text setzen
-        document.getElementById('r-title').textContent = 'Dein Stoffwechsel-Typ: ' + profile.title;
-        var firstName = (fn.split(' ')[0] || '').trim();
-        document.getElementById('r-type').textContent = (firstName ? firstName + ', ' : '') + 'hier ist deine individuelle Auswertung';
-        document.getElementById('r-summary').textContent = profile.summary;
-
-        // Wistia Video basierend auf Ziel (Q7)
-        var goal = quizAnswers.q7_val || '6-10';
-        var videoMap = {
-          '3-5': 'zuef2ev1j4',
-          '6-10': 'g7g5ttzij5',
-          '10+': 'b6bkslxgxy',
-          'fitter': 'zuef2ev1j4'
-        };
-        var videoId = videoMap[goal] || 'g7g5ttzij5';
-
-        var wc = document.getElementById('wistia-container');
-        var wd = document.createElement('div');
-        wd.className = 'wistia_embed wistia_async_' + videoId;
-        wd.style.cssText = 'width:100%;height:100%;';
-        wc.appendChild(wd);
-        var ws = document.createElement('script');
-        ws.src = 'https://fast.wistia.com/assets/external/E-v1.js';
-        ws.async = true;
-        wc.appendChild(ws);
-
-        // YCBM Kalender
-        var ys = document.createElement('script');
-        ys.src = 'https://embed.ycb.me';
-        ys.async = true;
-        ys.setAttribute('data-domain', 'fitontime-stoffwechsel-report');
-        ys.setAttribute('data-displaymode', 'auto');
-        document.getElementById('ycbm-container').appendChild(ys);
-
         document.querySelector('.step[data-s="form"]').classList.remove('on');
-        document.querySelector('.step[data-s="result"]').style.display = 'block';
-        document.querySelector('.step[data-s="result"]').classList.add('on');
-        document.getElementById('qn').textContent = 'Dein Ergebnis';
-        var body = document.querySelector('.q-body');
-        if (body) body.scrollTop = 0;
-        tk('result_shown', { detail: goal + '_' + (quizAnswers.q1_val || 'meso') });
+        document.querySelector('.step[data-s="thankyou"]').style.display = 'block';
+        document.querySelector('.step[data-s="thankyou"]').classList.add('on');
+        document.getElementById('qn').textContent = 'Geschafft!';
+        tk('result_shown', { detail: 'thankyou' });
       }, 1200);
     }
   </script>
