@@ -604,11 +604,11 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
 
         <!-- Was du in der Session bekommst -->
         <ul class="r-bullets">
-          <li>Den <strong>Schlüssel zu deinem Stoffwechsel-Typ</strong></li>
-          <li>Deinen <strong>individuellen 3-Schritte-Plan</strong></li>
-          <li>Konkrete Massnahmen, die <strong>ab morgen wirken</strong> können</li>
-          <li>Expertenwissen aus <strong>4.000+ echten Erfolgsfällen</strong></li>
-          <li>Eine klare Strategie, um dein Zielgewicht <strong>dauerhaft</strong> zu erreichen</li>
+          <li><span>Den <strong>Schlüssel zu deinem Stoffwechsel-Typ</strong></span></li>
+          <li><span>Deinen <strong>individuellen 3-Schritte-Plan</strong></span></li>
+          <li><span>Konkrete Massnahmen, die <strong>ab morgen wirken</strong> können</span></li>
+          <li><span>Expertenwissen aus <strong>4.000+ echten Erfolgsfällen</strong></span></li>
+          <li><span>Eine klare Strategie, um dein Zielgewicht <strong>dauerhaft</strong> zu erreichen</span></li>
         </ul>
 
         <p class="r-reminder">&#128073; Dein Stoffwechsel wartet nicht, warum solltest du?<br/>&#128197; <span class="strong">Jetzt Termin auswählen &amp; Ergebnis direkt erhalten.</span></p>
@@ -640,6 +640,26 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
       }
     }
     tk('page_view');
+
+    // Preview-Modus: ?preview=result springt direkt auf Ergebnis-Seite
+    if (typeof window !== 'undefined' && /[?&]preview=result/.test(window.location.search)) {
+      window.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('lp').style.display = 'none';
+        document.getElementById('quiz').classList.add('on');
+        document.querySelectorAll('.step').forEach(function(s){ s.classList.remove('on'); });
+        var r = document.querySelector('.step[data-s="thankyou"]');
+        r.style.display = 'block';
+        r.classList.add('on');
+        document.getElementById('r-name').textContent = 'Sarah';
+        var ycbm = document.createElement('script');
+        ycbm.src = 'https://embed.ycb.me';
+        ycbm.async = true;
+        ycbm.setAttribute('data-domain', 'fitontime-stoffwechsel-report');
+        ycbm.setAttribute('data-displaymode', 'auto');
+        document.getElementById('ycbm-embed').appendChild(ycbm);
+        document.getElementById('qn').textContent = 'Preview';
+      });
+    }
 
     function startQuiz(gender) {
       quizAnswers['gender'] = gender || 'frau';
