@@ -154,17 +154,18 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
     .opts.grid-2 .opt { flex-direction: column; text-align: center; padding: 20px 14px; }
     .opts.grid-2 .opt .opt-ic { margin: 0 auto 8px; }
 
-    /* Körpertyp-Karten (finale Frage) */
+    /* Körpertyp-Karten (finale Frage) - Silhouetten prominent wie im Original */
     .body-cards { display: grid; grid-template-columns: 1fr; gap: 12px; }
-    @media (min-width: 600px) { .body-cards { grid-template-columns: 1fr 1fr 1fr; } }
-    .body-card { background: var(--card); border: 2px solid var(--border); border-radius: 16px; padding: 0; overflow: hidden; cursor: pointer; transition: all 0.25s cubic-bezier(0.2, 0.9, 0.3, 1); font-family: var(--font); -webkit-tap-highlight-color: transparent; text-align: center; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; }
-    .body-card:hover { border-color: var(--accent); transform: translateY(-4px); box-shadow: var(--shadow-lg); }
-    .body-card:hover .bc-visual { background: linear-gradient(180deg, #cfe2f7 0%, #b6d3f0 100%); }
-    .body-card:hover .bc-visual svg { transform: scale(1.06); }
-    .body-card:active { transform: scale(0.98); }
-    .body-card .bc-visual { aspect-ratio: 3/4; background: linear-gradient(180deg, var(--accent-soft) 0%, #d8e7f8 100%); display: flex; align-items: flex-end; justify-content: center; position: relative; overflow: hidden; transition: background 0.3s; }
-    .body-card .bc-visual::after { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at center bottom, rgba(29,115,211,0.18) 0%, transparent 70%); pointer-events: none; }
-    .body-card .bc-visual svg { width: 70%; height: 90%; color: var(--accent); opacity: 0.95; transition: transform 0.3s; filter: drop-shadow(0 4px 12px rgba(29,115,211,0.25)); position: relative; z-index: 1; }
+    @media (min-width: 560px) { .body-cards { grid-template-columns: 1fr 1fr 1fr; } }
+    .body-card { background: linear-gradient(180deg, var(--accent) 0%, #3b92f0 60%, var(--accent-dark) 100%); border: 3px solid transparent; border-radius: 18px; padding: 0; overflow: hidden; cursor: pointer; transition: all 0.25s cubic-bezier(0.2, 0.9, 0.3, 1); font-family: var(--font); -webkit-tap-highlight-color: transparent; text-align: center; box-shadow: var(--shadow-md); display: flex; flex-direction: column; color: #fff; }
+    .body-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); border-color: var(--accent-dark); }
+    .body-card:active { transform: scale(0.97); }
+    .body-card .bc-visual { aspect-ratio: 3/5; display: flex; align-items: flex-end; justify-content: center; position: relative; overflow: hidden; padding-top: 18px; }
+    .body-card .bc-visual svg { width: 85%; height: 96%; color: #fff; filter: drop-shadow(0 6px 18px rgba(0,0,0,0.25)); position: relative; z-index: 1; transition: transform 0.3s; }
+    .body-card:hover .bc-visual svg { transform: scale(1.05) translateY(-4px); }
+    .body-card .bc-body { padding: 14px 12px 18px; background: rgba(255,255,255,0.08); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); border-top: 1px solid rgba(255,255,255,0.14); }
+    .body-card h3 { font-size: 17px; font-weight: 800; color: #fff; margin-bottom: 6px; letter-spacing: -0.2px; }
+    .body-card p { font-size: 12px; color: rgba(255,255,255,0.88); line-height: 1.45; }
     .body-card .bc-body { padding: 14px 14px 18px; }
     .body-card h3 { font-size: 15px; font-weight: 800; color: var(--text); margin-bottom: 6px; letter-spacing: -0.2px; }
     .body-card p { font-size: 12px; color: var(--text-2); line-height: 1.45; }
@@ -423,44 +424,44 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
         <div class="body-cards">
           <button class="body-card" onclick="nxt(7,this,'staemmig')">
             <div class="bc-visual">
-              <svg viewBox="0 0 100 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <svg viewBox="0 0 100 210" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                 <g fill="currentColor">
-                  <circle cx="50" cy="18" r="13"/>
-                  <path d="M 50 32 C 39 32 34 37 33 46 L 28 60 C 25 68 26 76 30 81 L 30 92 C 27 100 32 110 33 118 L 32 135 L 36 195 L 47 195 L 48 135 L 50 115 L 52 135 L 52 195 L 63 195 L 67 135 L 66 118 C 67 110 72 100 69 92 L 69 81 C 73 76 74 68 71 60 L 66 46 C 65 37 60 32 50 32 Z"/>
+                  <ellipse cx="50" cy="18" rx="13" ry="15"/>
+                  <path d="M 42 33 L 58 33 L 60 42 C 67 44 70 50 69 57 L 67 72 C 72 76 76 84 76 94 L 78 108 C 80 118 72 126 66 132 L 68 155 L 70 204 L 58 204 L 54 155 L 52 130 L 50 120 L 48 130 L 46 155 L 42 204 L 30 204 L 32 155 L 34 132 C 28 126 20 118 22 108 L 24 94 C 24 84 28 76 33 72 L 31 57 C 30 50 33 44 40 42 Z"/>
                 </g>
               </svg>
             </div>
             <div class="bc-body">
               <h3>Stämmig</h3>
-              <p>Kurvige Silhouette. Körperfett v.a. an Hüfte, Po und Oberschenkeln. Nehme schnell zu.</p>
+              <p>Kurvig, breitere Hüften und kräftige Oberschenkel.</p>
             </div>
           </button>
           <button class="body-card" onclick="nxt(7,this,'soft')">
             <div class="bc-visual">
-              <svg viewBox="0 0 100 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <svg viewBox="0 0 100 210" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                 <g fill="currentColor">
-                  <circle cx="50" cy="18" r="12"/>
-                  <path d="M 50 32 C 41 32 37 36 36 44 L 32 58 C 30 65 31 72 34 77 L 35 88 C 34 95 37 102 38 108 L 39 125 L 37 195 L 46 195 L 48 130 L 49 112 L 50 105 L 51 112 L 52 130 L 54 195 L 63 195 L 61 125 L 62 108 C 63 102 66 95 65 88 L 66 77 C 69 72 70 65 68 58 L 64 44 C 63 36 59 32 50 32 Z"/>
+                  <ellipse cx="50" cy="18" rx="11" ry="13"/>
+                  <path d="M 43 31 L 57 31 L 59 40 C 64 42 66 48 65 55 L 63 70 C 67 74 69 82 67 91 L 65 108 C 67 116 63 124 60 130 L 62 155 L 65 204 L 55 204 L 53 155 L 51 130 L 50 120 L 49 130 L 47 155 L 45 204 L 35 204 L 38 155 L 40 130 C 37 124 33 116 35 108 L 33 91 C 31 82 33 74 37 70 L 35 55 C 34 48 36 42 41 40 Z"/>
                 </g>
               </svg>
             </div>
             <div class="bc-body">
               <h3>Soft</h3>
-              <p>Ausgewogene Proportionen, normale Taille. Reagiere gut auf Training und Ernährung.</p>
+              <p>Ausgewogene Sanduhr-Silhouette, definierte Taille.</p>
             </div>
           </button>
           <button class="body-card" onclick="nxt(7,this,'zierlich')">
             <div class="bc-visual">
-              <svg viewBox="0 0 100 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <svg viewBox="0 0 100 210" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                 <g fill="currentColor">
-                  <circle cx="50" cy="18" r="11"/>
-                  <path d="M 50 32 C 43 32 40 36 39 42 L 36 56 C 34 62 35 68 37 72 L 39 86 C 38 92 40 98 41 104 L 42 122 L 40 195 L 46 195 L 48 128 L 49 112 L 50 104 L 51 112 L 52 128 L 54 195 L 60 195 L 58 122 L 59 104 C 60 98 62 92 61 86 L 63 72 C 65 68 66 62 64 56 L 61 42 C 60 36 57 32 50 32 Z"/>
+                  <ellipse cx="50" cy="18" rx="9" ry="11"/>
+                  <path d="M 44 29 L 56 29 L 57 38 C 60 40 61 46 60 53 L 59 72 C 62 76 62 86 61 96 L 60 112 C 61 120 59 128 58 135 L 60 155 L 62 204 L 54 204 L 52 155 L 50 135 L 49 125 L 48 135 L 46 155 L 38 204 L 40 155 L 42 135 C 41 128 39 120 40 112 L 39 96 C 38 86 38 76 41 72 L 40 53 C 39 46 40 40 43 38 Z"/>
                 </g>
               </svg>
             </div>
             <div class="bc-body">
               <h3>Zierlich</h3>
-              <p>Schmale Silhouette, feingliedrig. Wirke schlank, wenig Muskelmasse, oft energielos.</p>
+              <p>Schmale, feingliedrige Silhouette ohne ausgeprägte Kurven.</p>
             </div>
           </button>
         </div>
