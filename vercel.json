@@ -1,1 +1,8 @@
-{ "framework": "astro" }
+{
+  "framework": "astro",
+  "redirects": [
+    { "source": "/blockaden-report", "destination": "/ayurveda-quiz", "permanent": true },
+    { "source": "/blockaden-report/", "destination": "/ayurveda-quiz/", "permanent": true },
+    { "source": "/blockaden-report/:path*", "destination": "/ayurveda-quiz/:path*", "permanent": true }
+  ]
+}

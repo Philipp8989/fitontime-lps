@@ -703,12 +703,12 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
 
     function tk(e, d) {
       if (window.__lp) {
-        window.__lp.track(e, Object.assign({ page: 'blockaden-report' }, d || {}), 'fot', 'Ayurveda Check');
+        window.__lp.track(e, Object.assign({ page: 'ayurveda-quiz' }, d || {}), 'fot', 'Ayurveda Quiz');
       }
       if (window.__lp) {
-        if (e === 'quiz_start') window.__lp.meta('ViewContent', { content_name: 'Ayurveda Check Quiz Start', currency: 'CHF' });
-        if (e === 'quiz_complete') window.__lp.meta('CompleteRegistration', { content_name: 'Ayurveda Check Quiz Complete', currency: 'CHF' });
-        if (e === 'lead_submit') window.__lp.meta('Lead', { content_name: 'Ayurveda Check Lead', currency: 'CHF' });
+        if (e === 'quiz_start') window.__lp.meta('ViewContent', { content_name: 'Ayurveda Quiz Start', currency: 'CHF' });
+        if (e === 'quiz_complete') window.__lp.meta('CompleteRegistration', { content_name: 'Ayurveda Quiz Complete', currency: 'CHF' });
+        if (e === 'lead_submit') window.__lp.meta('Lead', { content_name: 'Ayurveda Quiz Lead', currency: 'CHF' });
       }
     }
     tk('page_view');
@@ -917,8 +917,8 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          lp_slug: 'blockaden-report',
-          lp_name: 'Ayurveda Check',
+          lp_slug: 'ayurveda-quiz',
+          lp_name: 'Ayurveda Quiz',
           name: fn,
           email: em,
           phone: ph ? '+41' + ph : '',
@@ -940,7 +940,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
 
   <CookieBanner
     metaPixelId="1349136525891811"
-    consentKey="fot_ayurveda_check_consent"
+    consentKey="fot_ayurveda_quiz_consent"
     impressumUrl={impressumUrl}
     datenschutzUrl={datenschutzUrl}
   />
