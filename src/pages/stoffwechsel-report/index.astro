@@ -726,6 +726,8 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          lp_slug: 'stoffwechsel-report',
+          lp_name: 'Stoffwechsel Report',
           name: fn,
           email: em,
           phone: ph ? '+41' + ph : '',

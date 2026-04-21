@@ -393,6 +393,9 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
         lbl.textContent = `Schritt ${i} von ${TOTAL_STEPS}`;
       }
       track('step_view', { step_index: i });
+      // Zusaetzlich Standard-Funnel-Events fuer Dashboard-Aggregation:
+      if (i === 1 && !state.startedFired) { state.startedFired = true; saveState(); track('quiz_start'); }
+      if (i === 8 && !state.completedFired) { state.completedFired = true; saveState(); track('quiz_complete'); }
 
       // Loading-Step automatisch weiterleiten
       if (i === 8) {
@@ -419,7 +422,7 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
     function answer(key, val) {
       state.answers[key] = val;
       saveState();
-      track('answer', { key, value: val });
+      track('quiz_answer', { key, value: val });
       next();
     }
     window.answer = answer;
@@ -523,12 +526,12 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
       document.getElementById('resPotenzial').textContent = potenzial1.toString().replace('.', ',');
       document.getElementById('resZiel').textContent = ziel.toString().replace('.', ',');
       document.getElementById('resName').textContent = state.lead?.name || 'Du';
-      track('ergebnis_view');
+      track('result_shown');
     }
 
     // Initial
     showStep(state.step);
-    track('view');
+    track('page_view');
   </script>
 </body>
 </html>

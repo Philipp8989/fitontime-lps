@@ -15,7 +15,7 @@ const lpFilter = Astro.url.searchParams.get('lp') || '';
 const LP_META: Record<string, { label: string; steps: string[] }> = {
   'abnehmpotential': {
     label: 'Abnehmpotential',
-    steps: ['view', 'step_view', 'answer', 'optin_view', 'lead_submit', 'ergebnis_view'],
+    steps: ['page_view', 'quiz_start', 'quiz_answer', 'quiz_complete', 'optin_view', 'lead_submit', 'result_shown'],
   },
   'schilddruesen-report':  { label: 'Schilddrüsen-Report',  steps: ['page_view','quiz_start','quiz_complete','lead_submit','result_shown'] },
   'stoffwechsel-report':   { label: 'Stoffwechsel-Report',  steps: ['page_view','quiz_start','quiz_complete','lead_submit','result_shown'] },

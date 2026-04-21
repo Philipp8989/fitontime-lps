@@ -23,6 +23,15 @@ const SHEETS: Record<string, SheetConfig> = {
     range: 'Tabellenblatt1!A:D',
     buildRow: (datum, d) => [datum, d.name, d.phone || '', d.email],
   },
+  // Stoffwechsel-Report: Datum | Name | Email | Telefon | Geschlecht | q1..q7
+  'stoffwechsel-report': {
+    id: '1EsXQzYwL-fxCA3yiczCX_Qv1lMyFt3LmFFQ1sY-klj8',
+    range: 'Tabellenblatt1!A:L',
+    buildRow: (datum, d) => {
+      const a = d.answers || {};
+      return [datum, d.name, d.email, d.phone || '', a.gender || '', a.q1 || '', a.q2 || '', a.q3 || '', a.q4 || '', a.q5 || '', a.q6 || '', a.q7 || ''];
+    },
+  },
 };
 
 export const POST: APIRoute = async ({ request }) => {
