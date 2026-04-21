@@ -415,46 +415,52 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
         </div>
       </div>
 
-      <!-- Q7 = FINALE FRAGE - entscheidet über die 3 Ergebnisse (ecto/meso/endo) -->
+      <!-- Q7 = FINALE FRAGE - entscheidet über die 3 Ergebnisse -->
       <div class="step" data-s="7">
         <div class="step-eyebrow">Letzte Frage</div>
-        <h2>Was beschreibt dich am besten?</h2>
+        <h2>Was beschreibt deinen Körperbau am besten?</h2>
         <p class="step-sub">Deine Antwort bestimmt deinen Stoffwechsel-Typ.</p>
         <div class="body-cards">
-          <button class="body-card" onclick="nxt(7,this,'endo')">
+          <button class="body-card" onclick="nxt(7,this,'staemmig')">
             <div class="bc-visual">
-              <svg viewBox="0 0 100 160" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                <ellipse cx="50" cy="20" rx="13" ry="15"/>
-                <path d="M30 42 Q50 35 70 42 L78 100 Q78 120 65 125 L60 155 L53 155 L52 128 L48 128 L47 155 L40 155 L35 125 Q22 120 22 100 Z"/>
+              <svg viewBox="0 0 100 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <g fill="currentColor">
+                  <circle cx="50" cy="18" r="13"/>
+                  <path d="M 50 32 C 39 32 34 37 33 46 L 28 60 C 25 68 26 76 30 81 L 30 92 C 27 100 32 110 33 118 L 32 135 L 36 195 L 47 195 L 48 135 L 50 115 L 52 135 L 52 195 L 63 195 L 67 135 L 66 118 C 67 110 72 100 69 92 L 69 81 C 73 76 74 68 71 60 L 66 46 C 65 37 60 32 50 32 Z"/>
+                </g>
               </svg>
             </div>
             <div class="bc-body">
-              <h3>Kräftiger Bau</h3>
-              <p>Körperfett v.a. an Hüfte, Po und Oberschenkeln. Ich nehme schnell zu, schwer ab.</p>
+              <h3>Stämmig</h3>
+              <p>Kurvige Silhouette. Körperfett v.a. an Hüfte, Po und Oberschenkeln. Nehme schnell zu.</p>
             </div>
           </button>
-          <button class="body-card" onclick="nxt(7,this,'meso')">
+          <button class="body-card" onclick="nxt(7,this,'soft')">
             <div class="bc-visual">
-              <svg viewBox="0 0 100 160" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                <ellipse cx="50" cy="20" rx="11" ry="13"/>
-                <path d="M34 42 Q50 36 66 42 L72 98 Q72 116 60 122 L57 155 L52 155 L51 125 L49 125 L48 155 L43 155 L40 122 Q28 116 28 98 Z"/>
+              <svg viewBox="0 0 100 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <g fill="currentColor">
+                  <circle cx="50" cy="18" r="12"/>
+                  <path d="M 50 32 C 41 32 37 36 36 44 L 32 58 C 30 65 31 72 34 77 L 35 88 C 34 95 37 102 38 108 L 39 125 L 37 195 L 46 195 L 48 130 L 49 112 L 50 105 L 51 112 L 52 130 L 54 195 L 63 195 L 61 125 L 62 108 C 63 102 66 95 65 88 L 66 77 C 69 72 70 65 68 58 L 64 44 C 63 36 59 32 50 32 Z"/>
+                </g>
               </svg>
             </div>
             <div class="bc-body">
-              <h3>Mittel &amp; sportlich</h3>
-              <p>Ausgewogene Proportionen. Reagiere gut auf Training und Ernährung.</p>
+              <h3>Soft</h3>
+              <p>Ausgewogene Proportionen, normale Taille. Reagiere gut auf Training und Ernährung.</p>
             </div>
           </button>
-          <button class="body-card" onclick="nxt(7,this,'ecto')">
+          <button class="body-card" onclick="nxt(7,this,'zierlich')">
             <div class="bc-visual">
-              <svg viewBox="0 0 100 160" fill="currentColor" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                <ellipse cx="50" cy="20" rx="10" ry="12"/>
-                <path d="M38 42 Q50 37 62 42 L66 98 Q66 114 57 120 L55 155 L51 155 L50 124 L49 124 L48 155 L44 155 L42 120 Q33 114 33 98 Z"/>
+              <svg viewBox="0 0 100 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <g fill="currentColor">
+                  <circle cx="50" cy="18" r="11"/>
+                  <path d="M 50 32 C 43 32 40 36 39 42 L 36 56 C 34 62 35 68 37 72 L 39 86 C 38 92 40 98 41 104 L 42 122 L 40 195 L 46 195 L 48 128 L 49 112 L 50 104 L 51 112 L 52 128 L 54 195 L 60 195 L 58 122 L 59 104 C 60 98 62 92 61 86 L 63 72 C 65 68 66 62 64 56 L 61 42 C 60 36 57 32 50 32 Z"/>
+                </g>
               </svg>
             </div>
             <div class="bc-body">
-              <h3>Schlank &amp; zierlich</h3>
-              <p>Eher gleichmässig, wirke schlank. Schnell müde, wenig Muskel.</p>
+              <h3>Zierlich</h3>
+              <p>Schmale Silhouette, feingliedrig. Wirke schlank, wenig Muskelmasse, oft energielos.</p>
             </div>
           </button>
         </div>
@@ -494,44 +500,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
         </div>
       </div>
 
-      <!-- Ergebnis -->
-      <div class="step result" data-s="result" style="display:none;">
-        <div class="result-hero">
-          <div class="result-badge">&#9889; Dein Ergebnis ist da</div>
-          <div class="result-type-label" id="rLabel">Dein Stoffwechsel-Typ</div>
-          <h2 id="rTitle">&nbsp;</h2>
-          <p class="r-sub" id="rSummary">&nbsp;</p>
-        </div>
-
-        <div id="wistia-container"></div>
-
-        <div class="result-pillars">
-          <div class="pillar"><div class="p-ic">&#127869;&#65039;</div><h4>Ernährung</h4><p id="rFood">&nbsp;</p></div>
-          <div class="pillar"><div class="p-ic">&#128170;</div><h4>Bewegung</h4><p id="rMove">&nbsp;</p></div>
-          <div class="pillar"><div class="p-ic">&#9201;</div><h4>Timing</h4><p id="rTime">&nbsp;</p></div>
-          <div class="pillar"><div class="p-ic">&#9888;&#65039;</div><h4>Dein Fehler</h4><p id="rMistake">&nbsp;</p></div>
-        </div>
-
-        <div class="scarcity">&#128293; <span>Nur <b id="spots">7</b> freie Termine diese Woche &middot; Rückmeldung in 24h</span></div>
-
-        <div class="result-cta-wrap">
-          <h3>Kostenlose Standortbestimmung buchen</h3>
-          <p>Wir gehen gemeinsam durch dein Profil und zeigen dir den nächsten Schritt, individuell für deinen Typ.</p>
-          <a href="#ycbm-container" class="result-cta" onclick="document.getElementById('ycbm-container').scrollIntoView({behavior:'smooth'}); return false;">Termin sichern &rarr;</a>
-        </div>
-
-        <div id="ycbm-container"></div>
-
-        <div class="result-section">
-          <h3>&#128221; Was du nach dem Gespräch bekommst</h3>
-          <ul class="want-list">
-            <li>Einen individuellen Fahrplan für die nächsten 6 Wochen</li>
-            <li>Wie du ohne Kalorienzählen oder Disziplinkampf abnimmst</li>
-            <li>Wie du an Hüfte, Po und Bauch gezielt Fett verlierst</li>
-            <li>Wie du langfristig schlank bleibst, ohne Jojo-Effekt</li>
-          </ul>
-        </div>
-      </div>
+      {/* Result-Seite lebt in eigenen URLs: /stoffwechsel-test/{typ}/ */}
 
     </div>
   </div>
@@ -651,50 +620,6 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
       }, 3100);
     }
 
-    // 3 Profile - entschieden durch Q7 (Körperbau)
-    var PROFILES = {
-      endo: {
-        title: 'Der Speichertyp',
-        label: 'Langsamer Stoffwechsel',
-        summary: 'Dein Körper speichert Energie besonders effizient. Evolutionär ein Vorteil, heute eine Herausforderung. Standard-Diäten greifen bei dir kaum, weil dein Körper sofort in den Sparmodus schaltet.',
-        food: 'Leichte, warme Kost. Viel Gemüse, Hülsenfrüchte, Ingwer-Tee. Wenig Weizen, Zucker, Milchprodukte.',
-        move: 'Tägliche Bewegung ist Pflicht. Krafttraining plus zügiges Walken. Gerade dann, wenn die Motivation fehlt.',
-        time: 'Leichtes Frühstück oder 16:8-Fasten. Hauptmahlzeit mittags. Nichts Schweres nach 18 Uhr.',
-        mistake: 'Zu wenig essen, kaum bewegen. Crash-Diäten verlangsamen deinen Stoffwechsel weiter.',
-        video: 'g7g5ttzij5'
-      },
-      meso: {
-        title: 'Der Allrounder',
-        label: 'Ausgewogener Stoffwechsel',
-        summary: 'Dein Körper reagiert gut auf Training und Ernährungsumstellungen. Du baust leichter Muskeln auf und kannst auch gezielt abnehmen. Dein Problem ist selten der Körper, sondern die Konstanz.',
-        food: 'Ausgewogene Makros: 40% Kohlenhydrate, 30% Protein, 30% Fett. Viel Gemüse und magere Proteine.',
-        move: 'Mix aus Kraft und Cardio. HIIT 2x pro Woche, Krafttraining 2&ndash;3x pro Woche.',
-        time: '3 feste Mahlzeiten. Optional 1 Protein-Snack nach dem Training. Abends leichter essen.',
-        mistake: 'Sich auf natürliche Fitness verlassen und nachlässig werden. Ohne Struktur kommt auch bei dir der Stillstand.',
-        video: 'b6bkslxgxy'
-      },
-      ecto: {
-        title: 'Der Verbrennungstyp',
-        label: 'Schneller Stoffwechsel',
-        summary: 'Dein Stoffwechsel arbeitet schnell, verbrennt aber oft die falschen Energiequellen. Du nimmst nicht leicht zu, verlierst aber schnell Muskeln statt Fett. Dein Körper braucht regelmässige, nährstoffreiche Mahlzeiten.',
-        food: 'Proteinreiche Mahlzeiten, komplexe Kohlenhydrate, gesunde Fette. Nie eine Mahlzeit auslassen.',
-        move: 'Krafttraining 3x pro Woche, leichtes Cardio. Zu viel Ausdauer verbrennt wertvolle Muskelmasse.',
-        time: '3 Hauptmahlzeiten plus 2 Snacks. Frühstück innerhalb 30 Min. nach dem Aufstehen.',
-        mistake: 'Mahlzeiten auslassen oder nur Salat essen. Dein Körper hält dann an jeder Kalorie fest.',
-        video: 'zuef2ev1j4'
-      }
-    };
-
-    function personalize(p) {
-      var prob = quizAnswers.q6_val;
-      var extra = '';
-      if (prob === 'hunger') extra = ' Dein Heisshunger deutet auf schwankenden Blutzucker hin, das lösen wir mit dem richtigen Mahlzeiten-Timing.';
-      else if (prob === 'jojo') extra = ' Der Jojo-Effekt zeigt: Bisherige Ansätze haben deinen Typ ignoriert. Unser Ansatz setzt genau da an.';
-      else if (prob === 'sport') extra = ' Wenn Sport nicht wirkt, stimmt das Verhältnis zwischen Training und Ernährung nicht, genau das optimieren wir.';
-      else if (prob === 'moti') extra = ' Die Motivation bricht ein, wenn dein Plan zu viel von dir will. Deiner wird an deinen Alltag angepasst.';
-      return p.summary + extra;
-    }
-
     document.getElementById('ds').addEventListener('change', function(){
       document.getElementById('sbtn').disabled = !this.checked;
     });
@@ -714,8 +639,10 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
       btn.textContent = 'Wird ausgewertet...';
 
       // FINALE Frage (Q7) entscheidet über die 3 Ergebnisse
-      var typ = quizAnswers.q7_val || 'meso';
-      var p = PROFILES[typ] || PROFILES.meso;
+      var typ = quizAnswers.q7_val || 'soft';
+      var validTypes = { staemmig: 1, soft: 1, zierlich: 1 };
+      if (!validTypes[typ]) typ = 'soft';
+
       tk('lead_submit', { detail: fn + ' - ' + typ });
 
       // Lead an Google Sheets
@@ -730,46 +657,23 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
         })
       }).catch(function(){});
 
+      // Personalisierungs-Kontext fuer Result-Page in sessionStorage ablegen
+      try {
+        sessionStorage.setItem('fot_result', JSON.stringify({
+          name: fn.split(' ')[0],
+          typ: typ,
+          problem: quizAnswers.q6_val,
+          goal: quizAnswers.q2_val,
+          ts: Date.now()
+        }));
+      } catch (e) {}
+
+      // Kurzer Loading-Tick, dann Redirect zur typ-spezifischen URL
       setTimeout(function(){
-        // Profil-Texte einsetzen
-        document.getElementById('rLabel').textContent = p.label;
-        document.getElementById('rTitle').textContent = p.title;
-        document.getElementById('rSummary').textContent = personalize(p);
-        document.getElementById('rFood').textContent = p.food;
-        document.getElementById('rMove').innerHTML = p.move;
-        document.getElementById('rTime').textContent = p.time;
-        document.getElementById('rMistake').textContent = p.mistake;
-
-        // Wistia-Video laden
-        var wc = document.getElementById('wistia-container');
-        var wd = document.createElement('div');
-        wd.className = 'wistia_embed wistia_async_' + p.video;
-        wd.style.cssText = 'width:100%;aspect-ratio:16/9;';
-        wc.appendChild(wd);
-        var ws = document.createElement('script');
-        ws.src = 'https://fast.wistia.com/assets/external/E-v1.js';
-        ws.async = true;
-        wc.appendChild(ws);
-
-        // YCBM-Kalender
-        var ys = document.createElement('script');
-        ys.src = 'https://embed.ycb.me';
-        ys.async = true;
-        ys.setAttribute('data-domain', 'fitontime-stoffwechsel-report');
-        ys.setAttribute('data-displaymode', 'auto');
-        document.getElementById('ycbm-container').appendChild(ys);
-
-        show('result');
-        document.querySelector('.step[data-s="result"]').style.display = 'block';
-        document.getElementById('qp').textContent = 'Dein Ergebnis';
-        document.getElementById('qt').textContent = '✓ Geschafft';
-        tk('result_shown', { detail: typ + '_' + p.video });
-
-        // Scarcity-Variation
-        var s = document.getElementById('spots');
-        if (s) s.textContent = 5 + Math.floor(Math.random() * 4); // 5-8
-      }, 1000);
+        window.location.href = '/stoffwechsel-test/' + typ + '/';
+      }, 600);
     }
+
   </script>
 
   {/* Hyros als First-Party-Attribution essentiell - laedt ohne Consent */}
