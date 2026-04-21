@@ -14,8 +14,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
   <meta name="theme-color" content="#1d73d3" />
   <title>Welcher Stoffwechsel-Typ bist du? In 60 Sekunden | Fit on Time</title>
   <link rel="icon" type="image/png" href="/images/logo.png" />
-  <link rel="preload" as="image" href="/images/transformations/t1.jpg" />
-  <link rel="preload" as="image" href="/images/transformations/t5.jpg" />
+  <link rel="preload" as="image" href="/images/logo.png" fetchpriority="high" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
@@ -44,6 +43,16 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
     }
     html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
     body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.5; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+
+    /* Fokus-Ring für Keyboard-Nutzer (WCAG 2.4.7) */
+    button:focus-visible, a:focus-visible, input:focus-visible, label:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
+    .opt:focus-visible, .body-card:focus-visible, .cta-btn:focus-visible, .submit:focus-visible { outline-offset: 4px; }
+
+    /* Reduced-Motion: weniger Transitions für sensible User (WCAG 2.3.3) */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+    }
+
     .wrap { max-width: 760px; margin: 0 auto; padding: 0 20px; }
 
     /* Logo */
@@ -61,8 +70,8 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
     .hero { text-align: center; padding: 14px 0 22px; }
     .hero .badge { display: inline-block; background: var(--accent-soft); color: var(--accent); font-size: 12px; font-weight: 700; padding: 6px 14px; border-radius: 20px; margin-bottom: 14px; letter-spacing: 0.3px; }
     .hero h1 { font-size: 30px; font-weight: 900; line-height: 1.15; letter-spacing: -0.8px; margin-bottom: 14px; color: var(--text); }
-    .hero h1 em { font-style: normal; color: var(--accent); position: relative; white-space: nowrap; }
-    .hero h1 em::after { content: ''; position: absolute; left: 0; right: 0; bottom: -2px; height: 6px; background: var(--accent-soft); z-index: -1; border-radius: 3px; }
+    .hero h1 em { font-style: normal; color: var(--accent); position: relative; white-space: nowrap; z-index: 0; }
+    .hero h1 em::after { content: ''; position: absolute; left: -2px; right: -2px; bottom: 2px; height: 12px; background: linear-gradient(90deg, rgba(29,115,211,0.18) 0%, rgba(59,146,240,0.28) 100%); z-index: -1; border-radius: 4px; transform: skewX(-4deg); }
     .hero .sub { font-size: 16px; color: var(--text-2); margin-bottom: 10px; line-height: 1.5; max-width: 560px; margin-left: auto; margin-right: auto; }
     .hero .sub strong { color: var(--text); font-weight: 700; }
 
@@ -94,6 +103,12 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
     .trans-sub { font-size: 13px; color: var(--text-3); text-align: center; margin-bottom: 16px; }
     .trans-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; max-width: 520px; margin: 0 auto; }
     .trans-grid img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 10px; background: var(--card); }
+
+    /* Sticky Mobile CTA */
+    .sticky-cta { position: fixed; bottom: 0; left: 0; right: 0; padding: 10px 16px calc(10px + env(safe-area-inset-bottom)); background: rgba(255,255,255,0.96); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-top: 1px solid var(--border); z-index: 50; transform: translateY(120%); transition: transform 0.35s cubic-bezier(0.2, 0.9, 0.3, 1); box-shadow: 0 -4px 20px rgba(0,0,0,0.08); }
+    .sticky-cta.show { transform: translateY(0); }
+    .sticky-cta .cta-btn { max-width: 520px; margin: 0 auto; box-shadow: none; }
+    @media (min-width: 900px) { .sticky-cta { display: none; } }
 
     /* Divider + Footer */
     .divider { width: 40px; height: 2px; background: var(--accent); margin: 28px auto; opacity: 0.3; border-radius: 2px; }
@@ -142,11 +157,14 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
     /* Körpertyp-Karten (finale Frage) */
     .body-cards { display: grid; grid-template-columns: 1fr; gap: 12px; }
     @media (min-width: 600px) { .body-cards { grid-template-columns: 1fr 1fr 1fr; } }
-    .body-card { background: var(--card); border: 2px solid var(--border); border-radius: 16px; padding: 0; overflow: hidden; cursor: pointer; transition: all 0.22s; font-family: var(--font); -webkit-tap-highlight-color: transparent; text-align: center; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; }
-    .body-card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+    .body-card { background: var(--card); border: 2px solid var(--border); border-radius: 16px; padding: 0; overflow: hidden; cursor: pointer; transition: all 0.25s cubic-bezier(0.2, 0.9, 0.3, 1); font-family: var(--font); -webkit-tap-highlight-color: transparent; text-align: center; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; }
+    .body-card:hover { border-color: var(--accent); transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+    .body-card:hover .bc-visual { background: linear-gradient(180deg, #cfe2f7 0%, #b6d3f0 100%); }
+    .body-card:hover .bc-visual svg { transform: scale(1.06); }
     .body-card:active { transform: scale(0.98); }
-    .body-card .bc-visual { aspect-ratio: 3/4; background: linear-gradient(180deg, var(--accent-soft) 0%, #d8e7f8 100%); display: flex; align-items: flex-end; justify-content: center; position: relative; overflow: hidden; }
-    .body-card .bc-visual svg { width: 70%; height: 90%; color: var(--accent); opacity: 0.92; }
+    .body-card .bc-visual { aspect-ratio: 3/4; background: linear-gradient(180deg, var(--accent-soft) 0%, #d8e7f8 100%); display: flex; align-items: flex-end; justify-content: center; position: relative; overflow: hidden; transition: background 0.3s; }
+    .body-card .bc-visual::after { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at center bottom, rgba(29,115,211,0.18) 0%, transparent 70%); pointer-events: none; }
+    .body-card .bc-visual svg { width: 70%; height: 90%; color: var(--accent); opacity: 0.95; transition: transform 0.3s; filter: drop-shadow(0 4px 12px rgba(29,115,211,0.25)); position: relative; z-index: 1; }
     .body-card .bc-body { padding: 14px 14px 18px; }
     .body-card h3 { font-size: 15px; font-weight: 800; color: var(--text); margin-bottom: 6px; letter-spacing: -0.2px; }
     .body-card p { font-size: 12px; color: var(--text-2); line-height: 1.45; }
@@ -247,9 +265,9 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
       </div>
 
       <section class="hero">
-        <div class="badge">60-Sekunden-Test &middot; 5.000+ Teilnehmerinnen</div>
-        <h1>Welcher <em>Stoffwechsel-Typ</em> bist du?</h1>
-        <p class="sub">Finde in <strong>7 kurzen Fragen</strong> heraus, warum bisherige Diäten bei deinem Körper nicht funktioniert haben, und was für deinen Typ wirklich wirkt.</p>
+          <div class="badge">60-Sekunden-Test &middot; 5.000+ Teilnehmerinnen</div>
+          <h1>Warum bei dir bisher <em>keine Diät</em> wirklich funktioniert hat.</h1>
+          <p class="sub">In <strong>7 kurzen Fragen</strong> erfährst du deinen Stoffwechsel-Typ und was wirklich für dich funktioniert. <b>Ohne Verzicht. Ohne Jojo.</b></p>
 
         <div class="proof-bar">
           <div class="proof-avatars">
@@ -276,6 +294,11 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
         </div>
       </section>
 
+      <!-- Sticky Mobile CTA -->
+      <div class="sticky-cta" id="stickyCta">
+        <button class="cta-btn" onclick="startQuiz()" style="font-size:15px;padding:14px;">Quiz starten &rarr;</button>
+      </div>
+
       <div class="trans">
         <div class="trans-title">Was andere Frauen bereits erreicht haben</div>
         <div class="trans-sub">Echte Teilnehmerinnen, echte Ergebnisse</div>
@@ -287,6 +310,12 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
           <img src="/images/transformations/t8.jpg" alt="" loading="lazy" />
           <img src="/images/transformations/t9.jpg" alt="" loading="lazy" />
         </div>
+      </div>
+
+      <!-- Zweite CTA nach Social Proof -->
+      <div class="cta-wrap" style="margin-bottom:20px;">
+        <button class="cta-btn" onclick="startQuiz()">Jetzt meinen Typ finden &rarr;</button>
+        <p class="cta-sub"><b>Kostenlos &middot; 60 Sek. &middot; Sofortiges Ergebnis</b></p>
       </div>
 
       <div class="divider"></div>
@@ -306,7 +335,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
       <div class="q-right"><span id="qr">1/7</span></div>
     </div>
     <div class="q-progress">
-      <div class="q-bar"><div class="q-fill" id="qf"></div></div>
+      <div class="q-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Quiz-Fortschritt" id="qbar"><div class="q-fill" id="qf"></div></div>
       <div class="q-meta">
         <span id="qp">Frage 1 von 7</span>
         <span class="q-time" id="qt">&#9201; ~60 Sek.</span>
@@ -449,10 +478,11 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
         <h2>Dein Ergebnis ist fertig.</h2>
         <p class="sub">Trage dich ein, um dein <b>persönliches Stoffwechsel-Profil</b> und den Fahrplan zu sehen.</p>
         <div class="fields">
-          <div class="field"><span class="ic">&#128100;</span><input type="text" id="fn" placeholder="Dein Vor- und Nachname" autocomplete="name" required /></div>
-          <div class="field"><span class="ic">&#128231;</span><input type="email" id="em" placeholder="Deine E-Mail-Adresse" autocomplete="email" required /></div>
-          <div class="field"><span class="ic">&#128222;</span><span class="pre">+41</span><input type="tel" id="ph" placeholder="Telefonnummer" autocomplete="tel" required /></div>
+          <div class="field"><span class="ic" aria-hidden="true">&#128100;</span><input type="text" id="fn" placeholder="Dein Vor- und Nachname" autocomplete="name" aria-label="Vor- und Nachname" required /></div>
+          <div class="field"><span class="ic" aria-hidden="true">&#128231;</span><input type="email" id="em" placeholder="Deine E-Mail-Adresse" autocomplete="email" aria-label="E-Mail-Adresse" required /></div>
+          <div class="field"><span class="ic" aria-hidden="true">&#128222;</span><span class="pre">+41</span><input type="tel" id="ph" placeholder="Telefonnummer" autocomplete="tel-national" aria-label="Telefonnummer" required /></div>
         </div>
+        <p style="font-size:11px;color:var(--text-3);margin:-4px auto 14px;max-width:460px;text-align:center;">Kein Newsletter. Nur dein Ergebnis.</p>
         <div class="cb-row">
           <input type="checkbox" id="ds" />
           <label for="ds">Ich akzeptiere die <a href={datenschutzUrl} target="_blank" rel="noopener">Datenschutzbestimmungen</a> und erhalte mein Stoffwechsel-Profil per E-Mail.</label>
@@ -482,13 +512,13 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
           <div class="pillar"><div class="p-ic">&#9888;&#65039;</div><h4>Dein Fehler</h4><p id="rMistake">&nbsp;</p></div>
         </div>
 
+        <div class="scarcity">&#128293; <span>Nur <b id="spots">7</b> freie Termine diese Woche &middot; Rückmeldung in 24h</span></div>
+
         <div class="result-cta-wrap">
           <h3>Kostenlose Standortbestimmung buchen</h3>
           <p>Wir gehen gemeinsam durch dein Profil und zeigen dir den nächsten Schritt, individuell für deinen Typ.</p>
           <a href="#ycbm-container" class="result-cta" onclick="document.getElementById('ycbm-container').scrollIntoView({behavior:'smooth'}); return false;">Termin sichern &rarr;</a>
         </div>
-
-        <div class="scarcity">&#128293; <span>Nur <b id="spots">7</b> freie Termine diese Woche &middot; Rückmeldung in 24h</span></div>
 
         <div id="ycbm-container"></div>
 
@@ -510,6 +540,17 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
     var quizAnswers = {};
     var TOTAL = 7;
     var qHistory = [1];
+
+    // Sticky-CTA zeigen, sobald Hero unsichtbar
+    (function stickyCta(){
+      var sticky = document.getElementById('stickyCta');
+      if (!sticky) return;
+      window.addEventListener('scroll', function(){
+        var quizOn = document.getElementById('quiz').classList.contains('on');
+        if (quizOn) { sticky.classList.remove('show'); return; }
+        sticky.classList.toggle('show', window.scrollY > 600);
+      }, { passive: true });
+    })();
 
     // Live-Counter leicht variabel für Lebendigkeit
     (function liveCounter(){
@@ -548,6 +589,8 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
     function setProgress(s) {
       var p = Math.round(((s - 1) / TOTAL) * 100);
       document.getElementById('qf').style.width = p + '%';
+      var bar = document.getElementById('qbar');
+      if (bar) bar.setAttribute('aria-valuenow', p);
       document.getElementById('qr').textContent = s + '/' + TOTAL;
       document.getElementById('qp').textContent = 'Frage ' + s + ' von ' + TOTAL;
       var left = Math.max(10, Math.round((TOTAL - s + 1) * 8));
