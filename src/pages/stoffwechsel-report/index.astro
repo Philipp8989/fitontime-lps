@@ -629,15 +629,20 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
     var quizAnswers = {};
     var TOTAL = 7;
 
+    // Race-Schutz: __lp wird erst nach CookieBanner-Script gesetzt — retry bis verfuegbar.
     function tk(e, d) {
-      if (window.__lp) {
-        window.__lp.track(e, Object.assign({ page: 'stoffwechsel-report' }, d || {}), 'fot', 'Stoffwechsel Report');
+      var tries = 0;
+      function fire() {
+        if (window.__lp) {
+          window.__lp.track(e, Object.assign({ page: 'stoffwechsel-report' }, d || {}), 'fot', 'Stoffwechsel Report');
+          if (e === 'quiz_start') window.__lp.meta('ViewContent', { content_name: 'Stoffwechsel Report Quiz Start', currency: 'CHF' });
+          if (e === 'quiz_complete') window.__lp.meta('CompleteRegistration', { content_name: 'Stoffwechsel Report Quiz Complete', currency: 'CHF' });
+          if (e === 'lead_submit') window.__lp.meta('Lead', { content_name: 'Stoffwechsel Report Lead', currency: 'CHF' });
+        } else if (tries++ < 40) {
+          setTimeout(fire, 50);
+        }
       }
-      if (window.__lp) {
-        if (e === 'quiz_start') window.__lp.meta('ViewContent', { content_name: 'Stoffwechsel Report Quiz Start', currency: 'CHF' });
-        if (e === 'quiz_complete') window.__lp.meta('CompleteRegistration', { content_name: 'Stoffwechsel Report Quiz Complete', currency: 'CHF' });
-        if (e === 'lead_submit') window.__lp.meta('Lead', { content_name: 'Stoffwechsel Report Lead', currency: 'CHF' });
-      }
+      fire();
     }
     tk('page_view');
 

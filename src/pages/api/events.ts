@@ -60,10 +60,17 @@ export const GET: APIRoute = async ({ url }) => {
   };
 
   if (summary) {
-    const counts = { views: 0, leads: 0, sessions: new Set<string>() };
-    const byDay = new Map<string, { views: number; leads: number }>();
-    const byLp = new Map<string, { views: number; leads: number; sessions: Set<string> }>();
+    // Saubere KPI-Aggregation: sessions = unique IDs; views = nur page_view-Events;
+    // leads = unique Sessions mit Lead-Event (deduped); cr = leads/sessions.
+    // byLpSteps zaehlt pro EVENT-Name (event-Feld bevorzugt; step nur Fallback bei step_view,
+    // weil bei einigen FitonTime-LPs das step-Feld die numerische Quiz-Position traegt).
+    const counts = { views: 0, leadsBySession: new Set<string>(), sessions: new Set<string>() };
+    const byDay = new Map<string, { views: number; leadsBySession: Set<string> }>();
+    const byLp = new Map<string, { views: number; leadsBySession: Set<string>; sessions: Set<string> }>();
     const byLpSteps = new Map<string, Map<string, Set<string>>>();
+
+    const VIEW_EVENTS = new Set(['page_view', 'view', 'pageview']);
+    const LEAD_EVENTS = new Set(['lead', 'submit', 'conversion', 'lead_submit', 'lead_submitted']);
 
     for (const e of events) {
       const ev = String(e.event ?? '').toLowerCase();
@@ -71,14 +78,14 @@ export const GET: APIRoute = async ({ url }) => {
       const day = String(e.timestamp ?? '').slice(0, 10);
       const lp = String(e.lp ?? 'unknown');
 
-      if (!byDay.has(day)) byDay.set(day, { views: 0, leads: 0 });
-      if (!byLp.has(lp)) byLp.set(lp, { views: 0, leads: 0, sessions: new Set() });
+      if (!byDay.has(day)) byDay.set(day, { views: 0, leadsBySession: new Set() });
+      if (!byLp.has(lp)) byLp.set(lp, { views: 0, leadsBySession: new Set(), sessions: new Set() });
       if (!byLpSteps.has(lp)) byLpSteps.set(lp, new Map());
 
       if (e.session) {
         counts.sessions.add(e.session);
         byLp.get(lp)!.sessions.add(e.session);
-        const stepKey = step || ev;
+        const stepKey = ev && ev !== 'step_view' ? ev : (step || '');
         if (stepKey) {
           const stepMap = byLpSteps.get(lp)!;
           if (!stepMap.has(stepKey)) stepMap.set(stepKey, new Set());
@@ -86,30 +93,30 @@ export const GET: APIRoute = async ({ url }) => {
         }
       }
 
-      const isView = ev === 'page_view' || ev === 'view' || ev === 'quiz_start';
-      const isLead = ev === 'lead' || ev === 'submit' || ev === 'conversion'
-        || ev === 'lead_submit' || ev === 'lead_submitted';
-
-      if (isView) {
+      if (VIEW_EVENTS.has(ev)) {
         counts.views++;
         byDay.get(day)!.views++;
         byLp.get(lp)!.views++;
       }
-      if (isLead) {
-        counts.leads++;
-        byDay.get(day)!.leads++;
-        byLp.get(lp)!.leads++;
+      if (LEAD_EVENTS.has(ev) && e.session) {
+        counts.leadsBySession.add(e.session);
+        byDay.get(day)!.leadsBySession.add(e.session);
+        byLp.get(lp)!.leadsBySession.add(e.session);
       }
     }
 
+    const totalLeads = counts.leadsBySession.size;
+    const totalSessions = counts.sessions.size;
+
     const result = {
       views: counts.views,
-      leads: counts.leads,
-      sessions: counts.sessions.size,
-      cr: counts.views > 0 ? (counts.leads / counts.views) * 100 : 0,
-      byDay: Array.from(byDay.entries()).sort(([a], [b]) => a.localeCompare(b)).map(([day, v]) => [day, v]),
+      leads: totalLeads,
+      sessions: totalSessions,
+      cr: totalSessions > 0 ? (totalLeads / totalSessions) * 100 : 0,
+      byDay: Array.from(byDay.entries()).sort(([a], [b]) => a.localeCompare(b))
+        .map(([day, v]) => [day, { views: v.views, leads: v.leadsBySession.size }]),
       byLp: Array.from(byLp.entries()).map(([lp, v]) => ({
-        lp, views: v.views, leads: v.leads, sessions: v.sessions.size,
+        lp, views: v.views, leads: v.leadsBySession.size, sessions: v.sessions.size,
       })),
       byLpSteps: Array.from(byLpSteps.entries()).map(([lp, stepMap]) => ({
         lp,

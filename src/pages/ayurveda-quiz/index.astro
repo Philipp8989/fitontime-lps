@@ -701,15 +701,20 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
     var scores = { vata: 0, pitta: 0, kapha: 0 };
     var TOTAL = 11;
 
+    // Race-Schutz: __lp wird erst nach CookieBanner-Script gesetzt — retry bis verfuegbar.
     function tk(e, d) {
-      if (window.__lp) {
-        window.__lp.track(e, Object.assign({ page: 'ayurveda-quiz' }, d || {}), 'fot', 'Ayurveda Quiz');
+      var tries = 0;
+      function fire() {
+        if (window.__lp) {
+          window.__lp.track(e, Object.assign({ page: 'ayurveda-quiz' }, d || {}), 'fot', 'Ayurveda Quiz');
+          if (e === 'quiz_start') window.__lp.meta('ViewContent', { content_name: 'Ayurveda Quiz Start', currency: 'CHF' });
+          if (e === 'quiz_complete') window.__lp.meta('CompleteRegistration', { content_name: 'Ayurveda Quiz Complete', currency: 'CHF' });
+          if (e === 'lead_submit') window.__lp.meta('Lead', { content_name: 'Ayurveda Quiz Lead', currency: 'CHF' });
+        } else if (tries++ < 40) {
+          setTimeout(fire, 50);
+        }
       }
-      if (window.__lp) {
-        if (e === 'quiz_start') window.__lp.meta('ViewContent', { content_name: 'Ayurveda Quiz Start', currency: 'CHF' });
-        if (e === 'quiz_complete') window.__lp.meta('CompleteRegistration', { content_name: 'Ayurveda Quiz Complete', currency: 'CHF' });
-        if (e === 'lead_submit') window.__lp.meta('Lead', { content_name: 'Ayurveda Quiz Lead', currency: 'CHF' });
-      }
+      fire();
     }
     tk('page_view');
 

@@ -636,16 +636,22 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
     // Quiz-Antworten speichern
     var quizAnswers = {};
 
-    // Tracking-Helfer  -  nutzt window.__lp aus CookieBanner
+    // Tracking-Helfer — nutzt window.__lp aus CookieBanner
+    // Race-Schutz: __lp wird erst nach Parse des CookieBanner-Scripts gesetzt.
+    // Wenn nicht da, retry alle 50ms (max 2s) — sonst geht page_view verloren.
     function tk(e, d) {
-      if (window.__lp) {
-        window.__lp.track(e, Object.assign({ page: 'schilddruesen-report' }, d || {}), 'fot', 'Schilddruesen-Report');
+      var tries = 0;
+      function fire() {
+        if (window.__lp) {
+          window.__lp.track(e, Object.assign({ page: 'schilddruesen-report' }, d || {}), 'fot', 'Schilddruesen-Report');
+          if (e === 'quiz_start') window.__lp.meta('ViewContent', { content_name: 'Schilddruesen-Report Quiz Start', currency: 'EUR' });
+          if (e === 'quiz_complete') window.__lp.meta('CompleteRegistration', { content_name: 'Schilddruesen-Report Quiz Complete', currency: 'EUR' });
+          if (e === 'lead_submit') window.__lp.meta('Lead', { content_name: 'Schilddruesen-Report Lead', currency: 'EUR' });
+        } else if (tries++ < 40) {
+          setTimeout(fire, 50);
+        }
       }
-      if (window.__lp) {
-        if (e === 'quiz_start') window.__lp.meta('ViewContent', { content_name: 'Schilddruesen-Report Quiz Start', currency: 'EUR' });
-        if (e === 'quiz_complete') window.__lp.meta('CompleteRegistration', { content_name: 'Schilddruesen-Report Quiz Complete', currency: 'EUR' });
-        if (e === 'lead_submit') window.__lp.meta('Lead', { content_name: 'Schilddruesen-Report Lead', currency: 'EUR' });
-      }
+      fire();
     }
     tk('page_view');
 
