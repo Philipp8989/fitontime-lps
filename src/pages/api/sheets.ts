@@ -32,6 +32,16 @@ const SHEETS: Record<string, SheetConfig> = {
       return [datum, d.name, d.email, d.phone || '', a.gender || '', a.q1 || '', a.q2 || '', a.q3 || '', a.q4 || '', a.q5 || '', a.q6 || '', a.q7 || ''];
     },
   },
+  // Ayurveda-Quiz (Doshatyp): Datum | Name | Telefon | Email | Typ (VATA/PITTA/KAPHA)
+  'ayurveda-quiz': {
+    id: '1XAmD5-LQcMub0C1UhgqD30WJYyimjlX59mODsOMumxM',
+    range: 'Tabellenblatt1!A:E',
+    buildRow: (datum, d) => {
+      const a = d.answers || {};
+      const typ = (a.dosha_type || '').toString().toUpperCase();
+      return [datum, d.name, d.phone || '', d.email, typ];
+    },
+  },
 };
 
 export const POST: APIRoute = async ({ request }) => {
