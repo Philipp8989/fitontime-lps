@@ -107,16 +107,16 @@ export const POST: APIRoute = async ({ request }) => {
       const row = config.buildRow(datum, data);
 
       // Append mit Table-Detection verschiebt Werte wenn das Sheet seltsame Layouts hat.
-      // Deshalb: naechste freie Zeile in Spalte A ermitteln und explizit via update() schreiben.
+      // Deshalb: Anzahl Zeilen ueber ALLE Spalten ermitteln und explizit via update() schreiben.
       const sheetName = (config.range.split('!')[0] || 'Sheet1').replace(/['"]/g, '');
-      const colARange = `${sheetName}!A:A`;
-      const colA = await sheets.spreadsheets.values.get({
-        spreadsheetId: config.id,
-        range: colARange,
-      });
-      const usedRowsInA = (colA.data.values || []).length;
-      const nextRow = usedRowsInA + 1;
       const lastColLetter = (config.range.split(':')[1] || 'Z').replace(/[^A-Z]/g, '') || 'Z';
+      const fullRange = `${sheetName}!A:${lastColLetter}`;
+      const existing = await sheets.spreadsheets.values.get({
+        spreadsheetId: config.id,
+        range: fullRange,
+      });
+      const usedRows = (existing.data.values || []).length;
+      const nextRow = usedRows + 1;
       const writeRange = `${sheetName}!A${nextRow}:${lastColLetter}${nextRow}`;
 
       await sheets.spreadsheets.values.update({
