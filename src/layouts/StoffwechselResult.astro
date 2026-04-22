@@ -20,14 +20,7 @@ const { typ, label, title, summary, food, move, time, mistake, videoId } = Astro
 const impressumUrl = 'https://fitontime.ch/impressum-datenschutz';
 const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
 
-const svgPaths = {
-  staemmig: 'M 42 33 L 58 33 L 60 42 C 67 44 70 50 69 57 L 67 72 C 72 76 76 84 76 94 L 78 108 C 80 118 72 126 66 132 L 68 155 L 70 204 L 58 204 L 54 155 L 52 130 L 50 120 L 48 130 L 46 155 L 42 204 L 30 204 L 32 155 L 34 132 C 28 126 20 118 22 108 L 24 94 C 24 84 28 76 33 72 L 31 57 C 30 50 33 44 40 42 Z',
-  soft: 'M 43 31 L 57 31 L 59 40 C 64 42 66 48 65 55 L 63 70 C 67 74 69 82 67 91 L 65 108 C 67 116 63 124 60 130 L 62 155 L 65 204 L 55 204 L 53 155 L 51 130 L 50 120 L 49 130 L 47 155 L 45 204 L 35 204 L 38 155 L 40 130 C 37 124 33 116 35 108 L 33 91 C 31 82 33 74 37 70 L 35 55 C 34 48 36 42 41 40 Z',
-  zierlich: 'M 44 29 L 56 29 L 57 38 C 60 40 61 46 60 53 L 59 72 C 62 76 62 86 61 96 L 60 112 C 61 120 59 128 58 135 L 60 155 L 62 204 L 54 204 L 52 155 L 50 135 L 49 125 L 48 135 L 46 155 L 38 204 L 40 155 L 42 135 C 41 128 39 120 40 112 L 39 96 C 38 86 38 76 41 72 L 40 53 C 39 46 40 40 43 38 Z'
-};
-const headRx = { staemmig: 13, soft: 11, zierlich: 9 }[typ];
-const headRy = { staemmig: 15, soft: 13, zierlich: 11 }[typ];
-const svgPath = svgPaths[typ];
+const imageSrc = `/images/bodytypes/${typ}.png`;
 ---
 <html lang="de">
 <head>
@@ -81,9 +74,8 @@ const svgPath = svgPaths[typ];
     .result-hero { text-align: center; padding: 32px 0 24px; }
     .rh-badge { display: inline-flex; align-items: center; gap: 6px; background: var(--accent); color: #fff; font-size: 11px; font-weight: 800; padding: 7px 16px; border-radius: 20px; margin-bottom: 16px; letter-spacing: 0.6px; text-transform: uppercase; box-shadow: var(--shadow-md); }
     .rh-visual { display: flex; align-items: center; justify-content: center; gap: 20px; margin: 8px 0 18px; }
-    .rh-visual .silhouette { width: 120px; height: 220px; display: flex; align-items: center; justify-content: center; background: linear-gradient(180deg, var(--accent-soft) 0%, #d0e3f7 100%); border-radius: 20px; position: relative; overflow: hidden; box-shadow: var(--shadow-md); flex-shrink: 0; }
-    .rh-visual .silhouette::after { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at center bottom, rgba(29,115,211,0.18) 0%, transparent 70%); pointer-events: none; }
-    .rh-visual .silhouette svg { width: 80%; height: 90%; color: var(--accent); filter: drop-shadow(0 4px 12px rgba(29,115,211,0.3)); position: relative; z-index: 1; }
+    .rh-visual .silhouette { width: 180px; height: 180px; display: flex; align-items: center; justify-content: center; background: #fff; border-radius: 20px; position: relative; overflow: hidden; box-shadow: var(--shadow-md); flex-shrink: 0; padding: 10px; }
+    .rh-visual .silhouette img { width: 100%; height: 100%; object-fit: contain; mix-blend-mode: multiply; }
     .rh-meta { text-align: left; }
     .rh-meta .r-label { font-size: 12px; color: var(--text-3); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
     .rh-meta h1 { font-size: 28px; font-weight: 900; line-height: 1.15; letter-spacing: -0.5px; color: var(--accent); margin-bottom: 8px; }
@@ -92,7 +84,7 @@ const svgPath = svgPaths[typ];
     @media (max-width: 540px) {
       .rh-visual { flex-direction: column; gap: 12px; }
       .rh-meta { text-align: center; }
-      .rh-visual .silhouette { width: 110px; height: 200px; }
+      .rh-visual .silhouette { width: 160px; height: 160px; }
     }
 
     .r-summary { font-size: 15px; color: var(--text-2); line-height: 1.6; max-width: 560px; margin: 0 auto; text-align: center; }
@@ -161,12 +153,7 @@ const svgPath = svgPaths[typ];
       <div class="rh-badge">⚡ Dein Stoffwechsel-Typ</div>
       <div class="rh-visual">
         <div class="silhouette">
-          <svg viewBox="0 0 100 210" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <g fill="currentColor">
-              <ellipse cx="50" cy="18" rx={headRx} ry={headRy}/>
-              <path d={svgPath}/>
-            </g>
-          </svg>
+          <img src={imageSrc} alt="" />
         </div>
         <div class="rh-meta">
           <div class="r-label">{label}</div>
