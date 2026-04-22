@@ -42,6 +42,36 @@ const SHEETS: Record<string, SheetConfig> = {
       return [datum, d.name, d.phone || '', d.email, typ];
     },
   },
+  // FB-Stoffwechsel-Quiz Leads (neuer Funnel 2026-04)
+  // Schema: Datum | Vorname | Nachname | Email | Telefon | Ziel | Beruflich | (leer Reserveraum fuer Sales)
+  'stoffwechsel-test': {
+    id: '1UGaXbNqfPGXk4EN4BXgvWkwmNekioCYAICY2SzIZrOA',
+    range: 'Tabellenblatt1!A:K',
+    buildRow: (datum, d) => {
+      const a = d.answers || {};
+      const fullName = (d.name || '').trim();
+      const parts = fullName.split(/\s+/);
+      const vorname = parts[0] || '';
+      const nachname = parts.slice(1).join(' ') || '';
+
+      const typMap: Record<string, string> = { staemmig: 'Stämmig', soft: 'Soft', zierlich: 'Zierlich' };
+      const typ = typMap[a.profile_type] || a.profile_type || '';
+
+      const zielMap: Record<string, string> = {
+        aussehen: 'Besser aussehen',
+        gesundheit: 'Mehr Gesundheit',
+        wohlbefinden: 'Mehr Wohlbefinden',
+        abnehmen: 'Nachhaltig abnehmen',
+      };
+      const zielText = zielMap[a.q2_val] || a.q2_val || '';
+      // Ziel-Spalte enthält Typ + Ziel fuer Sales auf einen Blick
+      const ziel = typ ? `${zielText} · Typ: ${typ}` : zielText;
+
+      const ausgelastet = a.q1_val === 'ja' ? 'Ja' : a.q1_val === 'nein' ? 'Nein' : '';
+
+      return [datum, vorname, nachname, d.email, d.phone || '', ziel, ausgelastet, '', '', '', ''];
+    },
+  },
 };
 
 export const POST: APIRoute = async ({ request }) => {
