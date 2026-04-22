@@ -39,6 +39,14 @@ const {
   </div>
 </div>
 
+{/* Persistente Legal-Bar: Impressum + Datenschutz IMMER sichtbar (DSGVO / § 5 TMG).
+    Versteckt sich nur, solange der Cookie-Consent-Banner selbst offen ist (hat die Links bereits). */}
+<div id="lp-legal-bar" class="lp-legal-bar" aria-label="Rechtliche Hinweise">
+  <a href={impressumUrl} target="_blank" rel="noopener">Impressum</a>
+  <span aria-hidden="true">·</span>
+  <a href={datenschutzUrl} target="_blank" rel="noopener">Datenschutz</a>
+</div>
+
 {/* noscript-Fallback: feuert PageView ohne JS (DSGVO: nur wenn Consent vorliegt, daher minimal) */}
 {metaPixelId && (
   <noscript>
@@ -100,6 +108,35 @@ const {
     .cc-btn { min-width: 160px; flex: 0 0 auto; }
     .cc-links { grid-column: 1 / -1; margin-top: 4px; }
   }
+
+  /* DSGVO Legal-Bar: persistent, dezent, unten zentriert.
+     Liegt unter dem Cookie-Consent-Banner (z-index 99999) und versteckt sich,
+     solange der Banner offen ist (Banner zeigt die Links bereits). */
+  .lp-legal-bar {
+    position: fixed;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 50;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    padding: 6px 14px;
+    background: rgba(10, 10, 10, 0.72);
+    backdrop-filter: saturate(140%) blur(8px);
+    -webkit-backdrop-filter: saturate(140%) blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 999px;
+    font: 500 11px/1 'Inter', system-ui, -apple-system, sans-serif;
+    color: #aaa;
+    white-space: nowrap;
+    pointer-events: auto;
+  }
+  .lp-legal-bar a { color: #ddd; text-decoration: none; }
+  .lp-legal-bar a:hover { color: #fff; text-decoration: underline; }
+  .lp-legal-bar span { color: #666; }
+  /* Wenn Cookie-Consent-Banner aktiv ist (kein [hidden]): Legal-Bar ausblenden */
+  #cc-banner:not([hidden]) ~ .lp-legal-bar { display: none; }
 </style>
 
 <script is:inline define:vars={{ metaPixelId, hyrosPh, consentKey }}>

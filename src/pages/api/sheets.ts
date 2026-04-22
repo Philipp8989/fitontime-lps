@@ -104,13 +104,26 @@ export const POST: APIRoute = async ({ request }) => {
         scopes: ['https://www.googleapis.com/auth/spreadsheets'],
       });
       const sheets = google.sheets({ version: 'v4', auth });
+      const row = config.buildRow(datum, data);
 
-      await sheets.spreadsheets.values.append({
+      // Append mit Table-Detection verschiebt Werte wenn das Sheet seltsame Layouts hat.
+      // Deshalb: naechste freie Zeile in Spalte A ermitteln und explizit via update() schreiben.
+      const sheetName = (config.range.split('!')[0] || 'Sheet1').replace(/['"]/g, '');
+      const colARange = `${sheetName}!A:A`;
+      const colA = await sheets.spreadsheets.values.get({
         spreadsheetId: config.id,
-        range: config.range,
+        range: colARange,
+      });
+      const usedRowsInA = (colA.data.values || []).length;
+      const nextRow = usedRowsInA + 1;
+      const lastColLetter = (config.range.split(':')[1] || 'Z').replace(/[^A-Z]/g, '') || 'Z';
+      const writeRange = `${sheetName}!A${nextRow}:${lastColLetter}${nextRow}`;
+
+      await sheets.spreadsheets.values.update({
+        spreadsheetId: config.id,
+        range: writeRange,
         valueInputOption: 'RAW',
-        insertDataOption: 'INSERT_ROWS',
-        requestBody: { values: [config.buildRow(datum, data)] },
+        requestBody: { values: [row] },
       });
     }
 
