@@ -1,14 +1,11 @@
-// Events-API: Dashboard-Daten lesen (Key-geschuetzt)
-// Liest events-daily/YYYY-MM-DD.ndjson — 1 Blob pro Tag, maximal (days) Fetches
+// Events-API: Dashboard-Daten lesen (Key-geschützt)
+// Optimiert: filtert Blobs nach Filename-Timestamp VOR dem Fetch — spart N+1 latenz
 import type { APIRoute } from 'astro';
 import { list } from '@vercel/blob';
 
 export const prerender = false;
-export const config = { maxDuration: 30 };
-
-function ymd(d: Date) {
-  return d.toISOString().slice(0, 10);
-}
+// Vercel Function Timeout (Pro-Plan bis 300s)
+export const config = { maxDuration: 60 };
 
 export const GET: APIRoute = async ({ url }) => {
   try {
@@ -18,41 +15,46 @@ export const GET: APIRoute = async ({ url }) => {
   }
 
   const days = parseInt(url.searchParams.get('days') || '7');
+  const cutoffMs = Date.now() - days * 86400000;
+  const cutoffStr = new Date(cutoffMs).toISOString();
   const summary = url.searchParams.get('summary') === 'true';
 
-  // Welche Tage brauchen wir?
-  const wantDays = new Set<string>();
-  for (let i = 0; i < days; i++) {
-    const d = new Date();
-    d.setUTCDate(d.getUTCDate() - i);
-    wantDays.add(ymd(d));
-  }
-
-  // Alle daily-Blobs listen, nur relevante fetchen
-  const relevant: string[] = [];
+  // Schritt 1: Blob-Metadaten paginiert sammeln (schnell, nur Metadata)
+  const relevant: { url: string; pathname: string }[] = [];
   let cursor: string | undefined;
   do {
-    const r = await list({ prefix: 'events-daily/', cursor, limit: 1000 });
-    for (const b of r.blobs) {
-      const m = b.pathname.match(/events-daily\/(\d{4}-\d{2}-\d{2})\.ndjson/);
-      if (m && wantDays.has(m[1])) relevant.push(b.url);
+    const result = await list({ prefix: 'events/', cursor, limit: 1000 });
+    for (const b of result.blobs) {
+      // Filename-Format: events/<ms>-<rand>.json
+      const match = b.pathname.match(/events\/(\d+)-/);
+      if (match) {
+        const ms = parseInt(match[1]);
+        if (ms >= cutoffMs) relevant.push({ url: b.url, pathname: b.pathname });
+      } else {
+        // Unbekanntes Format — trotzdem mitnehmen (altes Schema)
+        relevant.push({ url: b.url, pathname: b.pathname });
+      }
     }
-    cursor = r.hasMore ? r.cursor : undefined;
+    cursor = result.hasMore ? result.cursor : undefined;
   } while (cursor);
 
-  // Parallel fetchen
-  const events: any[] = [];
-  await Promise.all(relevant.map(async (u) => {
-    try {
-      const r = await fetch(u, { cache: 'no-store' });
-      if (!r.ok) return;
-      const text = await r.text();
-      for (const line of text.split('\n')) {
-        if (!line.trim()) continue;
-        try { events.push(JSON.parse(line)); } catch {}
+  // Schritt 2: Nur relevante Blobs fetchen (parallel, mit Concurrency-Limit)
+  const CONCURRENCY = 100;
+  const results: any[] = [];
+  for (let i = 0; i < relevant.length; i += CONCURRENCY) {
+    const batch = relevant.slice(i, i + CONCURRENCY);
+    const fetched = await Promise.all(batch.map(async (b) => {
+      try {
+        const r = await fetch(b.url);
+        const e = await r.json();
+        if (e.timestamp && e.timestamp < cutoffStr) return null;
+        return e;
+      } catch {
+        return null;
       }
-    } catch {}
-  }));
+    }));
+    for (const e of fetched) if (e) results.push(e);
+  }
 
   const cacheHeaders = {
     'content-type': 'application/json',
@@ -60,10 +62,13 @@ export const GET: APIRoute = async ({ url }) => {
   };
 
   if (summary) {
-    // Saubere KPI-Aggregation: sessions = unique IDs; views = nur page_view-Events;
-    // leads = unique Sessions mit Lead-Event (deduped); cr = leads/sessions.
-    // byLpSteps zaehlt pro EVENT-Name (event-Feld bevorzugt; step nur Fallback bei step_view,
-    // weil bei einigen FitonTime-LPs das step-Feld die numerische Quiz-Position traegt).
+    // Saubere KPI-Aggregation:
+    // - sessions = unique Session-IDs
+    // - views    = raw page_view-Events (nicht quiz_start dazu, kein Doppelzaehlen)
+    // - leads    = unique Sessions mit Lead-Event (deduped)
+    // - cr       = leads / sessions (sessions-basiert, ehrlicher als raw views)
+    // byLpSteps = unique Sessions pro EVENT-Name (event-Feld bevorzugt; step-Feld nur Fallback bei
+    //             event=step_view, weil dann das step-Feld die echte Funnel-Position traegt)
     const counts = { views: 0, leadsBySession: new Set<string>(), sessions: new Set<string>() };
     const byDay = new Map<string, { views: number; leadsBySession: Set<string> }>();
     const byLp = new Map<string, { views: number; leadsBySession: Set<string>; sessions: Set<string> }>();
@@ -72,7 +77,7 @@ export const GET: APIRoute = async ({ url }) => {
     const VIEW_EVENTS = new Set(['page_view', 'view', 'pageview']);
     const LEAD_EVENTS = new Set(['lead', 'submit', 'conversion', 'lead_submit', 'lead_submitted']);
 
-    for (const e of events) {
+    for (const e of results) {
       const ev = String(e.event ?? '').toLowerCase();
       const step = String(e.step ?? '').toLowerCase();
       const day = String(e.timestamp ?? '').slice(0, 10);
@@ -85,6 +90,8 @@ export const GET: APIRoute = async ({ url }) => {
       if (e.session) {
         counts.sessions.add(e.session);
         byLp.get(lp)!.sessions.add(e.session);
+        // Funnel-Step IMMER per Event-Namen — step-Feld ist je nach LP numerisch (0/1/2)
+        // und damit unbrauchbar. Nur wenn ev=step_view: dann ist step die Funnel-Position.
         const stepKey = ev && ev !== 'step_view' ? ev : (step || '');
         if (stepKey) {
           const stepMap = byLpSteps.get(lp)!;
@@ -116,7 +123,10 @@ export const GET: APIRoute = async ({ url }) => {
       byDay: Array.from(byDay.entries()).sort(([a], [b]) => a.localeCompare(b))
         .map(([day, v]) => [day, { views: v.views, leads: v.leadsBySession.size }]),
       byLp: Array.from(byLp.entries()).map(([lp, v]) => ({
-        lp, views: v.views, leads: v.leadsBySession.size, sessions: v.sessions.size,
+        lp,
+        views: v.views,
+        leads: v.leadsBySession.size,
+        sessions: v.sessions.size,
       })),
       byLpSteps: Array.from(byLpSteps.entries()).map(([lp, stepMap]) => ({
         lp,
@@ -126,7 +136,7 @@ export const GET: APIRoute = async ({ url }) => {
     return new Response(JSON.stringify(result), { headers: cacheHeaders });
   }
 
-  return new Response(JSON.stringify(events), { headers: cacheHeaders });
+  return new Response(JSON.stringify(results), { headers: cacheHeaders });
   } catch (e: any) {
     return new Response(JSON.stringify({ error: e?.message || String(e), stack: e?.stack }), {
       status: 500, headers: { 'content-type': 'application/json' },

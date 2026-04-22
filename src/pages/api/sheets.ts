@@ -42,6 +42,27 @@ const SHEETS: Record<string, SheetConfig> = {
       return [datum, d.name, d.phone || '', d.email, typ];
     },
   },
+  // MSM-Test Funnel (neu 2026-04)
+  // Schema: Datum | Vorname | Email | Telefon | Score | Stufe | StufeName | KritDim | KritPct | GLP1 | Alter | Ziel (Freitext) | Alltag | Versuche
+  'msm': {
+    id: '1yIFBbgn8kKcYpbDHQsz7SQZVf2vU7SBkeWWtHGdAYWY',
+    range: 'Leads!A:N',
+    buildRow: (datum, d) => {
+      const a = d.answers || {};
+      const vorname = (d.name || '').trim().split(/\s+/)[0] || '';
+      const score = a.msm_score ?? '';
+      const stufe = a.msm_stufe ?? '';
+      const stufeName = a.msm_stufe_name || '';
+      const critDim = a.msm_crit_dim_label || '';
+      const critPct = a.msm_crit_pct ?? '';
+      const glp1 = a.msm_glp1 ? 'Ja' : 'Nein';
+      const alter = a.q1 || '';
+      const ziel = (a.q12 || '').replace(/\n+/g, ' ').slice(0, 500);
+      const alltag = Array.isArray(a.q11_val) ? a.q11_val.join(', ') : (a.q11 || '');
+      const versuche = Array.isArray(a.q9_val) ? a.q9_val.join(', ') : (a.q9 || '');
+      return [datum, vorname, d.email, d.phone || '', score, stufe, stufeName, critDim, critPct, glp1, alter, ziel, alltag, versuche];
+    },
+  },
   // FB-Stoffwechsel-Quiz Leads (neuer Funnel 2026-04)
   // Schema: Datum | Vorname | Nachname | Email | Telefon | Ziel | Beruflich | (leer Reserveraum fuer Sales)
   'stoffwechsel-test': {
@@ -158,6 +179,18 @@ export const POST: APIRoute = async ({ request }) => {
         });
       }
     }
+
+    // Synthetisches lead_submit-Event fuer Attribution/CR-Sanity. Fire-and-forget.
+    fetch(new URL('/api/track', request.url).toString(), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        event: 'lead_submit',
+        lp: lpSlug,
+        session: data.session_id || data.session || 'server-side',
+        schema_version: 'v1',
+      }),
+    }).catch(() => {});
 
     return new Response(JSON.stringify({ ok: true }), {
       status: 200,
