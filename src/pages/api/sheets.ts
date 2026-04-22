@@ -46,7 +46,7 @@ const SHEETS: Record<string, SheetConfig> = {
   // Schema: Datum | Vorname | Nachname | Email | Telefon | Ziel | Beruflich | (leer Reserveraum fuer Sales)
   'stoffwechsel-test': {
     id: '1UGaXbNqfPGXk4EN4BXgvWkwmNekioCYAICY2SzIZrOA',
-    range: 'Tabellenblatt1!A:K',
+    range: 'Leads!A:K',
     buildRow: (datum, d) => {
       const a = d.answers || {};
       const fullName = (d.name || '').trim();
