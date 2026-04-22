@@ -725,8 +725,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
       btn.disabled = true;
       btn.textContent = 'Wird verarbeitet...';
 
-      tk('lead_submit', { detail: fn });
-
+      // Atomarer Submit: lead_submit + Pixel + UI-Weiter NUR bei erfolgreichem Insert
       fetch('/api/sheets', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -738,21 +737,17 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
           phone: ph ? '+41' + ph : '',
           answers: quizAnswers
         })
-      }).catch(function(){});
-
-      setTimeout(function(){
-        // Personalisierte Anrede
+      }).then(function(res){
+        if (!res.ok) throw new Error('insert-failed');
+        tk('lead_submit', { detail: fn });
         var firstName = (fn.split(' ')[0] || '').trim();
         if (firstName) document.getElementById('r-name').textContent = firstName;
-
-        // YCBM Booking Embed inline laden (wie Live-Winner)
         var ycbm = document.createElement('script');
         ycbm.src = 'https://embed.ycb.me';
         ycbm.async = true;
         ycbm.setAttribute('data-domain', 'fitontime-stoffwechsel-report');
         ycbm.setAttribute('data-displaymode', 'auto');
         document.getElementById('ycbm-embed').appendChild(ycbm);
-
         document.querySelector('.step[data-s="form"]').classList.remove('on');
         document.querySelector('.step[data-s="thankyou"]').style.display = 'block';
         document.querySelector('.step[data-s="thankyou"]').classList.add('on');
@@ -760,7 +755,11 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
         var body = document.querySelector('.q-body');
         if (body) body.scrollTop = 0;
         tk('result_shown', { detail: 'booking' });
-      }, 1200);
+      }).catch(function(){
+        btn.disabled = false;
+        btn.textContent = 'Jetzt Report kostenlos erhalten ✨';
+        alert('Etwas ist schiefgelaufen. Bitte nochmal versuchen.');
+      });
     }
   </script>
 

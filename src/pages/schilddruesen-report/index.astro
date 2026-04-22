@@ -713,33 +713,38 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
       var btn = document.getElementById('sbtn');
       btn.disabled = true;
       btn.textContent = 'Wird gesendet...';
-      tk('lead_submit', { detail: fn });
 
-      // Lead an Google Sheets senden
+      // Atomarer Submit: lead_submit + Meta-Pixel + UI-Weiter NUR bei erfolgreichem Insert
       var fullName = fn + (ln ? ' ' + ln : '');
       fetch('/api/sheets', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          lp_slug: 'schilddruesen-report',
+          lp_name: 'Schilddruesen-Report',
           name: fullName,
           email: em,
           phone: ph ? '+41' + ph : '',
           answers: quizAnswers
         })
-      }).catch(function(){});
-
-      setTimeout(function(){
+      }).then(function(res){
+        if (!res.ok) throw new Error('insert-failed');
+        // Insert erfolgreich — jetzt erst tracken
+        tk('lead_submit', { detail: fn });
         document.querySelector('.step[data-s="form"]').classList.remove('on');
         document.querySelector('.step[data-s="thx"]').classList.add('on');
         document.getElementById('qn').textContent = 'Fertig!';
-        // YCBM Kalender laden
         var s = document.createElement('script');
         s.src = 'https://embed.ycb.me';
         s.async = true;
         s.setAttribute('data-domain', 'fitontime-stoffwechsel-report');
         s.setAttribute('data-displaymode', 'auto');
         document.getElementById('ycbm-container').appendChild(s);
-      }, 800);
+      }).catch(function(){
+        btn.disabled = false;
+        btn.textContent = 'Jetzt Report sichern';
+        alert('Etwas ist schiefgelaufen. Bitte nochmal versuchen.');
+      });
     }
   </script>
 

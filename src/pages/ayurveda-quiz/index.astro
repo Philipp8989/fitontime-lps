@@ -916,8 +916,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
       quizAnswers.pitta_score = scores.pitta;
       quizAnswers.kapha_score = scores.kapha;
 
-      tk('lead_submit', { detail: fn + ' - ' + type });
-
+      // Atomarer Submit: lead_submit + Pixel + UI-Weiter NUR bei erfolgreichem Insert
       fetch('/api/sheets', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -929,14 +928,18 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
           phone: ph ? '+41' + ph : '',
           answers: quizAnswers
         })
-      }).catch(function(){});
-
-      setTimeout(function(){
+      }).then(function(res){
+        if (!res.ok) throw new Error('insert-failed');
+        tk('lead_submit', { detail: fn + ' - ' + type });
         var firstName = (fn.split(' ')[0] || '').trim();
         document.querySelector('.step[data-s="form"]').classList.remove('on');
         showResult(firstName, type);
         tk('result_shown', { detail: type });
-      }, 1200);
+      }).catch(function(){
+        btn.disabled = false;
+        btn.textContent = 'Jetzt Ergebnis erfahren ✨';
+        alert('Etwas ist schiefgelaufen. Bitte nochmal versuchen.');
+      });
     }
   </script>
 

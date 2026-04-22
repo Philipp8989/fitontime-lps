@@ -623,9 +623,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
       var validTypes = { staemmig: 1, soft: 1, zierlich: 1 };
       if (!validTypes[typ]) typ = 'soft';
 
-      tk('lead_submit', { detail: fn + ' - ' + typ });
-
-      // Lead an Google Sheets
+      // Atomarer Submit: lead_submit + Pixel + Redirect NUR bei erfolgreichem Insert
       fetch('/api/sheets', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -637,23 +635,24 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
           lp_name: 'Stoffwechsel-Test',
           answers: Object.assign({}, quizAnswers, { profile_type: typ })
         })
-      }).catch(function(){});
-
-      // Personalisierungs-Kontext fuer Result-Page in sessionStorage ablegen
-      try {
-        sessionStorage.setItem('fot_result', JSON.stringify({
-          name: fn.split(' ')[0],
-          typ: typ,
-          problem: quizAnswers.q6_val,
-          goal: quizAnswers.q2_val,
-          ts: Date.now()
-        }));
-      } catch (e) {}
-
-      // Kurzer Loading-Tick, dann Redirect zur typ-spezifischen URL
-      setTimeout(function(){
+      }).then(function(res){
+        if (!res.ok) throw new Error('insert-failed');
+        tk('lead_submit', { detail: fn + ' - ' + typ });
+        try {
+          sessionStorage.setItem('fot_result', JSON.stringify({
+            name: fn.split(' ')[0],
+            typ: typ,
+            problem: quizAnswers.q6_val,
+            goal: quizAnswers.q2_val,
+            ts: Date.now()
+          }));
+        } catch (e) {}
         window.location.href = '/stoffwechsel-test/' + typ + '/';
-      }, 600);
+      }).catch(function(){
+        btn.disabled = false;
+        btn.textContent = 'Jetzt Ergebnis anzeigen →';
+        alert('Etwas ist schiefgelaufen. Bitte nochmal versuchen.');
+      });
     }
 
   </script>
