@@ -109,15 +109,19 @@ export const POST: APIRoute = async ({ request }) => {
         spreadsheetId: config.id,
         range: config.range,
         valueInputOption: 'RAW',
+        insertDataOption: 'INSERT_ROWS',
         requestBody: { values: [config.buildRow(datum, data)] },
       });
     }
 
-    // Lead an zentrale Dashboard-API senden (Notification + CRM laeuft dort)
+    // Lead an zentrale Dashboard-API senden (Postgres-CRM = Ground-Truth fuer Reporting).
+    // AWAITED: wenn der Insert fehlschlaegt, 500 zurueck. Dadurch feuert Meta-Pixel auf dem
+    // Client nicht und Postgres bleibt konsistent mit Pixel-Count. Akzeptiertes Risiko bei
+    // Retry: moegliche Sheets-Duplikate (manuelle Dedup durch Kunde).
     const dashUrl = import.meta.env.DASHBOARD_LEADS_URL;
     const dashKey = import.meta.env.DASHBOARD_LEADS_KEY;
     if (dashUrl && dashKey) {
-      fetch(dashUrl, {
+      const dashRes = await fetch(dashUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'x-api-key': dashKey },
         body: JSON.stringify({
@@ -128,7 +132,18 @@ export const POST: APIRoute = async ({ request }) => {
           lp_name: data.lp_name || lpSlug,
           quiz_answers: data.answers || {},
         }),
-      }).catch((e: any) => console.error('Dashboard Lead Fehler:', e));
+      }).catch((e: any) => {
+        console.error('Dashboard Lead Fehler:', e?.message || e);
+        return null as unknown as Response;
+      });
+      if (!dashRes || !dashRes.ok) {
+        const detail = dashRes ? await dashRes.text().catch(() => '') : 'network';
+        console.error('Dashboard Lead Insert non-OK:', dashRes?.status, detail);
+        return new Response(JSON.stringify({ error: 'Lead-CRM-Insert fehlgeschlagen' }), {
+          status: 500,
+          headers: { 'Content-Type': 'application/json' },
+        });
+      }
     }
 
     return new Response(JSON.stringify({ ok: true }), {
