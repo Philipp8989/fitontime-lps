@@ -73,6 +73,8 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
     .start-block { background: transparent; border: none; padding: 8px 0; margin: 14px 0; }
     .start-block .sb-q { font-family: var(--serif); font-style: italic; font-size: 16px; color: var(--text-2); margin-bottom: 14px; }
     .start-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; max-width: 440px; margin: 0 auto; }
+    .start-row.single { grid-template-columns: 1fr; max-width: 380px; }
+    .start-row.single .start-btn { padding: 18px 24px; font-size: 16px; }
     .start-btn { background: var(--accent); color: #fff; border: none; border-radius: 999px; padding: 16px 24px; font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.25s; font-family: var(--font); -webkit-tap-highlight-color: transparent; letter-spacing: 0.3px; box-shadow: 0 4px 16px rgba(184,84,42,0.25); }
     .start-btn:hover { background: var(--accent-dark); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(184,84,42,0.35); }
     .start-btn:active { transform: scale(0.98); }
@@ -346,16 +348,14 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
       <div class="logo"><img src="/images/logo.png" alt="Fit on Time" /></div>
 
       <section class="hero">
-        <div class="sanskrit">Ayurveda &middot; Dosha-Test</div>
-        <h1>Warum 80% aller Diäten scheitern, und was das mit <em>Ayurveda</em> zu tun hat</h1>
-        <p class="sub">Bist du <strong>Vata, Pitta oder Kapha?</strong> Finde in 2 Minuten heraus, warum dein Körper anders auf Ernährung reagiert, und wie dir diese 5.000 Jahre alte Weisheit endlich beim Abnehmen hilft.</p>
-        <div class="time-hint">&#9201; 2 Minuten &middot; 11 Fragen &middot; sofort Klarheit</div>
+        <div class="sanskrit">Der Abnehm-Typ-Test &middot; kostenlos</div>
+        <h1>Welcher <em>Abnehm-Typ</em> bist du?</h1>
+        <p class="sub">3 Körpertypen &ndash; <strong>3 völlig verschiedene Wege zum Wunschgewicht</strong>. Finde in 2 Minuten heraus, welcher zu dir passt. Weil dein Körper nach anderen Regeln spielt als die Standard-Diät.</p>
+        <div class="time-hint">&#9201; 2 Minuten &middot; Sofort-Ergebnis</div>
 
         <div class="start-block">
-          <div class="sb-q">Verrate uns vorab dein Geschlecht</div>
-          <div class="start-row">
-            <button class="start-btn" onclick="startQuiz('frau')">Frau</button>
-            <button class="start-btn secondary" onclick="startQuiz('mann')">Mann</button>
+          <div class="start-row single">
+            <button class="start-btn" onclick="openQuiz()">Jetzt Test starten &rarr;</button>
           </div>
         </div>
 
@@ -373,10 +373,10 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
         <p>Du machst die <strong>gleiche Diät</strong> wie deine Freundin. Sie nimmt 8 Kilo ab, bei dir tut sich nichts.</p>
         <p>Du trainierst 4x pro Woche, zählst Kalorien, verzichtest auf Zucker. Und trotzdem: Die Waage steht still. Der Bauch bleibt.</p>
         <div class="brutal">
-          Die westliche Diät-Industrie behandelt alle Frauen gleich.<br/>
-          <b>Aber dein Körper spielt nach anderen Regeln.</b>
+          Die Diät-Industrie behandelt alle Frauen gleich.<br/>
+          <b>Dein Körper spielt aber nach anderen Regeln.</b>
         </div>
-        <p>Was bei deiner Freundin funktioniert, kann bei dir das Gegenteil bewirken. Der Grund liegt <strong>5.000 Jahre zurück</strong>, in einer Weisheit, die moderne Ernährungsforschung gerade erst wiederentdeckt.</p>
+        <p>Was bei deiner Freundin funktioniert, kann bei dir das <strong>Gegenteil</strong> bewirken. Der Grund: Es gibt nicht DEN einen Stoffwechsel &ndash; sondern drei grundverschiedene Körpertypen mit eigener Logik.</p>
       </div>
 
       <!-- 3 Dosha Preview als zentrales visuelles Element -->
@@ -460,14 +460,12 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
       <!-- Final CTA -->
       <div class="ornament"><span class="om">&#2384;</span></div>
       <section class="hero" style="padding:16px 0;">
-        <div class="sanskrit">Dein Weg beginnt hier</div>
-        <h1 style="font-size:30px;">Finde deinen Typ. <em>Finde deinen Weg.</em></h1>
-        <p class="sub">In 2 Minuten weisst du, welcher Ayurveda-Typ du bist und wie du endlich abnimmst.</p>
+        <div class="sanskrit">Finde heraus, welcher Typ du bist</div>
+        <h1 style="font-size:30px;">Starte den <em>Abnehm-Typ-Test</em></h1>
+        <p class="sub">In 2 Minuten weisst du, wie dein Körper tickt und welcher Weg dich endlich zum Wunschgewicht bringt.</p>
         <div class="start-block">
-          <div class="sb-q">Verrate uns vorab dein Geschlecht</div>
-          <div class="start-row">
-            <button class="start-btn" onclick="startQuiz('frau')">Frau</button>
-            <button class="start-btn secondary" onclick="startQuiz('mann')">Mann</button>
+          <div class="start-row single">
+            <button class="start-btn" onclick="openQuiz()">Jetzt Test starten &rarr;</button>
           </div>
         </div>
         <div class="proof-line">Kostenlos &middot; 100% anonym &middot; Sofort-Ergebnis</div>
@@ -483,11 +481,20 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
   <!-- ===== QUIZ ===== -->
   <div id="quiz">
     <div class="q-head"><img src="/images/logo.png" alt="Fit on Time" /></div>
-    <div class="q-progress"><div class="q-bar"><div class="q-fill" id="qf"></div></div><div class="q-num" id="qn">1 / 11</div></div>
+    <div class="q-progress"><div class="q-bar"><div class="q-fill" id="qf"></div></div><div class="q-num" id="qn">Start</div></div>
     <div class="q-body">
 
+      <!-- Frage 0: Geschlecht (nach-innen verlegt, kein Pre-Gate mehr) -->
+      <div class="step on" data-s="g">
+        <h2>Für wen suchen wir deinen Abnehm-Typ?</h2>
+        <div class="opts">
+          <button class="opt" onclick="pickGender('frau')"><strong>Ich bin Frau</strong><span>Dein Plan ist speziell auf den weiblichen Stoffwechsel abgestimmt.</span></button>
+          <button class="opt" onclick="pickGender('mann')"><strong>Ich bin Mann</strong><span>Dein Plan berücksichtigt die männlichen Hormonzyklen.</span></button>
+        </div>
+      </div>
+
       <!-- Frage 1: Körperbau -->
-      <div class="step on" data-s="1">
+      <div class="step" data-s="1">
         <h2>Welcher Körperbau beschreibt dich am besten?</h2>
         <div class="opts">
           <button class="opt" onclick="nxt(1,'vata')"><strong>Schlank, zierlich, schmale Schultern</strong><span>Ich nehme schwer zu, verliere aber auch schnell Gewicht. Mein Körper ist eher dünn.</span></button>
@@ -701,21 +708,48 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
     var scores = { vata: 0, pitta: 0, kapha: 0 };
     var TOTAL = 11;
 
-    // Race-Schutz: __lp wird erst nach CookieBanner-Script gesetzt — retry bis verfuegbar.
-    function tk(e, d) {
-      var tries = 0;
-      function fire() {
-        if (window.__lp) {
-          window.__lp.track(e, Object.assign({ page: 'ayurveda-quiz' }, d || {}), 'fot', 'Ayurveda Quiz');
-          if (e === 'quiz_start') window.__lp.meta('ViewContent', { content_name: 'Ayurveda Quiz Start', currency: 'CHF' });
-          if (e === 'quiz_complete') window.__lp.meta('CompleteRegistration', { content_name: 'Ayurveda Quiz Complete', currency: 'CHF' });
-          if (e === 'lead_submit') window.__lp.meta('Lead', { content_name: 'Ayurveda Quiz Lead', currency: 'CHF' });
-        } else if (tries++ < 40) {
-          setTimeout(fire, 50);
+    // Robustes Tracking: Dashboard-Events IMMER direkt per sendBeacon (kein __lp-Dependency).
+    // Meta-Pixel laeuft separat und nur falls __lp bereit ist (mit Retry).
+    function getSid() {
+      try {
+        var sid = sessionStorage.getItem('lp_sid');
+        if (!sid) {
+          sid = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : (Date.now() + '-' + Math.random().toString(36).slice(2, 10));
+          sessionStorage.setItem('lp_sid', sid);
         }
-      }
-      fire();
+        return sid;
+      } catch (e) { return 'anon-' + Date.now(); }
     }
+    function tkDirect(event, data) {
+      try {
+        var sid = getSid();
+        var payload = JSON.stringify(Object.assign({
+          event: event, sessionId: sid, session: sid, step: event,
+          funnel: 'fot', funnelName: 'Ayurveda Quiz',
+          page: 'ayurveda-quiz', lp: 'ayurveda-quiz',
+          timestamp: new Date().toISOString(),
+        }, data || {}));
+        if (navigator.sendBeacon) {
+          navigator.sendBeacon('/api/track', new Blob([payload], { type: 'application/json' }));
+        } else {
+          fetch('/api/track', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload, keepalive: true }).catch(function(){});
+        }
+      } catch (e) {}
+    }
+    function tkMeta(event) {
+      try {
+        var tries = 0;
+        function fire() {
+          if (window.__lp && typeof window.__lp.meta === 'function') {
+            if (event === 'quiz_start') window.__lp.meta('ViewContent', { content_name: 'Ayurveda Quiz Start', currency: 'CHF' });
+            if (event === 'quiz_complete') window.__lp.meta('CompleteRegistration', { content_name: 'Ayurveda Quiz Complete', currency: 'CHF' });
+            if (event === 'lead_submit') window.__lp.meta('Lead', { content_name: 'Ayurveda Quiz Lead', currency: 'CHF' });
+          } else if (tries++ < 40) { setTimeout(fire, 50); }
+        }
+        fire();
+      } catch (e) {}
+    }
+    function tk(e, d) { tkDirect(e, d); tkMeta(e); }
     tk('page_view');
 
     // Preview-Mode fuer Ergebnis
@@ -730,12 +764,33 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
       });
     }
 
-    function startQuiz(gender) {
-      quizAnswers['gender'] = gender || 'frau';
-      tk('quiz_start', { detail: 'gender_' + quizAnswers.gender });
+    // Quiz oeffnen (ohne Gender-Vorgate) - Gender ist jetzt Q1 im Quiz selbst.
+    function openQuiz() {
+      tk('quiz_start');
       document.getElementById('lp').style.display = 'none';
       document.getElementById('quiz').classList.add('on');
       window.scrollTo(0,0);
+    }
+    // Gender aus Q1 uebernehmen, dann auf Frage 1 weiterspringen.
+    function pickGender(gender) {
+      quizAnswers['gender'] = gender || 'frau';
+      tk('quiz_answer', { detail: 'gender_' + quizAnswers.gender });
+      document.querySelector('.step[data-s="g"]').classList.remove('on');
+      document.querySelector('.step[data-s="1"]').classList.add('on');
+      document.getElementById('qf').style.width = Math.round((1 / (TOTAL + 1)) * 100) + '%';
+      document.getElementById('qn').textContent = '1 / ' + TOTAL;
+      var body = document.querySelector('.q-body');
+      if (body) body.scrollTop = 0;
+    }
+    // Legacy: falls irgendwo noch startQuiz() aufgerufen wird (alte Buttons, Ad-URLs mit Anker), mappe auf openQuiz + optional Gender.
+    function startQuiz(gender) {
+      if (gender) { quizAnswers['gender'] = gender; }
+      openQuiz();
+      if (gender) {
+        document.querySelector('.step[data-s="g"]').classList.remove('on');
+        document.querySelector('.step[data-s="1"]').classList.add('on');
+        tk('quiz_answer', { detail: 'gender_' + gender });
+      }
     }
 
     function nxt(s, val) {
