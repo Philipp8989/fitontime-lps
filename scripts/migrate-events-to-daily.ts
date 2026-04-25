@@ -1,5 +1,5 @@
 // Einmalige Migration: alle events/*.json Blobs zu events-daily/YYYY-MM-DD.ndjson umschreiben
-// Ausfuehrung: BLOB_READ_WRITE_TOKEN=... npx tsx scripts/migrate-events-to-daily.ts
+// Ausführung: BLOB_READ_WRITE_TOKEN=... npx tsx scripts/migrate-events-to-daily.ts
 import { list, put, del } from '@vercel/blob';
 
 async function main() {
@@ -48,7 +48,7 @@ async function main() {
     console.log(`  ${day}: ${events.length} events`);
   }
 
-  console.log(`\nLoesche ${urls.length} alte events/*.json Blobs...`);
+  console.log(`\nLösche ${urls.length} alte events/*.json Blobs...`);
   for (let i = 0; i < urls.length; i += CONC) {
     const batch = urls.slice(i, i + CONC);
     await Promise.all(batch.map(b => del(b.url).catch(() => {})));

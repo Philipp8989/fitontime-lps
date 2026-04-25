@@ -20,7 +20,7 @@ Quelle der Analyse: 11 HTML-Dumps unter ~/Downloads/fot-blockadenloeser-*.html
 ### 4-6. Slider-Inputs
 | Page | Slug | Wert | Range | Default | localStorage Key |
 |---|---|---|---|---|---|
-| 4 | page_b1zql | Größe | 145–195 cm | 165 | fot_height |
+| 4 | page_b1zql | Grösse | 145–195 cm | 165 | fot_height |
 | 5 | page_rdl62 | Gewicht | 45–150 kg | 75 | fot_weight |
 | 6 | page_sv386 | Alter | 18–65 J | 32 | fot_age |
 

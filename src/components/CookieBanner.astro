@@ -146,7 +146,7 @@ const {
     var current = null;
     try { current = localStorage.getItem(KEY); } catch (e) {}
 
-    // Event-ID Generator fuer Meta-Deduplizierung
+    // Event-ID Generator für Meta-Deduplizierung
     function eid() {
       return Date.now() + '-' + Math.random().toString(36).slice(2, 10);
     }
@@ -193,7 +193,7 @@ const {
       });
     });
 
-    // Globale Tracking-Helfer auf window fuer inline-Scripts
+    // Globale Tracking-Helfer auf window für inline-Scripts
     window.__lp = {
       eid: eid,
       // Meta-Event mit event_id feuern

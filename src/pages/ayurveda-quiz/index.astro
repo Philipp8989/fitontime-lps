@@ -60,7 +60,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
     .logo { text-align: center; padding: 16px 0 8px; }
     .logo img { height: 40px; }
 
-    /* Hero  -  Ayurveda-Aesthetik */
+    /* Hero  -  Ayurveda-Ästhetik */
     .hero { text-align: center; padding: 24px 0 20px; position: relative; }
     .hero .sanskrit { font-family: var(--serif); font-style: italic; font-size: 14px; color: var(--accent); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 14px; }
     .hero .sanskrit::before, .hero .sanskrit::after { content: ""; display: inline-block; width: 30px; height: 1px; background: var(--accent); vertical-align: middle; margin: 0 10px; opacity: 0.5; }
@@ -111,7 +111,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
     .sec-eyebrow.accent { color: var(--accent); }
     .sec-title { font-size: 22px; font-weight: 800; text-align: center; margin-bottom: 18px; letter-spacing: -0.3px; line-height: 1.25; }
 
-    /* Pain Story als fließender Text, kein Kasten */
+    /* Pain Story als fliessender Text, kein Kasten */
     .pain-story { text-align: center; padding: 8px 0; max-width: 580px; margin: 0 auto; }
     .pain-story h2 { font-family: var(--serif); font-size: 28px; font-weight: 600; margin-bottom: 16px; letter-spacing: -0.3px; color: var(--ink); }
     .pain-story p { font-size: 16px; color: var(--text-2); line-height: 1.75; margin-bottom: 14px; }
@@ -365,7 +365,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
         </div>
       </section>
 
-      <!-- Pain als fließender Text, keine Kästen -->
+      <!-- Pain als fliessender Text, keine Kästen -->
       <div class="ornament"><span class="om">&#2384;</span></div>
 
       <div class="pain-story">
@@ -702,7 +702,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
     var TOTAL = 11;
 
     // Robustes Tracking: Dashboard-Events IMMER direkt per sendBeacon (kein __lp-Dependency).
-    // Meta-Pixel laeuft separat und nur falls __lp bereit ist (mit Retry).
+    // Meta-Pixel läuft separat und nur falls __lp bereit ist (mit Retry).
     function getSid() {
       try {
         var sid = sessionStorage.getItem('lp_sid');
@@ -745,7 +745,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
     function tk(e, d) { tkDirect(e, d); tkMeta(e); }
     tk('page_view');
 
-    // Preview-Mode fuer Ergebnis
+    // Preview-Mode für Ergebnis
     if (/[?&]preview=result/.test(window.location.search)) {
       window.addEventListener('DOMContentLoaded', function() {
         var type = (window.location.search.match(/[?&]type=(vata|pitta|kapha)/) || [])[1] || 'pitta';
@@ -799,7 +799,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
       }, 3200);
     }
 
-    // Dosha-Typ bestimmen (hoechster Score gewinnt, Tie-Breaker: letzter gewaehlt)
+    // Dosha-Typ bestimmen (höchster Score gewinnt, Tie-Breaker: letzter gewählt)
     function determineType() {
       var order = ['vata', 'pitta', 'kapha'];
       var best = order[0];
@@ -870,7 +870,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
       var data = DOSHA_DATA[type];
       var typeUpper = type.toUpperCase();
 
-      // Result-Element mit Typ-Klasse versehen (fuer Farbe)
+      // Result-Element mit Typ-Klasse versehen (für Farbe)
       var resultEl = document.getElementById('result-step');
       resultEl.classList.remove('vata', 'pitta', 'kapha');
       resultEl.classList.add(type);
@@ -970,7 +970,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
     }
   </script>
 
-  {/* Hyros als First-Party-Attribution essentiell  -  laedt ohne Consent */}
+  {/* Hyros als First-Party-Attribution essentiell  -  lädt ohne Consent */}
   <script is:inline src="https://t.hyros.com/v1/lst/universal-script?ph=689a71ca1ab3be1cb1caddbe6b7902a4ad2c51a228f4ec9ea7fef3123a705f63"></script>
 
   <CookieBanner

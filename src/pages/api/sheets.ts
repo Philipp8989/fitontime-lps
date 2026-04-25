@@ -64,7 +64,7 @@ const SHEETS: Record<string, SheetConfig> = {
     },
   },
   // FB-Stoffwechsel-Quiz Leads (neuer Funnel 2026-04)
-  // Schema: Datum | Vorname | Nachname | Email | Telefon | Ziel | Beruflich | (leer Reserveraum fuer Sales)
+  // Schema: Datum | Vorname | Nachname | Email | Telefon | Ziel | Beruflich | (leer Reserveraum für Sales)
   'stoffwechsel-test': {
     id: '1UGaXbNqfPGXk4EN4BXgvWkwmNekioCYAICY2SzIZrOA',
     range: 'Leads!A:K',
@@ -85,7 +85,7 @@ const SHEETS: Record<string, SheetConfig> = {
         abnehmen: 'Nachhaltig abnehmen',
       };
       const zielText = zielMap[a.q2_val] || a.q2_val || '';
-      // Ziel-Spalte enthält Typ + Ziel fuer Sales auf einen Blick
+      // Ziel-Spalte enthält Typ + Ziel für Sales auf einen Blick
       const ziel = typ ? `${zielText} · Typ: ${typ}` : zielText;
 
       const ausgelastet = a.q1_val === 'ja' ? 'Ja' : a.q1_val === 'nein' ? 'Nein' : '';
@@ -128,7 +128,7 @@ export const POST: APIRoute = async ({ request }) => {
       const row = config.buildRow(datum, data);
 
       // Append mit Table-Detection verschiebt Werte wenn das Sheet seltsame Layouts hat.
-      // Deshalb: Anzahl Zeilen ueber ALLE Spalten ermitteln und explizit via update() schreiben.
+      // Deshalb: Anzahl Zeilen über ALLE Spalten ermitteln und explizit via update() schreiben.
       const sheetName = (config.range.split('!')[0] || 'Sheet1').replace(/['"]/g, '');
       const lastColLetter = (config.range.split(':')[1] || 'Z').replace(/[^A-Z]/g, '') || 'Z';
       const fullRange = `${sheetName}!A:${lastColLetter}`;
@@ -148,10 +148,10 @@ export const POST: APIRoute = async ({ request }) => {
       });
     }
 
-    // Lead an zentrale Dashboard-API senden (Postgres-CRM = Ground-Truth fuer Reporting).
-    // AWAITED: wenn der Insert fehlschlaegt, 500 zurueck. Dadurch feuert Meta-Pixel auf dem
+    // Lead an zentrale Dashboard-API senden (Postgres-CRM = Ground-Truth für Reporting).
+    // AWAITED: wenn der Insert fehlschlägt, 500 zurück. Dadurch feuert Meta-Pixel auf dem
     // Client nicht und Postgres bleibt konsistent mit Pixel-Count. Akzeptiertes Risiko bei
-    // Retry: moegliche Sheets-Duplikate (manuelle Dedup durch Kunde).
+    // Retry: mögliche Sheets-Duplikate (manuelle Dedup durch Kunde).
     const dashUrl = import.meta.env.DASHBOARD_LEADS_URL;
     const dashKey = import.meta.env.DASHBOARD_LEADS_KEY;
     if (dashUrl && dashKey) {
@@ -180,7 +180,7 @@ export const POST: APIRoute = async ({ request }) => {
       }
     }
 
-    // Synthetisches lead_submit-Event fuer Attribution/CR-Sanity. Fire-and-forget.
+    // Synthetisches lead_submit-Event für Attribution/CR-Sanity. Fire-and-forget.
     fetch(new URL('/api/track', request.url).toString(), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

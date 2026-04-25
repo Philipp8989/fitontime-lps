@@ -155,7 +155,7 @@ scores:
 
 ---
 
-## UI-002 — Icon-Größen inkonsistent in Opt-Buttons
+## UI-002 — Icon-Grössen inkonsistent in Opt-Buttons
 
 - **severity:** MEDIUM
 - **dimension:** UI

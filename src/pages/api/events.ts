@@ -64,11 +64,11 @@ export const GET: APIRoute = async ({ url }) => {
   if (summary) {
     // Saubere KPI-Aggregation:
     // - sessions = unique Session-IDs
-    // - views    = raw page_view-Events (nicht quiz_start dazu, kein Doppelzaehlen)
+    // - views    = raw page_view-Events (nicht quiz_start dazu, kein Doppelzählen)
     // - leads    = unique Sessions mit Lead-Event (deduped)
     // - cr       = leads / sessions (sessions-basiert, ehrlicher als raw views)
     // byLpSteps = unique Sessions pro EVENT-Name (event-Feld bevorzugt; step-Feld nur Fallback bei
-    //             event=step_view, weil dann das step-Feld die echte Funnel-Position traegt)
+    //             event=step_view, weil dann das step-Feld die echte Funnel-Position trägt)
     const counts = { views: 0, leadsBySession: new Set<string>(), sessions: new Set<string>() };
     const byDay = new Map<string, { views: number; leadsBySession: Set<string> }>();
     const byLp = new Map<string, { views: number; leadsBySession: Set<string>; sessions: Set<string> }>();

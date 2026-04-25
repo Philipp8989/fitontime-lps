@@ -1,6 +1,6 @@
 ---
 // Abnehmpotential-Quiz, Nachbau des Funnelcockpit-Funnels "blockadenloeser"
-// Single-Page-SPA, alle Steps client-side, schnelle Ladezeit fuer Paid Traffic
+// Single-Page-SPA, alle Steps client-side, schnelle Ladezeit für Paid Traffic
 import CookieBanner from '../../components/CookieBanner.astro';
 
 const LP_SLUG = 'abnehmpotential';
@@ -23,8 +23,8 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 
-  <!-- Meta Pixel laeuft DSGVO-konform ueber CookieBanner.astro nach Consent -->
-  <!-- Hyros als First-Party-Attribution essentiell, laedt ohne Consent (analog zu allen FOT-Funnels) -->
+  <!-- Meta Pixel läuft DSGVO-konform über CookieBanner.astro nach Consent -->
+  <!-- Hyros als First-Party-Attribution essentiell, lädt ohne Consent (analog zu allen FOT-Funnels) -->
   <script is:inline src="https://t.hyros.com/v1/lst/universal-script?ph=689a71ca1ab3be1cb1caddbe6b7902a4ad2c51a228f4ec9ea7fef3123a705f63"></script>
 
 
@@ -122,8 +122,8 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
 
     .err{color:#b91c1c;font-size:13px;text-align:center;margin-top:6px;min-height:18px}
 
-    /* Silhouette: dick (Hintergrund, hellgrau) + duenn (im Vordergrund, blau, animiert)
-       Beides exakt gleiche Hoehe und vertikal zentriert -> visuelle "Schrumpfung" */
+    /* Silhouette: dick (Hintergrund, hellgrau) + dünn (im Vordergrund, blau, animiert)
+       Beides exakt gleiche Höhe und vertikal zentriert -> visuelle "Schrumpfung" */
     .sil{position:relative;width:160px;height:240px;margin:20px auto 8px}
     .sil svg{position:absolute;inset:0;width:100%;height:100%;display:block}
     .sil .thick path{fill:#e5e7eb}
@@ -180,7 +180,7 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
         </div>
       </section>
 
-      <!-- Step 2: Prioritaet -->
+      <!-- Step 2: Priorität -->
       <section class="step" data-step="2">
         <h2>Was davon ist dir am wichtigsten?</h2>
         <div class="answers">
@@ -191,9 +191,9 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
         </div>
       </section>
 
-      <!-- Step 3: Groesse -->
+      <!-- Step 3: Grösse -->
       <section class="step" data-step="3">
-        <h2>Deine Körpergröße</h2>
+        <h2>Deine Körpergrösse</h2>
         <div class="slider-wrap">
           <div class="slider-value"><span id="valGroesse">165</span></div>
           <div class="slider-unit">Zentimeter</div>
@@ -229,22 +229,22 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
 
       <!-- Step 6: Trigger -->
       <section class="step" data-step="6">
-        <h2>Was triggert dich am meisten? Was konsumierst du bei Heißhunger?</h2>
+        <h2>Was triggert dich am meisten? Was konsumierst du bei Heisshunger?</h2>
         <div class="answers">
           <button class="answer" type="button" onclick="answer('trigger','salzig')">Salziges Essen</button>
           <button class="answer" type="button" onclick="answer('trigger','fettig')">Hauptsache fettig</button>
-          <button class="answer" type="button" onclick="answer('trigger','suess')">Süßes</button>
+          <button class="answer" type="button" onclick="answer('trigger','suess')">Süsses</button>
           <button class="answer" type="button" onclick="answer('trigger','egal')">Ist mir egal</button>
         </div>
       </section>
 
-      <!-- Step 7: Koerperfett -->
+      <!-- Step 7: Körperfett -->
       <section class="step" data-step="7">
         <h2>Was beschreibt dich am besten?</h2>
         <div class="answers">
           <button class="answer" type="button" onclick="answer('koerperfett','ganzkoerper')">Mein Körperfett ist hoch und verteilt sich über den ganzen Körper. Ich bin eher unzufrieden mit meiner Figur.</button>
-          <button class="answer" type="button" onclick="answer('koerperfett','huefte')">Mein Körperfett befindet sich an Hüften, Oberschenkeln und am Gesäßbereich.</button>
-          <button class="answer" type="button" onclick="answer('koerperfett','schlank')">Mein Körperfett ist gleichmäßig verteilt. Ich habe eine relativ schlanke Figur.</button>
+          <button class="answer" type="button" onclick="answer('koerperfett','huefte')">Mein Körperfett befindet sich an Hüften, Oberschenkeln und am Gesässbereich.</button>
+          <button class="answer" type="button" onclick="answer('koerperfett','schlank')">Mein Körperfett ist gleichmässig verteilt. Ich habe eine relativ schlanke Figur.</button>
         </div>
       </section>
 
@@ -352,7 +352,7 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
     // Quiz-State
     const STATE_KEY = 'fot_abnehmpotential_state';
     const SESSION_KEY = 'fot_session';
-    const TOTAL_STEPS = 8; // Quiz-Steps 1..8 fuer Progress (ohne Start, Loading, Optin, Ergebnis)
+    const TOTAL_STEPS = 8; // Quiz-Steps 1..8 für Progress (ohne Start, Loading, Optin, Ergebnis)
 
     const state = JSON.parse(sessionStorage.getItem(STATE_KEY) || '{"step":0,"answers":{}}');
     let session = sessionStorage.getItem(SESSION_KEY);
@@ -381,7 +381,7 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
     function showStep(i) {
       document.querySelectorAll('.step').forEach(s => s.classList.toggle('active', Number(s.dataset.step) === i));
       window.scrollTo({ top: 0, behavior: 'instant' });
-      // Progress nur waehrend Quiz (Steps 1..8 inkl. Loading)
+      // Progress nur während Quiz (Steps 1..8 inkl. Loading)
       const showProg = i >= 1 && i <= 8;
       const prog = document.getElementById('progress');
       const lbl = document.getElementById('progressLabel');
@@ -393,7 +393,7 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
         lbl.textContent = `Schritt ${i} von ${TOTAL_STEPS}`;
       }
       track('step_view', { step_index: i });
-      // Zusaetzlich Standard-Funnel-Events fuer Dashboard-Aggregation:
+      // Zusätzlich Standard-Funnel-Events für Dashboard-Aggregation:
       if (i === 1 && !state.startedFired) { state.startedFired = true; saveState(); track('quiz_start'); }
       if (i === 8 && !state.completedFired) { state.completedFired = true; saveState(); track('quiz_complete'); }
 
@@ -410,7 +410,7 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
       if (i === 10) renderErgebnis();
     }
 
-    // Naechster Step
+    // Nächster Step
     function next() {
       state.step++;
       saveState();
@@ -486,7 +486,7 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
         }
         track('lead_submit');
         if (window.fbq) window.fbq('track', 'Lead');
-        // Name fuer Ergebnisseite merken
+        // Name für Ergebnisseite merken
         state.lead = { name: (fd.get('fname') || '').toString().split(' ')[0] };
         state.step = 10;
         saveState();
@@ -499,8 +499,8 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
     }
     window.submitLead = submitLead;
 
-    // Ergebnisseite personalisieren, BMI-basiert, mehr Potenzial bei hoeherem Gewicht.
-    // Cap bei 18% Koerpergewicht in 4 Monaten (~1%/Woche, medizinisch realistisch).
+    // Ergebnisseite personalisieren, BMI-basiert, mehr Potenzial bei höherem Gewicht.
+    // Cap bei 18% Körpergewicht in 4 Monaten (~1%/Woche, medizinisch realistisch).
     function renderErgebnis() {
       const w = parseFloat(state.answers.gewicht || '75');
       const h = parseFloat(state.answers.groesse || '165');
@@ -511,7 +511,7 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
       let bmiTarget;
       if (bmi < 22)      bmiTarget = bmi - 0.5;   // Normalgewicht: minimal
       else if (bmi < 25) bmiTarget = 21.5;        // oberer Normalbereich
-      else if (bmi < 30) bmiTarget = 23;          // Uebergewicht
+      else if (bmi < 30) bmiTarget = 23;          // Übergewicht
       else if (bmi < 35) bmiTarget = 25;          // Adipositas I
       else               bmiTarget = bmi - 8;     // schwere Adipositas
 

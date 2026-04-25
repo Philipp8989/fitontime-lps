@@ -1,7 +1,7 @@
 ---
-// Analytics Dashboard, Key-geschuetzt.
+// Analytics Dashboard, Key-geschützt.
 // ?lp=<slug> zeigt Deep-Stats einer einzelnen LP (Funnel, Timeline).
-// Ohne ?lp= Uebersicht ueber alle LPs.
+// Ohne ?lp= Übersicht über alle LPs.
 const key = Astro.url.searchParams.get('key');
 const validKey = import.meta.env.DASHBOARD_KEY;
 if (key !== validKey) {
@@ -230,9 +230,9 @@ const lpLabel = LP_META[lpFilter]?.label || lpFilter;
         <div class="panel">${funnelRows}</div>
       `;
 
-      // Timeline pro Tag, nur fuer diese LP nicht trivial ohne extra API-Call,
+      // Timeline pro Tag, nur für diese LP nicht trivial ohne extra API-Call,
       // wir zeigen globale byDay + Hinweis, dass sie alle LPs umfasst,
-      // falls data.byDay existiert. Fuer LP-spezifisch muesste /api/events?summary=true
+      // falls data.byDay existiert. Für LP-spezifisch müsste /api/events?summary=true
       // auch byDay pro LP liefern. Aktuell nur Gesamtsumme.
       let tl = '';
       if (data.byDay && data.byDay.length) {

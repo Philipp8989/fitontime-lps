@@ -1,5 +1,5 @@
 ---
-// Gemeinsames Layout fuer die 3 Stoffwechsel-Ergebnis-Pages (staemmig, soft, zierlich).
+// Gemeinsames Layout für die 3 Stoffwechsel-Ergebnis-Pages (staemmig, soft, zierlich).
 // Identische Struktur und Styling, nur Inhalt kommt aus Props.
 import CookieBanner from '../components/CookieBanner.astro';
 
@@ -12,7 +12,7 @@ export interface Props {
   move: string;
   time: string;
   mistake: string;
-  videoId: string;      // Wistia-ID fuer diesen Typ
+  videoId: string;      // Wistia-ID für diesen Typ
   bodyColor?: string;   // optionaler Tint pro Typ (default accent)
 }
 
@@ -219,7 +219,7 @@ const imageSrc = `/images/bodytypes/${typ}.png`;
   </main>
 
   <script is:inline>
-    // Begruessung personalisieren, wenn wir Daten aus dem Quiz haben
+    // Begrüssung personalisieren, wenn wir Daten aus dem Quiz haben
     try {
       var raw = sessionStorage.getItem('fot_result');
       if (raw) {
@@ -229,7 +229,7 @@ const imageSrc = `/images/bodytypes/${typ}.png`;
           if (g) g.innerHTML = '<b>' + data.name + '</b>, dein persönliches Profil ist fertig.';
         }
         if (data && data.problem) {
-          // Problem-spezifische Summary-Verlaengerung
+          // Problem-spezifische Summary-Verlängerung
           var extra = '';
           if (data.problem === 'hunger') extra = ' Dein Heisshunger deutet auf schwankenden Blutzucker hin, das lösen wir mit dem richtigen Mahlzeiten-Timing.';
           else if (data.problem === 'jojo') extra = ' Der Jojo-Effekt zeigt: Bisherige Ansätze haben deinen Typ ignoriert. Unser Ansatz setzt genau da an.';
