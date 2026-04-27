@@ -119,7 +119,11 @@ export const POST: APIRoute = async ({ request }) => {
     });
   } catch (err: any) {
     console.error('Recruiting API Fehler:', err?.message || err);
-    return new Response(JSON.stringify({ error: 'Interner Fehler' }), {
+    const debug = new URL(request.url).searchParams.get('debug') === '1';
+    const body = debug
+      ? { error: 'Interner Fehler', detail: err?.message || String(err), code: err?.code }
+      : { error: 'Interner Fehler' };
+    return new Response(JSON.stringify(body), {
       status: 500,
       headers: { 'Content-Type': 'application/json' },
     });
