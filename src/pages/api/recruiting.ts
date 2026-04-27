@@ -81,10 +81,13 @@ export const POST: APIRoute = async ({ request }) => {
     });
     const sheets = google.sheets({ version: 'v4', auth });
 
-    // Append mit Table-Detection vermeiden, explizit nächste Zeile schreiben.
-    const sheetName = (RECRUITING_RANGE.split('!')[0] || 'Tabellenblatt1').replace(/['"]/g, '');
+    // Tabellenblatt-Name dynamisch ueber Spreadsheet-Metadata holen (erstes Sheet).
+    // Verhindert 404 wenn der Tab nicht "Tabellenblatt1" heisst.
+    const meta = await sheets.spreadsheets.get({ spreadsheetId: RECRUITING_SHEET_ID });
+    const firstSheetName = meta.data.sheets?.[0]?.properties?.title || 'Tabellenblatt1';
     const lastColLetter = (RECRUITING_RANGE.split(':')[1] || 'J').replace(/[^A-Z]/g, '') || 'J';
-    const fullRange = `${sheetName}!A:${lastColLetter}`;
+    const fullRange = `${firstSheetName}!A:${lastColLetter}`;
+    const sheetName = firstSheetName;
     const existing = await sheets.spreadsheets.values.get({
       spreadsheetId: RECRUITING_SHEET_ID,
       range: fullRange,

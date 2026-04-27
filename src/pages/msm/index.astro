@@ -1,0 +1,994 @@
+---
+// MSM-Test  —  Musculoskeletal Syndrome of Menopause Quiz
+// 12 Fragen · adaptiv · Lead-Gate bei F10 · Score 0-100 · Stufe 1-4 · kritischste Dimension
+import CookieBanner from '../../components/CookieBanner.astro';
+const impressumUrl = 'https://fitontime.ch/impressum-datenschutz';
+const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
+---
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="theme-color" content="#1d73d3" />
+  <title>MSM-Test — Das Muster der Wechseljahre, das fast niemand kennt | Fit on Time</title>
+  <link rel="icon" type="image/png" href="/images/logo.png" />
+  <link rel="preload" as="image" href="/images/logo.png" fetchpriority="high" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <style is:global>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #fafaf8;
+      --bg-soft: #f3ede1;
+      --card: #ffffff;
+      --border: #e8e4da;
+      --accent: #1d73d3;
+      --accent-dark: #155aa8;
+      --accent-soft: #eaf2fc;
+      --green: #16a34a;
+      --amber: #f59e0b;
+      --red: #dc2626;
+      --text: #0f172a;
+      --text-2: #475569;
+      --text-3: #94a3b8;
+      --r: 16px;
+      --font: 'DM Sans', system-ui, -apple-system, sans-serif;
+      --shadow-sm: 0 2px 8px rgba(15,23,42,0.04);
+      --shadow-md: 0 6px 20px rgba(29,115,211,0.14);
+      --shadow-lg: 0 12px 28px rgba(29,115,211,0.22);
+    }
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+    body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.5; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+
+    button:focus-visible, a:focus-visible, input:focus-visible, label:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
+    .opt:focus-visible, .cta-btn:focus-visible, .submit:focus-visible { outline-offset: 4px; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+    }
+
+    /* ===== Reveal-on-Scroll System (IntersectionObserver) ===== */
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.7s cubic-bezier(0.2, 0.9, 0.3, 1), transform 0.7s cubic-bezier(0.2, 0.9, 0.3, 1); }
+    .reveal.in { opacity: 1; transform: translateY(0); }
+    .reveal-stagger > * { opacity: 0; transform: translateY(18px); transition: opacity 0.55s cubic-bezier(0.2, 0.9, 0.3, 1), transform 0.55s cubic-bezier(0.2, 0.9, 0.3, 1); }
+    .reveal-stagger.in > *:nth-child(1) { opacity: 1; transform: translateY(0); transition-delay: 0.05s; }
+    .reveal-stagger.in > *:nth-child(2) { opacity: 1; transform: translateY(0); transition-delay: 0.12s; }
+    .reveal-stagger.in > *:nth-child(3) { opacity: 1; transform: translateY(0); transition-delay: 0.19s; }
+    .reveal-stagger.in > *:nth-child(4) { opacity: 1; transform: translateY(0); transition-delay: 0.26s; }
+    .reveal-stagger.in > *:nth-child(5) { opacity: 1; transform: translateY(0); transition-delay: 0.33s; }
+    .reveal-stagger.in > *:nth-child(6) { opacity: 1; transform: translateY(0); transition-delay: 0.4s; }
+
+    /* ===== Hero-Polish ===== */
+    .hero h1 em::after { animation: highlight-grow 1.1s cubic-bezier(0.2, 0.9, 0.3, 1) 0.3s both; transform-origin: left center; }
+    @keyframes highlight-grow { from { transform: scaleX(0) skewX(-4deg); } to { transform: scaleX(1) skewX(-4deg); } }
+    .hero h1 { animation: hero-fade 0.6s cubic-bezier(0.2, 0.9, 0.3, 1) both; }
+    .hero .sub { animation: hero-fade 0.6s cubic-bezier(0.2, 0.9, 0.3, 1) 0.15s both; }
+    .hero .badge { animation: hero-fade 0.6s cubic-bezier(0.2, 0.9, 0.3, 1) 0.05s both; }
+    .hero .cta-wrap { animation: hero-fade 0.6s cubic-bezier(0.2, 0.9, 0.3, 1) 0.3s both; }
+    .hero .proof-bar { animation: hero-fade 0.6s cubic-bezier(0.2, 0.9, 0.3, 1) 0.45s both; }
+    @keyframes hero-fade { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* CTA Button Glow-Pulse (idle attention) */
+    .cta-btn { position: relative; overflow: hidden; }
+    .cta-btn::before { content: ''; position: absolute; top: 0; left: -120%; width: 60%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent); animation: cta-shine 3.2s ease-in-out infinite; pointer-events: none; }
+    @keyframes cta-shine { 0%, 75%, 100% { left: -120%; } 85% { left: 220%; } }
+
+    /* Sticky CTA — sanftere Show-Anim */
+    .sticky-cta { transition: transform 0.45s cubic-bezier(0.2, 0.9, 0.3, 1), opacity 0.3s; opacity: 0; }
+    .sticky-cta.show { opacity: 1; }
+
+    /* Dimension-Cards — Hover-Lift */
+    .dim { transition: transform 0.25s cubic-bezier(0.2, 0.9, 0.3, 1), box-shadow 0.25s; cursor: default; }
+    .dim:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+    .dim .d-ic { transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); display: inline-block; }
+    .dim:hover .d-ic { transform: scale(1.15) rotate(-4deg); }
+
+    /* 3-Schritte-Cards — Hover */
+    .stp { transition: transform 0.25s cubic-bezier(0.2, 0.9, 0.3, 1), box-shadow 0.25s, border-color 0.25s; }
+    .stp:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); border-color: var(--accent-soft); }
+    .stp .n { transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+    .stp:hover .n { transform: scale(1.1); }
+
+    /* Transformations — Reveal-In bei Hover */
+    .trans-grid img { transition: transform 0.4s cubic-bezier(0.2, 0.9, 0.3, 1), filter 0.3s; }
+    .trans-grid img:hover { transform: scale(1.04); filter: brightness(1.06); }
+
+    /* Quiz-Polish */
+    .opt { position: relative; }
+    .opt:active { transform: scale(0.97); }
+    .opt.selected { animation: opt-confirm 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
+    @keyframes opt-confirm { 0% { transform: scale(1); } 40% { transform: scale(1.03); box-shadow: 0 0 0 8px rgba(29, 115, 211, 0.12); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(29, 115, 211, 0); } }
+    .opt.chk-sel .chk-mark { animation: chk-pop 0.32s cubic-bezier(0.34, 1.56, 0.64, 1); }
+    @keyframes chk-pop { 0% { transform: scale(0.6); } 60% { transform: scale(1.18); } 100% { transform: scale(1); } }
+
+    /* Quiz Progress-Bar Glow */
+    .q-fill { position: relative; }
+    .q-fill::after { content: ''; position: absolute; top: 0; right: 0; width: 22px; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.7)); border-radius: 0 3px 3px 0; opacity: 0.7; }
+
+    /* Loading-Checks — bounce-in */
+    .chk { transition: opacity 0.4s, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
+    .chk.show i { animation: tick-pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
+    @keyframes tick-pop { 0% { transform: scale(0.4); } 60% { transform: scale(1.18); } 100% { transform: scale(1); } }
+    .spinner { animation: spin 0.9s linear infinite, spinner-glow 2s ease-in-out infinite; }
+    @keyframes spinner-glow { 0%, 100% { box-shadow: 0 0 0 0 rgba(29, 115, 211, 0); } 50% { box-shadow: 0 0 0 12px rgba(29, 115, 211, 0.08); } }
+
+    /* Benefit-Items Hover */
+    .benefit { transition: transform 0.2s, border-color 0.2s; }
+    .benefit:hover { transform: translateX(3px); border-color: var(--accent-soft); }
+
+    .wrap { max-width: 760px; margin: 0 auto; padding: 0 20px; }
+
+    .logo { text-align: center; padding: 18px 0 6px; }
+    .logo img { height: 44px; }
+
+    .topbar { display: flex; align-items: center; justify-content: center; gap: 14px; padding: 6px 0 10px; font-size: 11px; color: var(--text-3); font-weight: 500; }
+    .topbar span.dot { width: 4px; height: 4px; border-radius: 50%; background: var(--text-3); }
+    .topbar .live { color: var(--green); font-weight: 700; }
+    .topbar .live::before { content: '●'; margin-right: 4px; animation: pulse 1.6s ease-in-out infinite; display: inline-block; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+    .hero { text-align: center; padding: 14px 0 22px; }
+    .hero .badge { display: inline-block; background: var(--accent-soft); color: var(--accent); font-size: 12px; font-weight: 700; padding: 6px 14px; border-radius: 20px; margin-bottom: 14px; letter-spacing: 0.3px; }
+    .hero h1 { font-size: 30px; font-weight: 900; line-height: 1.15; letter-spacing: -0.8px; margin-bottom: 14px; color: var(--text); }
+    .hero h1 em { font-style: normal; color: var(--accent); position: relative; white-space: nowrap; z-index: 0; }
+    .hero h1 em::after { content: ''; position: absolute; left: -2px; right: -2px; bottom: 2px; height: 12px; background: linear-gradient(90deg, rgba(29,115,211,0.18) 0%, rgba(59,146,240,0.28) 100%); z-index: -1; border-radius: 4px; transform: skewX(-4deg); }
+    .hero .sub { font-size: 16px; color: var(--text-2); margin-bottom: 10px; line-height: 1.5; max-width: 560px; margin-left: auto; margin-right: auto; }
+    .hero .sub strong { color: var(--text); font-weight: 700; }
+
+    .proof-bar { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 16px 0 6px; }
+    .proof-info { font-size: 12px; color: var(--text-2); line-height: 1.35; text-align: center; }
+    .proof-info b { color: var(--text); font-weight: 700; }
+    .proof-stars { color: var(--amber); font-size: 13px; letter-spacing: 1px; }
+
+    .benefits { display: grid; gap: 10px; max-width: 520px; margin: 20px auto 0; text-align: left; }
+    .benefit { display: flex; align-items: center; gap: 12px; padding: 12px 16px; background: var(--card); border: 1px solid var(--border); border-radius: 12px; font-size: 14px; color: var(--text); font-weight: 500; box-shadow: var(--shadow-sm); }
+    .benefit .ic { width: 28px; height: 28px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); display: flex; align-items: center; justify-content: center; font-weight: 800; flex-shrink: 0; font-size: 14px; }
+
+    .cta-wrap { margin: 24px auto 0; max-width: 520px; }
+    .cta-btn { display: block; width: 100%; background: var(--accent); color: #fff; font-family: var(--font); font-size: 17px; font-weight: 800; padding: 20px; border: none; border-radius: 14px; cursor: pointer; transition: all 0.2s; text-align: center; box-shadow: var(--shadow-md); letter-spacing: 0.2px; }
+    .cta-btn:hover { background: var(--accent-dark); transform: translateY(-1px); box-shadow: var(--shadow-lg); }
+    .cta-btn:active { transform: scale(0.98); }
+    .cta-sub { text-align: center; font-size: 12px; color: var(--text-3); margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap; }
+    .cta-sub b { color: var(--text-2); font-weight: 600; }
+
+    /* Dimensions-Row (5 Icons) */
+    .dims { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; max-width: 560px; margin: 28px auto 0; }
+    .dim { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 14px 8px; text-align: center; box-shadow: var(--shadow-sm); }
+    .dim .d-ic { font-size: 22px; margin-bottom: 6px; }
+    .dim .d-title { font-size: 11px; font-weight: 800; color: var(--text); line-height: 1.2; margin-bottom: 4px; }
+    .dim .d-ex { font-size: 10px; color: var(--text-3); font-weight: 500; line-height: 1.3; }
+    @media (max-width: 560px) { .dims { grid-template-columns: repeat(5, 1fr); gap: 4px; } .dim { padding: 10px 4px; } .dim .d-ic { font-size: 18px; } .dim .d-title { font-size: 10px; } .dim .d-ex { display: none; } }
+
+    /* 3-Schritte-Block */
+    .steps { display: grid; grid-template-columns: 1fr; gap: 12px; max-width: 520px; margin: 28px auto 0; }
+    @media (min-width: 600px) { .steps { grid-template-columns: 1fr 1fr 1fr; } }
+    .stp { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; box-shadow: var(--shadow-sm); text-align: center; }
+    .stp .n { width: 32px; height: 32px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); display: inline-flex; align-items: center; justify-content: center; font-weight: 800; margin-bottom: 10px; }
+    .stp h4 { font-size: 15px; font-weight: 800; margin-bottom: 6px; }
+    .stp p { font-size: 13px; color: var(--text-2); line-height: 1.45; }
+
+    .trans { margin: 36px 0 20px; }
+    .trans-title { font-size: 18px; font-weight: 800; text-align: center; margin-bottom: 4px; letter-spacing: -0.3px; }
+    .trans-sub { font-size: 13px; color: var(--text-3); text-align: center; margin-bottom: 16px; }
+    .trans-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; max-width: 520px; margin: 0 auto; }
+    .trans-grid img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 10px; background: var(--card); }
+
+    /* FAQ */
+    .faq { max-width: 620px; margin: 36px auto 12px; }
+    .faq-title { font-size: 18px; font-weight: 800; text-align: center; margin-bottom: 16px; letter-spacing: -0.3px; }
+    details { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 14px 18px; margin-bottom: 8px; cursor: pointer; }
+    details summary { font-weight: 700; font-size: 14px; color: var(--text); list-style: none; position: relative; padding-right: 24px; }
+    details summary::-webkit-details-marker { display: none; }
+    details summary::after { content: '+'; position: absolute; right: 0; top: -2px; font-size: 20px; color: var(--text-3); font-weight: 400; }
+    details[open] summary::after { content: '−'; }
+    details p { font-size: 13px; color: var(--text-2); line-height: 1.6; padding-top: 10px; margin-top: 10px; border-top: 1px solid var(--border); }
+
+    .disclaimer { max-width: 620px; margin: 24px auto; padding: 14px 18px; background: #f8fafc; border: 1px solid var(--border); border-radius: 12px; font-size: 11px; color: var(--text-3); line-height: 1.5; }
+
+    .sticky-cta { position: fixed; bottom: 0; left: 0; right: 0; padding: 10px 16px calc(10px + env(safe-area-inset-bottom)); background: rgba(255,255,255,0.96); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-top: 1px solid var(--border); z-index: 50; transform: translateY(120%); transition: transform 0.35s cubic-bezier(0.2, 0.9, 0.3, 1); box-shadow: 0 -4px 20px rgba(0,0,0,0.08); }
+    .sticky-cta.show { transform: translateY(0); }
+    .sticky-cta .cta-btn { max-width: 520px; margin: 0 auto; box-shadow: none; }
+    @media (min-width: 900px) { .sticky-cta { display: none; } }
+
+    .divider { width: 40px; height: 2px; background: var(--accent); margin: 28px auto; opacity: 0.3; border-radius: 2px; }
+    footer { text-align: center; padding: 24px 20px 32px; font-size: 11px; color: var(--text-3); }
+    footer a { color: var(--text-3); text-decoration: none; }
+    footer a:hover { color: var(--text-2); }
+
+    /* ===== QUIZ ===== */
+    #quiz { display: none; position: fixed; inset: 0; background: var(--bg); z-index: 100; flex-direction: column; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+    #quiz.on { display: flex; }
+    .q-head { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: var(--bg); z-index: 10; }
+    .q-head img { height: 34px; }
+    .q-back { background: transparent; border: none; color: var(--text-3); font-size: 14px; font-weight: 600; cursor: pointer; padding: 6px 10px; display: flex; align-items: center; gap: 4px; font-family: var(--font); }
+    .q-back:hover { color: var(--text); }
+    .q-back.hidden { visibility: hidden; }
+    .q-head .q-right { font-size: 12px; color: var(--text-3); font-weight: 600; font-variant-numeric: tabular-nums; }
+    .q-progress { padding: 10px 20px 0; max-width: 620px; margin: 0 auto; width: 100%; position: sticky; top: 62px; background: var(--bg); z-index: 9; padding-bottom: 10px; }
+    .q-bar { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
+    .q-fill { height: 100%; background: linear-gradient(90deg, var(--accent) 0%, #3b92f0 100%); border-radius: 3px; transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1); width: 0%; }
+    .q-meta { display: flex; justify-content: space-between; align-items: center; margin-top: 6px; font-size: 11px; color: var(--text-3); font-weight: 600; }
+    .q-meta .q-time { color: var(--accent); }
+
+    .q-body { flex: 1; display: flex; align-items: flex-start; justify-content: center; padding: 28px 20px 40px; }
+    .step { display: none; max-width: 620px; width: 100%; animation: stepIn 0.35s cubic-bezier(0.2, 0.9, 0.3, 1); }
+    .step.on { display: block; }
+    @keyframes stepIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+    .step-eyebrow { text-align: center; font-size: 11px; font-weight: 700; color: var(--accent); letter-spacing: 0.8px; text-transform: uppercase; margin-bottom: 8px; }
+    .step h2 { font-size: 22px; font-weight: 800; text-align: center; margin-bottom: 8px; line-height: 1.3; letter-spacing: -0.4px; }
+    .step .step-sub { font-size: 14px; color: var(--text-2); text-align: center; margin-bottom: 24px; }
+
+    .opts { display: flex; flex-direction: column; gap: 10px; }
+    .opt { background: var(--card); border: 2px solid var(--border); border-radius: 14px; padding: 16px 18px; font-size: 15px; font-weight: 500; color: var(--text); cursor: pointer; transition: all 0.18s; font-family: var(--font); -webkit-tap-highlight-color: transparent; text-align: left; display: flex; align-items: flex-start; gap: 14px; box-shadow: var(--shadow-sm); }
+    .opt:hover { border-color: var(--accent); background: var(--accent-soft); transform: translateY(-1px); }
+    .opt:active { transform: scale(0.98); }
+    .opt strong { display: block; font-weight: 700; color: var(--text); font-size: 15px; }
+    .opt span { font-size: 12px; color: var(--text-2); display: block; margin-top: 3px; line-height: 1.4; }
+    .opt .opt-ic { width: 40px; height: 40px; border-radius: 10px; background: var(--accent-soft); color: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+    .opt.selected { border-color: var(--accent); background: var(--accent-soft); }
+    .opt.chk-sel { border-color: var(--accent); background: var(--accent-soft); }
+    .opt .chk-mark { width: 22px; height: 22px; border-radius: 6px; border: 2px solid var(--border); background: #fff; flex-shrink: 0; margin-left: auto; align-self: center; display: flex; align-items: center; justify-content: center; font-size: 14px; color: #fff; font-weight: 800; }
+    .opt.chk-sel .chk-mark { background: var(--accent); border-color: var(--accent); }
+    .opt.chk-sel .chk-mark::after { content: '✓'; }
+
+    .opts.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+    .multi-note { text-align: center; font-size: 11px; color: var(--text-3); margin-bottom: 12px; font-weight: 600; letter-spacing: 0.3px; }
+    .multi-submit { display: block; width: 100%; max-width: 460px; margin: 18px auto 0; background: var(--accent); color: #fff; font-family: var(--font); font-size: 15px; font-weight: 800; padding: 16px; border: none; border-radius: 12px; cursor: pointer; box-shadow: var(--shadow-md); transition: all 0.2s; }
+    .multi-submit:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none; }
+    .multi-submit:not(:disabled):hover { background: var(--accent-dark); transform: translateY(-1px); }
+
+    /* Teaching-Einschub zwischen Fragen */
+    .teach { background: #fefbf2; border: 1px solid #fde68a; border-radius: 12px; padding: 14px 16px; margin: 0 0 16px; font-size: 13px; color: #78350f; font-weight: 500; line-height: 1.5; display: flex; align-items: flex-start; gap: 10px; }
+    .teach .t-ic { font-size: 18px; flex-shrink: 0; }
+
+    /* Freitext */
+    .textarea-field { background: var(--card); border: 2px solid var(--border); border-radius: 12px; padding: 16px; font-family: var(--font); font-size: 15px; color: var(--text); width: 100%; min-height: 120px; resize: vertical; transition: all 0.2s; }
+    .textarea-field:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); }
+    .textarea-field::placeholder { color: var(--text-3); }
+
+    /* Loading */
+    .ld { text-align: center; padding: 20px 0; }
+    .spinner { width: 64px; height: 64px; border: 4px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.9s linear infinite; margin: 0 auto 22px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .ld h2 { font-size: 20px; margin-bottom: 6px; }
+    .ld p { font-size: 14px; color: var(--text-2); margin-bottom: 22px; }
+    .checks { text-align: left; max-width: 320px; margin: 0 auto; }
+    .chk { display: flex; align-items: center; gap: 10px; padding: 8px 0; font-size: 14px; color: var(--text-2); opacity: 0; transform: translateX(-10px); transition: all 0.35s; }
+    .chk.show { opacity: 1; transform: translateX(0); }
+    .chk i { width: 22px; height: 22px; border-radius: 50%; background: var(--green); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 12px; font-style: normal; font-weight: 700; flex-shrink: 0; }
+
+    /* Lead-Gate Formular */
+    .form { text-align: center; }
+    .form .tag { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: var(--green); background: #ecfdf5; padding: 6px 12px; border-radius: 20px; margin-bottom: 12px; }
+    .form h2 { font-size: 22px; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.3px; }
+    .form .sub { font-size: 14px; color: var(--text-2); margin-bottom: 20px; line-height: 1.5; max-width: 460px; margin-left: auto; margin-right: auto; }
+    .form .sub b { color: var(--text); font-weight: 700; }
+    .fields { display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px; max-width: 460px; margin-left: auto; margin-right: auto; }
+    .field { background: var(--card); border: 2px solid var(--border); border-radius: 12px; padding: 0 14px; display: flex; align-items: center; gap: 10px; transition: all 0.2s; }
+    .field:focus-within { border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-soft); }
+    .field .ic { font-size: 16px; flex-shrink: 0; opacity: 0.7; width: 20px; text-align: center; }
+    .field input { flex: 1; background: transparent; border: none; outline: none; color: var(--text); font-family: var(--font); font-size: 15px; padding: 16px 0; }
+    .field input::placeholder { color: var(--text-3); }
+    .field .pre { font-size: 14px; color: var(--text-2); font-weight: 600; flex-shrink: 0; }
+    .cb-row { display: flex; align-items: flex-start; gap: 8px; margin: 0 auto 16px; text-align: left; max-width: 460px; }
+    .cb-row input[type="checkbox"] { accent-color: var(--accent); width: 16px; height: 16px; margin-top: 2px; flex-shrink: 0; cursor: pointer; }
+    .cb-row label { font-size: 11px; color: var(--text-3); line-height: 1.5; cursor: pointer; }
+    .cb-row label a { color: var(--text-2); }
+    .submit { display: block; width: 100%; max-width: 460px; margin: 0 auto; background: var(--accent); color: #fff; font-family: var(--font); font-size: 16px; font-weight: 800; padding: 18px; border: none; border-radius: 14px; cursor: pointer; transition: all 0.2s; box-shadow: var(--shadow-md); }
+    .submit:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none; }
+    .submit:not(:disabled):hover { background: var(--accent-dark); transform: translateY(-1px); box-shadow: var(--shadow-lg); }
+    .submit:not(:disabled):active { transform: scale(0.98); }
+    .form-proof { margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--border); max-width: 460px; margin-left: auto; margin-right: auto; }
+    .form-proof .fp-row { display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 11px; color: var(--text-3); margin-bottom: 6px; }
+    .form-proof .fp-row b { color: var(--text-2); font-weight: 600; }
+
+    /* Exit-Screen */
+    .exit { text-align: center; padding: 40px 20px; }
+    .exit h2 { font-size: 22px; margin-bottom: 12px; }
+    .exit p { font-size: 14px; color: var(--text-2); margin-bottom: 20px; line-height: 1.6; }
+    .exit a { display: inline-block; background: var(--accent); color: #fff; text-decoration: none; padding: 14px 24px; border-radius: 12px; font-weight: 700; font-size: 15px; }
+
+    @media (min-width: 600px) {
+      .hero h1 { font-size: 40px; }
+      .hero .sub { font-size: 17px; }
+      .step h2 { font-size: 26px; }
+    }
+    @media (min-width: 900px) {
+      .hero h1 { font-size: 46px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== LANDING ===== -->
+  <div id="lp">
+    <div class="wrap">
+      <div class="logo"><img src="/images/logo.png" alt="Fit on Time" /></div>
+
+      <div class="topbar">
+        <span class="live">Live</span>
+        <span class="dot"></span>
+        <span><b id="liveCnt">9</b> Frauen machen gerade den MSM-Test</span>
+      </div>
+
+      <section class="hero">
+        <div class="badge">Neu in der Fachliteratur 2024 · Frauen ab 40</div>
+        <h1>Das Muster, das bei vielen Frauen ab 42 auftaucht — wurde <em>2024 erst benannt</em>.</h1>
+        <p class="sub">Gelenkbeschwerden. Bauchfett. Schlafprobleme. Kraftverlust. Stimmungsschwankungen. <strong>Für viele Frauen nicht fünf Probleme. Ein Muster.</strong></p>
+
+        <div class="cta-wrap">
+          <button class="cta-btn" onclick="startQuiz()">Jetzt 3-Minuten-Test starten →</button>
+          <p class="cta-sub"><b>Kostenlos</b> <span class="dot">·</span> <b>Anonym</b> <span class="dot">·</span> <b>Keine medizinische Diagnose</b></p>
+        </div>
+
+        <div class="proof-bar">
+          <div class="proof-info">
+            <div class="proof-stars">★★★★★</div>
+            Über <b>4.000 Schweizer Frauen</b> zwischen 40 und 60 · seit 2016
+          </div>
+        </div>
+
+        <div class="dims reveal-stagger">
+          <div class="dim"><div class="d-ic">💪</div><div class="d-title">Muskel</div><div class="d-ex">Kraft weg</div></div>
+          <div class="dim"><div class="d-ic">🦴</div><div class="d-title">Gelenk</div><div class="d-ex">Steifigkeit</div></div>
+          <div class="dim"><div class="d-ic">⚖️</div><div class="d-title">Bauchfett</div><div class="d-ex">trotz Diät</div></div>
+          <div class="dim"><div class="d-ic">🌙</div><div class="d-title">Schlaf</div><div class="d-ex">3-Uhr-wach</div></div>
+          <div class="dim"><div class="d-ic">⚡</div><div class="d-title">Energie</div><div class="d-ex">Müde</div></div>
+        </div>
+      </section>
+
+      <div class="sticky-cta" id="stickyCta">
+        <button class="cta-btn" onclick="startQuiz()" style="font-size:15px;padding:14px;">MSM-Test starten →</button>
+      </div>
+
+      <!-- Section: Fünf Dimensionen, ein Muster -->
+      <section class="reveal" style="margin: 32px 0;">
+        <h2 style="font-size:22px;font-weight:800;text-align:center;margin-bottom:12px;letter-spacing:-0.4px;">Fünf Dimensionen, die bei vielen Frauen gleichzeitig kippen</h2>
+        <div style="max-width:560px;margin:0 auto;font-size:15px;color:var(--text-2);line-height:1.65;">
+          <p style="margin-bottom:12px;">Bisher hatten diese Veränderungen keinen gemeinsamen Namen. Viele Frauen erleben Gelenkbeschwerden, Bauchfett, Schlafstörungen, Kraftverlust und Stimmungsschwankungen — jeweils als einzelne Themen, jeweils getrennt behandelt.</p>
+          <p style="margin-bottom:12px;">Seit 2024 wird in der Fachliteratur diskutiert, dass diese fünf Dimensionen rund um die Wechseljahre oft zusammen auftreten. Unser MSM-Test hilft dir zu erkennen, wie stark das Muster bei dir aktuell ausgeprägt ist.</p>
+          <p style="font-weight:700;color:var(--text);">Du bildest dir das nicht ein.</p>
+        </div>
+      </section>
+
+      <!-- 3 Schritte -->
+      <section class="reveal" style="margin: 32px 0 20px;">
+        <h2 style="font-size:20px;font-weight:800;text-align:center;margin-bottom:6px;letter-spacing:-0.3px;">In 3 Minuten weisst du drei Dinge:</h2>
+        <div class="steps reveal-stagger">
+          <div class="stp"><div class="n">1</div><h4>Deine Stufe</h4><p>Vier Stufen von Frühwarnung bis Vollbild. Wo stehst DU?</p></div>
+          <div class="stp"><div class="n">2</div><h4>Kritische Dimension</h4><p>Welche der fünf Dimensionen ist bei dir am aktivsten?</p></div>
+          <div class="stp"><div class="n">3</div><h4>Nächste Schritte</h4><p>Persönlich per Telefon von unserem Team — innerhalb 10 Min.</p></div>
+        </div>
+      </section>
+
+      <div class="cta-wrap">
+        <button class="cta-btn" onclick="startQuiz()">MSM-Test starten →</button>
+        <p class="cta-sub"><b>3 Minuten</b> <span class="dot">·</span> <b>Kostenlos</b> <span class="dot">·</span> <b>Keine Diagnose</b></p>
+      </div>
+
+      <!-- Transformationen -->
+      <div class="trans reveal">
+        <div class="trans-title">Frauen, die ihren Körper zurückgeholt haben</div>
+        <div class="trans-sub">Über 4.000 Schweizer Frauen begleitet seit 2016</div>
+        <div class="trans-grid reveal-stagger">
+          <img src="/images/transformations/t1.jpg" alt="" loading="lazy" />
+          <img src="/images/transformations/t3.jpg" alt="" loading="lazy" />
+          <img src="/images/transformations/t5.jpg" alt="" loading="lazy" />
+          <img src="/images/transformations/t7.jpg" alt="" loading="lazy" />
+          <img src="/images/transformations/t8.jpg" alt="" loading="lazy" />
+          <img src="/images/transformations/t9.jpg" alt="" loading="lazy" />
+        </div>
+      </div>
+
+      <!-- Was wir NICHT tun -->
+      <section style="margin: 32px 0;">
+        <h2 style="font-size:20px;font-weight:800;text-align:center;margin-bottom:14px;letter-spacing:-0.3px;">Was wir dir NICHT sagen werden</h2>
+        <div style="max-width:520px;margin:0 auto;">
+          <div class="benefit" style="background:#fff7ed;border-color:#fed7aa;"><span class="ic" style="background:#fed7aa;color:#9a3412;">×</span><span>Keine Crash-Diät. Kein Low-Carb. Kein Verzicht.</span></div>
+          <div class="benefit" style="background:#fff7ed;border-color:#fed7aa;margin-top:10px;"><span class="ic" style="background:#fed7aa;color:#9a3412;">×</span><span>Keine Ferndiagnose. Wir sind keine Ärzte.</span></div>
+          <div class="benefit" style="background:#fff7ed;border-color:#fed7aa;margin-top:10px;"><span class="ic" style="background:#fed7aa;color:#9a3412;">×</span><span>Keine Versprechen in Kilo oder Wochen.</span></div>
+          <div class="benefit" style="background:#fff7ed;border-color:#fed7aa;margin-top:10px;"><span class="ic" style="background:#fed7aa;color:#9a3412;">×</span><span>Keine Hormon-Empfehlungen. Das entscheidet dein Arzt.</span></div>
+        </div>
+      </section>
+
+      <!-- FAQ -->
+      <section class="faq">
+        <h2 class="faq-title">Häufige Fragen</h2>
+        <details><summary>Was ist MSM genau?</summary><p>MSM steht für Musculoskeletal Syndrome of Menopause. Der Begriff bezeichnet eine in der Fachliteratur seit 2024 diskutierte Beobachtung, dass typische körperliche Veränderungen rund um die Wechseljahre in fünf Dimensionen zusammen auftreten können. Dies ist kein offizieller Diagnose-Begriff.</p></details>
+        <details><summary>Ist das ein ärztlicher Test?</summary><p>Nein. Es ist ein freiwilliger Selbsttest zur persönlichen Reflexion. Er stellt keine Diagnose, ersetzt keine medizinische Untersuchung und ist kein Therapievorschlag. Bei gesundheitlichen Anliegen wende dich bitte an eine Ärztin oder einen Arzt.</p></details>
+        <details><summary>Was passiert nach dem Test?</summary><p>Nach dem Test meldet sich innerhalb von 10 Minuten eine unserer Coaching-Beraterinnen telefonisch bei dir. Kurz, kostenlos. Sie spricht mit dir über deine Antworten und klärt, ob ein ausführliches Beratungsgespräch mit unserem Coach für dich interessant sein könnte.</p></details>
+        <details><summary>Was kostet das?</summary><p>Der Test und das erste Gespräch sind kostenlos. Das ist unser Angebot an dich.</p></details>
+        <details><summary>Ich habe noch keine Wechseljahre.</summary><p>Wahrscheinlich bist du in der Perimenopause — die Phase davor. Sie beginnt oft 8-10 Jahre vor der eigentlichen Menopause. Das Muster kann sich bereits entwickeln.</p></details>
+        <details><summary>Ich nehme Ozempic / Wegovy.</summary><p>Bitte mach den Test trotzdem. Wir haben ein angepasstes Vorgehen für Frauen nach GLP-1-Medikamenten — die Muskel-Dynamik ist eine andere.</p></details>
+        <details><summary>Rufen wir dir dauernd hinterher?</summary><p>Nein. Eine einzige Telefonnummer, ein Gespräch. Danach entscheidest du.</p></details>
+      </section>
+
+      <div class="cta-wrap">
+        <button class="cta-btn" onclick="startQuiz()">Jetzt 3-Minuten-Test machen →</button>
+      </div>
+
+      <div class="disclaimer">
+        <b>Wichtiger Hinweis:</b> Der MSM-Test ist ein freiwilliger Selbstcheck zur persönlichen Reflexion. Er stellt keine Diagnose, ist keine medizinische Untersuchung und ersetzt keinen ärztlichen Rat. Die in diesem Test genannten Konzepte basieren auf öffentlich beschriebenen Beobachtungen aus der Fachliteratur. Bei gesundheitlichen Anliegen wende dich bitte an eine qualifizierte Fachperson. Fit on Time bietet Coaching im Bereich Ernährung, Bewegung, Schlaf und Alltagsstruktur — keine medizinische Behandlung, keine Therapie, keine Ernährungsberatung im gesetzlich geregelten Sinn.
+      </div>
+
+      <div class="divider"></div>
+
+      <footer>
+        <a href={impressumUrl} target="_blank" rel="noopener">Impressum</a> ·
+        <a href={datenschutzUrl} target="_blank" rel="noopener">Datenschutzerklärung</a>
+      </footer>
+    </div>
+  </div>
+
+  <!-- ===== QUIZ ===== -->
+  <div id="quiz">
+    <div class="q-head">
+      <button class="q-back hidden" id="qback" onclick="back()" aria-label="Zurück">← Zurück</button>
+      <img src="/images/logo.png" alt="Fit on Time" />
+      <div class="q-right"><span id="qr">1/12</span></div>
+    </div>
+    <div class="q-progress">
+      <div class="q-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" id="qbar"><div class="q-fill" id="qf"></div></div>
+      <div class="q-meta">
+        <span id="qp">Frage 1 von 12</span>
+        <span class="q-time" id="qt">⏱ ~3 Min.</span>
+      </div>
+    </div>
+    <div class="q-body">
+
+      <!-- F1: Alter -->
+      <div class="step on" data-s="1">
+        <div class="step-eyebrow">Über dich</div>
+        <h2>Wie alt bist du?</h2>
+        <div class="opts grid-2">
+          <button class="opt" onclick="nxt(1,this,'u35',0)"><strong>Unter 35</strong></button>
+          <button class="opt" onclick="nxt(1,this,'35-39',5)"><strong>35 – 39</strong></button>
+          <button class="opt" onclick="nxt(1,this,'40-44',10)"><strong>40 – 44</strong></button>
+          <button class="opt" onclick="nxt(1,this,'45-49',15)"><strong>45 – 49</strong></button>
+          <button class="opt" onclick="nxt(1,this,'50-55',20)"><strong>50 – 55</strong></button>
+          <button class="opt" onclick="nxt(1,this,'56+',15)"><strong>56 oder älter</strong></button>
+        </div>
+      </div>
+
+      <!-- F2: Gewichts-Trend -->
+      <div class="step" data-s="2">
+        <div class="step-eyebrow">Die letzten 2 Jahre</div>
+        <h2>Was ist mit deinem Körper passiert?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(2,this,'zunahme',15)"><span class="opt-ic">📈</span><div><strong>Kontinuierliche Zunahme</strong><span>Obwohl sich eigentlich nichts verändert hat.</span></div></button>
+          <button class="opt" onclick="nxt(2,this,'schwank',12)"><span class="opt-ic">📊</span><div><strong>Starke Schwankungen</strong><span>Aber die Tendenz geht nach oben.</span></div></button>
+          <button class="opt" onclick="nxt(2,this,'umbau',10)"><span class="opt-ic">🔄</span><div><strong>Gewicht gleich, Form anders</strong><span>Mehr Bauch, weniger an den richtigen Stellen.</span></div></button>
+          <button class="opt" onclick="nxt(2,this,'abnahme',8)"><span class="opt-ic">⚠️</span><div><strong>Abgenommen, fühle mich schwächer</strong><span>Auch durch Medikamente möglich.</span></div></button>
+          <button class="opt" onclick="nxt(2,this,'stabil',3)"><span class="opt-ic">✓</span><div><strong>Alles stabil</strong><span>Ich will vorsorglich checken.</span></div></button>
+        </div>
+      </div>
+
+      <!-- F3: Bauchfett -->
+      <div class="step" data-s="3">
+        <div class="step-eyebrow">Fettverteilung</div>
+        <h2>Wo setzt sich neues Gewicht bei dir an?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(3,this,'bauch',15)"><div><strong>Vor allem am Bauch</strong><span>Fest, nicht wegzukriegen.</span></div></button>
+          <button class="opt" onclick="nxt(3,this,'bauch-ruecken',12)"><div><strong>Bauch UND Rücken / Seiten</strong><span>Rundum "fester" geworden.</span></div></button>
+          <button class="opt" onclick="nxt(3,this,'hueft',5)"><div><strong>Hüfte und Oberschenkel</strong><span>Wie früher — typisch weiblich.</span></div></button>
+          <button class="opt" onclick="nxt(3,this,'gleich',8)"><div><strong>Überall gleichmässig</strong><span>Keine klare Zone.</span></div></button>
+          <button class="opt" onclick="nxt(3,this,'weiss-nicht',6)"><div><strong>Weiss ich nicht genau</strong></div></button>
+        </div>
+        <div class="teach" style="margin-top:18px;"><span class="t-ic">💡</span><span>Viszerales Fett ist kein Schönheitsthema — es ist metabolisch hochaktiv und ändert dein Hormon-Gleichgewicht.</span></div>
+      </div>
+
+      <!-- F4: Gelenke -->
+      <div class="step" data-s="4">
+        <div class="step-eyebrow">Gelenke & Struktur</div>
+        <h2>Hast du neue Gelenkschmerzen oder Steifigkeit bemerkt?</h2>
+        <p class="step-sub">In den letzten 12 Monaten.</p>
+        <div class="opts">
+          <button class="opt" onclick="nxt(4,this,'morgen',15)"><div><strong>Ja — morgens brauche ich deutlich länger um in Gang zu kommen</strong></div></button>
+          <button class="opt" onclick="nxt(4,this,'vereinzelt',10)"><div><strong>Ja — ein bis zwei Gelenke ziehen gelegentlich</strong></div></button>
+          <button class="opt" onclick="nxt(4,this,'nachtraining',5)"><div><strong>Nur nach Training oder wenn ich mich verlegen habe</strong></div></button>
+          <button class="opt" onclick="nxt(4,this,'nein',0)"><div><strong>Nein, alles wie früher</strong></div></button>
+        </div>
+      </div>
+
+      <!-- F5: Muskel -->
+      <div class="step" data-s="5">
+        <div class="step-eyebrow">Kraft & Muskel</div>
+        <h2>Was beobachtest du bei deiner Kraft?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(5,this,'deutlich',15)"><div><strong>Deutlich weniger Kraft</strong><span>Arme oder Beine wirken dünner oder weicher.</span></div></button>
+          <button class="opt" onclick="nxt(5,this,'atem',12)"><div><strong>Schneller ausser Atem</strong><span>Treppen sind anstrengender.</span></div></button>
+          <button class="opt" onclick="nxt(5,this,'haerter',10)"><div><strong>Alles fühlt sich härter an</strong><span>Früher gleich starke Tätigkeiten kosten mich mehr.</span></div></button>
+          <button class="opt" onclick="nxt(5,this,'stabil',5)"><div><strong>Stabil — etwas weniger Ausdauer</strong></div></button>
+          <button class="opt" onclick="nxt(5,this,'top',2)"><div><strong>Ich trainiere regelmässig und halte meinen Stand</strong></div></button>
+        </div>
+      </div>
+
+      <!-- F6: Schlaf -->
+      <div class="step" data-s="6">
+        <div class="step-eyebrow">Schlaf & Erholung</div>
+        <h2>Wie schläfst du seit dem 40. Geburtstag?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(6,this,'24uhr',12)"><div><strong>Ich wache nachts auf</strong><span>Meist zwischen 2 und 4 Uhr.</span></div></button>
+          <button class="opt" onclick="nxt(6,this,'kopf',10)"><div><strong>Schlafe schlecht ein</strong><span>Der Kopf kommt nicht zur Ruhe.</span></div></button>
+          <button class="opt" onclick="nxt(6,this,'unausgeruht',8)"><div><strong>Schlafe durch, aber wache unausgeruht auf</strong></div></button>
+          <button class="opt" onclick="nxt(6,this,'kurz',8)"><div><strong>Schlaf hat sich verkürzt</strong><span>Früher 8h, jetzt 6h.</span></div></button>
+          <button class="opt" onclick="nxt(6,this,'okay',2)"><div><strong>Alles unverändert</strong></div></button>
+        </div>
+        <div class="teach" style="margin-top:18px;"><span class="t-ic">💡</span><span>Die 2-bis-4-Uhr-Aufwach-Stunde ist in der Fachliteratur ein Cortisol-Indikator. Kein Einzelfall.</span></div>
+      </div>
+
+      <!-- F7: Energie -->
+      <div class="step" data-s="7">
+        <div class="step-eyebrow">Energie & Stoffwechsel</div>
+        <h2>Wie fühlst du dich über den Tag?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(7,this,'muster',12)"><div><strong>Morgens träge, Nachmittag tiefes Loch, abends überdreht</strong></div></button>
+          <button class="opt" onclick="nxt(7,this,'dauer',15)"><div><strong>Dauerhaft erschöpft</strong><span>Egal wie viel ich schlafe.</span></div></button>
+          <button class="opt" onclick="nxt(7,this,'okay',8)"><div><strong>Grundsätzlich okay, aber nicht mehr wie mit 30</strong></div></button>
+          <button class="opt" onclick="nxt(7,this,'stabil',4)"><div><strong>Stabil — normale Schwankungen</strong></div></button>
+          <button class="opt" onclick="nxt(7,this,'mehr',0)"><div><strong>Ich habe oft mehr Energie als früher</strong></div></button>
+        </div>
+      </div>
+
+      <!-- F8: Stimmung -->
+      <div class="step" data-s="8">
+        <div class="step-eyebrow">Emotional</div>
+        <h2>Was hat sich emotional verändert?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(8,this,'reizbar',10)"><div><strong>Reizbarer, kurzatmiger, weniger belastbar</strong></div></button>
+          <button class="opt" onclick="nxt(8,this,'rueckzug',8)"><div><strong>Ich ziehe mich zurück</strong><span>Weniger Lust auf Kontakt.</span></div></button>
+          <button class="opt" onclick="nxt(8,this,'zweifel',10)"><div><strong>Selbstzweifel wie nie zuvor</strong></div></button>
+          <button class="opt" onclick="nxt(8,this,'stabil',3)"><div><strong>Stabil — normale Schwankungen</strong></div></button>
+        </div>
+      </div>
+
+      <!-- F9: Bisherige Versuche — MULTI -->
+      <div class="step" data-s="9">
+        <div class="step-eyebrow">Deine Vorgeschichte</div>
+        <h2>Was hast du in den letzten 3 Jahren versucht?</h2>
+        <p class="multi-note">Mehrfachauswahl möglich</p>
+        <div class="opts" id="m9">
+          <button class="opt" data-v="diaet" onclick="mtoggle(this)"><div><strong>Diäten</strong><span>Low-Carb, Keto, Intervallfasten…</span></div><div class="chk-mark"></div></button>
+          <button class="opt" data-v="fitness" onclick="mtoggle(this)"><div><strong>Fitnessstudio oder Online-Training</strong></div><div class="chk-mark"></div></button>
+          <button class="opt" data-v="arzt" onclick="mtoggle(this)"><div><strong>Hormon-Tests oder HRT beim Arzt</strong></div><div class="chk-mark"></div></button>
+          <button class="opt" data-v="coaching" onclick="mtoggle(this)"><div><strong>Ernährungsberatung oder Coaching</strong></div><div class="chk-mark"></div></button>
+          <button class="opt" data-v="detox" onclick="mtoggle(this)"><div><strong>Saftkuren, Detox, Ayurveda, Heilpraktiker</strong></div><div class="chk-mark"></div></button>
+          <button class="opt" data-v="glp1" onclick="mtoggle(this)"><div><strong>Medikamente</strong><span>Ozempic, Wegovy, Mounjaro…</span></div><div class="chk-mark"></div></button>
+          <button class="opt" data-v="nichts" onclick="mtoggle(this)"><div><strong>Lange nichts mehr richtig versucht</strong></div><div class="chk-mark"></div></button>
+        </div>
+        <button class="multi-submit" id="m9sub" disabled onclick="msubmit(9)">Weiter →</button>
+        <div class="teach" style="margin-top:18px;"><span class="t-ic">💡</span><span>Dass du schon viel versucht hast, ist kein Misserfolg. Die Standardprogramme sind für 25-Jährige gebaut.</span></div>
+      </div>
+
+      <!-- LEAD-GATE (vor F10) -->
+      <div class="step form" data-s="gate">
+        <div class="tag">✓ Auswertung fast fertig</div>
+        <h2>Dein MSM-Profil wird jetzt analysiert.</h2>
+        <p class="sub">Damit unser Coaching-Team deine Antworten <b>persönlich analysieren</b> und dich zurückrufen kann, brauchen wir:</p>
+        <div class="fields">
+          <div class="field"><span class="ic">👤</span><input type="text" id="fn" placeholder="Dein Vorname" autocomplete="given-name" aria-label="Vorname" required /></div>
+          <div class="field"><span class="ic">📧</span><input type="email" id="em" placeholder="Deine E-Mail-Adresse" autocomplete="email" aria-label="E-Mail" required /></div>
+          <div class="field"><span class="ic">📞</span><span class="pre">+41</span><input type="tel" id="ph" placeholder="Mobilnummer für den Rückruf" autocomplete="tel-national" aria-label="Mobil" required /></div>
+        </div>
+        <p style="font-size:11px;color:var(--text-3);margin:-4px auto 14px;max-width:460px;text-align:center;">Kein Newsletter. Keine Werbe-Anrufe. Eine einzige Analyse durch unser Coaching-Team.</p>
+        <div class="cb-row">
+          <input type="checkbox" id="ds" />
+          <label for="ds">Ich akzeptiere die <a href={datenschutzUrl} target="_blank" rel="noopener">Datenschutzbestimmungen</a> und den Rückruf durch Fit on Time.</label>
+        </div>
+        <button class="submit" id="gbtn" disabled onclick="gateSubmit()">Profil freischalten →</button>
+        <div class="form-proof">
+          <div class="fp-row"><span>🔒</span> <b>SSL-verschlüsselt</b> · Daten bleiben bei uns.</div>
+          <div class="fp-row"><span class="proof-stars">★★★★★</span> <b>4.000+</b> begleitete Schweizer Frauen</div>
+        </div>
+      </div>
+
+      <!-- F10: Tiefe -->
+      <div class="step" data-s="10">
+        <div class="step-eyebrow">Dringlichkeit</div>
+        <h2>Wie tief beschäftigt dich das Thema aktuell?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(10,this,'taeglich',10)"><div><strong>Es raubt mir Energie</strong><span>Ich denke fast täglich daran.</span></div></button>
+          <button class="opt" onclick="nxt(10,this,'woche',8)"><div><strong>Mehrmals pro Woche</strong><span>Ich frage mich, was los ist.</span></div></button>
+          <button class="opt" onclick="nxt(10,this,'spiegel',5)"><div><strong>Gelegentlich</strong><span>Wenn ich mich im Spiegel sehe.</span></div></button>
+          <button class="opt" onclick="nxt(10,this,'proaktiv',3)"><div><strong>Kaum</strong><span>Ich will proaktiv vorgehen.</span></div></button>
+        </div>
+      </div>
+
+      <!-- F11: Alltag — MULTI -->
+      <div class="step" data-s="11">
+        <div class="step-eyebrow">Dein Alltag</div>
+        <h2>Wie sieht dein Alltag gerade aus?</h2>
+        <p class="multi-note">Mehrfachauswahl möglich</p>
+        <div class="opts" id="m11">
+          <button class="opt" data-v="vollzeit" onclick="mtoggle(this)"><div><strong>Vollzeit berufstätig</strong></div><div class="chk-mark"></div></button>
+          <button class="opt" data-v="kinder" onclick="mtoggle(this)"><div><strong>Kinder zuhause</strong></div><div class="chk-mark"></div></button>
+          <button class="opt" data-v="fuehrung" onclick="mtoggle(this)"><div><strong>Beruflich sehr eingespannt / Führungsposition</strong></div><div class="chk-mark"></div></button>
+          <button class="opt" data-v="selbst" onclick="mtoggle(this)"><div><strong>Selbstständig</strong></div><div class="chk-mark"></div></button>
+          <button class="opt" data-v="teilzeit" onclick="mtoggle(this)"><div><strong>Teilzeit oder reduziert</strong></div><div class="chk-mark"></div></button>
+          <button class="opt" data-v="umbruch" onclick="mtoggle(this)"><div><strong>Aktuell in einer Umbruchphase</strong><span>Umzug, Jobwechsel, Trennung…</span></div><div class="chk-mark"></div></button>
+        </div>
+        <button class="multi-submit" id="m11sub" disabled onclick="msubmit(11)">Weiter →</button>
+      </div>
+
+      <!-- F12: Ziel-Freitext -->
+      <div class="step" data-s="12">
+        <div class="step-eyebrow">Letzte Frage</div>
+        <h2>Was würde sich in deinem Leben ändern, wenn dein Körper wieder mit dir zusammenarbeitet?</h2>
+        <p class="step-sub">Deine Antwort sieht nur unser Coaching-Team. Sie hilft uns, dich nicht mit Standard-Tipps abzuspeisen.</p>
+        <textarea id="goal" class="textarea-field" placeholder="Kurz in deinen eigenen Worten…" minlength="10" maxlength="500" required></textarea>
+        <p style="font-size:11px;color:var(--text-3);margin-top:8px;text-align:right;"><span id="goalCnt">0</span> / 500</p>
+        <button class="multi-submit" id="goalSub" disabled onclick="goalSubmit()" style="margin-top:18px;">Auswertung starten →</button>
+      </div>
+
+      <!-- Loading -->
+      <div class="step ld" data-s="ld">
+        <div class="spinner"></div>
+        <h2>Dein MSM-Profil wird erstellt</h2>
+        <p>Wir analysieren deine Antworten. Einen Moment…</p>
+        <div class="checks">
+          <div class="chk" id="c1"><i>✓</i>Antworten analysiert</div>
+          <div class="chk" id="c2"><i>✓</i>Score berechnet</div>
+          <div class="chk" id="c3"><i>✓</i>Kritische Dimension erkannt</div>
+          <div class="chk" id="c4"><i>✓</i>Team wird benachrichtigt</div>
+        </div>
+      </div>
+
+      <!-- Exit-Screen unter 35 -->
+      <div class="step exit" data-s="exit">
+        <h2>Der MSM-Test ist für Frauen ab 35.</h2>
+        <p>Für deine Altersgruppe haben wir einen besser passenden Test.<br>Die MSM-Muster entstehen typischerweise ab der Perimenopause.</p>
+        <a href="/stoffwechsel-test/">Zum passenden Test für dich →</a>
+      </div>
+
+    </div>
+  </div>
+
+  <script is:inline>
+    var quizAnswers = {};
+    // Reihenfolge der Fragen (nicht-linear wegen Lead-Gate)
+    var FLOW = ['1','2','3','4','5','6','7','8','9','gate','10','11','12'];
+    var TOTAL = 12;
+    var qHistory = ['1'];
+    var scoreAccum = 0;
+
+    // Sticky CTA
+    (function stickyCta(){
+      var sticky = document.getElementById('stickyCta');
+      if (!sticky) return;
+      window.addEventListener('scroll', function(){
+        var quizOn = document.getElementById('quiz').classList.contains('on');
+        if (quizOn) { sticky.classList.remove('show'); return; }
+        sticky.classList.toggle('show', window.scrollY > 600);
+      }, { passive: true });
+    })();
+
+    // Live-Counter
+    (function liveCounter(){
+      var el = document.getElementById('liveCnt');
+      if (!el) return;
+      setInterval(function(){
+        var n = 6 + Math.floor(Math.random() * 9);
+        el.textContent = n;
+      }, 4500);
+    })();
+
+    // Tracking
+    function tk(e, d) {
+      var tries = 0;
+      function fire() {
+        if (window.__lp) {
+          window.__lp.track(e, Object.assign({ page: 'msm' }, d || {}), 'fot', 'MSM Test');
+          if (e === 'quiz_start') window.__lp.meta('ViewContent', { content_name: 'MSM Test Quiz Start', currency: 'EUR' });
+          if (e === 'quiz_complete') window.__lp.meta('CompleteRegistration', { content_name: 'MSM Test Quiz Complete', currency: 'EUR' });
+          if (e === 'lead_submit') window.__lp.meta('Lead', { content_name: 'MSM Test Lead', currency: 'EUR' });
+        } else if (tries++ < 40) {
+          setTimeout(fire, 50);
+        }
+      }
+      fire();
+    }
+    tk('page_view');
+
+    // Reveal-on-Scroll via IntersectionObserver
+    (function reveal(){
+      if (!('IntersectionObserver' in window)) {
+        document.querySelectorAll('.reveal, .reveal-stagger').forEach(function(el){ el.classList.add('in'); });
+        return;
+      }
+      var io = new IntersectionObserver(function(entries){
+        entries.forEach(function(e){
+          if (e.isIntersecting) {
+            e.target.classList.add('in');
+            io.unobserve(e.target);
+          }
+        });
+      }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+      document.querySelectorAll('.reveal, .reveal-stagger').forEach(function(el){ io.observe(el); });
+    })();
+
+    function startQuiz() {
+      tk('quiz_start');
+      document.getElementById('lp').style.display = 'none';
+      document.getElementById('quiz').classList.add('on');
+      window.scrollTo(0, 0);
+    }
+
+    function stepIndex(key) {
+      return FLOW.indexOf(key);
+    }
+
+    function progressPos(key) {
+      // Visueller Fortschritt: Lead-Gate zählt als Position 9.5
+      if (key === 'gate') return 9.5;
+      if (key === 'ld' || key === 'exit') return 12;
+      var n = parseInt(key, 10);
+      return isNaN(n) ? 0 : n;
+    }
+
+    function setProgress(key) {
+      var pos = progressPos(key);
+      var p = Math.round((pos / TOTAL) * 100);
+      document.getElementById('qf').style.width = p + '%';
+      var bar = document.getElementById('qbar');
+      if (bar) bar.setAttribute('aria-valuenow', p);
+      if (key === 'gate') {
+        document.getElementById('qr').textContent = '—';
+        document.getElementById('qp').textContent = 'Kontakt für Rückruf';
+      } else if (!isNaN(parseInt(key, 10))) {
+        document.getElementById('qr').textContent = key + '/12';
+        document.getElementById('qp').textContent = 'Frage ' + key + ' von 12';
+      }
+      var left = Math.max(10, Math.round((TOTAL - pos) * 14));
+      document.getElementById('qt').textContent = '⏱ ~' + left + ' Sek.';
+      document.getElementById('qback').classList.toggle('hidden', qHistory.length <= 1);
+    }
+
+    function show(key) {
+      document.querySelectorAll('.step').forEach(function(el){ el.classList.remove('on'); });
+      var target = document.querySelector('.step[data-s="' + key + '"]');
+      if (target) target.classList.add('on');
+      setProgress(key);
+    }
+
+    function nxt(s, el, val, pts) {
+      quizAnswers['q' + s] = el ? (el.querySelector('strong') ? el.querySelector('strong').textContent.trim() : el.textContent.trim()) : '';
+      quizAnswers['q' + s + '_val'] = val;
+      quizAnswers['q' + s + '_pts'] = pts || 0;
+
+      // F1 Exit: Unter 35
+      if (s === 1 && val === 'u35') {
+        setTimeout(function(){ show('exit'); }, 200);
+        return;
+      }
+
+      scoreAccum += (pts || 0);
+      tk('quiz_answer', { detail: 'q' + s + '_' + val });
+      if (el) el.classList.add('selected');
+
+      setTimeout(function(){
+        var currentKey = String(s);
+        var idx = stepIndex(currentKey);
+        var next = FLOW[idx + 1];
+        if (!next) { finalize(); return; }
+        qHistory.push(next);
+        show(next);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 180);
+    }
+
+    // Multi-Select-Fragen (F9, F11)
+    function mtoggle(el) {
+      el.classList.toggle('chk-sel');
+      var parent = el.parentElement;
+      var any = parent.querySelectorAll('.chk-sel').length > 0;
+      var subId = parent.id === 'm9' ? 'm9sub' : 'm11sub';
+      document.getElementById(subId).disabled = !any;
+    }
+
+    function msubmit(s) {
+      var parent = document.getElementById('m' + s);
+      var selected = Array.from(parent.querySelectorAll('.chk-sel')).map(function(el){ return el.getAttribute('data-v'); });
+      quizAnswers['q' + s] = selected.join(',');
+      quizAnswers['q' + s + '_val'] = selected;
+
+      if (s === 9) {
+        var pts = selected.length >= 4 ? 12 : selected.length >= 2 ? 7 : 3;
+        // Sonderregel: reines "nichts" → 3 Pkt
+        if (selected.length === 1 && selected[0] === 'nichts') pts = 3;
+        quizAnswers.q9_pts = pts;
+        quizAnswers.glp1_used = selected.indexOf('glp1') !== -1;
+        scoreAccum += pts;
+      }
+
+      tk('quiz_answer', { detail: 'q' + s + '_multi' });
+      setTimeout(function(){
+        var idx = stepIndex(String(s));
+        var next = FLOW[idx + 1];
+        qHistory.push(next);
+        show(next);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 180);
+    }
+
+    // F12: Freitext
+    var goalEl = document.getElementById('goal');
+    var goalCnt = document.getElementById('goalCnt');
+    var goalSub = document.getElementById('goalSub');
+    goalEl.addEventListener('input', function(){
+      var len = goalEl.value.trim().length;
+      goalCnt.textContent = len;
+      goalSub.disabled = len < 10;
+    });
+    function goalSubmit() {
+      var t = goalEl.value.trim();
+      if (t.length < 10) return;
+      quizAnswers.q12 = t;
+      finalize();
+    }
+
+    // Lead-Gate
+    document.getElementById('ds').addEventListener('change', function(){
+      document.getElementById('gbtn').disabled = !this.checked;
+    });
+
+    function gateSubmit() {
+      var fn = document.getElementById('fn').value.trim();
+      var em = document.getElementById('em').value.trim();
+      var ph = document.getElementById('ph').value.trim();
+      if (!fn || !em || !ph) {
+        if (!fn) document.getElementById('fn').parentElement.style.borderColor = 'var(--red)';
+        if (!em) document.getElementById('em').parentElement.style.borderColor = 'var(--red)';
+        if (!ph) document.getElementById('ph').parentElement.style.borderColor = 'var(--red)';
+        return;
+      }
+      quizAnswers.gate_name = fn;
+      quizAnswers.gate_email = em;
+      quizAnswers.gate_phone = '+41' + ph;
+      tk('quiz_lead_gate_submitted', { detail: fn });
+
+      // Weiter zur F10
+      var idx = stepIndex('gate');
+      var next = FLOW[idx + 1];
+      qHistory.push(next);
+      show(next);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function back() {
+      if (qHistory.length <= 1) return;
+      qHistory.pop();
+      var prev = qHistory[qHistory.length - 1];
+      show(prev);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // SCORING: berechne finalen Score + Stufe + kritische Dimension
+    function computeResult() {
+      var MAX = 139;
+      var score = Math.min(100, Math.round((scoreAccum / MAX) * 100));
+
+      var stufe = 1, stufeName = 'Frühwarnung';
+      if (score >= 86) { stufe = 4; stufeName = 'Vollbild-MSM'; }
+      else if (score >= 61) { stufe = 3; stufeName = 'Cascade-Phase'; }
+      else if (score >= 31) { stufe = 2; stufeName = 'Aktive Signalphase'; }
+
+      // Dimensionen: Prozentsatz der erreichten Punkte pro Dimension
+      var dims = {
+        muskel: { pts: quizAnswers.q5_pts || 0, max: 15, label: 'Muskel & Kraft' },
+        gelenk: { pts: quizAnswers.q4_pts || 0, max: 15, label: 'Gelenk & Struktur' },
+        fett: { pts: quizAnswers.q3_pts || 0, max: 15, label: 'Fettverteilung' },
+        schlaf: { pts: quizAnswers.q6_pts || 0, max: 12, label: 'Schlaf & Regeneration' },
+        energie: { pts: quizAnswers.q7_pts || 0, max: 15, label: 'Energie & Stoffwechsel' },
+        stress: { pts: quizAnswers.q8_pts || 0, max: 10, label: 'Stress & Nervensystem' },
+        historie: { pts: quizAnswers.q9_pts || 0, max: 12, label: 'Frustration & Historie' }
+      };
+      var critKey = 'muskel', critPct = 0;
+      Object.keys(dims).forEach(function(k){
+        var pct = Math.round((dims[k].pts / dims[k].max) * 100);
+        dims[k].pct = pct;
+        if (pct > critPct) { critPct = pct; critKey = k; }
+      });
+      return {
+        score: score,
+        stufe: stufe,
+        stufeName: stufeName,
+        critDim: critKey,
+        critDimLabel: dims[critKey].label,
+        critPct: critPct,
+        dims: dims,
+        glp1Used: !!quizAnswers.glp1_used
+      };
+    }
+
+    function finalize() {
+      tk('quiz_complete');
+      show('ld');
+      document.getElementById('qf').style.width = '100%';
+      document.getElementById('qback').classList.add('hidden');
+
+      setTimeout(function(){ document.getElementById('c1').classList.add('show'); }, 500);
+      setTimeout(function(){ document.getElementById('c2').classList.add('show'); }, 1200);
+      setTimeout(function(){ document.getElementById('c3').classList.add('show'); }, 1900);
+      setTimeout(function(){ document.getElementById('c4').classList.add('show'); }, 2600);
+      setTimeout(function(){
+        var result = computeResult();
+        submitLead(result);
+      }, 3400);
+    }
+
+    function submitLead(result) {
+      var payload = {
+        name: quizAnswers.gate_name,
+        email: quizAnswers.gate_email,
+        phone: quizAnswers.gate_phone,
+        lp_slug: 'msm',
+        lp_name: 'MSM-Test',
+        answers: Object.assign({}, quizAnswers, {
+          msm_score: result.score,
+          msm_stufe: result.stufe,
+          msm_stufe_name: result.stufeName,
+          msm_crit_dim: result.critDim,
+          msm_crit_dim_label: result.critDimLabel,
+          msm_crit_pct: result.critPct,
+          msm_glp1: result.glp1Used
+        })
+      };
+
+      fetch('/api/sheets', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      }).then(function(res){
+        if (!res.ok) throw new Error('insert-failed');
+        tk('lead_submit', { detail: quizAnswers.gate_name + ' · Score ' + result.score + ' · Stufe ' + result.stufe });
+        try {
+          sessionStorage.setItem('fot_msm_result', JSON.stringify({
+            name: (quizAnswers.gate_name || '').split(' ')[0],
+            score: result.score,
+            stufe: result.stufe,
+            stufeName: result.stufeName,
+            critDim: result.critDim,
+            critDimLabel: result.critDimLabel,
+            critPct: result.critPct,
+            glp1: result.glp1Used,
+            phone: quizAnswers.gate_phone,
+            ts: Date.now()
+          }));
+        } catch (e) {}
+        window.location.href = '/msm/ergebnis/';
+      }).catch(function(){
+        // Fallback: trotzdem weiterleiten, damit Kundin ihren Score sieht
+        try {
+          sessionStorage.setItem('fot_msm_result', JSON.stringify({
+            name: (quizAnswers.gate_name || '').split(' ')[0],
+            score: result.score,
+            stufe: result.stufe,
+            stufeName: result.stufeName,
+            critDim: result.critDim,
+            critDimLabel: result.critDimLabel,
+            critPct: result.critPct,
+            glp1: result.glp1Used,
+            phone: quizAnswers.gate_phone,
+            ts: Date.now()
+          }));
+        } catch (e) {}
+        window.location.href = '/msm/ergebnis/';
+      });
+    }
+  </script>
+
+  <script is:inline src="https://t.hyros.com/v1/lst/universal-script?ph=689a71ca1ab3be1cb1caddbe6b7902a4ad2c51a228f4ec9ea7fef3123a705f63"></script>
+
+  <CookieBanner
+    metaPixelId="1349136525891811"
+    consentKey="fot_msm_consent"
+    impressumUrl={impressumUrl}
+    datenschutzUrl={datenschutzUrl}
+  />
+</body>
+</html>

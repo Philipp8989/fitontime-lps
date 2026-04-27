@@ -1,0 +1,452 @@
+---
+// MSM-Ergebnis-Seite · zeigt Score-Teaser · CTA "Setter ruft an"
+// Liest Ergebnis aus sessionStorage (vom Quiz gesetzt)
+import CookieBanner from '../../components/CookieBanner.astro';
+const impressumUrl = 'https://fitontime.ch/impressum-datenschutz';
+const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
+---
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="theme-color" content="#1d73d3" />
+  <title>Dein MSM-Profil — Fit on Time</title>
+  <link rel="icon" type="image/png" href="/images/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <style is:global>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #fafaf8;
+      --card: #ffffff;
+      --border: #e8e4da;
+      --accent: #1d73d3;
+      --accent-dark: #155aa8;
+      --accent-soft: #eaf2fc;
+      --green: #16a34a;
+      --amber: #f59e0b;
+      --red: #dc2626;
+      --text: #0f172a;
+      --text-2: #475569;
+      --text-3: #94a3b8;
+      --r: 16px;
+      --font: 'DM Sans', system-ui, -apple-system, sans-serif;
+      --shadow-sm: 0 2px 8px rgba(15,23,42,0.04);
+      --shadow-md: 0 6px 20px rgba(29,115,211,0.14);
+      --shadow-lg: 0 12px 28px rgba(29,115,211,0.22);
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.5; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    .wrap { max-width: 640px; margin: 0 auto; padding: 20px; }
+    .logo { text-align: center; padding: 10px 0 18px; }
+    .logo img { height: 40px; }
+
+    .success-badge { display: inline-flex; align-items: center; gap: 6px; background: var(--green); color: #fff; font-size: 12px; font-weight: 800; padding: 6px 14px; border-radius: 20px; margin: 0 auto 14px; letter-spacing: 0.4px; text-transform: uppercase; }
+
+    .greeting { text-align: center; }
+    .greeting h1 { font-size: 26px; font-weight: 900; line-height: 1.2; letter-spacing: -0.6px; margin-bottom: 8px; }
+    .greeting p { font-size: 14px; color: var(--text-2); }
+
+    /* Score-Card */
+    .score-card { background: linear-gradient(135deg, var(--accent) 0%, #3b92f0 100%); color: #fff; border-radius: 20px; padding: 28px 24px; margin: 20px 0; box-shadow: var(--shadow-lg); text-align: center; }
+    .score-card .label { font-size: 12px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; opacity: 0.85; margin-bottom: 6px; }
+    .score-card .score-num { font-size: 64px; font-weight: 900; line-height: 1; letter-spacing: -2px; }
+    .score-card .score-num em { font-style: normal; font-size: 28px; opacity: 0.75; font-weight: 700; margin-left: 4px; }
+    .score-card .bar { margin: 18px auto 0; max-width: 380px; height: 10px; background: rgba(255,255,255,0.22); border-radius: 5px; overflow: hidden; position: relative; }
+    .score-card .bar-fill { height: 100%; background: #fff; border-radius: 5px; transition: width 1.2s cubic-bezier(0.2, 0.9, 0.3, 1); width: 0; }
+    .score-card .bar-steps { display: flex; justify-content: space-between; max-width: 380px; margin: 8px auto 0; font-size: 10px; font-weight: 700; opacity: 0.7; }
+    .score-card .stufe { margin-top: 18px; background: rgba(255,255,255,0.14); border-radius: 12px; padding: 12px 16px; font-size: 14px; font-weight: 700; }
+    .score-card .stufe b { font-size: 16px; font-weight: 800; }
+
+    /* Dimension-Card */
+    .dim-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 20px; margin: 16px 0; box-shadow: var(--shadow-sm); text-align: center; }
+    .dim-card .dim-label { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.6px; color: var(--text-3); margin-bottom: 6px; }
+    .dim-card h3 { font-size: 22px; font-weight: 900; color: var(--accent); margin-bottom: 8px; letter-spacing: -0.4px; }
+    .dim-card .dim-pct { display: inline-flex; align-items: center; gap: 6px; background: var(--accent-soft); color: var(--accent); font-weight: 800; font-size: 14px; padding: 4px 12px; border-radius: 12px; }
+
+    /* Teaser-Bullets */
+    .teasers { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 22px; margin: 16px 0; box-shadow: var(--shadow-sm); }
+    .teasers h3 { font-size: 16px; font-weight: 800; margin-bottom: 14px; letter-spacing: -0.2px; text-align: center; }
+    .teaser-item { display: flex; gap: 12px; margin-bottom: 16px; }
+    .teaser-item:last-child { margin-bottom: 0; }
+    .teaser-item .t-num { width: 28px; height: 28px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px; flex-shrink: 0; }
+    .teaser-item .t-body strong { display: block; font-size: 14px; font-weight: 800; margin-bottom: 4px; line-height: 1.35; }
+    .teaser-item .t-body p { font-size: 13px; color: var(--text-2); line-height: 1.55; }
+
+    /* Booking-Block (Primary CTA) */
+    .booking { background: linear-gradient(135deg, #fff 0%, #fef3c7 100%); border: 2px solid var(--amber); border-radius: 16px; padding: 24px 22px; margin: 22px 0; text-align: center; box-shadow: var(--shadow-md); }
+    .booking h3 { font-size: 20px; font-weight: 900; margin-bottom: 10px; letter-spacing: -0.3px; }
+    .booking p { font-size: 14px; color: var(--text-2); line-height: 1.6; margin-bottom: 8px; max-width: 480px; margin-left: auto; margin-right: auto; }
+    .booking-value { background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 14px 18px; margin: 14px auto; max-width: 440px; text-align: left; }
+    .booking-value li { list-style: none; padding: 5px 0; font-size: 13px; color: var(--text); font-weight: 500; display: flex; align-items: flex-start; gap: 10px; }
+    .booking-value li::before { content: '✓'; color: var(--green); font-weight: 800; flex-shrink: 0; font-size: 14px; margin-top: 1px; }
+    .ycbm-container { background: #fff; border: 1px solid var(--border); border-radius: 14px; margin: 18px auto 0; min-height: 520px; max-width: 520px; overflow: hidden; box-shadow: var(--shadow-md); }
+    .ycbm-container iframe { width: 100%; min-height: 520px; border: 0; display: block; }
+
+    /* Rückruf-Fallback (klein) */
+    .callback { text-align: center; margin: 12px auto 0; max-width: 460px; }
+    .callback summary { font-size: 12px; color: var(--text-3); cursor: pointer; font-weight: 600; padding: 8px; border-radius: 8px; display: inline-block; list-style: none; }
+    .callback summary::-webkit-details-marker { display: none; }
+    .callback summary:hover { color: var(--text-2); }
+    .callback[open] summary { color: var(--text-2); }
+    .callback-body { font-size: 12px; color: var(--text-3); padding: 12px 16px; margin-top: 6px; line-height: 1.55; background: var(--card); border: 1px solid var(--border); border-radius: 10px; }
+
+    /* Video-Teaser */
+    .video-teaser { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 18px; margin: 16px 0; box-shadow: var(--shadow-sm); }
+    .video-teaser h4 { font-size: 14px; font-weight: 800; margin-bottom: 12px; text-align: center; letter-spacing: -0.2px; }
+    .video-thumb { position: relative; aspect-ratio: 16 / 9; background: linear-gradient(135deg, #1e293b 0%, #334155 100%); border-radius: 12px; overflow: hidden; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; }
+    .video-thumb:hover { transform: scale(1.01); }
+    .video-thumb .play { width: 64px; height: 64px; border-radius: 50%; background: #fff; display: flex; align-items: center; justify-content: center; font-size: 24px; color: var(--accent); box-shadow: var(--shadow-lg); }
+    .video-thumb .play::before { content: '▶'; margin-left: 4px; }
+    .video-thumb .v-caption { position: absolute; bottom: 14px; left: 14px; right: 14px; color: #fff; font-weight: 700; font-size: 13px; text-align: left; }
+
+    /* Trust-Zeile */
+    .trust { text-align: center; margin: 28px 0 10px; font-size: 12px; color: var(--text-3); line-height: 1.7; }
+    .trust b { color: var(--text-2); }
+
+    footer { text-align: center; padding: 20px 20px 40px; font-size: 11px; color: var(--text-3); }
+    footer a { color: var(--text-3); text-decoration: none; }
+
+    @media (min-width: 600px) {
+      .greeting h1 { font-size: 32px; }
+      .score-card .score-num { font-size: 76px; }
+      .score-card .score-num em { font-size: 32px; }
+    }
+
+    /* Empty-State (kein Ergebnis im sessionStorage) */
+    .empty { text-align: center; padding: 40px 20px; }
+    .empty h2 { font-size: 22px; margin-bottom: 12px; }
+    .empty p { font-size: 14px; color: var(--text-2); margin-bottom: 20px; line-height: 1.6; }
+    .empty a { display: inline-block; background: var(--accent); color: #fff; text-decoration: none; padding: 14px 24px; border-radius: 12px; font-weight: 700; font-size: 15px; }
+
+    /* Animation */
+    .fade-in { animation: fadeIn 0.6s ease-out both; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+    }
+
+    /* ===== WOW-FX für Score-Reveal ===== */
+    .success-badge { animation: badge-pop 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s both; }
+    @keyframes badge-pop { 0% { transform: scale(0.4); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+
+    .score-card { position: relative; overflow: hidden; }
+    .score-card::before {
+      content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+      background: radial-gradient(circle at center, rgba(255,255,255,0.18) 0%, transparent 50%);
+      animation: bg-pulse 4s ease-in-out infinite; pointer-events: none;
+    }
+    @keyframes bg-pulse { 0%, 100% { opacity: 0.5; transform: scale(1); } 50% { opacity: 1; transform: scale(1.1); } }
+    .score-card .score-num { display: inline-block; animation: number-glow 2.5s ease-in-out infinite; text-shadow: 0 0 0 rgba(255,255,255,0); }
+    @keyframes number-glow { 0%, 100% { text-shadow: 0 0 0 rgba(255,255,255,0); } 50% { text-shadow: 0 0 28px rgba(255,255,255,0.4); } }
+    .score-card .stufe { animation: fadeIn 0.6s ease-out 0.9s both; }
+
+    /* Konfetti-Layer (CSS-only, kommt nur 1x beim Score-Reveal) */
+    #confetti { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; pointer-events: none; z-index: 200; overflow: hidden; }
+    #confetti.fire .conf { animation: conf-fall var(--d, 2.4s) cubic-bezier(0.4, 0.05, 0.3, 1) forwards; opacity: 0; }
+    .conf {
+      position: absolute; top: 32%; left: 50%; width: 9px; height: 14px; border-radius: 2px;
+      background: var(--c, var(--accent)); transform-origin: center;
+    }
+    @keyframes conf-fall {
+      0% { opacity: 1; transform: translate(0, 0) rotate(0deg) scale(1); }
+      90% { opacity: 1; }
+      100% { opacity: 0; transform: translate(var(--x, 100px), 90vh) rotate(var(--r, 720deg)) scale(0.7); }
+    }
+
+    /* Dimension-Card — Hover-Lift */
+    .dim-card { transition: transform 0.25s, box-shadow 0.25s; }
+    .dim-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+    .dim-pct { transition: transform 0.3s; }
+    .dim-card:hover .dim-pct { transform: scale(1.05); }
+
+    /* Teaser-Items — Stagger Fade */
+    .teaser-item { opacity: 0; transform: translateX(-12px); animation: teaser-in 0.5s cubic-bezier(0.2, 0.9, 0.3, 1) forwards; }
+    .teaser-item:nth-child(1) { animation-delay: 0.55s; }
+    .teaser-item:nth-child(2) { animation-delay: 0.7s; }
+    .teaser-item:nth-child(3) { animation-delay: 0.85s; }
+    @keyframes teaser-in { to { opacity: 1; transform: translateX(0); } }
+
+    /* Booking-Block — Pulse-Glow + bouncing CTA-arrow */
+    .booking { position: relative; }
+    .booking::after {
+      content: ''; position: absolute; inset: -2px; border-radius: 18px; pointer-events: none;
+      background: linear-gradient(135deg, var(--amber), #fbbf24, var(--amber));
+      opacity: 0; animation: booking-glow 3.5s ease-in-out infinite; z-index: -1;
+    }
+    @keyframes booking-glow { 0%, 100% { opacity: 0.15; } 50% { opacity: 0.4; } }
+    .booking h3 { animation: subtle-bounce 2.6s ease-in-out infinite; transform-origin: center bottom; }
+    @keyframes subtle-bounce { 0%, 90%, 100% { transform: translateY(0); } 95% { transform: translateY(-3px); } }
+    .booking-value li { transition: transform 0.18s; }
+    .booking-value li:hover { transform: translateX(4px); }
+
+    /* Video-Thumb Polish */
+    .video-thumb .play { transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+    .video-thumb:hover .play { transform: scale(1.1); }
+    .video-thumb::after {
+      content: ''; position: absolute; top: 50%; left: 50%; width: 64px; height: 64px;
+      border-radius: 50%; border: 2px solid rgba(255,255,255,0.5);
+      transform: translate(-50%, -50%); animation: video-pulse 2.4s ease-in-out infinite; pointer-events: none;
+    }
+    @keyframes video-pulse { 0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; } 50% { transform: translate(-50%, -50%) scale(1.4); opacity: 0; } }
+
+    /* CTA Shine auf der Booking-Section */
+    .booking iframe { transition: opacity 0.3s; }
+  </style>
+</head>
+<body>
+  <!-- Konfetti-Layer für Score-Reveal (CSS-only, wird via JS gefüllt + getriggert) -->
+  <div id="confetti" aria-hidden="true"></div>
+  <div class="wrap">
+    <div class="logo"><img src="/images/logo.png" alt="Fit on Time" /></div>
+
+    <!-- Hauptinhalt: sichtbar nur wenn Ergebnis vorhanden -->
+    <div id="result-view" style="display:none;">
+      <div class="greeting fade-in">
+        <div class="success-badge">✓ Profil ausgewertet</div>
+        <h1 id="greet-name">Dein MSM-Profil ist fertig</h1>
+        <p>Hier sind die ersten drei Dinge. Den Rest besprechen wir gleich persönlich mit dir am Telefon.</p>
+      </div>
+
+      <!-- Score -->
+      <div class="score-card fade-in" style="animation-delay:0.1s;">
+        <div class="label">MSM-Score</div>
+        <div class="score-num"><span id="score-num">0</span><em>/100</em></div>
+        <div class="bar"><div class="bar-fill" id="bar-fill"></div></div>
+        <div class="bar-steps"><span>1</span><span>2</span><span>3</span><span>4</span></div>
+        <div class="stufe">Stufe <b id="stufe-n">—</b> von 4 · <span id="stufe-name">—</span></div>
+      </div>
+
+      <!-- Kritische Dimension -->
+      <div class="dim-card fade-in" style="animation-delay:0.25s;">
+        <div class="dim-label">Deine kritischste Dimension</div>
+        <h3 id="crit-label">—</h3>
+        <div class="dim-pct"><span id="crit-pct">—</span>% deiner Signale kommen aus diesem Bereich</div>
+      </div>
+
+      <!-- Teaser -->
+      <div class="teasers fade-in" style="animation-delay:0.4s;">
+        <h3>Drei Dinge, die du jetzt wissen musst</h3>
+        <div id="teaser-list"></div>
+      </div>
+
+      <!-- Video (60 Sek Fabian) -->
+      <div class="video-teaser fade-in" style="animation-delay:0.5s;">
+        <h4>Was dich im Gespräch erwartet (60 Sek.)</h4>
+        <div class="video-thumb" onclick="showVideoInfo()">
+          <div class="play"></div>
+          <div class="v-caption">Und was du vorher NICHT tun solltest.</div>
+        </div>
+      </div>
+
+      <!-- BOOKING — Primary CTA -->
+      <div class="booking fade-in" style="animation-delay:0.6s;">
+        <h3>Buch dir jetzt deinen Termin</h3>
+        <p>45-Minuten-Gespräch. Kostenlos. Unverbindlich.</p>
+        <ul class="booking-value">
+          <li>Einordnung deiner Stufe — was sie konkret bedeutet, und was nicht.</li>
+          <li>Welche der fünf Dimensionen bei DIR zuerst angepackt werden muss.</li>
+          <li>Die ersten drei konkreten Schritte — zum Mitnehmen, egal wie's weitergeht.</li>
+          <li>Ehrliche Einschätzung: allein oder mit Begleitung?</li>
+        </ul>
+        <div class="ycbm-container" id="ycbm-container">
+          <!-- YCBM-Embed kommt hier rein sobald URL feststeht.
+               Pre-fill-Parameter werden per JS angehängt (siehe unten). -->
+          <div style="padding:40px 20px;text-align:center;color:var(--text-3);font-size:13px;">
+            Kalender lädt…
+          </div>
+        </div>
+      </div>
+
+      <!-- Rückruf-Fallback (klein, opt-in) -->
+      <details class="callback fade-in" style="animation-delay:0.75s;">
+        <summary>Lieber zurückgerufen werden statt festen Termin buchen?</summary>
+        <div class="callback-body">
+          Kein Problem — jemand aus unserem Team meldet sich in den nächsten Tagen telefonisch bei dir. Wir können dir aber nicht garantieren, wann das genau klappt. <b>Unsere Empfehlung: Buch dir oben einen Slot — dann ist dein Platz sicher.</b>
+        </div>
+      </details>
+
+      <div class="trust" style="margin-top:28px;">
+        Über <b>4.000 Schweizer Frauen</b> begleitet seit 2016.<br>
+        Keine Versprechen. Keine Wunder. Nur ein System, das funktioniert.
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div id="empty-view" class="empty" style="display:none;">
+      <h2>Kein Ergebnis gefunden</h2>
+      <p>Es sieht so aus als wäre dein MSM-Profil nicht übertragen worden.<br>Bitte starte den Test erneut.</p>
+      <a href="/msm/">Zum MSM-Test →</a>
+    </div>
+
+    <footer>
+      <a href={impressumUrl} target="_blank" rel="noopener">Impressum</a> ·
+      <a href={datenschutzUrl} target="_blank" rel="noopener">Datenschutzerklärung</a>
+    </footer>
+  </div>
+
+  <script is:inline>
+    // Lese Ergebnis aus sessionStorage
+    var raw = null;
+    try { raw = sessionStorage.getItem('fot_msm_result'); } catch (e) {}
+    var result = null;
+    try { result = raw ? JSON.parse(raw) : null; } catch (e) {}
+
+    if (!result || typeof result.score !== 'number') {
+      document.getElementById('empty-view').style.display = 'block';
+    } else {
+      document.getElementById('result-view').style.display = 'block';
+      renderResult(result);
+    }
+
+    function renderResult(r) {
+      var name = r.name || 'Deine';
+      document.getElementById('greet-name').textContent = name + ', dein MSM-Profil ist fertig';
+
+      // Score animiert hochzählen
+      var numEl = document.getElementById('score-num');
+      var target = r.score;
+      var start = Date.now(); var dur = 1100;
+      function tick() {
+        var p = Math.min(1, (Date.now() - start) / dur);
+        var eased = 1 - Math.pow(1 - p, 3);
+        numEl.textContent = Math.round(eased * target);
+        if (p < 1) requestAnimationFrame(tick);
+      }
+      setTimeout(tick, 300);
+
+      // Bar-Fill
+      setTimeout(function(){
+        document.getElementById('bar-fill').style.width = r.score + '%';
+      }, 500);
+
+      // Konfetti-Burst (1x, sobald Score sichtbar wird)
+      setTimeout(function(){ fireConfetti(); }, 850);
+
+      // Stufe
+      document.getElementById('stufe-n').textContent = r.stufe;
+      document.getElementById('stufe-name').textContent = r.stufeName;
+
+      // Dimension
+      document.getElementById('crit-label').textContent = r.critDimLabel;
+      document.getElementById('crit-pct').textContent = r.critPct;
+
+      // YCBM-Pre-fill: Name, Email, Telefon + Score/Stufe als Query-Params
+      setupYCBM(r);
+
+      // Teaser — stufenspezifisch
+      var teasers = buildTeasers(r);
+      var list = document.getElementById('teaser-list');
+      list.innerHTML = teasers.map(function(t, i){
+        return '<div class="teaser-item"><div class="t-num">' + (i+1) + '</div><div class="t-body"><strong>' + t.title + '</strong><p>' + t.body + '</p></div></div>';
+      }).join('');
+
+      // Tracking
+      if (window.__lp) {
+        window.__lp.track('thankyou_view', { score: r.score, stufe: r.stufe, crit: r.critDim }, 'fot', 'MSM Result');
+      }
+    }
+
+    function buildTeasers(r) {
+      var out = [];
+
+      // 1. Stufen-spezifisches Framing
+      if (r.stufe === 1) {
+        out.push({ title: 'Du bist früh dran — Gold wert.', body: 'Stufe 1 heisst: Deine Signale sind noch leise. Das ist der Zeitpunkt, an dem die wenigsten handeln — und an dem man am meisten gewinnt.' });
+      } else if (r.stufe === 2) {
+        out.push({ title: 'Dein Körper sendet schon mehrere Signale.', body: 'In Stufe 2 reichen einzelne Stellschrauben nicht mehr. Dein Muster ist noch gut umkehrbar — aber nur mit dem richtigen Ansatz in der richtigen Reihenfolge.' });
+      } else if (r.stufe === 3) {
+        out.push({ title: 'Du bist mittendrin — nicht im roten Bereich.', body: 'In Stufe 3 hat der Körper bereits auf mehreren Ebenen reagiert. Das ist der letzte Zeitpunkt, um ohne Medikamente deutliche Fortschritte zu machen.' });
+      } else {
+        out.push({ title: 'Jede Woche zählt jetzt.', body: 'Stufe 4 bedeutet: Das Muster ist aktiv auf allen fünf Dimensionen. Mit einem klaren Fahrplan ist es noch lange nicht zu spät — aber die Zeit für DIY-Experimente ist vorbei.' });
+      }
+
+      // 2. Dimension treibt die anderen
+      out.push({
+        title: 'Eine Dimension fällt besonders auf — bei dir: ' + r.critDimLabel + '.',
+        body: 'Was das bei DIR konkret bedeuten könnte und welche ersten Schritte sinnvoll wären, besprechen wir am Telefon. Eine automatische Auswertung kann das nicht leisten — ein persönliches Gespräch schon.'
+      });
+
+      // 3. Was NICHT tun
+      out.push({
+        title: 'Was du in den nächsten Tagen lieber NICHT tun solltest:',
+        body: 'Keine neue Diät starten. Kein neues Trainingsprogramm im Alleingang. Keine Supplements kaufen. Nichts verschärfen — erst Klarheit, dann Umsetzung. Sonst arbeitest du gegen dich.'
+      });
+
+      // GLP-1 Special-Bullet
+      if (r.glp1) {
+        out[1] = {
+          title: 'Wichtig: Du hast GLP-1 Medikamente erwähnt.',
+          body: 'Das verändert die Ausgangslage — besonders beim Thema Muskel und Kraft. Beim Rückruf besprechen wir, was das für deinen Alltag heisst. Medizinische Fragen zu deinem Medikament klärst du bitte mit deiner Ärztin.'
+        };
+      }
+
+      return out;
+    }
+
+    // YCBM-Setup: lädt offizielles ycb.me Embed-Script mit Pre-fill via data-attributes
+    var YCBM_DOMAIN = 'fitontime-msm-analyse';
+    function setupYCBM(r) {
+      var container = document.getElementById('ycbm-container');
+      if (!container) return;
+      var script = document.createElement('script');
+      script.src = 'https://embed.ycb.me';
+      script.async = true;
+      script.setAttribute('data-domain', YCBM_DOMAIN);
+      script.setAttribute('data-displaymode', 'auto');
+      // Pre-fill der Custom-Felder im YCBM-Buchungsformular
+      // Voraussetzung: in YCBM die exakt gleichen Field-IDs anlegen (FIRSTNAME, PHONE, SCORE, STUFE, DIMENSION).
+      script.setAttribute('data-firstname', r.name || '');
+      script.setAttribute('data-phone', r.phone || '');
+      script.setAttribute('data-score', String(r.score || ''));
+      script.setAttribute('data-stufe', String(r.stufe || ''));
+      script.setAttribute('data-dimension', r.critDimLabel || '');
+      container.innerHTML = '';
+      container.appendChild(script);
+      if (window.__lp) window.__lp.track('booking_embed_loaded', { score: r.score }, 'fot', 'MSM Result');
+    }
+
+    function showVideoInfo() {
+      alert('Die Kurz-Nachricht wird gerade produziert. In der Zwischenzeit: Buch dir oben direkt einen Termin.');
+    }
+
+    // Konfetti-Burst — CSS-only Particles, generiert dynamisch
+    function fireConfetti() {
+      if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      var layer = document.getElementById('confetti');
+      if (!layer || layer.classList.contains('fired')) return;
+      var colors = ['#1d73d3', '#3b92f0', '#16a34a', '#f59e0b', '#fbbf24', '#ec4899', '#a855f7'];
+      var n = 56;
+      var frag = document.createDocumentFragment();
+      for (var i = 0; i < n; i++) {
+        var c = document.createElement('div');
+        c.className = 'conf';
+        var dx = (Math.random() - 0.5) * window.innerWidth * 1.2;
+        var dur = 1.8 + Math.random() * 1.6;
+        var rot = (Math.random() * 1080 - 360) | 0;
+        var col = colors[(Math.random() * colors.length) | 0];
+        c.style.cssText = '--x:' + dx + 'px;--d:' + dur + 's;--r:' + rot + 'deg;--c:' + col + ';left:' + (40 + Math.random() * 20) + '%;top:' + (28 + Math.random() * 8) + '%;animation-delay:' + (Math.random() * 0.18) + 's;width:' + (6 + Math.random() * 6) + 'px;height:' + (10 + Math.random() * 8) + 'px;';
+        frag.appendChild(c);
+      }
+      layer.appendChild(frag);
+      // Trigger animation in next frame
+      requestAnimationFrame(function(){ layer.classList.add('fire'); layer.classList.add('fired'); });
+      // Cleanup
+      setTimeout(function(){ if (layer && layer.parentNode) layer.innerHTML = ''; }, 4500);
+    }
+  </script>
+
+  <script is:inline src="https://t.hyros.com/v1/lst/universal-script?ph=689a71ca1ab3be1cb1caddbe6b7902a4ad2c51a228f4ec9ea7fef3123a705f63"></script>
+
+  <CookieBanner
+    metaPixelId="1349136525891811"
+    consentKey="fot_msm_consent"
+    impressumUrl={impressumUrl}
+    datenschutzUrl={datenschutzUrl}
+  />
+</body>
+</html>
