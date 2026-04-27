@@ -116,11 +116,14 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
 
       .meta-line { display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; color: var(--text-2); font-size: 15px; margin: 8px 0 22px; }
 
-      .hook-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 20px auto 24px; max-width: 640px; }
-      .hook-card { border-radius: var(--r); overflow: hidden; cursor: pointer; transition: transform .15s, box-shadow .15s; background: var(--surface); display: flex; flex-direction: column; -webkit-tap-highlight-color: transparent; border: 0; padding: 0; font: inherit; }
-      .hook-card:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(0, 0, 0, .08); }
-      .hook-card .hook-emoji { aspect-ratio: 1 / 1; display: flex; align-items: center; justify-content: center; font-size: 80px; background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); }
-      .hook-card .hook-label { background: var(--accent); color: #fff; font-weight: 700; padding: 14px; text-align: center; font-size: 16px; }
+      .hook-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 24px auto 28px; max-width: 640px; }
+      .hook-card { border-radius: 18px; overflow: hidden; cursor: pointer; transition: transform .2s ease, box-shadow .2s ease; background: var(--surface); display: flex; flex-direction: column; -webkit-tap-highlight-color: transparent; border: 0; padding: 0; font: inherit; box-shadow: 0 2px 8px rgba(15, 23, 42, .06); }
+      .hook-card:hover { transform: translateY(-4px); box-shadow: 0 16px 36px rgba(15, 23, 42, .12); }
+      .hook-card:active { transform: translateY(-1px) scale(.99); }
+      .hook-card .hook-emoji { aspect-ratio: 1 / 1; display: flex; align-items: center; justify-content: center; font-size: 110px; background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 60%, #2563eb 100%); position: relative; }
+      .hook-card .hook-emoji::after { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, .25) 0%, transparent 60%); pointer-events: none; }
+      .hook-card:nth-child(2) .hook-emoji { background: linear-gradient(135deg, #94a3b8 0%, #64748b 60%, #475569 100%); }
+      .hook-card .hook-label { background: #fff; color: var(--text); font-weight: 700; padding: 18px 14px; text-align: center; font-size: 17px; letter-spacing: -.2px; }
 
       .scroll-arrow { color: var(--accent); text-align: center; font-size: 28px; line-height: 1; margin: 8px 0 32px; }
 
