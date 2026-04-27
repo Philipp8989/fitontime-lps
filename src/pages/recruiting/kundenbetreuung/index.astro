@@ -1,0 +1,110 @@
+---
+// Recruiting-Funnel: Coach im Bereich Ernährung und Bewegung oder Mindset (m/w/d)
+// 1:1-Replik von https://www.fit-on-time.ch/kundenbetreuung/
+import RecruitingFunnel from '../../../layouts/RecruitingFunnel.astro';
+
+// extraSection: "Wir sind Fit on Time" + "Deine Aufgaben" + "Über dich" — auf der Job-Page
+const extraSection = [
+  {
+    title: 'Wir sind Fit on Time! Das bieten wir dir:',
+    items: [
+      '🦺 Sicherer Arbeitsplatz: Wir planen immer langfristig und bieten dir einen sicheren Arbeitsplatz, auch in Kriesenzeiten oder im "Sommerloch". 😉',
+      '💸 Attraktives Gehaltspaket: Wir bieten überdurchschnittliche Fixgehälter und vergüten zusätzlich einen attraktiven leistungsorientierten Provisionsanteil.',
+      '🎓 Bezahlte Weiterbildung: Wir fördern, fordern und bilden unsere Mitarbeiter konstant weiter, um sicherzustellen, dass du stets auf dem neuesten Stand bist und neben deinen privaten Zielen auch deine beruflichen Ziele erreichst.',
+      '😀 Tolle Arbeitsatmosphäre: Der Umgang untereinander ist sehr kollegial und familiär. Wir ziehen alle am gleichen Strang und motivieren uns gegenseitig, Bestleistungen zu erzielen und persönlich zu wachsen.',
+    ],
+  },
+  {
+    title: 'Deine Aufgaben bei Fit on Time',
+    items: [
+      '🤝 Ganzheitliche Betreuung unserer Kundinnen in den Bereichen Ernährung, Bewegung und Mindset',
+      '📚 Systematische Kundenbindung & Account Management, du begleitest aktiv durch den Coaching-Prozess',
+      '🌱 Mitarbeit an Verkaufsstrategien & enge Zusammenarbeit mit unserem Sales- & Marketingteam',
+      '😍 Verantwortung für Bestandskundenpflege & Ergebnisüberwachung',
+      '🔧 Individuelle Coachings & Konzeptanpassungen, abgestimmt auf den Kundenfortschritt',
+      '💪 Strukturierte Arbeit mit CRM-Systemen, Feedbackschleifen & Betreuungskonzepten',
+    ],
+  },
+  {
+    title: 'Über dich — Das bringst du mit',
+    items: [
+      'Du hast mind. 2 Jahre Coaching-Erfahrung, idealerweise in den Bereichen Ernährung, Fitness oder Mentaltraining',
+      'Du hast ein gutes Gespür für Menschen und bleibst stets ziel- und lösungsorientiert',
+      'Du denkst strukturiert, kommunizierst klar und verfolgst Kundenbeziehungen aktiv',
+      'Du bist ein Teamplayer, offen, lernwillig und bereit, dich im Vertrieb & Account Management stetig weiterzuentwickeln',
+      'Du willst echte Transformation begleiten, nicht nur „Tipps geben", sondern echte Veränderung bewirken',
+    ],
+  },
+];
+
+const steps = [
+  // Step 0: Job + Quiz Q1 (binary Ja/Nein direkt auf Page) + Vorteile + Aufgaben
+  {
+    kind: 'job',
+    jobTitle: 'Bist du ein engagierter: Coach im Bereich Ernährung und Bewegung oder Mindset (m/w/d)?',
+    jobIntro: 'Du sollst unser Team im Coaching unterstützten und gleichzeitig ein Flair für den Verkauf mitbringen.',
+    jobMeta: [
+      { icon: '📍', text: 'Frauenfeld' },
+      { icon: '🕐', text: 'Vollzeit' },
+    ],
+    jobHook: {
+      title: 'Hast du Erfahrung in der Betreuung von Menschen in den Bereichen Training, Ernährung, Gesundheit oder Mindset und fühlst dich auch in der Kundenbindung wohl?',
+      primary: { label: 'Ja', emoji: '👍' },
+      secondary: { label: 'Nein', emoji: '👎' },
+    },
+    jobCta: 'Jetzt in nur 60 Sekunden bei uns bewerben ✨',
+  },
+  // Step 1: Quiz Q2 (Multi - Eigenschaften)
+  {
+    kind: 'quiz',
+    quiz: {
+      id: 'q2',
+      type: 'multi',
+      title: 'Welche Eigenschaften bringst du mit?',
+      subtitle: '(Mehrfach Auswahl möglich)',
+      cta: "Weiter geht's! Zur nächsten Frage",
+      options: [
+        { value: 'erfahrung_2j', label: 'Du hast mind. 2 Jahre Coaching-Erfahrung, idealerweise in den Bereichen Ernährung, Fitness oder Mentaltraining', emoji: '👁️' },
+        { value: 'gespuer', label: 'Du hast ein gutes Gespür für Menschen und bleibst stets ziel- und lösungsorientiert', emoji: '📚' },
+        { value: 'strukturiert', label: 'Du denkst strukturiert, kommunizierst klar und verfolgst Kundenbeziehungen aktiv', emoji: '🚘' },
+        { value: 'teamplayer_offen', label: 'Du bist ein Teamplayer, offen, lernwillig und bereit, dich im Vertrieb & Account Management stetig weiterzuentwickeln', emoji: '💡' },
+        { value: 'transformation', label: 'Du willst echte Transformation begleiten, nicht nur „Tipps geben", sondern echte Veränderung bewirken', emoji: '👯‍♂️' },
+        { value: 'lernen', label: 'Du bist ein Teamplayer und freust dich von deinen Kollegen zu lernen!.', emoji: '🔍' },
+      ],
+    },
+  },
+  // Step 2: Quiz Q3 (Multi - Erreichbarkeit)
+  {
+    kind: 'quiz',
+    quiz: {
+      id: 'q3',
+      type: 'multi',
+      title: 'Wie bist du erreichbar?',
+      subtitle: '(Mehrfachauswahl möglich)',
+      cta: 'Weiter 🚀 zum Abschluss',
+      options: [
+        { value: 'jederzeit', label: 'Jederzeit', emoji: '🔆' },
+        { value: 'vormittag', label: 'Vormittags von 8-12 Uhr', emoji: '🕛' },
+        { value: 'nachmittag', label: 'Nachmittags von 12-18 Uhr', emoji: '🕕' },
+        { value: 'abends', label: 'Abends ab 18 Uhr', emoji: '🌙' },
+      ],
+    },
+  },
+  // Step 3: Form
+  {
+    kind: 'form',
+    formTitle: 'Super, du hast beste Voraussetzungen für eine Ausbildung bei uns! 🎉',
+    formSubtitle: 'Damit wir uns bei dir melden können, lass uns bitte wissen, wie wir dich am besten erreichen!',
+    formCta: 'Jetzt deine Bewerbung absenden! 📧',
+  },
+  // Step 4: Danke
+  { kind: 'thanks' },
+];
+---
+<RecruitingFunnel
+  slug="recruiting-kundenbetreuung"
+  funnelName="Coach Ernährung/Bewegung/Mindset"
+  pageTitle="Bist du ein engagierter Coach im Bereich Ernährung und Gesundheit oder Mindset (m/w/d)?"
+  steps={steps}
+  extraSection={extraSection}
+/>

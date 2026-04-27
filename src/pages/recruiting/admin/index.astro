@@ -1,0 +1,162 @@
+---
+// Recruiting-Funnel: Sachbearbeiter/-in Administration (m/w/d)
+// 1:1-Replik von https://www.fit-on-time.ch/admin/
+import RecruitingFunnel from '../../../layouts/RecruitingFunnel.astro';
+
+const steps = [
+  // Step 0: Job + Hook + Sections + Leidenschaft + CTA
+  {
+    kind: 'job',
+    jobTitle: 'Sachbearbeiter/-in Administration (m/w/d)',
+    jobMeta: [
+      { icon: '📍', text: 'Frauenfeld' },
+      { icon: '🕑', text: 'ab sofort 60 - 80%' },
+      { icon: '💻', text: '1 Tag remote möglich' },
+    ],
+    jobHook: {
+      title: 'Hast du Lust herauszufinden ob du zu uns passt?',
+      primary: { label: 'Ja, absolut!', emoji: '🚀' },
+      secondary: { label: 'Mehr erfahren.', emoji: '🔍' },
+    },
+    jobSections: [
+      {
+        emoji: '✨',
+        heading: 'Debitoren:',
+        lines: [
+          '1. Überwachung der offenen Forderungen und Mahnwesen.',
+          '2. Erstellung und Versand von Rechnungen an Kunden.',
+          '3. Pflege der Debitorenkonten im Buchhaltungssystem.',
+          '4. Unterstützung bei der Klärung von Zahlungsdifferenzen und Beschwerden.',
+        ],
+      },
+      {
+        emoji: '💬',
+        heading: 'Kreditoren:',
+        lines: [
+          '1. Prüfung und Freigabe von Eingangsrechnungen.',
+          '2. Pflege der Kreditorenkonten und Durchführung von Zahlungen.',
+          '3. Abstimmung der Kreditorenkonten mit Lieferanten.',
+          '4. Erfassung und Dokumentation von Abweichungen oder Reklamationen.',
+        ],
+      },
+      {
+        emoji: '🚀',
+        heading: 'Personalwesen:',
+        lines: [
+          '1. Unterstützung bei der Rekrutierung und Einarbeitung neuer Mitarbeiter.',
+          '2. Verwaltung von Personalakten und Aktualisierung von Mitarbeiterdaten.',
+          '3. Erstellung von Arbeitsverträgen und Zeugnissen.',
+          '4. Unterstützung bei der Planung und Durchführung von Schulungen.',
+        ],
+      },
+      {
+        emoji: '👩‍💻',
+        heading: 'Löhne:',
+        lines: [
+          '1. Durchführung der Lohn- und Gehaltsabrechnung.',
+          '2. Bearbeitung von Urlaubs- und Krankmeldungen zur Lohnanpassung.',
+          '3. Erstellung von Lohnabrechnungen und Jahresmeldungen.',
+          '4. Überwachung von gesetzlichen Anforderungen im Bereich Lohn.',
+        ],
+      },
+      {
+        emoji: '💛',
+        heading: 'Organisation:',
+        lines: [
+          '1. Koordination interner Veranstaltungen und Meetings.',
+          '2. Erstellung und Pflege von organisatorischen Prozessen und Dokumenten.',
+          '3. Unterstützung bei der Planung und Umsetzung von Projekten.',
+          '4. Kommunikation mit verschiedenen Abteilungen zur Optimierung von Abläufen',
+        ],
+      },
+    ],
+    jobLeidenschaftTitle: 'Unsere Leidenschaft 🔥',
+    jobLeidenschaftBody:
+      'Bei uns steht der Erfolg unserer Kundinnen und Kunden im Mittelpunkt, wir versuchen für jeden das perfekte Ergebnis und Erlebnis zu generieren und ihnen das Gefühl zu geben, immer gut betreut zu sein.\nWir identifizieren uns mit unseren Kunden und wollen in einem sich ständig weiterentwickelnden Unternehmen wachsen.',
+    jobCta: 'Jetzt in nur 60 Sekunden bei uns bewerben ✨',
+  },
+  // Step 1: Vorteile
+  {
+    kind: 'benefits',
+    benefitsTitle: 'Deine Vorteile bei Fit on Time 👋',
+    benefitsList: [
+      { emoji: '⭐', text: 'Abwechslungsreiches und verantwortungsvolles Aufgabengebiet in einem motivierten Team' },
+      { emoji: '💪', text: 'Kollegiales und familiäres Arbeitsklima.' },
+      { emoji: '🚀', text: 'Attraktive Anstellungsbedingungen sowie ein Arbeitsort mit viel Lebensqualität' },
+      { emoji: '🧠', text: 'Innovativer Betrieb mit viel Offenheit für den eigenen Wirkungsgrad' },
+      { emoji: '🔼', text: 'Attraktive Schulungs- und Weiterbildungsmöglichkeiten' },
+    ],
+    benefitsCta: 'Lass uns schauen, ob wir zueinander passen 🙌',
+  },
+  // Step 2: Quiz Q1 (Single)
+  {
+    kind: 'quiz',
+    quiz: {
+      id: 'q1',
+      type: 'single',
+      title: 'Was ist dir bei deinem Job am wichtigsten?',
+      subtitle: '(wir bieten alles 🚀)',
+      cta: 'Weiter',
+      options: [
+        { value: 'gehalt', label: 'Gutes Gehalt', emoji: '🛡️' },
+        { value: 'bewegen', label: 'Etwas bewegen', emoji: '🚀' },
+        { value: 'sicherheit', label: 'Sicherer Arbeitsplatz', emoji: '✈️' },
+        { value: 'team', label: 'Angenehmes Team', emoji: '👥' },
+      ],
+      bottomNote: 'Du entscheidest: 80% oder 100% — einen Tag von Daheim oder doch in unserem tollen neuen Büro?',
+    },
+  },
+  // Step 3: Quiz Q2 (Multi)
+  {
+    kind: 'quiz',
+    quiz: {
+      id: 'q2',
+      type: 'multi',
+      title: 'Erzähl uns was von dir, was bringst du mit?',
+      subtitle: '(Mehrfachauswahl möglich)',
+      cta: 'Absenden',
+      options: [
+        { value: 'einstellung', label: 'Eine „nichts ist unmöglich Einstellung"' },
+        { value: 'kundenorientiert', label: 'Kundenorientiertes Denken' },
+        { value: 'erfahrung_kaufm', label: 'Mehrere Jahre Erfahrung im kaufmännischen Bereich mit den oben erwähnten Schwerpunktthemen' },
+        { value: 'organisation', label: 'Hohe Organisations- und Kommunikationsfähigkeit' },
+        { value: 'smartphone_pc', label: 'Sehr gute Smartphone / PC-Anwenderkenntnisse und Offenheit für Neues' },
+        { value: 'flexibilitaet', label: 'Flexibilität und Offenheit für Veränderungen' },
+        { value: 'persoenlichkeit', label: 'Interessierte, kommunikative, motivierte und mitdenkende Persönlichkeit, die sich durch hohe Teamfähigkeit auszeichnet' },
+      ],
+    },
+  },
+  // Step 4: Quiz Q3 (Multi)
+  {
+    kind: 'quiz',
+    quiz: {
+      id: 'q3',
+      type: 'multi',
+      title: 'Was möchtest du in den nächsten 2 Jahren erreichen?',
+      subtitle: '(Mehrfach-Auswahl möglich)',
+      cta: 'Weiter zur nächsten Frage 🤩',
+      options: [
+        { value: 'naechste_stufe', label: 'Die nächste Stufe auf deiner beruflichen Laufbahn erreichen?' },
+        { value: 'koennen_zeigen', label: 'Du möchtest dein Können in einem schnell agierenden Unternehmen unter Beweis stellen?' },
+        { value: 'mehr_als_kv', label: 'Du willst nicht einfach nur ein „KV" sein und suchst die nächste Stufe auf deiner Karriere-Leiter?' },
+        { value: 'loyal', label: 'Du willst zeigen dass du eine loyale und zuverlässige Persönlichkeit bist?' },
+      ],
+    },
+  },
+  // Step 5: Form
+  {
+    kind: 'form',
+    formTitle: 'Großartig, du hast es geschafft! 💛',
+    formSubtitle: 'Wie können wir dich am besten erreichen?',
+    formCta: 'Deine Bewerbung jetzt absenden',
+  },
+  // Step 6: Danke
+  { kind: 'thanks' },
+];
+---
+<RecruitingFunnel
+  slug="recruiting-admin"
+  funnelName="Sachbearbeiter Administration"
+  pageTitle="Sichere dir jetzt deinen Traumjob in 60 Sekunden 💫"
+  steps={steps}
+/>

@@ -1,0 +1,157 @@
+---
+// Recruiting-Funnel: Setter / Closer-innen 80-100% (w/m/d)
+// 1:1-Replik von https://www.fit-on-time.ch/scbewerbung/
+import RecruitingFunnel from '../../../layouts/RecruitingFunnel.astro';
+
+const steps = [
+  // Step 0: Job + Hook + Sections + Leidenschaft + CTA
+  {
+    kind: 'job',
+    jobTitle: 'Wir suchen Setter/Closer-innen 80-100% (w/m/d)',
+    jobMeta: [
+      { icon: '📍', text: 'Remote (Schweiz)' },
+      { icon: '🕑', text: 'ab sofort 80 - 100%' },
+    ],
+    jobHook: {
+      title: 'Hast du Lust herauszufinden ob du zu uns passt?',
+      primary: { label: 'Ja, absolut!', emoji: '🚀' },
+      secondary: { label: 'Mehr erfahren.', emoji: '🔍' },
+    },
+    jobSections: [
+      {
+        emoji: '✨',
+        heading: 'Du bist ein wichtiger Teil unseres Vertriebteams',
+        lines: [
+          'Telefonische Kundenakquise (Inbound-Leads) und Verkauf von Dienstleistungen im Bereich Fitness und Abnehmen.',
+        ],
+      },
+      {
+        emoji: '💬',
+        heading: 'Du ownst deine eigenen Kunden und Projekte',
+        lines: [
+          'Professionelle Beratung und Betreuung von Kunden, um deren Bedürfnisse und Anforderungen zu verstehen.',
+        ],
+      },
+      {
+        emoji: '🚀',
+        heading: 'Du gestaltest den Prozess, den unsere Kunden durchleben',
+        lines: [
+          'Erstellung von individuellen Lösungen und Angeboten, die auf die Bedürfnisse der Kunden zugeschnitten sind.',
+        ],
+      },
+      {
+        emoji: '👩‍💻',
+        heading: 'Du brennst für unsere Kunden',
+        lines: [
+          'Gewährleistung einer hervorragenden Kundenerfahrung und Aufbau langfristiger Kundenbeziehungen',
+        ],
+      },
+      {
+        emoji: '💛',
+        heading: 'Kommunikation und Spass in unserem jungen Team',
+        lines: [
+          'Du arbeitest in einem jungen Umfeld, das motiviert ist. Die Unternehmensführung ist auch vor Ort und immer für Nachfragen verfügbar.',
+        ],
+      },
+    ],
+    jobLeidenschaftTitle: 'Deine Leidenschaft 🔥',
+    jobLeidenschaftBody:
+      'Bei uns steht der Erfolg unserer Kundinnen und Kunden im Mittelpunkt, wir versuchen für jeden das perfekte Ergebnis und Erlebnis zu generieren und ihnen das Gefühl zu geben, immer gut betreut zu sein.\nDu identifizierst dich mit unseren Kunden und willst in einem sich ständig weiterentwickelnden Unternehmen wachsen.',
+    jobCta: 'Jetzt in nur 60 Sekunden bei uns bewerben ✨',
+  },
+  // Step 1: Vorteile
+  {
+    kind: 'benefits',
+    benefitsTitle: 'Deine Vorteile bei Fit on Time 👋',
+    benefitsList: [
+      { emoji: '💸', heading: 'Starkes Fixum und erfolgsbasierte Provision:', text: 'Wenn du richtig Gas gibst, verdienst du auch richtig gutes Geld.' },
+      { emoji: '⭐', heading: 'Du kannst dich einbringen:', text: 'Abwechslungsreiches und verantwortungsvolles Aufgabengebiet in einem kleinen motivierten Team' },
+      { emoji: '💬', heading: 'Ownership & Impact:', text: 'Eine spannende Position in einem wachsenden Unternehmen mit grossartigen Entwicklungsmöglichkeiten.' },
+      { emoji: '🚀', heading: 'Deine Meinung zählt:', text: 'Innovativer Betrieb mit viel Offenheit für den eigenen Wirkungsgrad in der Kundenberatung' },
+      { emoji: '🏖️', heading: 'Wohlfühl-Garantie:', text: 'Attraktive Anstellungsbedingungen sowie ein Arbeitsort mit viel Lebensqualität' },
+      { emoji: '🔼', heading: 'Wir entwickeln uns - du entwickelst dich:', text: 'Attraktive Schulungs- und Weiterbildungsmöglichkeiten' },
+      { emoji: '❤️', heading: 'Kollegiales und familiäres Arbeitsklima:', text: 'Ein herzliches Team wird dich in Empfang nehmen und freut sich bereits jetzt auf dich.' },
+    ],
+    benefitsCta: 'Lass uns schauen, ob wir zueinander passen 🙌',
+  },
+  // Step 2: Quiz Q1 (Single)
+  {
+    kind: 'quiz',
+    quiz: {
+      id: 'q1',
+      type: 'single',
+      title: 'Was ist dir bei deinem Job am wichtigsten?',
+      subtitle: '(wir bieten alles 🚀)',
+      cta: 'Weiter',
+      options: [
+        { value: 'gehalt', label: 'Gutes Gehalt', emoji: '💰' },
+        { value: 'bewegen', label: 'Etwas bewegen', emoji: '🚀' },
+        { value: 'boni', label: 'Starke Boni', emoji: '💎' },
+        { value: 'team', label: 'Angenehmes Team', emoji: '👥' },
+      ],
+      bottomNote: 'Du entscheidest: 80% oder 100% — einen Tag von Daheim oder doch in unserem tollen neuen Büro?',
+    },
+  },
+  // Step 3: Quiz Q2 (Multi)
+  {
+    kind: 'quiz',
+    quiz: {
+      id: 'q2',
+      type: 'multi',
+      title: 'Erzähl uns was von dir, was bringst du mit?',
+      subtitle: '(Mehrfachauswahl möglich)',
+      cta: 'Absenden',
+      options: [
+        { value: 'telesales', label: 'Erfahrung im Bereich Telesales oder Verkauf' },
+        { value: 'fitness_affinitaet', label: 'Begeisterung und Affinität im Bereich Fitness und Abnehmen' },
+        { value: 'kommunikation', label: 'Ausgezeichnete Kommunikationsfähigkeiten und eine positive Einstellung' },
+        { value: 'zielorientiert', label: 'Zielorientiertes Denken und Handeln sowie ein hohes Mass an Eigenmotivation' },
+        { value: 'teamfaehig', label: 'Teamfähigkeit und die Fähigkeit, auch saisonal mit sportlichen Zielen klarzukommen.' },
+      ],
+    },
+    benefitBox: {
+      title: 'Dein Benefit:',
+      subtitle: 'Entwicklung und Expertise',
+      body: 'Bei Fit on Time hast du die Möglichkeit, deine Fähigkeiten im Verkauf und in der Kundenbetreuung zu verbessern. Wenn du an Schulungen teilnehmen oder deine Kenntnisse auf andere Weise verbessern möchtest, bieten wir dir die volle Unterstützung, die du brauchst.',
+    },
+  },
+  // Step 4: Quiz Q3 (Multi)
+  {
+    kind: 'quiz',
+    quiz: {
+      id: 'q3',
+      type: 'multi',
+      title: 'Was möchtest du in den nächsten 2 Jahren erreichen?',
+      subtitle: '(Mehrfach-Auswahl möglich)',
+      cta: 'Weiter zur nächsten Frage 🤩',
+      options: [
+        { value: 'wachsen', label: 'Persönlich wachsen' },
+        { value: 'fuehrung', label: 'Führungsaufgaben übernehmen' },
+        { value: 'fachlich', label: 'Fachlich weiterentwickeln' },
+        { value: 'tolle_zeit', label: 'Eine tolle Zeit haben' },
+        { value: 'geld', label: 'Sehr viel Geld verdienen' },
+      ],
+    },
+    benefitBox: {
+      title: 'Dein Benefit:',
+      subtitle: 'Unser Bonus!',
+      body: 'Unsere leistungsabhängigen Boni runden dein attraktives Fixgehalt ab. Wir sind auf gute Leistungen unseres Teams angewiesen, deshalb zahlen wir gerne Boni, die sich sehen lassen können!',
+    },
+  },
+  // Step 5: Form
+  {
+    kind: 'form',
+    formTitle: 'Großartig, du hast es geschafft! 💛',
+    formSubtitle: 'Wie können wir dich am besten erreichen?',
+    formCta: 'Deine Bewerbung jetzt absenden',
+  },
+  // Step 6: Danke
+  { kind: 'thanks' },
+];
+---
+<RecruitingFunnel
+  slug="recruiting-scbewerbung"
+  funnelName="Setter / Closer"
+  pageTitle="Sichere dir jetzt deinen Traumjob in 60 Sekunden 💫"
+  steps={steps}
+/>

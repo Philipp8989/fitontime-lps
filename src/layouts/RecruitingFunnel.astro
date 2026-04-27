@@ -1,0 +1,546 @@
+---
+// Recruiting-Funnel-Layout: Multi-Step-SPA.
+// Steps client-side via JS, ein Astro-File pro Job-Funnel rendert via diesem Layout.
+import CookieBanner from '../components/CookieBanner.astro';
+
+export interface QuizQuestion {
+  id: 'q1' | 'q2' | 'q3';
+  type: 'single' | 'multi' | 'binary';
+  title: string;
+  subtitle?: string;
+  options: { value: string; label: string; emoji?: string }[];
+  cta: string;
+  bottomNote?: string;
+}
+
+export interface FunnelStep {
+  kind: 'job' | 'benefits' | 'quiz' | 'form' | 'thanks';
+  // Job-Step
+  jobTitle?: string;
+  jobIntro?: string;
+  jobMeta?: { icon: string; text: string }[];
+  jobHook?: { title: string; primary: { label: string; emoji: string }; secondary?: { label: string; emoji: string } };
+  jobSections?: { emoji: string; heading: string; lines: string[] }[];
+  jobLeidenschaftTitle?: string;
+  jobLeidenschaftBody?: string;
+  jobCta?: string;
+  // Benefits-Step
+  benefitsTitle?: string;
+  benefitsList?: { emoji: string; heading?: string; text: string }[];
+  benefitsCta?: string;
+  // Quiz-Step
+  quiz?: QuizQuestion;
+  benefitBox?: { title: string; subtitle: string; body: string };
+  // Form
+  formTitle?: string;
+  formSubtitle?: string;
+  formCta?: string;
+  // Thanks
+  thanksTitle?: string;
+  thanksBody?: string;
+  thanksHomeUrl?: string;
+}
+
+export interface Props {
+  slug: string; // recruiting-admin / recruiting-kundenbetreuung / recruiting-scbewerbung
+  funnelName: string;
+  pageTitle: string;
+  steps: FunnelStep[];
+  // Globale Texte / Aufgaben-Liste / Über-dich für kundenbetreuung (zwischen Quiz und Form auf P1)
+  extraSection?: { title: string; items: string[] }[];
+}
+
+const { slug, funnelName, pageTitle, steps, extraSection } = Astro.props;
+
+const PIXEL_ID = (import.meta.env.PUBLIC_META_PIXEL_ID || '').trim();
+const HYROS_ID = (import.meta.env.PUBLIC_HYROS_ID || '').trim();
+const IMPRESSUM_URL = 'https://fitontime.ch/impressum-datenschutz';
+const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
+---
+
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>{pageTitle}</title>
+    <link rel="icon" type="image/png" href="/images/logo.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <style is:global>
+      *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+      :root {
+        --bg: #ffffff;
+        --surface: #f8f9fb;
+        --surface-2: #eef2f7;
+        --border: #e5e7eb;
+        --text: #1f2937;
+        --text-2: #6b7280;
+        --text-3: #9ca3af;
+        --accent: #3b82f6;
+        --accent-dark: #2563eb;
+        --r: 14px;
+        --font: 'Inter', system-ui, -apple-system, sans-serif;
+      }
+      html { -webkit-text-size-adjust: 100%; }
+      body {
+        font-family: var(--font);
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.55;
+        -webkit-font-smoothing: antialiased;
+        min-height: 100dvh;
+        display: flex;
+        flex-direction: column;
+      }
+      main { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 0 16px; }
+      .wrap { width: 100%; max-width: 760px; margin: 0 auto; padding: 24px 0 80px; }
+
+      header.brand { padding: 18px 0 8px; text-align: center; }
+      header.brand img { height: 44px; }
+
+      .step { display: none; }
+      .step.active { display: block; animation: fade .25s ease; }
+      @keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+      h1 { font-size: 28px; font-weight: 800; letter-spacing: -.4px; line-height: 1.2; text-align: center; margin: 24px 0 12px; }
+      h2 { font-size: 22px; font-weight: 700; line-height: 1.3; text-align: center; margin: 24px 0 16px; }
+      h3 { font-size: 18px; font-weight: 700; margin: 18px 0 8px; color: var(--text); }
+      p.lead { color: var(--text-2); font-size: 15px; text-align: center; margin: 0 auto 6px; max-width: 620px; }
+      p.center { text-align: center; }
+
+      .meta-line { display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; color: var(--text-2); font-size: 15px; margin: 8px 0 22px; }
+
+      .hook-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 20px auto 24px; max-width: 640px; }
+      .hook-card { border-radius: var(--r); overflow: hidden; cursor: pointer; transition: transform .15s, box-shadow .15s; background: var(--surface); display: flex; flex-direction: column; -webkit-tap-highlight-color: transparent; border: 0; padding: 0; font: inherit; }
+      .hook-card:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(0, 0, 0, .08); }
+      .hook-card .hook-emoji { aspect-ratio: 1 / 1; display: flex; align-items: center; justify-content: center; font-size: 80px; background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); }
+      .hook-card .hook-label { background: var(--accent); color: #fff; font-weight: 700; padding: 14px; text-align: center; font-size: 16px; }
+
+      .scroll-arrow { color: var(--accent); text-align: center; font-size: 28px; line-height: 1; margin: 8px 0 32px; }
+
+      .sections { display: grid; gap: 22px; margin: 24px 0 18px; }
+      @media (min-width: 720px) { .sections { grid-template-columns: 1fr 1fr; gap: 28px; } }
+      .section-card { display: flex; gap: 14px; align-items: flex-start; }
+      .section-card .icon { font-size: 26px; line-height: 1.1; flex: 0 0 auto; }
+      .section-card .body { font-size: 15px; }
+      .section-card .body strong { display: block; margin-bottom: 6px; font-weight: 700; }
+
+      .leidenschaft { text-align: center; margin: 32px auto; max-width: 620px; }
+      .leidenschaft h2 { margin-bottom: 12px; }
+      .leidenschaft p { color: var(--text); font-size: 15px; margin-bottom: 10px; }
+
+      .extra { display: grid; gap: 12px; margin: 24px 0; }
+      .extra-card { background: var(--surface); border-radius: var(--r); padding: 18px; }
+      .extra-card h3 { margin-top: 0; text-align: center; }
+      .extra-card ul { list-style: none; padding: 0; margin: 8px 0 0; display: grid; gap: 8px; }
+      .extra-card li { padding: 8px 0; font-size: 14px; color: var(--text); border-bottom: 1px solid var(--border); }
+      .extra-card li:last-child { border-bottom: 0; }
+
+      .answers { display: grid; gap: 12px; margin: 22px auto 6px; max-width: 540px; }
+      .answers.cols { grid-template-columns: repeat(2, 1fr); }
+      @media (min-width: 720px) { .answers.cols { grid-template-columns: repeat(4, 1fr); } }
+      .answer { background: #fff; border: 2px solid var(--border); border-radius: var(--r); padding: 18px 18px; font-size: 15px; font-weight: 600; cursor: pointer; text-align: center; transition: all .15s; -webkit-tap-highlight-color: transparent; line-height: 1.4; }
+      .answer:hover, .answer:focus-visible { border-color: var(--accent); background: #eff6ff; outline: none; }
+      .answer.selected { border-color: var(--accent); background: var(--accent); color: #fff; }
+      .answer .emoji { display: block; font-size: 26px; margin-bottom: 8px; }
+
+      .answers.binary { grid-template-columns: 1fr 1fr; max-width: 460px; gap: 14px; }
+      .answers.binary .answer { padding: 32px 12px; min-height: 140px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+      .answers.binary .answer .emoji { font-size: 40px; margin-bottom: 12px; }
+
+      .btn { display: inline-block; background: var(--accent); color: #fff; border: 0; border-radius: 12px; padding: 16px 28px; font: inherit; font-weight: 700; font-size: 17px; cursor: pointer; transition: background .15s, transform .1s; -webkit-tap-highlight-color: transparent; }
+      .btn:hover { background: var(--accent-dark); }
+      .btn:active { transform: scale(.98); }
+      .btn-block { display: block; width: 100%; max-width: 460px; margin: 18px auto 8px; }
+      .btn-secondary { background: #fff; color: var(--accent); border: 2px solid var(--accent); }
+
+      .benefit-box { background: var(--surface); border-radius: var(--r); padding: 22px; margin: 26px auto; max-width: 540px; text-align: center; }
+      .benefit-box .label { font-size: 13px; color: var(--text-2); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+      .benefit-box h3 { margin-top: 4px; font-size: 20px; }
+      .benefit-box p { color: var(--text-2); font-size: 14px; margin: 8px 0 0; }
+
+      .progress { height: 6px; background: var(--border); border-radius: 999px; overflow: hidden; margin: 8px auto 4px; max-width: 460px; }
+      .progress-fill { height: 100%; background: var(--accent); border-radius: 999px; transition: width .3s ease; width: 0%; }
+      .progress-label { font-size: 12px; color: var(--text-3); text-align: center; margin-bottom: 12px; }
+
+      form.optin { display: grid; gap: 12px; margin: 22px auto 6px; max-width: 460px; }
+      form.optin label { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--text-2); padding: 6px 4px; }
+      form.optin input[type=text], form.optin input[type=email], form.optin input[type=tel] { width: 100%; padding: 14px 18px; font: inherit; font-size: 16px; border: 2px solid var(--border); border-radius: var(--r); background: #fff; color: var(--text); }
+      form.optin input:focus { outline: none; border-color: var(--accent); }
+      form.optin input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--accent); flex: 0 0 auto; }
+
+      .err { color: #b91c1c; font-size: 13px; text-align: center; margin-top: 6px; min-height: 18px; }
+      .small-note { color: var(--text-3); font-size: 12px; text-align: center; margin-top: 12px; line-height: 1.5; }
+
+      .thanks-box { text-align: center; padding: 40px 20px; }
+      .thanks-box .icon { font-size: 64px; margin-bottom: 18px; }
+      .thanks-box h1 { margin-bottom: 14px; }
+      .thanks-box p { color: var(--text-2); font-size: 16px; max-width: 540px; margin: 0 auto 14px; }
+
+      footer { padding: 32px 16px 40px; text-align: center; color: var(--text-3); font-size: 12px; }
+      footer a { color: var(--text-3); margin: 0 6px; text-decoration: underline; }
+    </style>
+  </head>
+  <body>
+    <header class="brand"><img src="/images/logo.png" alt="Fit on Time" /></header>
+
+    <main>
+      <div class="wrap">
+        <div class="progress" id="progress" hidden><div class="progress-fill" id="progressFill"></div></div>
+        <div class="progress-label" id="progressLabel" hidden></div>
+
+        {steps.map((step, i) => (
+          <section class={`step${i === 0 ? ' active' : ''}`} data-step={i} data-kind={step.kind}>
+            {step.kind === 'job' && (
+              <>
+                <p class="lead">Bewirb dich jetzt in wenigen Minuten, ganz ohne Anschreiben oder Lebenslauf!</p>
+                <h1>{step.jobTitle}</h1>
+                {step.jobIntro && <p class="lead">{step.jobIntro}</p>}
+                {step.jobMeta && (
+                  <div class="meta-line">
+                    {step.jobMeta.map((m) => <span>{m.icon} {m.text}</span>)}
+                  </div>
+                )}
+
+                {step.jobHook && (
+                  <>
+                    <h2>{step.jobHook.title}</h2>
+                    <div class="hook-grid">
+                      <button class="hook-card" type="button" data-action="next-step">
+                        <div class="hook-emoji">{step.jobHook.primary.emoji}</div>
+                        <div class="hook-label">{step.jobHook.primary.label}</div>
+                      </button>
+                      {step.jobHook.secondary && (
+                        <button class="hook-card" type="button" data-action="next-step">
+                          <div class="hook-emoji">{step.jobHook.secondary.emoji}</div>
+                          <div class="hook-label">{step.jobHook.secondary.label}</div>
+                        </button>
+                      )}
+                    </div>
+                    <div class="scroll-arrow">⌄</div>
+                  </>
+                )}
+
+                {step.jobSections && (
+                  <>
+                    <h2>So sieht dein Tag bei Fit on Time aus:</h2>
+                    <div class="sections">
+                      {step.jobSections.map((s) => (
+                        <div class="section-card">
+                          <div class="icon">{s.emoji}</div>
+                          <div class="body">
+                            <strong>{s.heading}</strong>
+                            {s.lines.map((l) => <div>{l}</div>)}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                )}
+
+                {extraSection && extraSection.map((sec) => (
+                  <div class="extra">
+                    <div class="extra-card">
+                      <h3>{sec.title}</h3>
+                      <ul>
+                        {sec.items.map((it) => <li>{it}</li>)}
+                      </ul>
+                    </div>
+                  </div>
+                ))}
+
+                {step.jobLeidenschaftTitle && (
+                  <div class="leidenschaft">
+                    <h2>{step.jobLeidenschaftTitle}</h2>
+                    {step.jobLeidenschaftBody && step.jobLeidenschaftBody.split('\n').map((line) => <p>{line}</p>)}
+                  </div>
+                )}
+
+                {step.jobCta && (
+                  <button class="btn btn-block" type="button" data-action="next-step">{step.jobCta}</button>
+                )}
+              </>
+            )}
+
+            {step.kind === 'benefits' && (
+              <>
+                {step.benefitsTitle && <h1>{step.benefitsTitle}</h1>}
+                {step.benefitsList && (
+                  <div class="sections">
+                    {step.benefitsList.map((b) => (
+                      <div class="section-card">
+                        <div class="icon">{b.emoji}</div>
+                        <div class="body">
+                          {b.heading && <strong>{b.heading}</strong>}
+                          <div>{b.text}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {step.benefitsCta && (
+                  <button class="btn btn-block" type="button" data-action="next-step">{step.benefitsCta}</button>
+                )}
+              </>
+            )}
+
+            {step.kind === 'quiz' && step.quiz && (
+              <>
+                <p class="lead">Frage {step.quiz.id === 'q1' ? '1' : step.quiz.id === 'q2' ? '2' : '3'} von 3</p>
+                <h2>{step.quiz.title}</h2>
+                {step.quiz.subtitle && <p class="lead">{step.quiz.subtitle}</p>}
+                <div class={`answers${step.quiz.type === 'single' ? ' cols' : ''}${step.quiz.type === 'binary' ? ' binary' : ''}`} data-quiz-id={step.quiz.id} data-quiz-type={step.quiz.type}>
+                  {step.quiz.options.map((opt) => (
+                    <button class="answer" type="button" data-quiz-value={opt.value}>
+                      {opt.emoji && <span class="emoji">{opt.emoji}</span>}
+                      <span>{opt.label}</span>
+                    </button>
+                  ))}
+                </div>
+                {(step.quiz.type === 'multi' || step.quiz.type === 'single') && (
+                  <button class="btn btn-block" type="button" data-action="quiz-submit" data-quiz-id={step.quiz.id} data-quiz-type={step.quiz.type}>{step.quiz.cta}</button>
+                )}
+                {step.quiz.bottomNote && <p class="small-note">{step.quiz.bottomNote}</p>}
+
+                {step.benefitBox && (
+                  <div class="benefit-box">
+                    <div class="label">{step.benefitBox.title}</div>
+                    <h3>{step.benefitBox.subtitle}</h3>
+                    <p>{step.benefitBox.body}</p>
+                  </div>
+                )}
+              </>
+            )}
+
+            {step.kind === 'form' && (
+              <>
+                <h1>{step.formTitle || 'Großartig, du hast es geschafft! 💛'}</h1>
+                <p class="lead">{step.formSubtitle || 'Wie können wir dich am besten erreichen?'}</p>
+                <form class="optin" data-form="recruiting" novalidate>
+                  <input type="text" name="fname" placeholder="Dein vollständiger Name" required autocomplete="name" />
+                  <input type="email" name="email" placeholder="Deine E-Mail Adresse" required autocomplete="email" />
+                  <input type="tel" name="phone" placeholder="Deine Telefonnummer" required autocomplete="tel" />
+                  <label>
+                    <input type="checkbox" name="datenschutz" required />
+                    <span>Ich akzeptiere die <a href="https://fitontime.ch/impressum-datenschutz" target="_blank" rel="noopener" style="color:var(--accent)">Datenschutzbestimmungen</a></span>
+                  </label>
+                  <button class="btn" type="submit" data-submit-btn>{step.formCta || 'Deine Bewerbung jetzt absenden'}</button>
+                  <div class="err" data-err></div>
+                </form>
+                <p class="small-note">🔒 Sichere Verbindung. *Kein Spam*</p>
+                <p class="small-note">*Wir verwenden deine Daten lediglich für den Bewerbungsprozess und die Kontaktaufnahme mit dir.</p>
+              </>
+            )}
+
+            {step.kind === 'thanks' && (
+              <div class="thanks-box">
+                <div class="icon">🎉</div>
+                <h1>{step.thanksTitle || 'Vielen Dank für deine Bewerbung!'}</h1>
+                <p>{step.thanksBody || 'Wir haben deine Bewerbung erhalten und melden uns innerhalb der nächsten 48 Stunden bei dir.'}</p>
+                <p>Bis bald 👋</p>
+              </div>
+            )}
+          </section>
+        ))}
+      </div>
+    </main>
+
+    <footer>
+      <a href="https://fitontime.ch/impressum-datenschutz" target="_blank" rel="noopener">Impressum</a>·
+      <a href="https://fitontime.ch/impressum-datenschutz" target="_blank" rel="noopener">Datenschutz</a>
+    </footer>
+
+    <CookieBanner
+      metaPixelId={PIXEL_ID}
+      hyrosPh={HYROS_ID}
+      impressumUrl={IMPRESSUM_URL}
+      datenschutzUrl={DATENSCHUTZ_URL}
+      consentKey="fot_consent"
+    />
+
+    <script is:inline define:vars={{ slug, funnelName, totalSteps: steps.length }}>
+      // Recruiting-Funnel-State
+      const STATE_KEY = `fot_recruiting_${slug}_state`;
+      const SESSION_KEY = 'fot_session';
+      const stepsEls = Array.from(document.querySelectorAll('.step'));
+      const totalQuizSteps = stepsEls.filter((s) => s.dataset.kind === 'quiz').length;
+
+      const state = JSON.parse(sessionStorage.getItem(STATE_KEY) || '{"step":0,"answers":{}}');
+      let session = sessionStorage.getItem(SESSION_KEY);
+      if (!session) {
+        session = (crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2) + Date.now());
+        sessionStorage.setItem(SESSION_KEY, session);
+      }
+
+      function saveState() { sessionStorage.setItem(STATE_KEY, JSON.stringify(state)); }
+
+      function track(event, extra) {
+        const payload = JSON.stringify(Object.assign({
+          event, lp: slug, lp_name: funnelName, session, step: state.step, schema_version: 'v1',
+        }, extra || {}));
+        try {
+          if (navigator.sendBeacon) {
+            navigator.sendBeacon('/api/track', new Blob([payload], { type: 'application/json' }));
+            return;
+          }
+        } catch (e) {}
+        fetch('/api/track', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload, keepalive: true }).catch(() => {});
+      }
+
+      function showStep(i) {
+        stepsEls.forEach((s) => s.classList.toggle('active', Number(s.dataset.step) === i));
+        window.scrollTo({ top: 0, behavior: 'instant' });
+
+        const current = stepsEls[i];
+        const kind = current?.dataset.kind;
+
+        // Progress nur in Quiz-Steps
+        const showProg = kind === 'quiz';
+        const prog = document.getElementById('progress');
+        const lbl = document.getElementById('progressLabel');
+        prog.hidden = !showProg;
+        lbl.hidden = !showProg;
+        if (showProg) {
+          // Quiz-Step-Index ermitteln (1-basiert)
+          const quizIndex = stepsEls.slice(0, i + 1).filter((s) => s.dataset.kind === 'quiz').length;
+          const pct = Math.round((quizIndex / totalQuizSteps) * 100);
+          document.getElementById('progressFill').style.width = pct + '%';
+          lbl.textContent = `Schritt ${quizIndex} von ${totalQuizSteps}`;
+        }
+
+        track('step_view', { step_index: i, step_kind: kind });
+
+        if (kind === 'quiz' && !state.startedFired) {
+          state.startedFired = true; saveState(); track('quiz_start');
+        }
+        if (kind === 'form' && !state.completedFired) {
+          state.completedFired = true; saveState(); track('quiz_complete');
+        }
+      }
+
+      function next() {
+        state.step++;
+        saveState();
+        showStep(state.step);
+      }
+
+      // Click-Handler: Hook-Cards / "Next-Step"-Buttons
+      document.querySelectorAll('[data-action="next-step"]').forEach((el) => {
+        el.addEventListener('click', () => next());
+      });
+
+      // Quiz-Antworten
+      document.querySelectorAll('[data-quiz-id]').forEach((container) => {
+        const quizId = container.dataset.quizId;
+        const type = container.dataset.quizType;
+        if (!quizId) return;
+
+        if (type === 'binary') {
+          // Direkt weiter bei Klick
+          container.querySelectorAll('[data-quiz-value]').forEach((btn) => {
+            btn.addEventListener('click', () => {
+              const val = btn.dataset.quizValue;
+              state.answers[quizId] = val;
+              saveState();
+              track('quiz_answer', { key: quizId, value: val });
+              next();
+            });
+          });
+        } else if (type === 'single') {
+          container.querySelectorAll('[data-quiz-value]').forEach((btn) => {
+            btn.addEventListener('click', () => {
+              container.querySelectorAll('[data-quiz-value]').forEach((b) => b.classList.remove('selected'));
+              btn.classList.add('selected');
+              state.answers[quizId] = btn.dataset.quizValue;
+              saveState();
+            });
+          });
+        } else if (type === 'multi') {
+          container.querySelectorAll('[data-quiz-value]').forEach((btn) => {
+            btn.addEventListener('click', () => {
+              btn.classList.toggle('selected');
+              const selected = Array.from(container.querySelectorAll('[data-quiz-value].selected')).map((b) => b.dataset.quizValue);
+              state.answers[quizId] = selected;
+              saveState();
+            });
+          });
+        }
+      });
+
+      // Single/Multi-Quiz-Submit-Buttons
+      document.querySelectorAll('[data-action="quiz-submit"]').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const quizId = btn.dataset.quizId;
+          const type = btn.dataset.quizType;
+          const val = state.answers[quizId];
+          const empty = type === 'multi' ? !Array.isArray(val) || val.length === 0 : !val;
+          if (empty) {
+            alert('Bitte wähle eine oder mehrere Antworten aus.');
+            return;
+          }
+          track('quiz_answer', { key: quizId, value: val });
+          next();
+        });
+      });
+
+      // Form-Submit
+      const form = document.querySelector('[data-form="recruiting"]');
+      if (form) {
+        form.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const btn = form.querySelector('[data-submit-btn]');
+          const err = form.querySelector('[data-err]');
+          err.textContent = '';
+          btn.disabled = true;
+          const origLabel = btn.textContent;
+          btn.textContent = 'Wird gesendet...';
+
+          const fd = new FormData(form);
+          const payload = {
+            name: fd.get('fname'),
+            email: fd.get('email'),
+            phone: fd.get('phone'),
+            datenschutz: !!fd.get('datenschutz'),
+            lp_slug: slug,
+            lp_name: funnelName,
+            session,
+            answers: state.answers || {},
+          };
+
+          try {
+            const res = await fetch('/api/recruiting', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(payload),
+            });
+            if (!res.ok) {
+              const j = await res.json().catch(() => ({}));
+              throw new Error(j.error || 'Fehler beim Senden');
+            }
+            track('recruiting_submit');
+            if (window.fbq) window.fbq('track', 'Lead', { content_category: 'recruiting' });
+            // Nächster Step = Danke-Seite
+            next();
+          } catch (e2) {
+            err.textContent = e2.message || 'Etwas ist schiefgelaufen, bitte nochmal versuchen.';
+            btn.disabled = false;
+            btn.textContent = origLabel;
+          }
+        });
+      }
+
+      // Initial: immer auf Step 0 starten (Resume optional)
+      state.step = 0;
+      state.answers = state.answers || {};
+      saveState();
+      showStep(0);
+      track('page_view');
+    </script>
+  </body>
+</html>
