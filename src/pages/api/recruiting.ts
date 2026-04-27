@@ -8,8 +8,10 @@ import { google } from 'googleapis';
 
 // Ein Sheet für alle 3 Funnel.
 // Schema: Datum | Funnel | Vorname | Nachname | Email | Telefon | Q1 | Q2 | Q3 | Datenschutz
-const RECRUITING_SHEET_ID =
-  import.meta.env.RECRUITING_SHEET_ID || '15eBPYYMYTo2Uq99VGCiT7eY6CqRpiK1p1LWrJ7T1sxs';
+// trim() weil Vercel-Env-Werte gerne Trailing-Newlines bekommen (zb durch echo-pipes)
+const RECRUITING_SHEET_ID = (
+  import.meta.env.RECRUITING_SHEET_ID || '15eBPYYMYTo2Uq99VGCiT7eY6CqRpiK1p1LWrJ7T1sxs'
+).trim();
 const RECRUITING_RANGE = 'Tabellenblatt1!A:J';
 
 const FUNNEL_LABELS: Record<string, string> = {
