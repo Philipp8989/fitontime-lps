@@ -379,25 +379,28 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
       return out;
     }
 
-    // YCBM-Setup: lädt offizielles ycb.me Embed-Script mit Pre-fill via data-attributes
+    // YCBM-Setup: direktes iframe zur Booking-URL mit Pre-fill via Query-Params.
+    // Hintergrund: embed.ycb.me liest data-domain nicht zuverlässig wenn das
+    // Script-Tag per JS erzeugt wird (iframe-Host wird "undefined.youcanbook.me").
+    // Direktes iframe ist robust und unterstützt Pre-fill via Query-Params.
     var YCBM_DOMAIN = 'fitontime-msm-analyse';
     function setupYCBM(r) {
       var container = document.getElementById('ycbm-container');
       if (!container) return;
-      var script = document.createElement('script');
-      script.src = 'https://embed.ycb.me';
-      script.async = true;
-      script.setAttribute('data-domain', YCBM_DOMAIN);
-      script.setAttribute('data-displaymode', 'auto');
-      // Pre-fill der Custom-Felder im YCBM-Buchungsformular
-      // Voraussetzung: in YCBM die exakt gleichen Field-IDs anlegen (FIRSTNAME, PHONE, SCORE, STUFE, DIMENSION).
-      script.setAttribute('data-firstname', r.name || '');
-      script.setAttribute('data-phone', r.phone || '');
-      script.setAttribute('data-score', String(r.score || ''));
-      script.setAttribute('data-stufe', String(r.stufe || ''));
-      script.setAttribute('data-dimension', r.critDimLabel || '');
+      var params = new URLSearchParams();
+      params.set('embed', 'true');
+      if (r.name) params.set('FIRSTNAME', r.name);
+      if (r.phone) params.set('PHONE', r.phone);
+      if (r.score != null) params.set('SCORE', String(r.score));
+      if (r.stufe != null) params.set('STUFE', String(r.stufe));
+      if (r.critDimLabel) params.set('DIMENSION', r.critDimLabel);
+      var iframe = document.createElement('iframe');
+      iframe.src = 'https://' + YCBM_DOMAIN + '.youcanbook.me/?' + params.toString();
+      iframe.style.cssText = 'width:100%;min-height:520px;border:0;display:block;';
+      iframe.setAttribute('frameborder', '0');
+      iframe.setAttribute('allow', 'payment');
       container.innerHTML = '';
-      container.appendChild(script);
+      container.appendChild(iframe);
       if (window.__lp) window.__lp.track('booking_embed_loaded', { score: r.score }, 'fot', 'MSM Result');
     }
 
