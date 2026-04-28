@@ -383,7 +383,6 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
     // Hintergrund: embed.ycb.me liest data-domain nicht zuverlässig wenn das
     // Script-Tag per JS erzeugt wird (iframe-Host wird "undefined.youcanbook.me").
     // Direktes iframe ist robust und unterstützt Pre-fill via Query-Params.
-    var YCBM_DOMAIN = 'fitontime-msm-analyse';
     function setupYCBM(r) {
       var container = document.getElementById('ycbm-container');
       if (!container) return;
@@ -395,7 +394,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
       if (r.stufe != null) params.set('STUFE', String(r.stufe));
       if (r.critDimLabel) params.set('DIMENSION', r.critDimLabel);
       var iframe = document.createElement('iframe');
-      iframe.src = 'https://' + YCBM_DOMAIN + '.youcanbook.me/?' + params.toString();
+      iframe.src = 'https://fitontime-msm-analyse.youcanbook.me/?' + params.toString();
       iframe.style.cssText = 'width:100%;min-height:520px;border:0;display:block;';
       iframe.setAttribute('frameborder', '0');
       iframe.setAttribute('allow', 'payment');
