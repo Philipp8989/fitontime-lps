@@ -1,22 +1,16 @@
 import type { APIRoute } from 'astro';
 import { google } from 'googleapis';
-import nodemailer from 'nodemailer';
 
 // Recruiting-API: Bewerbungen aus den Recruiting-Funneln (admin/kundenbetreuung/scbewerbung).
-// Schreibt in EIN gemeinsames Recruiting-Sheet + Email-Notification an HR.
-// WICHTIG: KEIN Push an Dashboard-CRM, KEINE Notification an Admin (Philipp).
-// Recruiting-Bewerbungen sind komplett getrennt vom regulaeren Lead-Funnel.
+// 1. Schreibt in HR-Sheet (15eBPYY...sxs) mit Status="Neu eingegangen"
+// 2. Pusht an Dashboard-CRM (/api/leads) mit is_recruiting-Flag
+//    → Dashboard handhabt Notification (nur job@fitontime.ch, kein Admin-CC)
+// → Notification kommt NICHT mehr direkt aus diesem Repo (zentral im Dashboard)
 
-// Empfaenger-Mail fuer Recruiting-Notifications, NUR diese Email, kein CC.
-const HR_EMAIL = 'job@fitontime.ch';
-
-// Ein Sheet für alle 3 Funnel.
-// Schema: Datum | Funnel | Vorname | Nachname | Email | Telefon | Q1 | Q2 | Q3 | Datenschutz
-// trim() weil Vercel-Env-Werte gerne Trailing-Newlines bekommen (zb durch echo-pipes)
+// Sheet (HR-Layout): Datum | Status | Stelle | Vorname | Nachname | Email | Telefon | Q1 | Q2 | Q3 | Notiz | DSGVO
 const RECRUITING_SHEET_ID = (
   import.meta.env.RECRUITING_SHEET_ID || '15eBPYYMYTo2Uq99VGCiT7eY6CqRpiK1p1LWrJ7T1sxs'
 ).trim();
-const RECRUITING_RANGE = 'Tabellenblatt1!A:J';
 
 const FUNNEL_LABELS: Record<string, string> = {
   'recruiting-admin': 'Sachbearbeiter Administration',
@@ -64,19 +58,12 @@ export const POST: APIRoute = async ({ request }) => {
     const q2 = Array.isArray(a.q2) ? a.q2.join(' | ') : (a.q2 || '').toString();
     const q3 = Array.isArray(a.q3) ? a.q3.join(' | ') : (a.q3 || '').toString();
     const datenschutz = data.datenschutz ? 'Ja' : '';
+    const funnelLabel = FUNNEL_LABELS[slug];
 
-    const row = [
-      datum,
-      FUNNEL_LABELS[slug],
-      vorname,
-      nachname,
-      data.email,
-      data.phone,
-      q1,
-      q2,
-      q3,
-      datenschutz,
-    ];
+    // Sheet-Layout (HR-tauglich): Datum | Status | Stelle | Vorname | Nachname | Email | Telefon | Q1 | Q2 | Q3 | Notiz | DSGVO
+    // Status startet immer auf "Neu eingegangen", HR aendert via Dropdown.
+    // Notiz bleibt initial leer, HR fuellt manuell.
+    const row = [datum, 'Neu eingegangen', funnelLabel, vorname, nachname, data.email, data.phone, q1, q2, q3, '', datenschutz];
 
     const auth = new google.auth.GoogleAuth({
       credentials: {
@@ -88,19 +75,16 @@ export const POST: APIRoute = async ({ request }) => {
     const sheets = google.sheets({ version: 'v4', auth });
 
     // Tabellenblatt-Name dynamisch ueber Spreadsheet-Metadata holen (erstes Sheet).
-    // Verhindert 404 wenn der Tab nicht "Tabellenblatt1" heisst.
     const meta = await sheets.spreadsheets.get({ spreadsheetId: RECRUITING_SHEET_ID });
     const firstSheetName = meta.data.sheets?.[0]?.properties?.title || 'Tabellenblatt1';
-    const lastColLetter = (RECRUITING_RANGE.split(':')[1] || 'J').replace(/[^A-Z]/g, '') || 'J';
-    const fullRange = `${firstSheetName}!A:${lastColLetter}`;
-    const sheetName = firstSheetName;
+    const fullRange = `${firstSheetName}!A:L`;
     const existing = await sheets.spreadsheets.values.get({
       spreadsheetId: RECRUITING_SHEET_ID,
       range: fullRange,
     });
     const usedRows = (existing.data.values || []).length;
     const nextRow = usedRows + 1;
-    const writeRange = `${sheetName}!A${nextRow}:${lastColLetter}${nextRow}`;
+    const writeRange = `${firstSheetName}!A${nextRow}:L${nextRow}`;
 
     await sheets.spreadsheets.values.update({
       spreadsheetId: RECRUITING_SHEET_ID,
@@ -109,58 +93,38 @@ export const POST: APIRoute = async ({ request }) => {
       requestBody: { values: [row] },
     });
 
-    // Email-Notification an HR (job@fitontime.ch). KEIN CC an Admin/Philipp.
-    // Fire-and-forget: Sheet-Write ist Ground-Truth, Mail ist Best-Effort.
-    const gmailUser = (import.meta.env.GMAIL_USER || '').trim();
-    const gmailPass = (import.meta.env.GMAIL_APP_PASSWORD || '').trim();
-    if (gmailUser && gmailPass) {
-      const funnelLabel = FUNNEL_LABELS[slug];
-      const sheetUrl = `https://docs.google.com/spreadsheets/d/${RECRUITING_SHEET_ID}/edit`;
-      const quizHtml = [
-        ['Q1: Wichtigstes', q1],
-        ['Q2: Was bringst du mit', q2],
-        ['Q3: 2-Jahres-Ziel', q3],
-      ]
-        .filter(([, v]) => v)
-        .map(([k, v]) => `<li><strong>${k}:</strong> ${v}</li>`)
-        .join('');
-
-      const html = `
-        <div style="font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;max-width:560px;margin:0 auto">
-          <h2 style="font-size:18px;font-weight:600;margin:0 0 4px">Neue Bewerbung: ${funnelLabel}</h2>
-          <p style="font-size:13px;color:#86868b;margin:0 0 16px">Eingegangen am ${datum}</p>
-          <table style="width:100%;border-collapse:collapse;font-size:14px">
-            <tr><td style="padding:6px 12px 6px 0;font-weight:600;color:#86868b">Name</td><td style="padding:6px 0">${vorname} ${nachname}</td></tr>
-            <tr><td style="padding:6px 12px 6px 0;font-weight:600;color:#86868b">E-Mail</td><td style="padding:6px 0"><a href="mailto:${data.email}" style="color:#0071e3">${data.email}</a></td></tr>
-            <tr><td style="padding:6px 12px 6px 0;font-weight:600;color:#86868b">Telefon</td><td style="padding:6px 0"><a href="tel:${data.phone}" style="color:#0071e3">${data.phone}</a></td></tr>
-            <tr><td style="padding:6px 12px 6px 0;font-weight:600;color:#86868b">Stelle</td><td style="padding:6px 0"><strong>${funnelLabel}</strong></td></tr>
-          </table>
-          ${quizHtml ? `<h3 style="font-size:14px;font-weight:600;margin:18px 0 8px;color:#86868b">Quiz-Antworten</h3><ul style="margin:0;padding-left:18px;font-size:14px">${quizHtml}</ul>` : ''}
-          <p style="font-size:12px;color:#86868b;margin:20px 0 0">Alle Bewerbungen im <a href="${sheetUrl}" style="color:#0071e3">Recruiting-Sheet</a></p>
-        </div>
-      `;
-
-      const transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: { user: gmailUser, pass: gmailPass },
+    // Push an Dashboard-CRM (Postgres-Lead + Notification).
+    // is_recruiting-Flag: Dashboard nutzt customer.recruitingNotificationEmail (job@fitontime.ch),
+    // SKIPed Admin-CC und reguläre customer.notificationEmail.
+    const dashUrl = (import.meta.env.DASHBOARD_LEADS_URL || '').trim();
+    const dashKey = (import.meta.env.DASHBOARD_LEADS_KEY || '').trim();
+    if (dashUrl && dashKey) {
+      const dashRes = await fetch(dashUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-api-key': dashKey },
+        body: JSON.stringify({
+          name: data.name,
+          email: data.email,
+          phone: data.phone || '',
+          lp_slug: slug,
+          lp_name: funnelLabel,
+          is_recruiting: true,
+          quiz_answers: { q1, q2, q3 },
+        }),
+      }).catch((e: any) => {
+        console.error('Dashboard Recruiting-Lead Fehler:', e?.message || e);
+        return null as unknown as Response;
       });
-      transporter
-        .sendMail({
-          from: `"Fit on Time Bewerbungen" <${gmailUser}>`,
-          to: HR_EMAIL,
-          replyTo: data.email,
-          subject: `Neue Bewerbung — ${funnelLabel} — ${vorname} ${nachname}`.trim(),
-          html,
-        })
-        .catch((e: any) => {
-          console.error('Recruiting-Notification fehlgeschlagen:', e?.message || e);
-        });
+      if (!dashRes || !dashRes.ok) {
+        const detail = dashRes ? await dashRes.text().catch(() => '') : 'network';
+        console.error('Dashboard Recruiting-Lead non-OK:', dashRes?.status, detail);
+        // Nicht blockieren: Sheet ist Ground-Truth fuer HR. Dashboard-Insert kann manuell nachgeholt werden.
+      }
     } else {
-      console.error('Recruiting-Notification skipped: GMAIL_USER/PASS fehlen');
+      console.error('Recruiting Dashboard-Push skipped: DASHBOARD_LEADS_URL/KEY fehlen');
     }
 
     // Synthetisches recruiting_submit-Event für Dashboard-Aggregation. Fire-and-forget.
-    // KEIN Push an DASHBOARD_LEADS_URL: Recruiting-Bewerbungen sind getrennt vom CRM-Lead-Flow.
     fetch(new URL('/api/track', request.url).toString(), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
