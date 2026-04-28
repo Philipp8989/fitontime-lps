@@ -1,10 +1,14 @@
 import type { APIRoute } from 'astro';
 import { google } from 'googleapis';
+import nodemailer from 'nodemailer';
 
 // Recruiting-API: Bewerbungen aus den Recruiting-Funneln (admin/kundenbetreuung/scbewerbung).
-// Schreibt in EIN gemeinsames Recruiting-Sheet.
-// WICHTIG: KEIN Push an Dashboard-CRM (DASHBOARD_LEADS_URL). Recruiting-Leads sind getrennt
-// vom regulären Lead-Funnel.
+// Schreibt in EIN gemeinsames Recruiting-Sheet + Email-Notification an HR.
+// WICHTIG: KEIN Push an Dashboard-CRM, KEINE Notification an Admin (Philipp).
+// Recruiting-Bewerbungen sind komplett getrennt vom regulaeren Lead-Funnel.
+
+// Empfaenger-Mail fuer Recruiting-Notifications, NUR diese Email, kein CC.
+const HR_EMAIL = 'job@fitontime.ch';
 
 // Ein Sheet für alle 3 Funnel.
 // Schema: Datum | Funnel | Vorname | Nachname | Email | Telefon | Q1 | Q2 | Q3 | Datenschutz
@@ -104,6 +108,56 @@ export const POST: APIRoute = async ({ request }) => {
       valueInputOption: 'RAW',
       requestBody: { values: [row] },
     });
+
+    // Email-Notification an HR (job@fitontime.ch). KEIN CC an Admin/Philipp.
+    // Fire-and-forget: Sheet-Write ist Ground-Truth, Mail ist Best-Effort.
+    const gmailUser = (import.meta.env.GMAIL_USER || '').trim();
+    const gmailPass = (import.meta.env.GMAIL_APP_PASSWORD || '').trim();
+    if (gmailUser && gmailPass) {
+      const funnelLabel = FUNNEL_LABELS[slug];
+      const sheetUrl = `https://docs.google.com/spreadsheets/d/${RECRUITING_SHEET_ID}/edit`;
+      const quizHtml = [
+        ['Q1: Wichtigstes', q1],
+        ['Q2: Was bringst du mit', q2],
+        ['Q3: 2-Jahres-Ziel', q3],
+      ]
+        .filter(([, v]) => v)
+        .map(([k, v]) => `<li><strong>${k}:</strong> ${v}</li>`)
+        .join('');
+
+      const html = `
+        <div style="font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;max-width:560px;margin:0 auto">
+          <h2 style="font-size:18px;font-weight:600;margin:0 0 4px">Neue Bewerbung: ${funnelLabel}</h2>
+          <p style="font-size:13px;color:#86868b;margin:0 0 16px">Eingegangen am ${datum}</p>
+          <table style="width:100%;border-collapse:collapse;font-size:14px">
+            <tr><td style="padding:6px 12px 6px 0;font-weight:600;color:#86868b">Name</td><td style="padding:6px 0">${vorname} ${nachname}</td></tr>
+            <tr><td style="padding:6px 12px 6px 0;font-weight:600;color:#86868b">E-Mail</td><td style="padding:6px 0"><a href="mailto:${data.email}" style="color:#0071e3">${data.email}</a></td></tr>
+            <tr><td style="padding:6px 12px 6px 0;font-weight:600;color:#86868b">Telefon</td><td style="padding:6px 0"><a href="tel:${data.phone}" style="color:#0071e3">${data.phone}</a></td></tr>
+            <tr><td style="padding:6px 12px 6px 0;font-weight:600;color:#86868b">Stelle</td><td style="padding:6px 0"><strong>${funnelLabel}</strong></td></tr>
+          </table>
+          ${quizHtml ? `<h3 style="font-size:14px;font-weight:600;margin:18px 0 8px;color:#86868b">Quiz-Antworten</h3><ul style="margin:0;padding-left:18px;font-size:14px">${quizHtml}</ul>` : ''}
+          <p style="font-size:12px;color:#86868b;margin:20px 0 0">Alle Bewerbungen im <a href="${sheetUrl}" style="color:#0071e3">Recruiting-Sheet</a></p>
+        </div>
+      `;
+
+      const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: { user: gmailUser, pass: gmailPass },
+      });
+      transporter
+        .sendMail({
+          from: `"Fit on Time Bewerbungen" <${gmailUser}>`,
+          to: HR_EMAIL,
+          replyTo: data.email,
+          subject: `Neue Bewerbung — ${funnelLabel} — ${vorname} ${nachname}`.trim(),
+          html,
+        })
+        .catch((e: any) => {
+          console.error('Recruiting-Notification fehlgeschlagen:', e?.message || e);
+        });
+    } else {
+      console.error('Recruiting-Notification skipped: GMAIL_USER/PASS fehlen');
+    }
 
     // Synthetisches recruiting_submit-Event für Dashboard-Aggregation. Fire-and-forget.
     // KEIN Push an DASHBOARD_LEADS_URL: Recruiting-Bewerbungen sind getrennt vom CRM-Lead-Flow.
