@@ -1,0 +1,352 @@
+---
+// Webinar-Opt-in "Entzuendungen", Nachbau Funnelcockpit-LP go.fit-on-time.ch/entzndungen
+// Single-Page, kein Quiz, Modal-Form mit Name/Email/Telefon
+import CookieBanner from '../../components/CookieBanner.astro';
+
+const LP_SLUG = 'entzuendungen';
+const LP_NAME = 'Entzündungen Webinar';
+const PIXEL_ID = (import.meta.env.PUBLIC_META_PIXEL_ID || '').trim();
+const HYROS_ID = (import.meta.env.PUBLIC_HYROS_ID || '').trim();
+const IMPRESSUM_URL = 'https://fitontime.ch/impressum-datenschutz';
+const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
+
+// Live-Termin als Konstante, fuer schnelles Wechseln
+const LIVE_DATUM = 'Dienstag, 12.05. um 18:00 Uhr';
+const LIVE_DATUM_KURZ = 'Live am 12.05 um 18 Uhr';
+---
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Entzündungen, dein versteckter Abnehm-Stopper | Fit on Time</title>
+  <link rel="icon" type="image/png" href="/images/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Meta Pixel laeuft DSGVO-konform ueber CookieBanner.astro nach Consent -->
+  <!-- Hyros als First-Party-Attribution essentiell, laedt ohne Consent -->
+  <script is:inline src="https://t.hyros.com/v1/lst/universal-script?ph=689a71ca1ab3be1cb1caddbe6b7902a4ad2c51a228f4ec9ea7fef3123a705f63"></script>
+
+  <style is:global>
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+    :root{
+      --bg:#ffffff;
+      --surface:#f8f9fb;
+      --border:#e5e7eb;
+      --text:#1f2937;
+      --text-2:#4b5563;
+      --text-3:#9ca3af;
+      --accent:#0caa4f;
+      --accent-dark:#089042;
+      --warn:#dc2626;
+      --r:14px;
+      --font:'Montserrat',system-ui,-apple-system,sans-serif;
+    }
+    html{-webkit-text-size-adjust:100%}
+    body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.5;-webkit-font-smoothing:antialiased;min-height:100dvh;display:flex;flex-direction:column}
+    main{flex:1}
+    .wrap{width:100%;max-width:1100px;margin:0 auto;padding:0 16px}
+
+    header{padding:18px 0 8px;text-align:center}
+    header img{height:40px}
+
+    /* Scarcity-Banner */
+    .scarcity{background:#fff3cd;color:#854d0e;border-bottom:1px solid #fde68a;padding:10px 16px;text-align:center;font-size:14px;font-weight:600}
+
+    /* Hero */
+    .hero{padding:32px 0 24px}
+    .hero-grid{display:grid;grid-template-columns:1fr;gap:28px;align-items:center}
+    @media(min-width:840px){.hero-grid{grid-template-columns:1.05fr 1fr;gap:48px}}
+    .hero-img{width:100%;border-radius:18px;box-shadow:0 10px 30px rgba(0,0,0,.08);display:block}
+    .hero h1{font-size:30px;font-weight:800;line-height:1.18;letter-spacing:-.4px;color:#0f172a;margin-bottom:18px}
+    @media(min-width:840px){.hero h1{font-size:38px}}
+    .hero h1 em{color:var(--warn);font-style:normal}
+    .checks{list-style:none;display:flex;flex-direction:column;gap:12px;margin:0 0 22px}
+    .checks li{display:flex;gap:10px;font-size:15px;line-height:1.5;color:var(--text)}
+    .checks li::before{content:"✔";color:var(--accent);font-weight:800;flex-shrink:0;margin-top:1px}
+
+    /* Eyebrow + Sub-CTA */
+    .eyebrow{display:inline-block;background:var(--warn);color:#fff;padding:6px 14px;border-radius:999px;font-size:13px;font-weight:700;letter-spacing:.5px;margin-bottom:14px;text-transform:uppercase}
+    .lead{font-size:18px;font-weight:700;color:#0f172a;margin:6px 0 14px;line-height:1.35}
+    .sub{font-size:15px;color:var(--text-2);margin-bottom:18px}
+
+    /* Buttons */
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--accent);color:#fff;border:0;border-radius:14px;padding:18px 28px;font:inherit;font-weight:800;font-size:18px;cursor:pointer;width:100%;transition:background .15s,transform .1s,box-shadow .15s;-webkit-tap-highlight-color:transparent;text-decoration:none;text-align:center;box-shadow:0 6px 18px rgba(12,170,79,.28)}
+    .btn:hover{background:var(--accent-dark);box-shadow:0 8px 22px rgba(12,170,79,.36)}
+    .btn:active{transform:scale(.98)}
+    .btn-large{padding:20px 32px;font-size:20px}
+    .btn-row{margin-top:8px}
+    .btn-meta{font-size:13px;color:var(--text-2);text-align:center;margin-top:10px;font-weight:600}
+    .bonus{margin-top:22px;background:#f0fdf4;border:1px solid #bbf7d0;color:#065f46;padding:14px 16px;border-radius:12px;font-size:14px;line-height:1.5}
+
+    /* Section "Das erwartet dich" */
+    .erwartet{padding:48px 0;background:var(--surface)}
+    .erwartet h2{font-size:26px;font-weight:800;text-align:center;line-height:1.25;margin-bottom:8px;color:#0f172a}
+    .erwartet h2 .accent{color:var(--accent)}
+    .erwartet .lede{text-align:center;color:var(--text-2);font-size:15px;margin-bottom:32px}
+    .cards{display:grid;grid-template-columns:1fr;gap:18px}
+    @media(min-width:760px){.cards{grid-template-columns:repeat(3,1fr)}}
+    .card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:24px;box-shadow:0 4px 16px rgba(15,23,42,.04)}
+    .card-num{font-size:13px;font-weight:800;color:var(--accent);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+    .card h3{font-size:19px;font-weight:800;color:#0f172a;margin-bottom:10px;line-height:1.3}
+    .card p{font-size:15px;color:var(--text-2);line-height:1.55}
+
+    /* Mid CTA */
+    .midcta{padding:48px 0 32px;text-align:center}
+    .midcta h3{font-size:24px;font-weight:800;color:#0f172a;margin-bottom:18px;line-height:1.3}
+    .midcta .imgwrap{max-width:520px;margin:0 auto 22px}
+    .midcta .imgwrap img{width:100%;height:auto;border-radius:16px;display:block;box-shadow:0 8px 24px rgba(0,0,0,.08)}
+    .midcta .btn{max-width:520px;margin:0 auto}
+    .midcta .scarcity-line{margin:12px 0 0;font-size:14px;color:var(--warn);font-weight:700}
+
+    /* Footer */
+    footer{padding:36px 16px 28px;text-align:center;color:var(--text-3);font-size:13px;border-top:1px solid var(--border);margin-top:24px}
+    footer a{color:var(--text-3);margin:0 8px;text-decoration:underline}
+    footer .copy{margin-bottom:8px;color:var(--text-2);font-weight:600}
+
+    .disclaimer{max-width:780px;margin:0 auto;padding:18px 16px 0;font-size:13px;color:var(--text-3);text-align:center;line-height:1.5;font-style:italic}
+
+    /* Modal */
+    .modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,.7);display:none;align-items:flex-start;justify-content:center;z-index:9999;padding:20px;overflow-y:auto}
+    .modal-overlay.open{display:flex}
+    .modal{background:#fff;border-radius:18px;width:100%;max-width:460px;padding:28px 24px;position:relative;margin:24px auto;box-shadow:0 20px 60px rgba(0,0,0,.3);animation:modalIn .25s ease}
+    @keyframes modalIn{from{opacity:0;transform:translateY(20px) scale(.96)}to{opacity:1;transform:none}}
+    .modal-close{position:absolute;top:12px;right:14px;background:transparent;border:0;font-size:26px;cursor:pointer;color:var(--text-3);line-height:1;width:36px;height:36px;display:flex;align-items:center;justify-content:center}
+    .modal-close:hover{color:var(--text)}
+    .modal .live-pill{display:inline-flex;align-items:center;gap:6px;background:#fee2e2;color:var(--warn);padding:5px 12px;border-radius:999px;font-size:13px;font-weight:700;margin-bottom:12px}
+    .modal .live-pill::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--warn);animation:pulseDot 1.4s infinite}
+    @keyframes pulseDot{0%,100%{opacity:1}50%{opacity:.4}}
+    .modal h3{font-size:22px;font-weight:800;color:#0f172a;margin-bottom:6px;line-height:1.25}
+    .modal p.lead2{font-size:15px;color:var(--text-2);margin-bottom:20px}
+
+    form.optin{display:flex;flex-direction:column;gap:12px}
+    form.optin input[type=text],
+    form.optin input[type=email],
+    form.optin input[type=tel]{width:100%;padding:14px 16px;font:inherit;font-size:16px;border:2px solid var(--border);border-radius:12px;background:#fff;color:var(--text)}
+    form.optin input:focus{outline:none;border-color:var(--accent)}
+    form.optin label.tos{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:var(--text-2);padding:4px 2px;line-height:1.5}
+    form.optin input[type=checkbox]{width:18px;height:18px;flex-shrink:0;margin-top:1px;accent-color:var(--accent)}
+    form.optin label.tos a{color:var(--accent);text-decoration:underline}
+    .err{color:#b91c1c;font-size:13px;text-align:center;margin-top:6px;min-height:18px;font-weight:600}
+    .modal .form-hint{font-size:12px;color:var(--text-3);text-align:center;margin-top:10px;font-style:italic}
+  </style>
+</head>
+<body>
+  <div class="scarcity">⚠ Hinweis: Es sind nur noch <strong>5 Plätze</strong> verfügbar!</div>
+
+  <header><img src="/images/logo.png" alt="Fit on Time" /></header>
+
+  <main>
+    <!-- Hero -->
+    <section class="hero">
+      <div class="wrap">
+        <div class="hero-grid">
+          <div>
+            <h1>Blockieren <em>Entzündungen</em> dein Wohlbefinden?</h1>
+            <ul class="checks">
+              <li>Die 3 versteckten Entzündungs-Trigger, die fast jede Frau täglich konsumiert (und die deine Haut, Energie und Figur ruinieren)</li>
+              <li>Wie du deinen Körper wieder in einen Zustand bringst, in dem er automatisch Fett verbrennt</li>
+              <li>Warum unreine Haut, Müdigkeit und fehlendes Selbstbewusstsein direkte Folgen von Entzündungen sind</li>
+              <li>Wie du deinen Darm so regulierst, dass du dich wieder leicht, energiegeladen und wie früher fühlst</li>
+            </ul>
+
+            <div class="eyebrow">Gratis Live-Enthüllung</div>
+            <div class="lead">Warum Frauen mit Entzündungen NIEMALS richtig abnehmen, egal was sie probieren.</div>
+            <p class="sub">Unsere unveröffentlichten Erkenntnisse aus 3.000 Fällen zeigen, wie Entzündungen zu Fettstau, Heisshunger und ständiger Müdigkeit führen.</p>
+
+            <div class="btn-row">
+              <button class="btn btn-large" type="button" onclick="openModal()">Jetzt Kostenlos Anmelden!</button>
+              <div class="btn-meta">Live am {LIVE_DATUM}</div>
+            </div>
+
+            <div class="bonus">
+              🎁 <strong>Exklusiver Bonus:</strong> Die 7-Punkte-Checkliste gegen Entzündungen. Plus Insider-Tricks, wie du deinen Kalorienverbrauch sofort spürbar erhöhst.
+            </div>
+          </div>
+
+          <div>
+            <img class="hero-img" src="/entzuendungen/hero.png" alt="Frau mit Entzündungs-Symptomen" loading="eager" />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Das erwartet dich -->
+    <section class="erwartet">
+      <div class="wrap">
+        <h2>Das erwartet dich in der <span class="accent">Live-Enthüllung</span></h2>
+        <p class="lede">3 konkrete Punkte, mit denen du sofort etwas anfangen kannst.</p>
+
+        <div class="cards">
+          <div class="card">
+            <div class="card-num">01</div>
+            <h3>Die Entzündungs-Falle</h3>
+            <p>Welche 3 alltäglichen Trigger deinen Körper in den Alarmzustand versetzen, Entzündungen befeuern und dafür sorgen, dass er jedes Gramm Fett krampfhaft festhält.</p>
+          </div>
+          <div class="card">
+            <div class="card-num">02</div>
+            <h3>Der Zell-Reset</h3>
+            <p>Mit welcher simplen Methode du die Abnehm-Blockade deiner Zellen löst, damit dein Stoffwechsel endlich wieder auf Fettverbrennung statt auf Speichern schaltet.</p>
+          </div>
+          <div class="card">
+            <div class="card-num">03</div>
+            <h3>Das Leichtigkeits-Prinzip</h3>
+            <p>Wie du Entzündungen im Darm reduzierst, um ohne Diät-Stress Wassereinlagerungen loszuwerden und dich endlich wieder energiegeladen und leicht zu fühlen.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Mid CTA -->
+    <section class="midcta">
+      <div class="wrap">
+        <div class="imgwrap">
+          <img src="/entzuendungen/cards.png" alt="Live-Webinar Vorschau" loading="lazy" />
+        </div>
+        <h3>Sichere dir jetzt deinen Platz, bevor die Anmeldung schliesst.</h3>
+        <button class="btn btn-large" type="button" onclick="openModal()">Jetzt Kostenlos Anmelden!</button>
+        <div class="scarcity-line">⚠ Nur noch 5 Plätze verfügbar</div>
+        <p class="disclaimer">*** Achtung: Die Teilnahme ist auf 200 Plätze limitiert. Bitte nehme nur teil, wenn du Interesse daran hast, dauerhaft deine Wohlfühlfigur zu erreichen. ***</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="copy">© Fit on Time</div>
+    <a href={IMPRESSUM_URL} target="_blank" rel="noopener">Impressum</a>·
+    <a href={DATENSCHUTZ_URL} target="_blank" rel="noopener">Datenschutzerklärung</a>
+  </footer>
+
+  <!-- Opt-in Modal -->
+  <div class="modal-overlay" id="modalOverlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal">
+      <button class="modal-close" type="button" onclick="closeModal()" aria-label="Schliessen">✕</button>
+      <div class="live-pill">{LIVE_DATUM_KURZ}</div>
+      <h3 id="modalTitle">Nur noch ein Schritt</h3>
+      <p class="lead2">Wohin sollen wir die Einladung senden?</p>
+      <form class="optin" id="optinForm" onsubmit="submitLead(event)">
+        <input type="text" name="fname" placeholder="Dein Vor- und Nachname" required autocomplete="name" />
+        <input type="email" name="email" placeholder="Deine E-Mail-Adresse" required autocomplete="email" />
+        <input type="tel" name="phone" placeholder="z.B. +41 76 123 45 67" required autocomplete="tel" />
+        <label class="tos">
+          <input type="checkbox" name="datenschutz" required />
+          <span>Ich akzeptiere die <a href={DATENSCHUTZ_URL} target="_blank" rel="noopener">Datenschutzbestimmungen</a> und stimme zu, dass mir der Zugangslink via WhatsApp und E-Mail zugesendet wird.</span>
+        </label>
+        <button class="btn" type="submit" id="submitBtn">🔓 Kostenlos teilnehmen ➜</button>
+        <div class="err" id="optinErr"></div>
+        <p class="form-hint">Die Eintragung ist kostenlos. Du erhältst deinen Zugangslink via WhatsApp.</p>
+      </form>
+    </div>
+  </div>
+
+  <CookieBanner
+    metaPixelId={PIXEL_ID}
+    hyrosPh={HYROS_ID}
+    impressumUrl={IMPRESSUM_URL}
+    datenschutzUrl={DATENSCHUTZ_URL}
+    consentKey="fot_consent"
+  />
+
+  <script is:inline define:vars={{ LP_SLUG, LP_NAME }}>
+    // Session + Tracking
+    const SESSION_KEY = 'fot_session';
+    let session = sessionStorage.getItem(SESSION_KEY);
+    if (!session) {
+      session = (crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2) + Date.now());
+      sessionStorage.setItem(SESSION_KEY, session);
+    }
+
+    function track(event, extra) {
+      const payload = JSON.stringify(Object.assign({
+        event, lp: LP_SLUG, lp_name: LP_NAME, session, schema_version: 'v1',
+      }, extra || {}));
+      try {
+        if (navigator.sendBeacon) {
+          navigator.sendBeacon('/api/track', new Blob([payload], { type: 'application/json' }));
+          return;
+        }
+      } catch (e) {}
+      fetch('/api/track', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload, keepalive: true }).catch(() => {});
+    }
+
+    // Modal-Steuerung
+    let modalOpened = false;
+    function openModal() {
+      const m = document.getElementById('modalOverlay');
+      m.classList.add('open');
+      document.body.style.overflow = 'hidden';
+      if (!modalOpened) {
+        modalOpened = true;
+        track('optin_view');
+        if (window.fbq) window.fbq('track', 'InitiateCheckout');
+      }
+      // Ersten Input fokussieren
+      setTimeout(() => document.querySelector('#optinForm input[name="fname"]')?.focus(), 100);
+    }
+    function closeModal() {
+      document.getElementById('modalOverlay').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+    window.openModal = openModal;
+    window.closeModal = closeModal;
+
+    // Overlay-Click + Escape schliesst Modal
+    document.getElementById('modalOverlay').addEventListener('click', (e) => {
+      if (e.target.id === 'modalOverlay') closeModal();
+    });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+
+    // Lead-Submit
+    async function submitLead(e) {
+      e.preventDefault();
+      const btn = document.getElementById('submitBtn');
+      const err = document.getElementById('optinErr');
+      err.textContent = '';
+      btn.disabled = true;
+      btn.textContent = 'Wird gesendet...';
+
+      const fd = new FormData(e.target);
+      const payload = {
+        name: fd.get('fname'),
+        email: fd.get('email'),
+        phone: fd.get('phone'),
+        lp_slug: LP_SLUG,
+        lp_name: LP_NAME,
+        session,
+        answers: {},
+      };
+
+      try {
+        const res = await fetch('/api/sheets', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        if (!res.ok) {
+          const j = await res.json().catch(() => ({}));
+          throw new Error(j.error || 'Fehler beim Senden');
+        }
+        track('lead_submit');
+        if (window.fbq) window.fbq('track', 'Lead');
+        // Kurze Bestaetigung im Modal
+        document.querySelector('.modal').innerHTML = `
+          <div style="text-align:center;padding:18px 6px">
+            <div style="font-size:48px;margin-bottom:12px">✅</div>
+            <h3 style="font-size:22px;font-weight:800;color:#0f172a;margin-bottom:10px">Du bist angemeldet!</h3>
+            <p style="color:#4b5563;font-size:15px;line-height:1.5">Wir senden dir den Zugangslink in den nächsten Minuten via WhatsApp und E-Mail.</p>
+          </div>`;
+      } catch (e2) {
+        err.textContent = e2.message || 'Etwas ist schiefgelaufen, bitte nochmal versuchen.';
+        btn.disabled = false;
+        btn.textContent = '🔓 Kostenlos teilnehmen ➜';
+      }
+    }
+    window.submitLead = submitLead;
+
+    // Initial
+    track('page_view');
+  </script>
+</body>
+</html>
