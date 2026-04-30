@@ -223,6 +223,26 @@ const LIVE_DATE_ISO = '2026-05-12T18:00:00+02:00';
     .modal .btn{width:100%}
     .modal-trust{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:14px;color:var(--text-3);font-size:11.5px;font-weight:600}
     .modal-trust .item{display:flex;align-items:center;gap:5px}
+
+    /* Sticky CTA bar (erscheint, sobald Hero-CTA ausserhalb des Viewports ist, verschwindet bei Final-CTA) */
+    .sticky-cta{position:fixed;left:0;right:0;bottom:0;background:rgba(10,15,28,.96);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-top:1px solid rgba(255,255,255,.08);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:14px;z-index:50;transform:translateY(120%);transition:transform .35s cubic-bezier(.22,1,.36,1);box-shadow:0 -10px 30px rgba(0,0,0,.2)}
+    .sticky-cta.is-visible{transform:translateY(0)}
+    .sticky-cta .info{display:flex;flex-direction:column;line-height:1.2;color:#fff;font-weight:700;font-size:13.5px;min-width:0}
+    .sticky-cta .info .when{color:#86efac;font-size:11px;font-weight:800;letter-spacing:1.1px;text-transform:uppercase;display:flex;align-items:center;gap:6px}
+    .sticky-cta .info .when::before{content:"";width:7px;height:7px;border-radius:50%;background:#86efac;box-shadow:0 0 0 0 rgba(134,239,172,.6);animation:pulseDot 1.6s infinite;flex-shrink:0}
+    .sticky-cta .info .what{margin-top:2px}
+    .sticky-cta .btn{padding:13px 20px;font-size:14.5px;width:auto;flex-shrink:0;box-shadow:0 6px 18px rgba(12,170,79,.42);border-radius:11px}
+    @media(max-width:520px){
+      .sticky-cta{padding:10px 12px;gap:10px}
+      .sticky-cta .info .when{font-size:10.5px}
+      .sticky-cta .info .what{font-size:13px}
+      .sticky-cta .btn{padding:11px 16px;font-size:13.5px}
+    }
+    /* Body padding-bottom wenn sticky aktiv, damit Footer nicht verdeckt wird */
+    body.has-sticky-cta{padding-bottom:0}
+
+    /* Floating Legal-Bar (Impressum/Datenschutz) auf dieser LP ausblenden, Links nur im Footer */
+    #lp-legal-bar{display:none !important}
   </style>
 </head>
 <body>
@@ -247,7 +267,7 @@ const LIVE_DATE_ISO = '2026-05-12T18:00:00+02:00';
             </div>
 
             <div class="cta-stack">
-              <button class="btn btn-large" type="button" onclick="openModal('hero')">Jetzt Platz sichern <span class="btn-arrow">→</span></button>
+              <button class="btn btn-large" type="button" onclick="openModal('hero')" id="heroCta">Jetzt Platz sichern <span class="btn-arrow">→</span></button>
               <span class="cta-meta">📅 <strong>Dienstag · 18:00</strong> · Online</span>
             </div>
 
@@ -430,6 +450,15 @@ const LIVE_DATE_ISO = '2026-05-12T18:00:00+02:00';
     </div>
   </div>
 
+  <!-- Sticky CTA bar -->
+  <div class="sticky-cta" id="stickyCta" aria-hidden="true">
+    <div class="info">
+      <span class="when">Live · 12.05. · 18 Uhr</span>
+      <span class="what">Gratis Workshop, noch 34 Plätze</span>
+    </div>
+    <button class="btn" type="button" onclick="openModal('sticky')">Platz sichern <span class="btn-arrow">→</span></button>
+  </div>
+
   <CookieBanner
     metaPixelId={PIXEL_ID}
     hyrosPh={HYROS_ID}
@@ -532,6 +561,32 @@ const LIVE_DATE_ISO = '2026-05-12T18:00:00+02:00';
       }
     }
     window.submitLead = submitLead;
+
+    // Sticky-CTA: erscheint sobald Hero-CTA aus dem Viewport ist, verschwindet wenn Final-CTA sichtbar
+    const stickyCta = document.getElementById('stickyCta');
+    const heroCta = document.getElementById('heroCta');
+    const finalCta = document.getElementById('anmeldung');
+    let heroVisible = true;
+    let finalVisible = false;
+
+    function syncSticky() {
+      const shouldShow = !heroVisible && !finalVisible;
+      stickyCta.classList.toggle('is-visible', shouldShow);
+      stickyCta.setAttribute('aria-hidden', shouldShow ? 'false' : 'true');
+      document.body.classList.toggle('has-sticky-cta', shouldShow);
+    }
+
+    if ('IntersectionObserver' in window && heroCta && finalCta && stickyCta) {
+      new IntersectionObserver((entries) => {
+        heroVisible = entries[0].isIntersecting;
+        syncSticky();
+      }, { rootMargin: '0px 0px -20% 0px' }).observe(heroCta);
+
+      new IntersectionObserver((entries) => {
+        finalVisible = entries[0].isIntersecting;
+        syncSticky();
+      }, { threshold: 0.1 }).observe(finalCta);
+    }
 
     // Countdown auf Webinar-Start
     function updateCountdown() {
