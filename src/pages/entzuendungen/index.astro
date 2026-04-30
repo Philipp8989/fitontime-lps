@@ -1,6 +1,6 @@
 ---
-// Webinar-Opt-in "Entzuendungen", Nachbau Funnelcockpit-LP go.fit-on-time.ch/entzndungen
-// Single-Page, kein Quiz, Modal-Form mit Name/Email/Telefon
+// Webinar-Opt-in "Entzuendungen", Nachbau go.fit-on-time.ch/entzndungen mit UX/UI-Overhaul
+// Single-Page, Modal-Form, alle Visuals als HTML/CSS, Schweiz-Trust, Redirect zu /danke-entzuendungen/
 import CookieBanner from '../../components/CookieBanner.astro';
 
 const LP_SLUG = 'entzuendungen';
@@ -10,131 +10,221 @@ const HYROS_ID = (import.meta.env.PUBLIC_HYROS_ID || '').trim();
 const IMPRESSUM_URL = 'https://fitontime.ch/impressum-datenschutz';
 const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
 
-// Live-Termin als Konstante, fuer schnelles Wechseln
-const LIVE_DATUM = 'Dienstag, 12.05. um 18:00 Uhr';
-const LIVE_DATUM_KURZ = 'Live am 12.05 um 18 Uhr';
+// Live-Termin als Konstante
+const LIVE_DATE_ISO = '2026-05-12T18:00:00+02:00';
+const LIVE_DATUM = 'Dienstag, 12. Mai 2026 um 18:00 Uhr';
+const LIVE_DATUM_KURZ = 'Live am 12.05. um 18 Uhr';
 ---
-<html lang="de">
+<html lang="de-CH">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="robots" content="noindex, nofollow" />
-  <title>Entzündungen, dein versteckter Abnehm-Stopper | Fit on Time</title>
+  <title>Gratis Webinar: Entzündungen, der versteckte Abnehm-Stopper | Fit on Time</title>
+  <meta name="description" content="Live-Webinar für Frauen: Wie du Entzündungen auflöst, Wassereinlagerungen verlierst und automatisch in den Fettverbrennungs-Modus kommst." />
   <link rel="icon" type="image/png" href="/images/logo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 
-  <!-- Meta Pixel laeuft DSGVO-konform ueber CookieBanner.astro nach Consent -->
-  <!-- Hyros als First-Party-Attribution essentiell, laedt ohne Consent -->
+  <!-- Hyros laedt ohne Consent (First-Party-Attribution), Meta Pixel via CookieBanner nach Consent -->
   <script is:inline src="https://t.hyros.com/v1/lst/universal-script?ph=689a71ca1ab3be1cb1caddbe6b7902a4ad2c51a228f4ec9ea7fef3123a705f63"></script>
 
   <style is:global>
     *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
     :root{
       --bg:#ffffff;
-      --surface:#f8f9fb;
+      --surface:#f7faf9;
+      --surface-2:#ecf6f0;
       --border:#e5e7eb;
-      --text:#1f2937;
-      --text-2:#4b5563;
-      --text-3:#9ca3af;
+      --text:#0f172a;
+      --text-2:#475569;
+      --text-3:#94a3b8;
       --accent:#0caa4f;
       --accent-dark:#089042;
+      --accent-soft:#d1fae5;
       --warn:#dc2626;
+      --warn-soft:#fef2f2;
       --r:14px;
-      --font:'Montserrat',system-ui,-apple-system,sans-serif;
+      --font:'Inter',system-ui,-apple-system,sans-serif;
     }
-    html{-webkit-text-size-adjust:100%}
-    body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.5;-webkit-font-smoothing:antialiased;min-height:100dvh;display:flex;flex-direction:column}
+    html{-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+    body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.5;-webkit-font-smoothing:antialiased;min-height:100dvh;display:flex;flex-direction:column;font-feature-settings:"ss01","cv11"}
     main{flex:1}
-    .wrap{width:100%;max-width:1100px;margin:0 auto;padding:0 16px}
+    .wrap{width:100%;max-width:1120px;margin:0 auto;padding:0 18px}
 
-    header{padding:18px 0 8px;text-align:center}
-    header img{height:40px}
+    /* Top scarcity bar */
+    .topbar{background:linear-gradient(90deg,#fff7ed,#fef3c7);color:#854d0e;border-bottom:1px solid #fde68a;padding:9px 16px;text-align:center;font-size:13.5px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px;letter-spacing:.1px}
+    .topbar .pulse{width:8px;height:8px;border-radius:50%;background:#dc2626;animation:pulseDot 1.4s infinite;flex-shrink:0}
+    @keyframes pulseDot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
 
-    /* Scarcity-Banner */
-    .scarcity{background:#fff3cd;color:#854d0e;border-bottom:1px solid #fde68a;padding:10px 16px;text-align:center;font-size:14px;font-weight:600}
+    header{padding:18px 0 4px;text-align:center}
+    header img{height:38px}
 
     /* Hero */
-    .hero{padding:32px 0 24px}
+    .hero{padding:24px 0 36px}
+    @media(min-width:840px){.hero{padding:36px 0 52px}}
     .hero-grid{display:grid;grid-template-columns:1fr;gap:28px;align-items:center}
-    @media(min-width:840px){.hero-grid{grid-template-columns:1.05fr 1fr;gap:48px}}
-    .hero-img{width:100%;border-radius:18px;box-shadow:0 10px 30px rgba(0,0,0,.08);display:block}
-    .hero h1{font-size:30px;font-weight:800;line-height:1.18;letter-spacing:-.4px;color:#0f172a;margin-bottom:18px}
-    @media(min-width:840px){.hero h1{font-size:38px}}
-    .hero h1 em{color:var(--warn);font-style:normal}
-    .checks{list-style:none;display:flex;flex-direction:column;gap:12px;margin:0 0 22px}
-    .checks li{display:flex;gap:10px;font-size:15px;line-height:1.5;color:var(--text)}
-    .checks li::before{content:"✔";color:var(--accent);font-weight:800;flex-shrink:0;margin-top:1px}
+    @media(min-width:900px){.hero-grid{grid-template-columns:1.05fr 1fr;gap:56px}}
 
-    /* Eyebrow + Sub-CTA */
-    .eyebrow{display:inline-block;background:var(--warn);color:#fff;padding:6px 14px;border-radius:999px;font-size:13px;font-weight:700;letter-spacing:.5px;margin-bottom:14px;text-transform:uppercase}
-    .lead{font-size:18px;font-weight:700;color:#0f172a;margin:6px 0 14px;line-height:1.35}
-    .sub{font-size:15px;color:var(--text-2);margin-bottom:18px}
+    .pill{display:inline-flex;align-items:center;gap:6px;background:var(--accent-soft);color:#065f46;padding:6px 12px;border-radius:999px;font-size:12.5px;font-weight:700;letter-spacing:.2px;text-transform:uppercase;margin-bottom:14px}
+    .pill .pulse{width:7px;height:7px;border-radius:50%;background:var(--accent);animation:pulseDot 1.4s infinite}
+
+    h1{font-size:32px;font-weight:800;line-height:1.14;letter-spacing:-.6px;color:var(--text);margin-bottom:14px}
+    @media(min-width:840px){h1{font-size:44px}}
+    h1 .hl{background:linear-gradient(180deg,transparent 60%,#fee2e2 60%);padding:0 4px;border-radius:3px;color:var(--warn)}
+
+    .lead{font-size:17px;color:var(--text-2);margin-bottom:22px;line-height:1.55}
+    @media(min-width:840px){.lead{font-size:18.5px}}
+
+    .checks{list-style:none;display:flex;flex-direction:column;gap:11px;margin:0 0 24px}
+    .checks li{display:flex;gap:12px;font-size:15.5px;line-height:1.5;color:var(--text);align-items:flex-start}
+    .check-ico{flex-shrink:0;width:22px;height:22px;border-radius:50%;background:var(--accent);display:inline-flex;align-items:center;justify-content:center;color:#fff;margin-top:2px}
+    .check-ico svg{width:13px;height:13px}
 
     /* Buttons */
-    .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--accent);color:#fff;border:0;border-radius:14px;padding:18px 28px;font:inherit;font-weight:800;font-size:18px;cursor:pointer;width:100%;transition:background .15s,transform .1s,box-shadow .15s;-webkit-tap-highlight-color:transparent;text-decoration:none;text-align:center;box-shadow:0 6px 18px rgba(12,170,79,.28)}
-    .btn:hover{background:var(--accent-dark);box-shadow:0 8px 22px rgba(12,170,79,.36)}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;background:var(--accent);color:#fff;border:0;border-radius:14px;padding:18px 28px;font:inherit;font-weight:800;font-size:17.5px;cursor:pointer;width:100%;transition:background .15s,transform .1s,box-shadow .2s;-webkit-tap-highlight-color:transparent;text-decoration:none;text-align:center;box-shadow:0 8px 24px rgba(12,170,79,.32);letter-spacing:.1px}
+    .btn:hover{background:var(--accent-dark);box-shadow:0 12px 30px rgba(12,170,79,.4);transform:translateY(-1px)}
     .btn:active{transform:scale(.98)}
-    .btn-large{padding:20px 32px;font-size:20px}
-    .btn-row{margin-top:8px}
-    .btn-meta{font-size:13px;color:var(--text-2);text-align:center;margin-top:10px;font-weight:600}
-    .bonus{margin-top:22px;background:#f0fdf4;border:1px solid #bbf7d0;color:#065f46;padding:14px 16px;border-radius:12px;font-size:14px;line-height:1.5}
+    .btn-large{padding:20px 32px;font-size:19px}
+    .btn-arrow{display:inline-block;transition:transform .2s}
+    .btn:hover .btn-arrow{transform:translateX(4px)}
 
-    /* Section "Das erwartet dich" */
-    .erwartet{padding:48px 0;background:var(--surface)}
-    .erwartet h2{font-size:26px;font-weight:800;text-align:center;line-height:1.25;margin-bottom:8px;color:#0f172a}
-    .erwartet h2 .accent{color:var(--accent)}
-    .erwartet .lede{text-align:center;color:var(--text-2);font-size:15px;margin-bottom:32px}
-    .cards{display:grid;grid-template-columns:1fr;gap:18px}
+    .cta-meta{font-size:13.5px;color:var(--text-2);text-align:center;margin-top:11px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap}
+    .cta-meta::before{content:"📅";font-size:14px}
+
+    /* Trust row */
+    .trust-row{display:flex;flex-wrap:wrap;gap:16px;margin-top:22px;color:var(--text-2);font-size:13.5px;align-items:center;font-weight:600}
+    .trust-row .item{display:flex;align-items:center;gap:6px}
+    .trust-row .ch-flag{width:18px;height:12px;border-radius:2px;background:#dc2626;position:relative;display:inline-block;flex-shrink:0;box-shadow:inset 0 0 0 1px rgba(0,0,0,.05)}
+    .trust-row .ch-flag::before,.trust-row .ch-flag::after{content:"";position:absolute;background:#fff}
+    .trust-row .ch-flag::before{left:7px;top:2px;width:4px;height:8px}
+    .trust-row .ch-flag::after{left:4px;top:5px;width:10px;height:2px}
+
+    /* Hero visual: HTML statt Funnelcockpit-Screenshot */
+    .hero-visual{position:relative;aspect-ratio:1/1;max-width:480px;margin:0 auto;border-radius:24px;background:radial-gradient(circle at 30% 30%,#bbf7d0,#d1fae5 40%,#ecfdf5 70%,#f0fdf4);overflow:hidden;box-shadow:0 20px 50px rgba(15,23,42,.08),0 4px 14px rgba(15,23,42,.04)}
+    .hero-visual::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 70% 80%,rgba(255,255,255,.6),transparent 60%);pointer-events:none}
+    .hero-visual .body-illu{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:55%}
+    .hero-visual .body-illu svg{width:100%;height:auto;filter:drop-shadow(0 10px 24px rgba(15,23,42,.08))}
+    .hero-visual .symptom{position:absolute;background:#fff;padding:11px 14px;border-radius:14px;box-shadow:0 8px 22px rgba(15,23,42,.12);display:flex;align-items:center;gap:10px;font-size:13.5px;font-weight:700;color:var(--text);max-width:200px;line-height:1.3;animation:floatY 3.4s ease-in-out infinite}
+    .hero-visual .symptom .dot{width:9px;height:9px;border-radius:50%;background:var(--warn);flex-shrink:0;box-shadow:0 0 0 4px rgba(220,38,38,.14)}
+    .hero-visual .s1{top:8%;left:6%;animation-delay:0s}
+    .hero-visual .s2{top:15%;right:6%;animation-delay:.6s}
+    .hero-visual .s3{bottom:18%;left:4%;animation-delay:1.2s}
+    .hero-visual .s4{bottom:8%;right:8%;animation-delay:1.8s}
+    @keyframes floatY{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+
+    /* Bonus card */
+    .bonus{margin-top:24px;background:linear-gradient(135deg,#f0fdf4,#ecfdf5);border:1px solid var(--accent-soft);border-radius:16px;padding:18px 18px 18px 60px;position:relative;font-size:14.5px;line-height:1.5;color:#065f46}
+    .bonus::before{content:"🎁";position:absolute;left:16px;top:16px;font-size:30px;line-height:1}
+    .bonus strong{color:var(--text);display:block;margin-bottom:3px}
+
+    /* Section: Erwartet */
+    section.erwartet{padding:64px 0;background:var(--surface)}
+    .sec-eyebrow{display:block;text-align:center;color:var(--accent);font-size:13px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px}
+    .sec-h{font-size:28px;font-weight:800;text-align:center;line-height:1.22;color:var(--text);margin-bottom:14px;letter-spacing:-.4px}
+    @media(min-width:840px){.sec-h{font-size:34px}}
+    .sec-sub{text-align:center;color:var(--text-2);font-size:16px;margin:0 auto 36px;max-width:620px;line-height:1.55}
+
+    .cards{display:grid;grid-template-columns:1fr;gap:20px}
     @media(min-width:760px){.cards{grid-template-columns:repeat(3,1fr)}}
-    .card{background:#fff;border:1px solid var(--border);border-radius:16px;padding:24px;box-shadow:0 4px 16px rgba(15,23,42,.04)}
-    .card-num{font-size:13px;font-weight:800;color:var(--accent);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
-    .card h3{font-size:19px;font-weight:800;color:#0f172a;margin-bottom:10px;line-height:1.3}
-    .card p{font-size:15px;color:var(--text-2);line-height:1.55}
+    .card{background:#fff;border:1px solid var(--border);border-radius:18px;padding:28px 24px;box-shadow:0 4px 20px rgba(15,23,42,.05);position:relative;overflow:hidden;transition:transform .2s,box-shadow .2s}
+    .card:hover{transform:translateY(-4px);box-shadow:0 12px 30px rgba(15,23,42,.08)}
+    .card .ico{width:54px;height:54px;border-radius:14px;background:linear-gradient(135deg,var(--accent),var(--accent-dark));display:flex;align-items:center;justify-content:center;margin-bottom:18px;box-shadow:0 6px 16px rgba(12,170,79,.28)}
+    .card .ico svg{width:26px;height:26px;color:#fff}
+    .card-num{font-size:12px;font-weight:800;color:var(--accent);letter-spacing:1.3px;text-transform:uppercase;margin-bottom:6px}
+    .card h3{font-size:19px;font-weight:800;color:var(--text);margin-bottom:10px;line-height:1.3;letter-spacing:-.2px}
+    .card p{font-size:14.5px;color:var(--text-2);line-height:1.6}
 
-    /* Mid CTA */
-    .midcta{padding:48px 0 32px;text-align:center}
-    .midcta h3{font-size:24px;font-weight:800;color:#0f172a;margin-bottom:18px;line-height:1.3}
-    .midcta .imgwrap{max-width:520px;margin:0 auto 22px}
-    .midcta .imgwrap img{width:100%;height:auto;border-radius:16px;display:block;box-shadow:0 8px 24px rgba(0,0,0,.08)}
-    .midcta .btn{max-width:520px;margin:0 auto}
-    .midcta .scarcity-line{margin:12px 0 0;font-size:14px;color:var(--warn);font-weight:700}
+    /* Bonus showcase (HTML statt iPad-Mockup) */
+    .bonus-section{padding:64px 0;background:#fff}
+    .bonus-grid{display:grid;grid-template-columns:1fr;gap:32px;align-items:center}
+    @media(min-width:840px){.bonus-grid{grid-template-columns:1fr 1.05fr;gap:56px}}
+    .bonus-card{background:linear-gradient(180deg,#0f172a,#1e293b);border-radius:24px;padding:28px;color:#fff;position:relative;overflow:hidden;box-shadow:0 30px 60px -10px rgba(15,23,42,.4)}
+    .bonus-card::before{content:"";position:absolute;top:-50%;right:-30%;width:80%;height:200%;background:radial-gradient(circle,rgba(12,170,79,.25),transparent 60%);pointer-events:none}
+    .bonus-card .label{display:inline-block;background:var(--accent);color:#fff;padding:5px 12px;border-radius:999px;font-size:11.5px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;margin-bottom:18px;position:relative}
+    .bonus-card h4{font-size:24px;font-weight:800;line-height:1.25;margin-bottom:14px;position:relative;letter-spacing:-.3px}
+    .bonus-card .checklist{list-style:none;display:flex;flex-direction:column;gap:11px;margin:18px 0 0;position:relative}
+    .bonus-card .checklist li{font-size:14.5px;display:flex;align-items:flex-start;gap:10px;color:#cbd5e1;line-height:1.5}
+    .bonus-card .checklist li::before{content:"✓";flex-shrink:0;width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:12px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;margin-top:1px}
+    .bonus-card .checklist li strong{color:#fff;font-weight:700}
+    .bonus-text h3{font-size:28px;font-weight:800;line-height:1.2;letter-spacing:-.4px;margin-bottom:14px;color:var(--text)}
+    @media(min-width:840px){.bonus-text h3{font-size:32px}}
+    .bonus-text p{font-size:16px;color:var(--text-2);line-height:1.6;margin-bottom:14px}
 
-    /* Footer */
-    footer{padding:36px 16px 28px;text-align:center;color:var(--text-3);font-size:13px;border-top:1px solid var(--border);margin-top:24px}
+    /* Social Proof */
+    .social-proof{padding:64px 0;background:var(--surface-2)}
+    .ba-grid{display:grid;grid-template-columns:1fr;gap:18px;margin:36px 0 28px}
+    @media(min-width:760px){.ba-grid{grid-template-columns:repeat(3,1fr)}}
+    .ba-grid img{width:100%;height:auto;border-radius:16px;box-shadow:0 8px 24px rgba(15,23,42,.1);display:block}
+    .testimonial{background:#fff;border-radius:18px;padding:26px;max-width:780px;margin:0 auto;box-shadow:0 8px 24px rgba(15,23,42,.06);position:relative}
+    .testimonial::before{content:"”";position:absolute;top:6px;left:14px;font-size:80px;color:var(--accent-soft);font-family:Georgia,serif;line-height:1;font-weight:700}
+    .testimonial p{font-size:16px;line-height:1.65;color:var(--text);margin:0 0 16px;padding-left:36px;font-style:italic}
+    .testimonial cite{display:flex;align-items:center;gap:12px;padding-left:36px;font-style:normal;color:var(--text-2);font-size:14px;font-weight:600}
+    .testimonial .avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent-dark));display:inline-flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:14px;flex-shrink:0}
+
+    /* Final CTA */
+    .final-cta{padding:64px 0 56px;text-align:center;background:linear-gradient(180deg,#fff,var(--surface))}
+    .final-cta .countdown{display:inline-flex;gap:8px;background:#fff;border:1px solid var(--border);border-radius:14px;padding:14px 20px;margin-bottom:22px;box-shadow:0 4px 14px rgba(15,23,42,.05)}
+    .final-cta .countdown .item{display:flex;flex-direction:column;align-items:center;min-width:54px}
+    .final-cta .countdown .num{font-size:24px;font-weight:800;color:var(--text);font-variant-numeric:tabular-nums;line-height:1}
+    .final-cta .countdown .lbl{font-size:11px;color:var(--text-3);text-transform:uppercase;letter-spacing:.8px;margin-top:4px;font-weight:700}
+    .final-cta .countdown .sep{width:1px;background:var(--border)}
+    .final-cta h2{font-size:28px;font-weight:800;line-height:1.22;letter-spacing:-.4px;margin-bottom:14px;color:var(--text)}
+    @media(min-width:840px){.final-cta h2{font-size:34px}}
+    .final-cta .btn-wrap{max-width:520px;margin:8px auto 0}
+    .final-cta .scarcity-line{margin:14px 0 0;font-size:14px;color:var(--warn);font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px}
+    .disclaimer{max-width:680px;margin:22px auto 0;font-size:13px;color:var(--text-3);text-align:center;line-height:1.6;font-style:italic;padding:0 12px}
+
+    footer{padding:32px 18px 40px;text-align:center;color:var(--text-3);font-size:13px;border-top:1px solid var(--border);background:#fff}
+    footer .copy{margin-bottom:6px;color:var(--text-2);font-weight:600}
     footer a{color:var(--text-3);margin:0 8px;text-decoration:underline}
-    footer .copy{margin-bottom:8px;color:var(--text-2);font-weight:600}
-
-    .disclaimer{max-width:780px;margin:0 auto;padding:18px 16px 0;font-size:13px;color:var(--text-3);text-align:center;line-height:1.5;font-style:italic}
 
     /* Modal */
-    .modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,.7);display:none;align-items:flex-start;justify-content:center;z-index:9999;padding:20px;overflow-y:auto}
-    .modal-overlay.open{display:flex}
-    .modal{background:#fff;border-radius:18px;width:100%;max-width:460px;padding:28px 24px;position:relative;margin:24px auto;box-shadow:0 20px 60px rgba(0,0,0,.3);animation:modalIn .25s ease}
-    @keyframes modalIn{from{opacity:0;transform:translateY(20px) scale(.96)}to{opacity:1;transform:none}}
-    .modal-close{position:absolute;top:12px;right:14px;background:transparent;border:0;font-size:26px;cursor:pointer;color:var(--text-3);line-height:1;width:36px;height:36px;display:flex;align-items:center;justify-content:center}
-    .modal-close:hover{color:var(--text)}
-    .modal .live-pill{display:inline-flex;align-items:center;gap:6px;background:#fee2e2;color:var(--warn);padding:5px 12px;border-radius:999px;font-size:13px;font-weight:700;margin-bottom:12px}
-    .modal .live-pill::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--warn);animation:pulseDot 1.4s infinite}
-    @keyframes pulseDot{0%,100%{opacity:1}50%{opacity:.4}}
-    .modal h3{font-size:22px;font-weight:800;color:#0f172a;margin-bottom:6px;line-height:1.25}
-    .modal p.lead2{font-size:15px;color:var(--text-2);margin-bottom:20px}
+    .modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,.72);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);display:none;align-items:flex-start;justify-content:center;z-index:9999;padding:20px;overflow-y:auto}
+    .modal-overlay.open{display:flex;animation:fadeIn .2s}
+    @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+    .modal{background:#fff;border-radius:24px;width:100%;max-width:480px;padding:0;position:relative;margin:24px auto;box-shadow:0 30px 80px rgba(0,0,0,.5);animation:modalIn .3s cubic-bezier(.22,1,.36,1);overflow:hidden}
+    @keyframes modalIn{from{opacity:0;transform:translateY(30px) scale(.95)}to{opacity:1;transform:none}}
+    .modal-head{background:linear-gradient(135deg,#0f172a,#1e293b);color:#fff;padding:28px 28px 24px;position:relative}
+    .modal-head::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 80% 20%,rgba(12,170,79,.3),transparent 50%);pointer-events:none}
+    .modal-close{position:absolute;top:12px;right:14px;background:rgba(255,255,255,.1);border:0;font-size:18px;cursor:pointer;color:#fff;line-height:1;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:background .15s;z-index:2}
+    .modal-close:hover{background:rgba(255,255,255,.2)}
+    .modal-head .live-pill{display:inline-flex;align-items:center;gap:7px;background:rgba(220,38,38,.15);border:1px solid rgba(220,38,38,.4);color:#fecaca;padding:6px 12px;border-radius:999px;font-size:12px;font-weight:700;margin-bottom:14px;position:relative;letter-spacing:.2px;text-transform:uppercase}
+    .modal-head .live-pill::before{content:"";width:7px;height:7px;border-radius:50%;background:#fca5a5;animation:pulseDot 1.4s infinite}
+    .modal-head h3{font-size:22px;font-weight:800;line-height:1.25;margin:0 0 6px;letter-spacing:-.3px;position:relative}
+    .modal-head p.lead2{font-size:14.5px;color:#cbd5e1;line-height:1.45;margin:0;position:relative}
 
-    form.optin{display:flex;flex-direction:column;gap:12px}
-    form.optin input[type=text],
-    form.optin input[type=email],
-    form.optin input[type=tel]{width:100%;padding:14px 16px;font:inherit;font-size:16px;border:2px solid var(--border);border-radius:12px;background:#fff;color:var(--text)}
-    form.optin input:focus{outline:none;border-color:var(--accent)}
-    form.optin label.tos{display:flex;align-items:flex-start;gap:8px;font-size:12px;color:var(--text-2);padding:4px 2px;line-height:1.5}
-    form.optin input[type=checkbox]{width:18px;height:18px;flex-shrink:0;margin-top:1px;accent-color:var(--accent)}
-    form.optin label.tos a{color:var(--accent);text-decoration:underline}
-    .err{color:#b91c1c;font-size:13px;text-align:center;margin-top:6px;min-height:18px;font-weight:600}
-    .modal .form-hint{font-size:12px;color:var(--text-3);text-align:center;margin-top:10px;font-style:italic}
+    .modal-body{padding:24px 28px 28px}
+    form.optin{display:flex;flex-direction:column;gap:11px}
+    form.optin label{font-size:12.5px;font-weight:700;color:var(--text-2);text-transform:uppercase;letter-spacing:.8px;display:block;margin-bottom:5px}
+    form.optin .field input[type=text],
+    form.optin .field input[type=email]{width:100%;padding:13px 16px;font:inherit;font-size:15.5px;border:1.5px solid var(--border);border-radius:11px;background:#fff;color:var(--text);transition:border-color .15s,box-shadow .15s}
+    form.optin .field input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(12,170,79,.15)}
+
+    /* Phone with CH-prefix */
+    .phone-row{display:flex;gap:0}
+    .phone-prefix{display:flex;align-items:center;gap:6px;background:#f1f5f9;border:1.5px solid var(--border);border-right:0;border-radius:11px 0 0 11px;padding:0 12px;font-weight:700;font-size:14.5px;color:var(--text);user-select:none;flex-shrink:0}
+    .phone-prefix .ch-flag-mini{width:18px;height:14px;border-radius:2px;background:#dc2626;position:relative;display:inline-block;box-shadow:inset 0 0 0 1px rgba(0,0,0,.05)}
+    .phone-prefix .ch-flag-mini::before,.phone-prefix .ch-flag-mini::after{content:"";position:absolute;background:#fff}
+    .phone-prefix .ch-flag-mini::before{left:7px;top:3px;width:4px;height:8px}
+    .phone-prefix .ch-flag-mini::after{left:4px;top:6px;width:10px;height:2px}
+    .phone-row input[type=tel]{flex:1;padding:13px 16px;font:inherit;font-size:15.5px;border:1.5px solid var(--border);border-radius:0 11px 11px 0;background:#fff;color:var(--text)}
+    .phone-row input[type=tel]:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(12,170,79,.15)}
+
+    form.optin label.tos{display:flex;align-items:flex-start;gap:9px;font-size:12.5px;color:var(--text-2);padding:6px 2px;line-height:1.5;text-transform:none;letter-spacing:0;font-weight:500;margin-bottom:0}
+    form.optin label.tos input[type=checkbox]{width:18px;height:18px;flex-shrink:0;margin-top:1px;accent-color:var(--accent);cursor:pointer}
+    form.optin label.tos a{color:var(--accent);text-decoration:underline;font-weight:600}
+    .err{color:#b91c1c;font-size:13px;text-align:center;margin-top:4px;min-height:18px;font-weight:600}
+    .modal-trust{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:14px;color:var(--text-3);font-size:11.5px;font-weight:600}
+    .modal-trust .item{display:flex;align-items:center;gap:5px}
+    .modal-trust svg{width:13px;height:13px;color:var(--accent)}
+
+    /* Hide page when modal is open (a11y nicety): trap scroll on body */
   </style>
 </head>
 <body>
-  <div class="scarcity">⚠ Hinweis: Es sind nur noch <strong>5 Plätze</strong> verfügbar!</div>
+  <div class="topbar"><span class="pulse"></span> <span><strong>Live in Kürze:</strong> Nur noch <strong>5 Plätze</strong> verfügbar</span></div>
 
   <header><img src="/images/logo.png" alt="Fit on Time" /></header>
 
@@ -144,30 +234,67 @@ const LIVE_DATUM_KURZ = 'Live am 12.05 um 18 Uhr';
       <div class="wrap">
         <div class="hero-grid">
           <div>
-            <h1>Blockieren <em>Entzündungen</em> dein Wohlbefinden?</h1>
+            <span class="pill"><span class="pulse"></span> Gratis Live-Webinar</span>
+            <h1>Blockieren <span class="hl">Entzündungen</span> dein Wohlbefinden?</h1>
+            <p class="lead">Warum Frauen mit Entzündungen NIEMALS richtig abnehmen, egal was sie probieren. Erkenntnisse aus über 3.000 Fällen.</p>
+
             <ul class="checks">
-              <li>Die 3 versteckten Entzündungs-Trigger, die fast jede Frau täglich konsumiert (und die deine Haut, Energie und Figur ruinieren)</li>
-              <li>Wie du deinen Körper wieder in einen Zustand bringst, in dem er automatisch Fett verbrennt</li>
-              <li>Warum unreine Haut, Müdigkeit und fehlendes Selbstbewusstsein direkte Folgen von Entzündungen sind</li>
-              <li>Wie du deinen Darm so regulierst, dass du dich wieder leicht, energiegeladen und wie früher fühlst</li>
+              <li>
+                <span class="check-ico"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 6 5 9 10 3"/></svg></span>
+                <span>Die <strong>3 versteckten Entzündungs-Trigger</strong>, die fast jede Frau täglich konsumiert und die deine Haut, Energie und Figur ruinieren</span>
+              </li>
+              <li>
+                <span class="check-ico"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 6 5 9 10 3"/></svg></span>
+                <span>Wie du deinen Körper wieder in einen Zustand bringst, in dem er <strong>automatisch Fett verbrennt</strong></span>
+              </li>
+              <li>
+                <span class="check-ico"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 6 5 9 10 3"/></svg></span>
+                <span>Warum unreine Haut, Müdigkeit und fehlendes Selbstbewusstsein direkte Folgen von Entzündungen sind</span>
+              </li>
+              <li>
+                <span class="check-ico"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 6 5 9 10 3"/></svg></span>
+                <span>Wie du deinen Darm so regulierst, dass du dich wieder <strong>leicht und energiegeladen</strong> fühlst, wie früher</span>
+              </li>
             </ul>
 
-            <div class="eyebrow">Gratis Live-Enthüllung</div>
-            <div class="lead">Warum Frauen mit Entzündungen NIEMALS richtig abnehmen, egal was sie probieren.</div>
-            <p class="sub">Unsere unveröffentlichten Erkenntnisse aus 3.000 Fällen zeigen, wie Entzündungen zu Fettstau, Heisshunger und ständiger Müdigkeit führen.</p>
-
-            <div class="btn-row">
-              <button class="btn btn-large" type="button" onclick="openModal()">Jetzt Kostenlos Anmelden!</button>
-              <div class="btn-meta">Live am {LIVE_DATUM}</div>
-            </div>
+            <button class="btn btn-large" type="button" onclick="openModal('hero')">
+              Jetzt kostenlos anmelden <span class="btn-arrow">→</span>
+            </button>
+            <div class="cta-meta">{LIVE_DATUM}</div>
 
             <div class="bonus">
-              🎁 <strong>Exklusiver Bonus:</strong> Die 7-Punkte-Checkliste gegen Entzündungen. Plus Insider-Tricks, wie du deinen Kalorienverbrauch sofort spürbar erhöhst.
+              <strong>Exklusiver Webinar-Bonus</strong>
+              Die 7-Punkte-Checkliste gegen Entzündungen, plus Insider-Tricks, wie du deinen Kalorienverbrauch sofort spürbar erhöhst.
+            </div>
+
+            <div class="trust-row">
+              <div class="item"><span class="ch-flag" aria-hidden="true"></span> Aus der Schweiz</div>
+              <div class="item">⭐ 3.000+ Frauen begleitet</div>
+              <div class="item">🔒 100% kostenlos und anonym</div>
             </div>
           </div>
 
           <div>
-            <img class="hero-img" src="/entzuendungen/hero.png" alt="Frau mit Entzündungs-Symptomen" loading="eager" />
+            <div class="hero-visual" aria-label="Symptome von Entzündungen visualisiert">
+              <!-- Floating Symptom Cards -->
+              <div class="symptom s1"><span class="dot"></span> Müdigkeit trotz Schlaf</div>
+              <div class="symptom s2"><span class="dot"></span> Wassereinlagerungen</div>
+              <div class="symptom s3"><span class="dot"></span> Heisshunger-Attacken</div>
+              <div class="symptom s4"><span class="dot"></span> Hartnäckiges Bauchfett</div>
+
+              <!-- Body Silhouette with glow -->
+              <div class="body-illu">
+                <svg viewBox="0 0 100 220" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <defs>
+                    <linearGradient id="bodyG" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#0caa4f" stop-opacity=".95"/>
+                      <stop offset="100%" stop-color="#089042" stop-opacity=".85"/>
+                    </linearGradient>
+                  </defs>
+                  <path fill="url(#bodyG)" d="M50 8c-7 0-12 5-12 12s5 12 12 12 12-5 12-12S57 8 50 8zm-9 32c-5 1-9 5-10 11l-5 26c-1 4 2 7 6 7h2l-3 28c-.5 4 2 7 5 7l4 50c0 4 3 7 7 7h6c4 0 7-3 7-7l4-50c3 0 5-3 5-7l-3-28h2c4 0 7-3 6-7l-5-26c-1-6-5-10-10-11-3 1-6 2-9 2s-6-1-9-2z"/>
+                </svg>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -176,45 +303,107 @@ const LIVE_DATUM_KURZ = 'Live am 12.05 um 18 Uhr';
     <!-- Das erwartet dich -->
     <section class="erwartet">
       <div class="wrap">
-        <h2>Das erwartet dich in der <span class="accent">Live-Enthüllung</span></h2>
-        <p class="lede">3 konkrete Punkte, mit denen du sofort etwas anfangen kannst.</p>
+        <span class="sec-eyebrow">Im Live-Webinar</span>
+        <h2 class="sec-h">3 Erkenntnisse, die deinen <span style="color:var(--accent)">Fettstoffwechsel sofort entsperren</span></h2>
+        <p class="sec-sub">Konkret, sofort umsetzbar, mit echten Zahlen und Beispielen aus über 3.000 Frauen-Coachings.</p>
 
         <div class="cards">
-          <div class="card">
-            <div class="card-num">01</div>
+          <article class="card">
+            <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4"/><path d="M12 18v4"/><path d="m4.93 4.93 2.83 2.83"/><path d="m16.24 16.24 2.83 2.83"/><path d="M2 12h4"/><path d="M18 12h4"/><path d="m4.93 19.07 2.83-2.83"/><path d="m16.24 7.76 2.83-2.83"/></svg></div>
+            <div class="card-num">Block 01</div>
             <h3>Die Entzündungs-Falle</h3>
             <p>Welche 3 alltäglichen Trigger deinen Körper in den Alarmzustand versetzen, Entzündungen befeuern und dafür sorgen, dass er jedes Gramm Fett krampfhaft festhält.</p>
-          </div>
-          <div class="card">
-            <div class="card-num">02</div>
+          </article>
+          <article class="card">
+            <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9c2.5 0 4.8 1 6.5 2.7"/><path d="M21 3v6h-6"/></svg></div>
+            <div class="card-num">Block 02</div>
             <h3>Der Zell-Reset</h3>
             <p>Mit welcher simplen Methode du die Abnehm-Blockade deiner Zellen löst, damit dein Stoffwechsel endlich wieder auf Fettverbrennung statt auf Speichern schaltet.</p>
-          </div>
-          <div class="card">
-            <div class="card-num">03</div>
+          </article>
+          <article class="card">
+            <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h2l3-9 4 18 3-9h8"/></svg></div>
+            <div class="card-num">Block 03</div>
             <h3>Das Leichtigkeits-Prinzip</h3>
             <p>Wie du Entzündungen im Darm reduzierst, um ohne Diät-Stress Wassereinlagerungen loszuwerden und dich endlich wieder energiegeladen und leicht zu fühlen.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Bonus Section -->
+    <section class="bonus-section">
+      <div class="wrap">
+        <div class="bonus-grid">
+          <div class="bonus-text">
+            <span class="sec-eyebrow" style="text-align:left;display:block;margin-bottom:10px">Webinar-Bonus</span>
+            <h3>Die 7-Punkte-Checkliste gegen Entzündungen, gratis als PDF.</h3>
+            <p>Direkt nach der Anmeldung bekommst du unsere Checkliste, mit der du noch heute deine grössten Entzündungs-Trigger identifizierst und ausschaltest.</p>
+            <p>Plus: <strong>Insider-Tricks aus der Praxis</strong>, wie du deinen Kalorienverbrauch sofort spürbar erhöhst, ohne länger zu trainieren.</p>
+          </div>
+          <div class="bonus-card">
+            <span class="label">PDF-Bonus</span>
+            <h4>Die 7-Punkte-Checkliste gegen Entzündungen</h4>
+            <ul class="checklist">
+              <li><strong>Trigger-Audit:</strong> Identifiziere deine 3 grössten Entzündungs-Quellen</li>
+              <li><strong>Lebensmittel-Liste:</strong> Was raus muss, was rein darf</li>
+              <li><strong>Morgenroutine:</strong> Der 4-Minuten-Reset für deinen Darm</li>
+              <li><strong>Bewegungs-Hack:</strong> Anti-Entzündungs-Protokoll für jeden Tag</li>
+              <li><strong>Schlaf-Optimierung:</strong> So entgiftet dein Körper über Nacht</li>
+              <li><strong>Stress-Reset:</strong> 60 Sekunden gegen Cortisol-Spikes</li>
+              <li><strong>Mess-Werkzeug:</strong> So überprüfst du deinen Fortschritt</li>
+            </ul>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Mid CTA -->
-    <section class="midcta">
+    <!-- Social Proof -->
+    <section class="social-proof">
       <div class="wrap">
-        <div class="imgwrap">
-          <img src="/entzuendungen/cards.png" alt="Live-Webinar Vorschau" loading="lazy" />
+        <span class="sec-eyebrow">Echte Frauen, echte Resultate</span>
+        <h2 class="sec-h">Wenn der Körper aufhört, gegen dich zu arbeiten.</h2>
+        <p class="sec-sub">Eine Auswahl aus über 3.000 begleiteten Transformationen in der Schweiz.</p>
+
+        <div class="ba-grid">
+          <img src="/entzuendungen/transformation-1.jpg" alt="Transformation einer Teilnehmerin" loading="lazy" />
+          <img src="/entzuendungen/transformation-2.jpg" alt="Transformation einer Teilnehmerin" loading="lazy" />
+          <img src="/entzuendungen/transformation-3.jpg" alt="Transformation einer Teilnehmerin" loading="lazy" />
         </div>
-        <h3>Sichere dir jetzt deinen Platz, bevor die Anmeldung schliesst.</h3>
-        <button class="btn btn-large" type="button" onclick="openModal()">Jetzt Kostenlos Anmelden!</button>
-        <div class="scarcity-line">⚠ Nur noch 5 Plätze verfügbar</div>
-        <p class="disclaimer">*** Achtung: Die Teilnahme ist auf 200 Plätze limitiert. Bitte nehme nur teil, wenn du Interesse daran hast, dauerhaft deine Wohlfühlfigur zu erreichen. ***</p>
+
+        <div class="testimonial">
+          <p>Ich hatte ständig Wassereinlagerungen, war müde und verstand nicht, warum nichts mehr ging. Erst als ich kapiert habe, dass es Entzündungen sind, ging es bergauf. Heute bin ich 12 Kilo leichter und schlafe wieder durch.</p>
+          <cite><span class="avatar">SK</span> Sandra K., 47, aus Zürich</cite>
+        </div>
+      </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="final-cta" id="anmeldung">
+      <div class="wrap">
+        <div class="countdown" id="countdown" aria-live="polite">
+          <div class="item"><span class="num" id="cdD">00</span><span class="lbl">Tage</span></div>
+          <div class="sep"></div>
+          <div class="item"><span class="num" id="cdH">00</span><span class="lbl">Std</span></div>
+          <div class="sep"></div>
+          <div class="item"><span class="num" id="cdM">00</span><span class="lbl">Min</span></div>
+          <div class="sep"></div>
+          <div class="item"><span class="num" id="cdS">00</span><span class="lbl">Sek</span></div>
+        </div>
+        <h2>Sichere dir jetzt deinen Platz, bevor die Anmeldung schliesst.</h2>
+        <p class="sec-sub" style="margin-bottom:22px">Kostenlos. Live. Anonym. Du brauchst nur dein Smartphone oder Laptop.</p>
+        <div class="btn-wrap">
+          <button class="btn btn-large" type="button" onclick="openModal('final')">
+            Jetzt kostenlos anmelden <span class="btn-arrow">→</span>
+          </button>
+          <div class="scarcity-line">⚠ Nur noch 5 von 200 Plätzen frei</div>
+        </div>
+        <p class="disclaimer">Achtung: Die Teilnahme ist auf 200 Plätze limitiert. Bitte nehme nur teil, wenn du Interesse daran hast, dauerhaft deine Wohlfühlfigur zu erreichen.</p>
       </div>
     </section>
   </main>
 
   <footer>
-    <div class="copy">© Fit on Time</div>
+    <div class="copy">© Fit on Time {new Date().getFullYear()}</div>
     <a href={IMPRESSUM_URL} target="_blank" rel="noopener">Impressum</a>·
     <a href={DATENSCHUTZ_URL} target="_blank" rel="noopener">Datenschutzerklärung</a>
   </footer>
@@ -222,22 +411,42 @@ const LIVE_DATUM_KURZ = 'Live am 12.05 um 18 Uhr';
   <!-- Opt-in Modal -->
   <div class="modal-overlay" id="modalOverlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
     <div class="modal">
-      <button class="modal-close" type="button" onclick="closeModal()" aria-label="Schliessen">✕</button>
-      <div class="live-pill">{LIVE_DATUM_KURZ}</div>
-      <h3 id="modalTitle">Nur noch ein Schritt</h3>
-      <p class="lead2">Wohin sollen wir die Einladung senden?</p>
-      <form class="optin" id="optinForm" onsubmit="submitLead(event)">
-        <input type="text" name="fname" placeholder="Dein Vor- und Nachname" required autocomplete="name" />
-        <input type="email" name="email" placeholder="Deine E-Mail-Adresse" required autocomplete="email" />
-        <input type="tel" name="phone" placeholder="z.B. +41 76 123 45 67" required autocomplete="tel" />
-        <label class="tos">
-          <input type="checkbox" name="datenschutz" required />
-          <span>Ich akzeptiere die <a href={DATENSCHUTZ_URL} target="_blank" rel="noopener">Datenschutzbestimmungen</a> und stimme zu, dass mir der Zugangslink via WhatsApp und E-Mail zugesendet wird.</span>
-        </label>
-        <button class="btn" type="submit" id="submitBtn">🔓 Kostenlos teilnehmen ➜</button>
-        <div class="err" id="optinErr"></div>
-        <p class="form-hint">Die Eintragung ist kostenlos. Du erhältst deinen Zugangslink via WhatsApp.</p>
-      </form>
+      <div class="modal-head">
+        <button class="modal-close" type="button" onclick="closeModal()" aria-label="Schliessen">✕</button>
+        <span class="live-pill"><span></span> {LIVE_DATUM_KURZ}</span>
+        <h3 id="modalTitle">Sichere dir deinen Platz</h3>
+        <p class="lead2">Wohin sollen wir den Zugangslink schicken?</p>
+      </div>
+      <div class="modal-body">
+        <form class="optin" id="optinForm" onsubmit="submitLead(event)">
+          <div class="field">
+            <label for="fname">Vor- und Nachname</label>
+            <input id="fname" type="text" name="fname" placeholder="Anna Müller" required autocomplete="name" />
+          </div>
+          <div class="field">
+            <label for="email">E-Mail-Adresse</label>
+            <input id="email" type="email" name="email" placeholder="anna@email.ch" required autocomplete="email" />
+          </div>
+          <div class="field">
+            <label for="phone">Mobile (für WhatsApp-Zugangslink)</label>
+            <div class="phone-row">
+              <span class="phone-prefix"><span class="ch-flag-mini" aria-hidden="true"></span> +41</span>
+              <input id="phone" type="tel" name="phone" placeholder="76 123 45 67" required autocomplete="tel-national" inputmode="tel" />
+            </div>
+          </div>
+          <label class="tos">
+            <input type="checkbox" name="datenschutz" required />
+            <span>Ich akzeptiere die <a href={DATENSCHUTZ_URL} target="_blank" rel="noopener">Datenschutzbestimmungen</a> und stimme zu, dass mir der Zugangslink via WhatsApp und E-Mail zugesendet wird.</span>
+          </label>
+          <button class="btn" type="submit" id="submitBtn">🔓 Kostenlos teilnehmen <span class="btn-arrow">→</span></button>
+          <div class="err" id="optinErr"></div>
+        </form>
+        <div class="modal-trust">
+          <span class="item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s-8-4-8-12V5l8-3 8 3v5c0 8-8 12-8 12z"/></svg> SSL-verschlüsselt</span>
+          <span class="item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> Sofort-Zugang</span>
+          <span class="item">🇨🇭 Server in der Schweiz</span>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -249,8 +458,8 @@ const LIVE_DATUM_KURZ = 'Live am 12.05 um 18 Uhr';
     consentKey="fot_consent"
   />
 
-  <script is:inline define:vars={{ LP_SLUG, LP_NAME }}>
-    // Session + Tracking
+  <script is:inline define:vars={{ LP_SLUG, LP_NAME, LIVE_DATE_ISO }}>
+    // Session
     const SESSION_KEY = 'fot_session';
     let session = sessionStorage.getItem(SESSION_KEY);
     if (!session) {
@@ -258,6 +467,7 @@ const LIVE_DATUM_KURZ = 'Live am 12.05 um 18 Uhr';
       sessionStorage.setItem(SESSION_KEY, session);
     }
 
+    // Tracking
     function track(event, extra) {
       const payload = JSON.stringify(Object.assign({
         event, lp: LP_SLUG, lp_name: LP_NAME, session, schema_version: 'v1',
@@ -271,19 +481,18 @@ const LIVE_DATUM_KURZ = 'Live am 12.05 um 18 Uhr';
       fetch('/api/track', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload, keepalive: true }).catch(() => {});
     }
 
-    // Modal-Steuerung
+    // Modal
     let modalOpened = false;
-    function openModal() {
+    function openModal(source) {
       const m = document.getElementById('modalOverlay');
       m.classList.add('open');
       document.body.style.overflow = 'hidden';
       if (!modalOpened) {
         modalOpened = true;
-        track('optin_view');
+        track('optin_view', { source: source || 'unknown' });
         if (window.fbq) window.fbq('track', 'InitiateCheckout');
       }
-      // Ersten Input fokussieren
-      setTimeout(() => document.querySelector('#optinForm input[name="fname"]')?.focus(), 100);
+      setTimeout(() => document.getElementById('fname')?.focus(), 100);
     }
     function closeModal() {
       document.getElementById('modalOverlay').classList.remove('open');
@@ -292,26 +501,34 @@ const LIVE_DATUM_KURZ = 'Live am 12.05 um 18 Uhr';
     window.openModal = openModal;
     window.closeModal = closeModal;
 
-    // Overlay-Click + Escape schliesst Modal
     document.getElementById('modalOverlay').addEventListener('click', (e) => {
       if (e.target.id === 'modalOverlay') closeModal();
     });
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
 
-    // Lead-Submit
+    // Phone-Normalisierung: lokale 0 → +41, internationale +XX bleiben
+    function normalizePhone(raw) {
+      const cleaned = (raw || '').replace(/[^\d+]/g, '');
+      if (!cleaned) return '';
+      if (cleaned.startsWith('+')) return cleaned;
+      if (cleaned.startsWith('0')) return '+41' + cleaned.slice(1);
+      return '+41' + cleaned;
+    }
+
+    // Submit
     async function submitLead(e) {
       e.preventDefault();
       const btn = document.getElementById('submitBtn');
       const err = document.getElementById('optinErr');
       err.textContent = '';
       btn.disabled = true;
-      btn.textContent = 'Wird gesendet...';
+      btn.innerHTML = 'Wird gesendet...';
 
       const fd = new FormData(e.target);
       const payload = {
-        name: fd.get('fname'),
-        email: fd.get('email'),
-        phone: fd.get('phone'),
+        name: (fd.get('fname') || '').toString().trim(),
+        email: (fd.get('email') || '').toString().trim(),
+        phone: normalizePhone((fd.get('phone') || '').toString()),
         lp_slug: LP_SLUG,
         lp_name: LP_NAME,
         session,
@@ -330,22 +547,36 @@ const LIVE_DATUM_KURZ = 'Live am 12.05 um 18 Uhr';
         }
         track('lead_submit');
         if (window.fbq) window.fbq('track', 'Lead');
-        // Kurze Bestaetigung im Modal
-        document.querySelector('.modal').innerHTML = `
-          <div style="text-align:center;padding:18px 6px">
-            <div style="font-size:48px;margin-bottom:12px">✅</div>
-            <h3 style="font-size:22px;font-weight:800;color:#0f172a;margin-bottom:10px">Du bist angemeldet!</h3>
-            <p style="color:#4b5563;font-size:15px;line-height:1.5">Wir senden dir den Zugangslink in den nächsten Minuten via WhatsApp und E-Mail.</p>
-          </div>`;
+        // Vorname fuer Danke-Seite mitgeben
+        const vorname = payload.name.split(/\s+/)[0] || '';
+        const url = '/danke-entzuendungen/' + (vorname ? '?n=' + encodeURIComponent(vorname) : '');
+        window.location.href = url;
       } catch (e2) {
         err.textContent = e2.message || 'Etwas ist schiefgelaufen, bitte nochmal versuchen.';
         btn.disabled = false;
-        btn.textContent = '🔓 Kostenlos teilnehmen ➜';
+        btn.innerHTML = '🔓 Kostenlos teilnehmen <span class="btn-arrow">→</span>';
       }
     }
     window.submitLead = submitLead;
 
-    // Initial
+    // Countdown
+    function updateCountdown() {
+      const target = new Date(LIVE_DATE_ISO).getTime();
+      const now = Date.now();
+      const diff = Math.max(0, target - now);
+      const d = Math.floor(diff / 86400000);
+      const h = Math.floor((diff % 86400000) / 3600000);
+      const m = Math.floor((diff % 3600000) / 60000);
+      const s = Math.floor((diff % 60000) / 1000);
+      const pad = (n) => n.toString().padStart(2, '0');
+      document.getElementById('cdD').textContent = pad(d);
+      document.getElementById('cdH').textContent = pad(h);
+      document.getElementById('cdM').textContent = pad(m);
+      document.getElementById('cdS').textContent = pad(s);
+    }
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+
     track('page_view');
   </script>
 </body>

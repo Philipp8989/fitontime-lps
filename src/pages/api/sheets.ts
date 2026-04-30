@@ -63,6 +63,13 @@ const SHEETS: Record<string, SheetConfig> = {
       return [datum, vorname, d.email, d.phone || '', score, stufe, stufeName, critDim, critPct, glp1, alter, ziel, alltag, versuche];
     },
   },
+  // Webinar-Opt-in "Entzuendungen" (2026-04-30)
+  // Schema: Datum | Name | Email | Tel-Nr (vom Sheet vorgegeben)
+  'entzuendungen': {
+    id: '1KnvsnN4uHoFf8QJmaP1ZKc6CR_ghLqxKtxSbvdG9TI8',
+    range: 'Tabellenblatt1!A:D',
+    buildRow: (datum, d) => [datum, d.name, d.email, d.phone || ''],
+  },
   // FB-Stoffwechsel-Quiz Leads (neuer Funnel 2026-04)
   // Schema: Datum | Vorname | Nachname | Email | Telefon | Ziel | Beruflich | (leer Reserveraum für Sales)
   'stoffwechsel-test': {
