@@ -768,14 +768,20 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
       }, { passive: true });
     })();
 
-    // Live-Counter
+    // Live-Counter, organische Drift (langsam, +/- 1-2, bounded 6-15)
     (function liveCounter(){
       var el = document.getElementById('liveCnt');
       if (!el) return;
-      setInterval(function(){
-        var n = 6 + Math.floor(Math.random() * 9);
+      var n = 8 + Math.floor(Math.random() * 4);
+      el.textContent = n;
+      function tick(){
+        var step = Math.random() < 0.5 ? -1 : 1;
+        if (Math.random() < 0.25) step *= 2;
+        n = Math.max(6, Math.min(15, n + step));
         el.textContent = n;
-      }, 4500);
+        setTimeout(tick, 25000 + Math.floor(Math.random() * 35000));
+      }
+      setTimeout(tick, 18000 + Math.floor(Math.random() * 12000));
     })();
 
     // Tracking
