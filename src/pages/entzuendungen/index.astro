@@ -8,6 +8,7 @@ const PIXEL_ID = (import.meta.env.PUBLIC_META_PIXEL_ID || '').trim();
 const HYROS_ID = (import.meta.env.PUBLIC_HYROS_ID || '').trim();
 const IMPRESSUM_URL = 'https://fitontime.ch/impressum-datenschutz';
 const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
+const LIVE_DATE_ISO = '2026-05-12T18:00:00+02:00';
 ---
 <html lang="de-CH">
 <head>
@@ -167,6 +168,12 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
     .final::before{content:"";position:absolute;top:-50%;left:-20%;width:140%;height:200%;background:radial-gradient(ellipse at center,rgba(12,170,79,.18),transparent 50%);pointer-events:none}
     .final .wrap{position:relative}
     .final .date-eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,.06);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.1);padding:8px 16px;border-radius:999px;font-size:12.5px;font-weight:800;color:#86efac;letter-spacing:1.4px;text-transform:uppercase;margin-bottom:18px}
+    .final .countdown{display:inline-flex;gap:10px;margin:0 0 28px;flex-wrap:wrap;justify-content:center}
+    .final .countdown .item{display:flex;flex-direction:column;align-items:center;background:rgba(255,255,255,.06);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:14px 16px;min-width:78px}
+    @media(min-width:600px){.final .countdown .item{min-width:92px;padding:18px 18px}}
+    .final .countdown .num{font-size:30px;font-weight:900;color:#fff;font-variant-numeric:tabular-nums;line-height:1;letter-spacing:-1px}
+    @media(min-width:600px){.final .countdown .num{font-size:38px}}
+    .final .countdown .lbl{font-size:10.5px;color:#86efac;text-transform:uppercase;letter-spacing:1.2px;margin-top:6px;font-weight:800}
     .final .date-eyebrow .dot{width:8px;height:8px;border-radius:50%;background:#86efac;animation:pulseDot 1.6s infinite}
     .final h2{font-size:38px;font-weight:900;line-height:1.05;letter-spacing:-1.2px;margin-bottom:16px;color:#fff}
     @media(min-width:840px){.final h2{font-size:54px}}
@@ -254,7 +261,7 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
           <div>
             <div class="hero-vis">
               <div class="photo-frame">
-                <img src="/images/transformations/t1.jpg" alt="Fit on Time Transformation" loading="eager" />
+                <img src="/images/transformations/t5.jpg" alt="Fit on Time Transformation" loading="eager" />
               </div>
               <div class="badge b1" style="--r:-3deg">
                 <div class="ico">🔥</div>
@@ -356,6 +363,14 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
       <div class="wrap">
         <span class="date-eyebrow"><span class="dot"></span> Live · 12.05.2026 · 18:00 Uhr</span>
         <h2>Es ist <em style="font-style:normal;color:var(--accent)">deine Zeit.</em></h2>
+
+        <div class="countdown" aria-live="polite">
+          <div class="item"><span class="num" id="cdD">00</span><span class="lbl">Tage</span></div>
+          <div class="item"><span class="num" id="cdH">00</span><span class="lbl">Std</span></div>
+          <div class="item"><span class="num" id="cdM">00</span><span class="lbl">Min</span></div>
+          <div class="item"><span class="num" id="cdS">00</span><span class="lbl">Sek</span></div>
+        </div>
+
         <p class="sub">Live, kostenlos, anonym. Du brauchst nur ein Smartphone oder einen Laptop.</p>
         <div class="btn-wrap">
           <button class="btn btn-large" type="button" onclick="openModal('final')">Jetzt Platz sichern <span class="btn-arrow">→</span></button>
@@ -423,7 +438,7 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
     consentKey="fot_consent"
   />
 
-  <script is:inline define:vars={{ LP_SLUG, LP_NAME }}>
+  <script is:inline define:vars={{ LP_SLUG, LP_NAME, LIVE_DATE_ISO }}>
     const SESSION_KEY = 'fot_session';
     let session = sessionStorage.getItem(SESSION_KEY);
     if (!session) {
@@ -517,6 +532,25 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
       }
     }
     window.submitLead = submitLead;
+
+    // Countdown auf Webinar-Start
+    function updateCountdown() {
+      const target = new Date(LIVE_DATE_ISO).getTime();
+      const diff = Math.max(0, target - Date.now());
+      const d = Math.floor(diff / 86400000);
+      const h = Math.floor((diff % 86400000) / 3600000);
+      const m = Math.floor((diff % 3600000) / 60000);
+      const s = Math.floor((diff % 60000) / 1000);
+      const pad = (n) => n.toString().padStart(2, '0');
+      const dEl = document.getElementById('cdD');
+      if (!dEl) return;
+      dEl.textContent = pad(d);
+      document.getElementById('cdH').textContent = pad(h);
+      document.getElementById('cdM').textContent = pad(m);
+      document.getElementById('cdS').textContent = pad(s);
+    }
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
 
     track('page_view');
   </script>
