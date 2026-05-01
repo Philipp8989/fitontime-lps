@@ -1,5 +1,5 @@
 ---
-// MSM-Ergebnis-Seite · zeigt Score-Teaser · CTA "Setter ruft an"
+// MSM-Ergebnis-Seite · zeigt Score-Teaser · primärer CTA = Termin selbst buchen (YCBM)
 // Liest Ergebnis aus sessionStorage (vom Quiz gesetzt)
 import CookieBanner from '../../components/CookieBanner.astro';
 const impressumUrl = 'https://fitontime.ch/impressum-datenschutz';
@@ -196,7 +196,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
       <div class="greeting fade-in">
         <div class="success-badge">✓ Profil ausgewertet</div>
         <h1 id="greet-name">Dein MSM-Profil ist fertig</h1>
-        <p>Hier sind die ersten drei Dinge. Den Rest besprechen wir gleich persönlich mit dir am Telefon.</p>
+        <p>Hier sind die ersten drei Dinge. Den Rest besprechen wir im persönlichen Strategie-Termin — direkt unten buchbar.</p>
       </div>
 
       <!-- Score -->
@@ -252,14 +252,6 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
           </div>
         </div>
       </div>
-
-      <!-- Rückruf-Fallback (klein, opt-in) -->
-      <details class="callback fade-in" style="animation-delay:0.75s;">
-        <summary>Lieber zurückgerufen werden statt festen Termin buchen?</summary>
-        <div class="callback-body">
-          Kein Problem — jemand aus unserem Team meldet sich in den nächsten Tagen telefonisch bei dir. Wir können dir aber nicht garantieren, wann das genau klappt. <b>Unsere Empfehlung: Buch dir oben einen Slot — dann ist dein Platz sicher.</b>
-        </div>
-      </details>
 
       <div class="trust" style="margin-top:28px;">
         Über <b>4.000 Schweizer Frauen</b> begleitet seit 2016.<br>

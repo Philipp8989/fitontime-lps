@@ -666,26 +666,29 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
         <div class="teach" style="margin-top:18px;"><span class="t-ic">💡</span><span>Dass du schon viel versucht hast, ist kein Misserfolg. Die Standardprogramme sind für 25-Jährige gebaut.</span></div>
       </div>
 
-      <!-- LEAD-GATE (vor F10) -->
+      <!-- LEAD-GATE (am Ende — nach F12) -->
       <div class="step form" data-s="gate">
-        <div class="tag">✓ Auswertung fast fertig</div>
-        <h2>Dein MSM-Profil wird jetzt analysiert.</h2>
-        <p class="sub">Damit unser Coaching-Team deine Antworten <b>persönlich analysieren</b> und dich zurückrufen kann, brauchen wir:</p>
+        <div class="tag">✓ Quiz fertig · Auswertung bereit</div>
+        <h2>Wohin schicken wir deine Auswertung?</h2>
+        <p class="sub">Dein <b>MSM-Score</b>, deine <b>kritischste Dimension</b> und die <b>3 nächsten Schritte</b> für deinen Körper. Im Anschluss kannst du direkt einen Termin zur persönlichen Besprechung buchen — wenn du willst.</p>
+
+        <!-- Trust ÜBER der Form -->
+        <div class="form-proof" style="margin-top:0;margin-bottom:18px;padding-top:0;border-top:none;border-bottom:1px solid var(--border);padding-bottom:14px;">
+          <div class="fp-row"><span class="proof-stars">★★★★★</span> <b>4.000+</b> begleitete Schweizer Frauen seit 2016</div>
+          <div class="fp-row"><span>🔒</span> SSL-verschlüsselt · DSGVO-konform · keine Weitergabe</div>
+        </div>
+
         <div class="fields">
           <div class="field"><span class="ic">👤</span><input type="text" id="fn" placeholder="Dein Vorname" autocomplete="given-name" aria-label="Vorname" required /></div>
           <div class="field"><span class="ic">📧</span><input type="email" id="em" placeholder="Deine E-Mail-Adresse" autocomplete="email" aria-label="E-Mail" required /></div>
-          <div class="field"><span class="ic">📞</span><span class="pre">+41</span><input type="tel" id="ph" placeholder="Mobilnummer für den Rückruf" autocomplete="tel-national" aria-label="Mobil" required /></div>
+          <div class="field"><span class="ic">📱</span><span class="pre">+41</span><input type="tel" id="ph" placeholder="Mobilnummer (auch WhatsApp)" autocomplete="tel-national" aria-label="Mobil" required /></div>
         </div>
-        <p style="font-size:11px;color:var(--text-3);margin:-4px auto 14px;max-width:460px;text-align:center;">Kein Newsletter. Keine Werbe-Anrufe. Eine einzige Analyse durch unser Coaching-Team.</p>
+        <p style="font-size:11px;color:var(--text-3);margin:-4px auto 14px;max-width:460px;text-align:center;">Kein Newsletter. Keine Werbe-SMS. Mobilnummer nur zur Bestätigung deiner Termin-Buchung.</p>
         <div class="cb-row">
           <input type="checkbox" id="ds" />
-          <label for="ds">Ich akzeptiere die <a href={datenschutzUrl} target="_blank" rel="noopener">Datenschutzbestimmungen</a> und den Rückruf durch Fit on Time.</label>
+          <label for="ds">Ich akzeptiere die <a href={datenschutzUrl} target="_blank" rel="noopener">Datenschutzbestimmungen</a>.</label>
         </div>
-        <button class="submit" id="gbtn" disabled onclick="gateSubmit()">Profil freischalten →</button>
-        <div class="form-proof">
-          <div class="fp-row"><span>🔒</span> <b>SSL-verschlüsselt</b> · Daten bleiben bei uns.</div>
-          <div class="fp-row"><span class="proof-stars">★★★★★</span> <b>4.000+</b> begleitete Schweizer Frauen</div>
-        </div>
+        <button class="submit" id="gbtn" disabled onclick="gateSubmit()">Auswertung anzeigen →</button>
       </div>
 
       <!-- F10: Tiefe -->
@@ -751,9 +754,9 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
 
   <script is:inline>
     var quizAnswers = {};
-    // Reihenfolge der Fragen (nicht-linear wegen Lead-Gate)
-    var FLOW = ['1','2','3','4','5','6','7','8','9','gate','10','11','12'];
-    var TOTAL = 12;
+    // Reihenfolge der Fragen — Gate ans Ende verschoben (committed users → höhere Gate-Conversion)
+    var FLOW = ['1','2','3','4','5','6','7','8','9','10','11','12','gate'];
+    var TOTAL = 13;
     var qHistory = ['1'];
     var scoreAccum = 0;
 
@@ -830,9 +833,9 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
     }
 
     function progressPos(key) {
-      // Visueller Fortschritt: Lead-Gate zählt als Position 9.5
-      if (key === 'gate') return 9.5;
-      if (key === 'ld' || key === 'exit') return 12;
+      // Gate ist Schritt 13 (nach allen 12 Fragen)
+      if (key === 'gate') return 12.5;
+      if (key === 'ld' || key === 'exit') return 13;
       var n = parseInt(key, 10);
       return isNaN(n) ? 0 : n;
     }
@@ -845,7 +848,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
       if (bar) bar.setAttribute('aria-valuenow', p);
       if (key === 'gate') {
         document.getElementById('qr').textContent = '—';
-        document.getElementById('qp').textContent = 'Kontakt für Rückruf';
+        document.getElementById('qp').textContent = 'Letzter Schritt · Auswertung erhalten';
       } else if (!isNaN(parseInt(key, 10))) {
         document.getElementById('qr').textContent = key + '/12';
         document.getElementById('qp').textContent = 'Frage ' + key + ' von 12';
@@ -935,7 +938,9 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
       var t = goalEl.value.trim();
       if (t.length < 10) return;
       quizAnswers.q12 = t;
-      finalize();
+      qHistory.push('gate');
+      show('gate');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     // Lead-Gate
@@ -958,12 +963,8 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
       quizAnswers.gate_phone = '+41' + ph;
       tk('quiz_lead_gate_submitted', { detail: fn });
 
-      // Weiter zur F10
-      var idx = stepIndex('gate');
-      var next = FLOW[idx + 1];
-      qHistory.push(next);
-      show(next);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      // Gate ist letzter Schritt → direkt zur Auswertung
+      finalize();
     }
 
     function back() {
