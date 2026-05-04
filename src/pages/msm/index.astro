@@ -337,6 +337,26 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
     .form-proof .fp-row { display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 11px; color: var(--text-3); margin-bottom: 6px; }
     .form-proof .fp-row b { color: var(--text-2); font-weight: 600; }
 
+    /* Score-Preview im Gate (Reward zeigen, vor Form) */
+    .score-preview { background: linear-gradient(135deg, var(--accent) 0%, #3b92f0 100%); color: #fff; border-radius: 18px; padding: 22px 22px 18px; margin: 0 auto 22px; max-width: 460px; box-shadow: var(--shadow-lg); text-align: center; animation: sp-pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+    @keyframes sp-pop { from { opacity: 0; transform: translateY(12px) scale(0.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
+    .score-preview .sp-label { font-size: 11px; font-weight: 800; letter-spacing: 0.7px; text-transform: uppercase; opacity: 0.9; margin-bottom: 4px; }
+    .score-preview .sp-num { font-size: 56px; font-weight: 900; line-height: 1; letter-spacing: -2px; }
+    .score-preview .sp-num em { font-style: normal; font-size: 22px; opacity: 0.7; font-weight: 700; margin-left: 2px; }
+    .score-preview .sp-bar { margin: 14px auto 0; max-width: 320px; height: 8px; background: rgba(255,255,255,0.22); border-radius: 4px; overflow: hidden; }
+    .score-preview .sp-fill { height: 100%; background: #fff; border-radius: 4px; width: 0; transition: width 1.2s cubic-bezier(0.2, 0.9, 0.3, 1); }
+    .score-preview .sp-stufe { margin-top: 14px; background: rgba(255,255,255,0.16); border-radius: 10px; padding: 10px 14px; font-size: 13px; font-weight: 700; }
+    .score-preview .sp-stufe b { font-size: 15px; font-weight: 800; }
+    .score-preview .sp-locked { margin-top: 14px; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.2); display: grid; gap: 8px; text-align: left; }
+    .score-preview .sp-lk-row { display: flex; align-items: center; gap: 10px; font-size: 13px; opacity: 0.92; }
+    .score-preview .sp-lk-row .lk-ic { width: 22px; height: 22px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.18); border-radius: 50%; font-size: 11px; }
+    .score-preview .sp-lk-row .lk-text { flex: 1; }
+    .score-preview .sp-lk-row .lk-text b { font-weight: 700; }
+    .score-preview .sp-lk-row .lk-blur { filter: blur(5px); user-select: none; opacity: 0.85; }
+    .score-preview .sp-cta-hint { margin-top: 14px; font-size: 12px; font-weight: 700; opacity: 0.95; display: inline-flex; align-items: center; gap: 6px; }
+    .score-preview .sp-cta-hint::before { content: '↓'; animation: sp-arrow 1.4s ease-in-out infinite; }
+    @keyframes sp-arrow { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(3px); } }
+
     /* Exit-Screen */
     .exit { text-align: center; padding: 40px 20px; }
     .exit h2 { font-size: 22px; margin-bottom: 12px; }
@@ -668,9 +688,23 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
 
       <!-- LEAD-GATE (am Ende — nach F12) -->
       <div class="step form" data-s="gate">
-        <div class="tag">✓ Quiz fertig · Auswertung bereit</div>
-        <h2>Wohin schicken wir deine Auswertung?</h2>
-        <p class="sub">Dein <b>MSM-Score</b>, deine <b>kritischste Dimension</b> und die <b>3 nächsten Schritte</b> für deinen Körper. Im Anschluss kannst du direkt einen Termin zur persönlichen Besprechung buchen — wenn du willst.</p>
+        <div class="tag">✓ Quiz fertig · Score berechnet</div>
+        <h2>Dein Ergebnis ist fertig.</h2>
+        <p class="sub">Wohin schicken wir deine vollständige Auswertung?</p>
+
+        <!-- Score-Preview-Card: Reward zeigen, dann Form -->
+        <div class="score-preview" id="sp-card">
+          <div class="sp-label">Dein MSM-Score</div>
+          <div class="sp-num"><span id="sp-num">0</span><em>/100</em></div>
+          <div class="sp-bar"><div class="sp-fill" id="sp-fill"></div></div>
+          <div class="sp-stufe">Stufe <b id="sp-stufe-n">—</b> von 4 · <span id="sp-stufe-name">—</span></div>
+          <div class="sp-locked">
+            <div class="sp-lk-row"><span class="lk-ic">🔒</span><div class="lk-text">Kritischste Dimension: <b class="lk-blur" id="sp-crit">Schlaf & Regeneration</b></div></div>
+            <div class="sp-lk-row"><span class="lk-ic">🔒</span><div class="lk-text">3 nächste Schritte für deinen Körper <span class="lk-blur">— individuell, nicht generisch</span></div></div>
+            <div class="sp-lk-row"><span class="lk-ic">🔒</span><div class="lk-text">Direkt-Buchung zum 45-Min-Strategie-Termin</div></div>
+          </div>
+          <div class="sp-cta-hint">Freischalten — ein Klick</div>
+        </div>
 
         <!-- Trust ÜBER der Form -->
         <div class="form-proof" style="margin-top:0;margin-bottom:18px;padding-top:0;border-top:none;border-bottom:1px solid var(--border);padding-bottom:14px;">
@@ -950,9 +984,29 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
       var t = goalEl.value.trim();
       if (t.length < 10) return;
       quizAnswers.q12 = t;
+      // Score schon hier berechnen + Preview-Card im Gate fuellen (Reward vor Form)
+      var preview = computeResult();
+      window.__msmPreview = preview;
+      renderScorePreview(preview);
       qHistory.push('gate');
       show('gate');
       window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function renderScorePreview(r) {
+      var n = document.getElementById('sp-num');
+      if (!n) return;
+      // Score-Animation 0 → score
+      var target = r.score, cur = 0, step = Math.max(1, Math.round(target / 30));
+      var iv = setInterval(function(){
+        cur += step;
+        if (cur >= target) { cur = target; clearInterval(iv); }
+        n.textContent = cur;
+      }, 30);
+      document.getElementById('sp-fill').style.width = r.score + '%';
+      document.getElementById('sp-stufe-n').textContent = r.stufe;
+      document.getElementById('sp-stufe-name').textContent = r.stufeName;
+      document.getElementById('sp-crit').textContent = r.critDimLabel;
     }
 
     // Lead-Gate
