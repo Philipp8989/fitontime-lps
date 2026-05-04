@@ -174,14 +174,6 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
     /* Ozempic-Tag */
     .ozempic-tag { font-size: 12px; color: var(--text-2); margin-top: 12px; padding: 10px 14px; background: var(--accent-soft); border-radius: 10px; line-height: 1.45; text-align: center; max-width: 460px; margin-left: auto; margin-right: auto; }
 
-    /* Founder-Block (H-003: Cialdini Liking aktivieren) */
-    .founder-block { max-width: 620px; margin: 28px auto 8px; padding: 18px 16px; background: #fff; border: 1px solid var(--border); border-radius: 14px; display: grid; grid-template-columns: 84px 1fr; gap: 14px; align-items: center; box-shadow: var(--shadow-sm); }
-    .founder-photo { width: 84px; height: 84px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent-soft); }
-    .founder-text { font-size: 14px; line-height: 1.5; color: var(--text); }
-    .founder-text b { color: var(--text); font-weight: 800; }
-    .founder-role { font-size: 11px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.6px; font-weight: 700; margin-bottom: 4px; display: block; }
-    @media (max-width: 480px) { .founder-block { grid-template-columns: 64px 1fr; padding: 14px; } .founder-photo { width: 64px; height: 64px; } .founder-text { font-size: 13px; } }
-
     /* Stufen-Skala */
     .stages-section { max-width: 620px; margin: 32px auto; }
     .stages-title { font-size: 18px; font-weight: 800; text-align: center; margin-bottom: 6px; letter-spacing: -0.3px; }
@@ -401,12 +393,17 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
         </div>
       </section>
 
-      <!-- Founder-Block (H-003: Cialdini Liking aktivieren) -->
-      <section class="founder-block reveal" aria-label="Wer hinter dem Test steht">
-        <img class="founder-photo" src="/images/coaches/fabian.png" alt="Fabian, Ernährungsexperte und Hormonspezialist" width="168" height="168" loading="lazy" />
-        <div class="founder-text">
-          <span class="founder-role">Wer hinter dem Test steht</span>
-          Ich bin <b>Fabian</b>, Ernährungsexperte, Fitness Coach und Hormonspezialist. Seit 2016 begleite ich Frauen ab 40, und nach über 4.000 Geschichten weiss ich: <b>MSM ist kein Symptom, es ist ein Muster</b>. Deshalb dieser Test.
+      <!-- Coach-Bridge (H-003 v2: existierende Fabian+Filip-Section nach oben gezogen, Cialdini Liking direkt nach Hero) -->
+      <section class="coach-section reveal">
+        <div class="coach-row">
+          <div class="coach-photos">
+            <img src="/images/coaches/fabian.png" alt="Fabian, Coach Fit on Time" loading="lazy" />
+            <img src="/images/coaches/filip.png" alt="Filip, Coach Fit on Time" loading="lazy" />
+          </div>
+          <div class="coach-text">
+            <strong>Fabian und Filip, Coaches bei Fit on Time</strong>
+            <p>Wir begleiten seit 2016 über 4.000 Schweizerinnen 40+. Das Muster sehen wir bei unseren Klientinnen seit Jahren, jetzt hat die Forschung ihm einen Namen gegeben.</p>
+          </div>
         </div>
       </section>
 
@@ -448,20 +445,6 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
           </div>
         </div>
         <p class="edu-source">MSM (Musculoskeletal Syndrome of Menopause) wird seit 2024 in der internationalen Fachliteratur als gemeinsames Muster diskutiert. Kein offizieller Diagnosebegriff.</p>
-      </section>
-
-      <!-- Coach-Bridge -->
-      <section class="coach-section reveal">
-        <div class="coach-row">
-          <div class="coach-photos">
-            <img src="/images/coaches/fabian.png" alt="Fabian, Coach Fit on Time" loading="lazy" />
-            <img src="/images/coaches/filip.png" alt="Filip, Coach Fit on Time" loading="lazy" />
-          </div>
-          <div class="coach-text">
-            <strong>Fabian und Filip, Coaches bei Fit on Time</strong>
-            <p>Wir begleiten seit 2016 über 4.000 Schweizerinnen 40+. Das Muster sehen wir bei unseren Klientinnen seit Jahren, jetzt hat die Forschung ihm einen Namen gegeben.</p>
-          </div>
-        </div>
       </section>
 
       <!-- Section: Im Detail, fünf Systeme reagieren -->
