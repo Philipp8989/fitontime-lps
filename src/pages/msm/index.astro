@@ -393,6 +393,20 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
         </div>
       </section>
 
+      <!-- Coach-Bridge (H-003 v2: existierende Fabian+Filip-Section nach oben gezogen, Cialdini Liking direkt nach Hero) -->
+      <section class="coach-section reveal">
+        <div class="coach-row">
+          <div class="coach-photos">
+            <img src="/images/coaches/fabian.png" alt="Fabian, Coach Fit on Time" loading="lazy" />
+            <img src="/images/coaches/filip.png" alt="Filip, Coach Fit on Time" loading="lazy" />
+          </div>
+          <div class="coach-text">
+            <strong>Fabian und Filip, Coaches bei Fit on Time</strong>
+            <p>Wir begleiten seit 2016 über 4.000 Schweizerinnen 40+. Das Muster sehen wir bei unseren Klientinnen seit Jahren, jetzt hat die Forschung ihm einen Namen gegeben.</p>
+          </div>
+        </div>
+      </section>
+
       <div class="sticky-cta" id="stickyCta">
         <button class="cta-btn" onclick="startQuiz()" style="font-size:15px;padding:14px;">MSM-Test starten →</button>
       </div>
@@ -431,20 +445,6 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
           </div>
         </div>
         <p class="edu-source">MSM (Musculoskeletal Syndrome of Menopause) wird seit 2024 in der internationalen Fachliteratur als gemeinsames Muster diskutiert. Kein offizieller Diagnosebegriff.</p>
-      </section>
-
-      <!-- Coach-Bridge -->
-      <section class="coach-section reveal">
-        <div class="coach-row">
-          <div class="coach-photos">
-            <img src="/images/coaches/fabian.png" alt="Fabian, Coach Fit on Time" loading="lazy" />
-            <img src="/images/coaches/filip.png" alt="Filip, Coach Fit on Time" loading="lazy" />
-          </div>
-          <div class="coach-text">
-            <strong>Fabian und Filip, Coaches bei Fit on Time</strong>
-            <p>Wir begleiten seit 2016 über 4.000 Schweizerinnen 40+. Das Muster sehen wir bei unseren Klientinnen seit Jahren, jetzt hat die Forschung ihm einen Namen gegeben.</p>
-          </div>
-        </div>
       </section>
 
       <!-- Section: Im Detail, fünf Systeme reagieren -->
@@ -771,20 +771,32 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
       }, { passive: true });
     })();
 
-    // Live-Counter, organische Drift (langsam, +/- 1-2, bounded 6-15)
+    // Live-Counter, organische Drift mit Tageszeit-Awareness (H-004 CRO-Hypothese)
+    // Range 7-23, vormittags höher (10-21 Uhr Spitze), nachts niedriger
     (function liveCounter(){
       var el = document.getElementById('liveCnt');
       if (!el) return;
-      var n = 8 + Math.floor(Math.random() * 4);
+      // Tageszeit-aware Range: morgens 9-13 / vormittags 12-21 / nachmittags 10-19 / abend 8-15 / nacht 7-11
+      function rangeForHour(h) {
+        if (h >= 9 && h < 12) return [12, 21];   // Vormittag = Peak
+        if (h >= 12 && h < 17) return [10, 19];  // Nachmittag = mittel
+        if (h >= 17 && h < 21) return [11, 17];  // früher Abend = mittel
+        if (h >= 21 || h < 6)  return [7, 11];   // Nacht = low
+        return [9, 14];                           // morgens-früh = ramp-up
+      }
+      var range = rangeForHour(new Date().getHours());
+      var n = range[0] + Math.floor(Math.random() * (range[1] - range[0] + 1));
       el.textContent = n;
       function tick(){
+        var r = rangeForHour(new Date().getHours());
         var step = Math.random() < 0.5 ? -1 : 1;
         if (Math.random() < 0.25) step *= 2;
-        n = Math.max(6, Math.min(15, n + step));
+        n = Math.max(r[0], Math.min(r[1], n + step));
         el.textContent = n;
-        setTimeout(tick, 25000 + Math.floor(Math.random() * 35000));
+        // Cadence ~30s mit jitter (H-004 Spec: alle 30 Sekunden)
+        setTimeout(tick, 25000 + Math.floor(Math.random() * 12000));
       }
-      setTimeout(tick, 18000 + Math.floor(Math.random() * 12000));
+      setTimeout(tick, 25000 + Math.floor(Math.random() * 12000));
     })();
 
     // Tracking
