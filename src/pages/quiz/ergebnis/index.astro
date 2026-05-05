@@ -1,0 +1,275 @@
+---
+// /quiz/ergebnis - Ergebnisseite des 60-Sekunden Stoffwechsel-Quiz
+// Inhalte 1:1 aus dem Original-Funnel (Bullets + Filip Mursic Block)
+import CookieBanner from '../../../components/CookieBanner.astro';
+
+const LP_SLUG = 'quiz';
+const LP_NAME = '60-Sekunden Stoffwechsel-Quiz, Ergebnis';
+const PIXEL_ID = (import.meta.env.PUBLIC_META_PIXEL_ID || '').trim();
+const HYROS_ID = (import.meta.env.PUBLIC_HYROS_ID || '').trim();
+const IMPRESSUM_URL = 'https://fitontime.ch/impressum-datenschutz';
+const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
+---
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Dein Ergebnis | 60-Sekunden Stoffwechsel-Quiz</title>
+  <link rel="icon" type="image/png" href="/images/logo.png" />
+  <link rel="preload" as="image" href="/quiz/logo.png" fetchpriority="high" />
+  <link rel="preload" as="image" href="/quiz/filip-mursic.jpg" fetchpriority="high" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet" />
+
+  {HYROS_ID && <script is:inline src={`https://t.hyros.com/v1/lst/universal-script?ph=${HYROS_ID}`}></script>}
+
+  <style is:global>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      font-family: 'Lato', sans-serif;
+      background: #ffffff;
+      color: #000000;
+      font-size: 14px;
+      line-height: 1.4;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .container { max-width: 1170px; margin: 0 auto; padding: 0 15px; }
+
+    .logo-row { padding: 30px 0 0; text-align: center; }
+    .logo-row img { max-width: 280px; width: 100%; height: auto; display: inline-block; }
+
+    .spacing { height: 30px; }
+
+    /* Result-Hero */
+    .result-hero {
+      text-align: center;
+      padding: 30px 20px 10px;
+      max-width: 760px;
+      margin: 0 auto;
+    }
+    .result-badge {
+      display: inline-block;
+      background: #e8f5ea;
+      color: #1c7c34;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 6px 14px;
+      border-radius: 20px;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+    .result-hero h1 {
+      font-size: 30px;
+      font-weight: 900;
+      line-height: 1.2;
+      color: #000;
+      margin: 0 0 10px;
+    }
+    .result-hero h1 em { font-style: normal; color: #1d73d3; }
+    .result-hero p {
+      font-size: 16px;
+      color: #444;
+      max-width: 620px;
+      margin: 0 auto;
+      line-height: 1.5;
+    }
+
+    /* Bullets-Block */
+    .editor-headline {
+      color: #333;
+      font-size: 30px;
+      font-weight: 700;
+      text-align: center;
+      text-shadow: 1px 0 1px #333;
+      margin: 40px 0 18px;
+      line-height: 1.2;
+    }
+    .bullet-list {
+      list-style: none;
+      padding: 0;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+    .bullet-list li {
+      font-size: 20px;
+      text-align: center;
+      margin: 10px 0;
+      color: #333;
+      line-height: 1.4;
+    }
+
+    /* Filip-Block */
+    .filip-section { background: #fafafa; padding: 50px 0 30px; margin-top: 50px; border-top: 1px solid #eee; }
+    .filip-photo {
+      max-width: 250px;
+      margin: 0 auto 16px;
+      text-align: center;
+      border-radius: 200px;
+      overflow: hidden;
+      width: 250px;
+      height: 250px;
+    }
+    .filip-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .testimonials-quote {
+      font-size: 18px;
+      color: #333;
+      text-align: center;
+      max-width: 700px;
+      margin: 0 auto 24px;
+      font-style: italic;
+      line-height: 1.5;
+      padding: 0 20px;
+    }
+    .testimonials-quote::before { content: '"'; font-size: 32px; color: #999; margin-right: 4px; }
+    .testimonials-quote::after { content: '"'; font-size: 32px; color: #999; margin-left: 4px; }
+    .signature {
+      text-align: center;
+      margin: 0 auto 24px;
+      font-size: 15px;
+      color: #333;
+      line-height: 1.6;
+    }
+    .signature .name { font-weight: 700; }
+    .signature .role { color: #666; }
+
+    /* Primary CTA, leitet zum Booking auf fitontime.ch */
+    .primary-cta-wrap { text-align: center; margin: 30px auto 10px; padding: 0 20px; }
+    .primary-cta {
+      display: inline-block;
+      background: #5cb85c;
+      color: #fff !important;
+      font-size: 18px;
+      font-weight: 700;
+      padding: 16px 32px;
+      border-radius: 6px;
+      text-decoration: none !important;
+      box-shadow: 0 4px 14px rgba(92,184,92,0.3);
+      transition: all 0.2s;
+    }
+    .primary-cta:hover { background: #4cae4c; transform: translateY(-2px); box-shadow: 0 6px 18px rgba(92,184,92,0.4); }
+    .retake-link {
+      display: inline-block;
+      margin-top: 18px;
+      font-size: 14px;
+      color: #1d73d3;
+      text-decoration: underline;
+    }
+
+    .footer-logo { padding: 20px 0; text-align: center; }
+    .footer-logo img { max-width: 180px; opacity: 0.55; }
+
+    .footer-legal {
+      text-align: center;
+      color: rgba(135,135,135,0.61);
+      font-size: 12px;
+      padding: 10px 15px 30px;
+    }
+    .footer-legal a { text-decoration: underline; }
+    .footer-legal a:hover { color: #555; }
+
+    @media (max-width: 600px) {
+      .result-hero h1 { font-size: 24px; }
+      .editor-headline { font-size: 24px; }
+      .bullet-list li { font-size: 17px; }
+      .filip-photo { width: 200px; height: 200px; max-width: 200px; }
+      .primary-cta { font-size: 16px; padding: 14px 24px; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <!-- Logo top -->
+    <div class="logo-row">
+      <img src="/quiz/logo.png" alt="Fit on Time" width="280" height="55" />
+    </div>
+    <div class="spacing"></div>
+
+    <!-- Result-Hero -->
+    <section class="result-hero">
+      <span class="result-badge">✓ Dein Ergebnis ist bereit</span>
+      <h1>Dein Stoffwechsel ist <em>aktivierbar</em>.</h1>
+      <p>Basierend auf deinen Antworten zeigen wir dir, wie du langfristig abnehmen kannst, ohne Verzicht oder JoJo-Effekt.</p>
+    </section>
+
+    <!-- Bullets -->
+    <section class="container">
+      <div class="editor-headline">Mit dieser Methode kannst du herausfinden:</div>
+      <ul class="bullet-list">
+        <li>💥 Wie du abnehmen kannst ohne Veränderungen</li>
+        <li>⏰ Wie du abnehmen kannst ohne viel Zeit aufzuwenden</li>
+        <li>🍽️ Wie du langfristig abnehmen kannst ohne Verzicht</li>
+        <li>💁‍♀️ Wie du dich wohlfühlen kannst im eigenen Körper</li>
+        <li>🎉 Wie du Abnehmen kannst ohne Jojo-Effekt</li>
+      </ul>
+    </section>
+
+    <!-- Filip Section -->
+    <section class="filip-section">
+      <div class="container">
+        <div class="filip-photo">
+          <img src="/quiz/filip-mursic.jpg" alt="Filip Mursic, Gründer der ZSU-Strategie" width="250" height="250" />
+        </div>
+        <p class="testimonials-quote">Mit diesem 60-Sekunden-Quiz kannst du sehen, ob dein Stoffwechsel "eingeschlafen" ist oder nicht.</p>
+        <div class="signature">
+          <div class="name">Filip Mursic</div>
+          <div class="role">Gründer der ZSU-Strategie</div>
+        </div>
+
+        <div class="primary-cta-wrap">
+          <a href="https://fitontime.ch" target="_blank" rel="noopener" class="primary-cta" id="primaryCta">
+            Jetzt mehr erfahren »
+          </a>
+          <br />
+          <a href="/quiz/" class="retake-link" id="retakeLink">Quiz neu starten</a>
+        </div>
+
+        <div class="spacing"></div>
+        <div class="footer-logo">
+          <img src="/quiz/logo.png" alt="Fit on Time" width="180" height="35" />
+        </div>
+        <div class="footer-legal">
+          <a href={IMPRESSUM_URL} target="_blank" rel="noopener">Impressum</a> | <a href={DATENSCHUTZ_URL} target="_blank" rel="noopener">Datenschutz</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <CookieBanner metaPixelId={PIXEL_ID} hyrosPh={HYROS_ID} impressumUrl={IMPRESSUM_URL} datenschutzUrl={DATENSCHUTZ_URL} consentKey="lp_consent_quiz" />
+
+  <script is:inline define:vars={{ LP_SLUG, LP_NAME }}>
+    // Tracking auf Ergebnisseite
+    const SESSION_KEY = `${LP_SLUG}_session`;
+    let session = sessionStorage.getItem(SESSION_KEY);
+    if (!session) {
+      session = (crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2) + Date.now());
+      sessionStorage.setItem(SESSION_KEY, session);
+    }
+
+    function track(event, extra) {
+      const payload = JSON.stringify(Object.assign({
+        event, lp: LP_SLUG, lp_name: LP_NAME, session, step: 'ergebnis',
+      }, extra || {}));
+      try {
+        if (navigator.sendBeacon) {
+          navigator.sendBeacon('/api/track', new Blob([payload], { type: 'application/json' }));
+          return;
+        }
+      } catch (e) {}
+      fetch('/api/track', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload, keepalive: true }).catch(() => {});
+    }
+
+    track('result_view');
+
+    document.getElementById('primaryCta')?.addEventListener('click', () => track('result_cta_click', { target: 'primary' }));
+    document.getElementById('retakeLink')?.addEventListener('click', () => track('result_retake_click'));
+  </script>
+</body>
+</html>

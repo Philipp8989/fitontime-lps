@@ -189,64 +189,69 @@ const QUESTIONS = [
     .survey-question[data-id="y2v9i3pX"] .survey-answer { width: 50%; }
     @media (min-width: 768px) { .survey-question[data-id="y2v9i3pX"] .survey-answer { width: 25%; } }
 
-    /* Below-Survey Bullets */
-    .editor-headline {
-      color: #333;
-      font-size: 30px;
+    /* Loader-Overlay zwischen Quiz und Ergebnis */
+    .loader-overlay {
+      position: fixed;
+      inset: 0;
+      background: #ffffff;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      padding: 30px 20px;
+    }
+    .loader-overlay.active { display: flex; }
+    .loader-headline {
+      font-size: 26px;
       font-weight: 700;
+      color: #000;
       text-align: center;
-      text-shadow: 1px 0px 1px #333;
-      margin: 30px 0 18px;
-      line-height: 1.2;
+      margin: 0 0 12px;
+      max-width: 560px;
+      line-height: 1.25;
     }
-    .bullet-list {
-      list-style: none;
-      padding: 0;
-      max-width: 720px;
-      margin: 0 auto;
-    }
-    .bullet-list li {
-      font-size: 20px;
-      text-align: center;
-      margin: 10px 0;
-      color: #333;
-      line-height: 1.4;
-    }
-
-    /* Filip-Block */
-    .filip-section { background: #fafafa; padding: 50px 0 30px; margin-top: 40px; border-top: 1px solid #eee; }
-    .filip-photo {
-      max-width: 250px;
-      margin: 0 auto 16px;
-      text-align: center;
-      border-radius: 200px;
-      overflow: hidden;
-      width: 250px;
-      height: 250px;
-    }
-    .filip-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
-    .testimonials-quote {
-      font-size: 18px;
-      color: #333;
-      text-align: center;
-      max-width: 700px;
-      margin: 0 auto 24px;
-      font-style: italic;
-      line-height: 1.5;
-      padding: 0 20px;
-    }
-    .testimonials-quote::before { content: '"'; font-size: 32px; color: #999; margin-right: 4px; }
-    .testimonials-quote::after { content: '"'; font-size: 32px; color: #999; margin-left: 4px; }
-    .signature {
-      text-align: center;
-      margin: 0 auto 30px;
+    .loader-sub {
       font-size: 15px;
-      color: #333;
-      line-height: 1.6;
+      color: #555;
+      text-align: center;
+      margin: 0 0 30px;
+      max-width: 480px;
+      line-height: 1.5;
     }
-    .signature .name { font-weight: 700; }
-    .signature .role { color: #666; }
-    .signature .cta { color: #1d73d3; font-weight: 700; margin-top: 6px; display: inline-block; }
+    .loader-bar-wrap {
+      width: 100%;
+      max-width: 420px;
+      height: 14px;
+      background: #eee;
+      border-radius: 8px;
+      overflow: hidden;
+      margin: 0 0 12px;
+    }
+    .loader-bar {
+      height: 100%;
+      width: 0%;
+      background: #5cb85c;
+      background-image: linear-gradient(45deg, rgba(255,255,255,0.18) 25%, transparent 25%, transparent 50%, rgba(255,255,255,0.18) 50%, rgba(255,255,255,0.18) 75%, transparent 75%, transparent);
+      background-size: 28px 28px;
+      animation: stripes 1.4s linear infinite;
+      transition: width 0.25s ease-out;
+    }
+    .loader-pct {
+      font-size: 13px;
+      color: #888;
+      font-weight: 700;
+      margin-bottom: 28px;
+    }
+    .loader-step {
+      font-size: 14px;
+      color: #333;
+      text-align: center;
+      max-width: 420px;
+      min-height: 22px;
+      transition: opacity 0.3s;
+    }
+    .loader-step .check { color: #5cb85c; margin-right: 6px; }
 
     .footer-logo { padding: 20px 0; text-align: center; }
     .footer-logo img { max-width: 180px; opacity: 0.55; }
@@ -319,48 +324,22 @@ const QUESTIONS = [
       </div>
     </section>
 
-    <!-- Below-Survey Bullets -->
-    <section class="container">
-      <div class="row">
-        <div class="col">
-          <div class="editor-headline">Mit dieser Methode kannst du herausfinden:</div>
-          <ul class="bullet-list">
-            <li>💥 Wie du abnehmen kannst ohne Veränderungen</li>
-            <li>⏰ Wie du abnehmen kannst ohne viel Zeit aufzuwenden</li>
-            <li>🍽️ Wie du langfristig abnehmen kannst ohne Verzicht</li>
-            <li>💁‍♀️ Wie du dich wohlfühlen kannst im eigenen Körper</li>
-            <li>🎉 Wie du Abnehmen kannst ohne Jojo-Effekt</li>
-          </ul>
-        </div>
-      </div>
-    </section>
-
-    <!-- Filip Section -->
-    <section class="filip-section">
-      <div class="container">
-        <div class="row">
-          <div class="col">
-            <div class="filip-photo">
-              <img src="/quiz/filip-mursic.jpg" alt="Filip Mursic, Gründer der ZSU-Strategie" width="250" height="250" loading="lazy" />
-            </div>
-            <p class="testimonials-quote">Mit diesem 60-Sekunden-Quiz kannst du sehen, ob dein Stoffwechsel "eingeschlafen" ist oder nicht.</p>
-            <div class="signature">
-              <div class="name">Filip Mursic</div>
-              <div class="role">Gründer der ZSU-Strategie</div>
-              <a href="#top" class="cta" id="ctaTop">60-Sekunden-Quiz »</a>
-            </div>
-            <div class="spacing"></div>
-            <div class="footer-logo">
-              <img src="/quiz/logo.png" alt="Fit on Time" width="180" height="35" loading="lazy" />
-            </div>
-            <div class="footer-legal">
-              <a href={IMPRESSUM_URL} target="_blank" rel="noopener">Impressum</a> | <a href={DATENSCHUTZ_URL} target="_blank" rel="noopener">Datenschutz</a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
+    <!-- Footer-Legal mini -->
+    <div class="footer-legal" style="margin-top: 30px;">
+      <a href={IMPRESSUM_URL} target="_blank" rel="noopener">Impressum</a> | <a href={DATENSCHUTZ_URL} target="_blank" rel="noopener">Datenschutz</a>
+    </div>
   </main>
+
+  <!-- Loader-Overlay zwischen Q9 und Ergebnis -->
+  <div class="loader-overlay" id="loader" aria-live="polite" aria-hidden="true">
+    <h2 class="loader-headline">Dein persönliches Ergebnis wird berechnet...</h2>
+    <p class="loader-sub">Wir gleichen deine Antworten gerade mit über 1571 Auswertungen ab.</p>
+    <div class="loader-bar-wrap">
+      <div class="loader-bar" id="loaderBar"></div>
+    </div>
+    <div class="loader-pct" id="loaderPct">0%</div>
+    <div class="loader-step" id="loaderStep"></div>
+  </div>
 
   <CookieBanner metaPixelId={PIXEL_ID} hyrosPh={HYROS_ID} impressumUrl={IMPRESSUM_URL} datenschutzUrl={DATENSCHUTZ_URL} consentKey="lp_consent_quiz" />
 
@@ -445,23 +424,49 @@ const QUESTIONS = [
       track('quiz_answer', { question_id: qId, answer_id: aId, answer_text: aText, step_n: idx + 1 });
       if (target === 'result' || idx >= QUESTIONS.length - 1) {
         track('quiz_complete', { answers: state.answers });
-        // Letzte Frage, Filip-Block scrollen
-        setTimeout(() => {
-          const target = document.querySelector('.filip-section');
-          target?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }, 200);
+        // Loader anzeigen, dann auf Ergebnis weiterleiten
+        runLoader().then(() => {
+          location.href = '/quiz/ergebnis/';
+        });
         return;
       }
       // Auto-advance
       setTimeout(() => showStep(idx + 1), 180);
     }
 
-    // CTA "60-Sekunden-Quiz »" scrollt zurück zum Quiz
-    document.getElementById('ctaTop')?.addEventListener('click', (e) => {
-      e.preventDefault();
-      track('quiz_cta_click');
-      showStep(0);
-    });
+    // Berechnungs-Loader, ca. 4.5s, simulierte Schritte
+    function runLoader() {
+      const loader = document.getElementById('loader');
+      const bar = document.getElementById('loaderBar');
+      const pct = document.getElementById('loaderPct');
+      const step = document.getElementById('loaderStep');
+      const steps = [
+        { p: 18, t: 'Antworten erfasst' },
+        { p: 38, t: 'Stoffwechsel-Profil wird abgeglichen' },
+        { p: 62, t: 'Ergebnisse von 1571 Auswertungen einbezogen' },
+        { p: 84, t: 'Empfehlung wird vorbereitet' },
+        { p: 100, t: 'Ergebnis bereit' },
+      ];
+      loader.classList.add('active');
+      loader.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+      return new Promise((resolve) => {
+        let i = 0;
+        const tick = () => {
+          if (i >= steps.length) return resolve();
+          const s = steps[i++];
+          bar.style.width = s.p + '%';
+          pct.textContent = s.p + '%';
+          step.style.opacity = '0';
+          setTimeout(() => {
+            step.innerHTML = `<span class="check">✓</span> ${s.t}`;
+            step.style.opacity = '1';
+          }, 150);
+          setTimeout(tick, 900);
+        };
+        tick();
+      });
+    }
 
     // Counter, Live-Variabilität (klein randomisiert)
     function liveCounter() {
