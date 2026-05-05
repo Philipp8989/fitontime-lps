@@ -1,0 +1,487 @@
+---
+// /quiz - 1:1 Nachbau des FunnelCockpit-Funnels go.fit-on-time.ch
+// 9-Frage Stoffwechsel-Quiz, Single-Page, kein separates Result-Page
+// Quelle dokumentiert in _funnel-source.md
+import CookieBanner from '../../components/CookieBanner.astro';
+
+const LP_SLUG = 'quiz';
+const LP_NAME = '60-Sekunden Stoffwechsel-Quiz';
+const PIXEL_ID = (import.meta.env.PUBLIC_META_PIXEL_ID || '').trim();
+const HYROS_ID = (import.meta.env.PUBLIC_HYROS_ID || '').trim();
+const IMPRESSUM_URL = 'https://fitontime.ch/impressum-datenschutz';
+const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
+
+// Fragen 1:1 aus dem Original
+const QUESTIONS = [
+  { id: 'to9S8h8z', n: 1, headline: '1. Hast du oft Appetit?', intro: true, answers: [
+    { id: 'G42AY2HE', text: 'Ja' },
+    { id: 'bJpA5yMJ', text: 'Nein' },
+  ]},
+  { id: 'N6tr48EQ', n: 2, headline: 'Fühlst du dich schlapp am Morgen?', answers: [
+    { id: 'Rc2MYsNz', text: 'Ja' },
+    { id: 'wxAuBJBE', text: 'Nein' },
+  ]},
+  { id: 'kakHw9zu', n: 3, headline: 'Bist du frustriert wenn du an "abnehmen" denkst?', answers: [
+    { id: 'iLHJoqw6', text: 'Ja' },
+    { id: 'ZBNTroGL', text: 'Nein' },
+  ]},
+  { id: 'wagMEm5w', n: 4, headline: 'Wie viel würdest du gerne abnehmen?', answers: [
+    { id: 'QHLiNLut', text: 'Mehr als 10 Kilogramm' },
+    { id: 'axT4b2zE', text: 'Weniger als 10 Kilogramm' },
+  ]},
+  { id: '2dJxpFWa', n: 5, headline: 'Hast du bereits versucht abzunehmen?', answers: [
+    { id: 'ZsmqLKuM', text: 'Ja, öfter' },
+    { id: 'PANFmExY', text: 'Nein, noch nicht' },
+  ]},
+  { id: 'nxmDebKQ', n: 6, headline: 'Hast du gesundheitliche Einschränkungen?', answers: [
+    { id: 'fDa46pjd', text: 'Ja' },
+    { id: '7KESaWJ3', text: 'Nein' },
+  ]},
+  { id: 'y2v9i3pX', n: 7, headline: 'Wähle bitte aus, was dir am Wichtigsten ist!', answers: [
+    { id: 'Zm8yhKrh', text: 'Mehr Gesundheit' },
+    { id: 'AZMAS5dh', text: 'Besser aussehen' },
+    { id: 'QtGNKM6c', text: 'Mehr Zufriedenheit' },
+    { id: 'BKAQcS5Z', text: 'Kein JoJo-Effekt' },
+  ]},
+  { id: '4j2Ex2eG', n: 8, headline: 'Wie früh stehst du morgens auf?', answers: [
+    { id: 'pmd8GGrc', text: 'Vor 7:00 Uhr' },
+    { id: 'kr86zgF3', text: 'Nach 07:00 Uhr' },
+  ]},
+  { id: 'Fkg5m5BQ', n: 9, headline: 'Ist dir schon klar, was du ändern musst um gesund abzunehmen, OHNE Jojo-Effekt?', target: 'result', answers: [
+    { id: 'WttZiEnL', text: 'Ja' },
+    { id: 'qyhH5iqE', text: 'Nein' },
+  ]},
+];
+---
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>📌 60-Sekunden-Quiz</title>
+  <link rel="icon" type="image/png" href="/images/logo.png" />
+  <link rel="preload" as="image" href="/quiz/logo.png" fetchpriority="high" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet" />
+
+  {HYROS_ID && <script is:inline src={`https://t.hyros.com/v1/lst/universal-script?ph=${HYROS_ID}`}></script>}
+
+  <style is:global>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      font-family: 'Lato', sans-serif;
+      background: #ffffff;
+      color: #000000;
+      font-size: 14px;
+      line-height: 1.4;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .container { max-width: 1170px; margin: 0 auto; padding: 0 15px; }
+    .row { width: 100%; }
+    .col { width: 100%; padding: 0 15px; }
+
+    .logo-row { padding: 30px 0 0; text-align: center; }
+    .logo-row img { max-width: 280px; width: 100%; height: auto; display: inline-block; }
+
+    .spacing { height: 30px; }
+
+    /* Survey-Container */
+    .survey {
+      padding: 0 60px 20px;
+      color: #000;
+    }
+    @media (min-width: 992px) { .survey { padding-left: 300px; padding-right: 300px; } }
+
+    /* Progress-Bar (gestreift) */
+    .progress {
+      position: relative;
+      height: 30px;
+      background: #d9534f;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+    .progress-bar {
+      height: 100%;
+      background: #5cb85c;
+      background-image: linear-gradient(45deg, rgba(255,255,255,0.18) 25%, transparent 25%, transparent 50%, rgba(255,255,255,0.18) 50%, rgba(255,255,255,0.18) 75%, transparent 75%, transparent);
+      background-size: 40px 40px;
+      animation: stripes 1.4s linear infinite;
+      color: #fff;
+      text-align: center;
+      line-height: 30px;
+      font-weight: 700;
+      font-size: 13px;
+      transition: width 0.4s ease;
+    }
+    @keyframes stripes { from { background-position: 40px 0; } to { background-position: 0 0; } }
+
+    .progress-label {
+      text-align: center;
+      font-size: 13px;
+      color: #555;
+      margin: 0 0 18px;
+    }
+
+    .survey-question { display: none; padding-bottom: 30px; }
+    .survey-question.active { display: block; }
+
+    .survey-step-label {
+      font-size: 14px;
+      color: #888;
+      text-align: center;
+      margin-bottom: 6px;
+    }
+    .survey-headline {
+      font-size: 24px;
+      font-weight: 700;
+      text-align: center;
+      margin: 0 0 6px;
+      color: #000;
+      line-height: 1.25;
+    }
+    .survey-intro {
+      font-size: 16px;
+      color: #333;
+      text-align: center;
+      margin: 0 auto 22px;
+      max-width: 720px;
+      line-height: 1.5;
+    }
+
+    /* Antworten */
+    .survey-answers {
+      display: flex;
+      flex-wrap: wrap;
+      margin: 0 -10px;
+    }
+    .survey-answer {
+      width: 50%;
+      padding: 10px;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      transition: transform 0.2s;
+    }
+    .survey-answer-inner {
+      background: #333;
+      color: #fff;
+      border-radius: 6px;
+      min-height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 18px 16px;
+      font-size: 18px;
+      font-weight: 700;
+      text-align: center;
+      transition: all 0.2s ease-in-out;
+    }
+    .survey-answer:hover .survey-answer-inner { background: #1d73d3; transform: translateY(-2px); }
+    .survey-answer:active .survey-answer-inner { transform: translateY(0); background: #155aa8; }
+
+    /* Frage 7 hat 4 Antworten -> 4-spaltig auf Desktop, 2 auf Mobile */
+    .survey-question[data-id="y2v9i3pX"] .survey-answer { width: 50%; }
+    @media (min-width: 768px) { .survey-question[data-id="y2v9i3pX"] .survey-answer { width: 25%; } }
+
+    /* Below-Survey Bullets */
+    .editor-headline {
+      color: #333;
+      font-size: 30px;
+      font-weight: 700;
+      text-align: center;
+      text-shadow: 1px 0px 1px #333;
+      margin: 30px 0 18px;
+      line-height: 1.2;
+    }
+    .bullet-list {
+      list-style: none;
+      padding: 0;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+    .bullet-list li {
+      font-size: 20px;
+      text-align: center;
+      margin: 10px 0;
+      color: #333;
+      line-height: 1.4;
+    }
+
+    /* Filip-Block */
+    .filip-section { background: #fafafa; padding: 50px 0 30px; margin-top: 40px; border-top: 1px solid #eee; }
+    .filip-photo {
+      max-width: 250px;
+      margin: 0 auto 16px;
+      text-align: center;
+      border-radius: 200px;
+      overflow: hidden;
+      width: 250px;
+      height: 250px;
+    }
+    .filip-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .testimonials-quote {
+      font-size: 18px;
+      color: #333;
+      text-align: center;
+      max-width: 700px;
+      margin: 0 auto 24px;
+      font-style: italic;
+      line-height: 1.5;
+      padding: 0 20px;
+    }
+    .testimonials-quote::before { content: '"'; font-size: 32px; color: #999; margin-right: 4px; }
+    .testimonials-quote::after { content: '"'; font-size: 32px; color: #999; margin-left: 4px; }
+    .signature {
+      text-align: center;
+      margin: 0 auto 30px;
+      font-size: 15px;
+      color: #333;
+      line-height: 1.6;
+    }
+    .signature .name { font-weight: 700; }
+    .signature .role { color: #666; }
+    .signature .cta { color: #1d73d3; font-weight: 700; margin-top: 6px; display: inline-block; }
+
+    .footer-logo { padding: 20px 0; text-align: center; }
+    .footer-logo img { max-width: 180px; opacity: 0.55; }
+
+    .footer-legal {
+      text-align: center;
+      color: rgba(135,135,135,0.61);
+      font-size: 12px;
+      padding: 10px 15px 30px;
+    }
+    .footer-legal a { text-decoration: underline; }
+    .footer-legal a:hover { color: #555; }
+
+    /* Mobile */
+    @media (max-width: 600px) {
+      .survey { padding: 0 12px 20px; }
+      .survey-headline { font-size: 20px; }
+      .survey-intro { font-size: 15px; }
+      .survey-answer-inner { font-size: 16px; padding: 16px 10px; min-height: 70px; }
+      .editor-headline { font-size: 24px; }
+      .bullet-list li { font-size: 17px; }
+      .filip-photo { width: 200px; height: 200px; max-width: 200px; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <!-- Logo top -->
+    <div class="logo-row">
+      <img src="/quiz/logo.png" alt="Fit on Time" width="280" height="55" />
+    </div>
+    <div class="spacing"></div>
+
+    <!-- Survey -->
+    <section class="container">
+      <div class="row">
+        <div class="col">
+          <div class="survey">
+            <!-- Progress -->
+            <div class="progress" id="progressWrap">
+              <div class="progress-bar" id="progressBar" style="width: 10%">10%</div>
+            </div>
+            <div class="progress-label" id="progressLabel">Über <span id="liveCount">1571</span> Ergebnisse berechnet...</div>
+
+            {QUESTIONS.map((q, i) => (
+              <div class={`survey-question${i === 0 ? ' active' : ''}`} data-id={q.id} data-index={i} data-step={q.n} data-target={q.target || ''}>
+                {i === 0 ? (
+                  <>
+                    <h1 class="survey-headline" style="font-size: 28px;">60 Sekunden Stoffwechsel-Quiz:</h1>
+                    <p class="survey-intro">Finde mit diesen 9 Fragen in nur 60 Sekunden heraus, ob du langfristig abnehmen kannst, ohne Verzicht oder JoJo-Effekt. Klicke dich durch die Fragen, um dein Ergebnis direkt anzeigen zu lassen.</p>
+                    <h2 class="survey-headline">{q.headline}</h2>
+                  </>
+                ) : (
+                  <>
+                    <div class="survey-step-label">Frage {q.n} von 9</div>
+                    <h2 class="survey-headline">{q.headline}</h2>
+                  </>
+                )}
+                <div class="survey-answers">
+                  {q.answers.map(a => (
+                    <div class="survey-answer" data-id={a.id} data-target={q.target || ''} role="button" tabindex="0">
+                      <div class="survey-answer-inner">{a.text}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Below-Survey Bullets -->
+    <section class="container">
+      <div class="row">
+        <div class="col">
+          <div class="editor-headline">Mit dieser Methode kannst du herausfinden:</div>
+          <ul class="bullet-list">
+            <li>💥 Wie du abnehmen kannst ohne Veränderungen</li>
+            <li>⏰ Wie du abnehmen kannst ohne viel Zeit aufzuwenden</li>
+            <li>🍽️ Wie du langfristig abnehmen kannst ohne Verzicht</li>
+            <li>💁‍♀️ Wie du dich wohlfühlen kannst im eigenen Körper</li>
+            <li>🎉 Wie du Abnehmen kannst ohne Jojo-Effekt</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Filip Section -->
+    <section class="filip-section">
+      <div class="container">
+        <div class="row">
+          <div class="col">
+            <div class="filip-photo">
+              <img src="/quiz/filip-mursic.jpg" alt="Filip Mursic, Gründer der ZSU-Strategie" width="250" height="250" loading="lazy" />
+            </div>
+            <p class="testimonials-quote">Mit diesem 60-Sekunden-Quiz kannst du sehen, ob dein Stoffwechsel "eingeschlafen" ist oder nicht.</p>
+            <div class="signature">
+              <div class="name">Filip Mursic</div>
+              <div class="role">Gründer der ZSU-Strategie</div>
+              <a href="#top" class="cta" id="ctaTop">60-Sekunden-Quiz »</a>
+            </div>
+            <div class="spacing"></div>
+            <div class="footer-logo">
+              <img src="/quiz/logo.png" alt="Fit on Time" width="180" height="35" loading="lazy" />
+            </div>
+            <div class="footer-legal">
+              <a href={IMPRESSUM_URL} target="_blank" rel="noopener">Impressum</a> | <a href={DATENSCHUTZ_URL} target="_blank" rel="noopener">Datenschutz</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <CookieBanner metaPixelId={PIXEL_ID} hyrosPh={HYROS_ID} impressumUrl={IMPRESSUM_URL} datenschutzUrl={DATENSCHUTZ_URL} consentKey="lp_consent_quiz" />
+
+  <script is:inline define:vars={{ LP_SLUG, LP_NAME }}>
+    // Quiz-Logik, Hash-Routing, Auto-Advance, Tracking
+    const QUESTIONS = Array.from(document.querySelectorAll('.survey-question'));
+    const SESSION_KEY = `${LP_SLUG}_session`;
+    const STATE_KEY = `${LP_SLUG}_state`;
+
+    let session = sessionStorage.getItem(SESSION_KEY);
+    if (!session) {
+      session = (crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2) + Date.now());
+      sessionStorage.setItem(SESSION_KEY, session);
+    }
+
+    const state = JSON.parse(sessionStorage.getItem(STATE_KEY) || '{"step":0,"answers":{}}');
+    function saveState() { sessionStorage.setItem(STATE_KEY, JSON.stringify(state)); }
+
+    // Tracking, robust mit sendBeacon
+    function track(event, extra) {
+      const payload = JSON.stringify(Object.assign({
+        event, lp: LP_SLUG, lp_name: LP_NAME, session, step: state.step,
+      }, extra || {}));
+      try {
+        if (navigator.sendBeacon) {
+          navigator.sendBeacon('/api/track', new Blob([payload], { type: 'application/json' }));
+          return;
+        }
+      } catch (e) {}
+      fetch('/api/track', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload, keepalive: true }).catch(() => {});
+    }
+
+    // Hash-Routing zur richtigen Frage springen
+    function showStep(idx) {
+      idx = Math.max(0, Math.min(QUESTIONS.length - 1, idx));
+      QUESTIONS.forEach((q, i) => q.classList.toggle('active', i === idx));
+      const q = QUESTIONS[idx];
+      const dataId = q.getAttribute('data-id');
+      const newHash = `#survey-question-${dataId}`;
+      if (location.hash !== newHash) history.replaceState(null, '', newHash);
+      // Progressbar, 10% pro Schritt wie Original (10..90)
+      const pct = (idx + 1) * 10;
+      const bar = document.getElementById('progressBar');
+      if (bar) {
+        bar.style.width = pct + '%';
+        bar.textContent = pct + '%';
+      }
+      state.step = idx;
+      saveState();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Initial-Step aus Hash setzen
+    function initialStep() {
+      const m = location.hash.match(/#survey-question-([A-Za-z0-9]+)/);
+      if (m) {
+        const idx = QUESTIONS.findIndex(q => q.getAttribute('data-id') === m[1]);
+        if (idx >= 0) return idx;
+      }
+      return 0;
+    }
+
+    // Click-Handler für Antworten
+    function bindAnswers() {
+      QUESTIONS.forEach((q, idx) => {
+        q.querySelectorAll('.survey-answer').forEach(a => {
+          a.addEventListener('click', () => onAnswer(q, a, idx));
+          a.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onAnswer(q, a, idx); }
+          });
+        });
+      });
+    }
+
+    function onAnswer(q, a, idx) {
+      const qId = q.getAttribute('data-id');
+      const aId = a.getAttribute('data-id');
+      const aText = a.querySelector('.survey-answer-inner')?.textContent?.trim() || '';
+      const target = a.getAttribute('data-target');
+      state.answers[qId] = { aId, aText };
+      saveState();
+      track('quiz_answer', { question_id: qId, answer_id: aId, answer_text: aText, step_n: idx + 1 });
+      if (target === 'result' || idx >= QUESTIONS.length - 1) {
+        track('quiz_complete', { answers: state.answers });
+        // Letzte Frage, Filip-Block scrollen
+        setTimeout(() => {
+          const target = document.querySelector('.filip-section');
+          target?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 200);
+        return;
+      }
+      // Auto-advance
+      setTimeout(() => showStep(idx + 1), 180);
+    }
+
+    // CTA "60-Sekunden-Quiz »" scrollt zurück zum Quiz
+    document.getElementById('ctaTop')?.addEventListener('click', (e) => {
+      e.preventDefault();
+      track('quiz_cta_click');
+      showStep(0);
+    });
+
+    // Counter, Live-Variabilität (klein randomisiert)
+    function liveCounter() {
+      const el = document.getElementById('liveCount');
+      if (!el) return;
+      let n = parseInt(el.textContent || '1571', 10);
+      setInterval(() => {
+        n += Math.random() < 0.6 ? 1 : 0;
+        el.textContent = String(n);
+      }, 8000);
+    }
+
+    // View Event
+    track('view');
+    bindAnswers();
+    showStep(initialStep());
+    liveCounter();
+
+    // Hash-Change (Browser Back/Forward)
+    window.addEventListener('hashchange', () => showStep(initialStep()));
+  </script>
+</body>
+</html>
