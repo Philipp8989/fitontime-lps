@@ -332,6 +332,67 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
       color: var(--text-3);
     }
 
+    /* === DANKE-SEITE V2 (FC-Mirror, A/B-Variante B) === */
+    .thanks-v2 { text-align: center; max-width: 600px; width: 100%; padding-bottom: 40px; }
+    .thanks-v2 .result-eyebrow { font-size: 11px; text-transform: uppercase; letter-spacing: 1.4px; color: var(--accent); font-weight: 700; margin-bottom: 10px; }
+    .thanks-v2 h2 { font-size: 22px; font-weight: 800; line-height: 1.25; letter-spacing: -0.4px; margin-bottom: 8px; }
+    .thanks-v2 h2 em { font-style: normal; color: var(--accent); }
+    .score-wrap { display: flex; justify-content: center; padding: 12px 0 6px; }
+    .score { position: relative; width: 160px; height: 160px; }
+    .score svg { transform: rotate(-90deg); width: 100%; height: 100%; }
+    .score-track { fill: none; stroke: var(--surface-2); stroke-width: 14; }
+    .score-fill { fill: none; stroke: var(--accent); stroke-width: 14; stroke-linecap: round; stroke-dasharray: 0 1000; transition: stroke-dasharray 1.6s cubic-bezier(.22,.61,.36,1); }
+    .score-text { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .score-num { font-size: 40px; font-weight: 800; letter-spacing: -1.5px; color: var(--text); line-height: 1; }
+    .score-num .pct { font-size: 20px; color: var(--accent); margin-left: 2px; }
+    .score-label { font-size: 10px; color: var(--text-3); text-transform: uppercase; letter-spacing: 1px; margin-top: 6px; }
+
+    .v2-sec-title { font-size: 14px; font-weight: 700; text-align: left; color: var(--text); margin: 18px 0 10px; }
+    .v2-symptoms { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; text-align: left; }
+    .v2-symptom { display: flex; align-items: flex-start; gap: 10px; background: var(--surface); border: 1px solid var(--surface-2); border-left: 3px solid var(--accent); border-radius: 10px; padding: 12px 14px; }
+    .v2-symptom .ic { flex-shrink: 0; width: 20px; height: 20px; border-radius: 50%; background: rgba(196,105,122,0.18); color: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; margin-top: 1px; }
+    .v2-symptom p { font-size: 13.5px; color: var(--text-2); line-height: 1.5; }
+    .v2-symptom p b { color: var(--text); font-weight: 600; }
+
+    .bundle-box { background: var(--surface); border: 1.5px solid var(--accent); border-radius: var(--r); padding: 22px 18px 18px; margin-top: 20px; position: relative; box-shadow: 0 8px 28px rgba(196,105,122,0.18); text-align: center; }
+    .bundle-badge { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--accent); color: #fff; padding: 5px 14px; border-radius: 999px; font-size: 11px; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase; white-space: nowrap; }
+    .bundle-box h3 { font-size: 17px; font-weight: 800; margin-bottom: 6px; letter-spacing: -0.3px; line-height: 1.3; }
+    .bundle-box .b-sub { font-size: 13px; color: var(--text-2); margin-bottom: 14px; line-height: 1.5; }
+    .countdown { display: flex; justify-content: center; gap: 8px; margin: 6px 0 14px; }
+    .cd-cell { background: var(--surface-2); border: 1px solid var(--surface-2); border-radius: 8px; padding: 8px 10px; min-width: 56px; }
+    .cd-num { font-size: 22px; font-weight: 800; color: var(--text); line-height: 1; letter-spacing: -0.5px; font-variant-numeric: tabular-nums; }
+    .cd-lbl { font-size: 9px; color: var(--text-3); text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
+    /* Bundle Hero-Image */
+    .bundle-hero-img { display: block; width: 100%; max-width: 360px; height: auto; margin: 4px auto 14px; }
+
+    /* Produkt-Cards (3 Bundle-Komponenten mit Mockup) */
+    .bundle-products { display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px; }
+    .bundle-product { display: flex; align-items: center; gap: 12px; background: var(--surface-2); border-radius: 10px; padding: 10px 12px; text-align: left; }
+    .bundle-product .bp-img { flex-shrink: 0; width: 72px; height: 90px; object-fit: contain; background: transparent; }
+    .bundle-product .bp-txt { flex: 1; min-width: 0; }
+    .bundle-product .bp-title { font-size: 13px; font-weight: 800; color: var(--text); margin-bottom: 4px; letter-spacing: -0.1px; line-height: 1.25; }
+    .bundle-product .bp-desc { font-size: 12.5px; color: var(--text-2); line-height: 1.45; }
+    .bundle-product .bp-desc b { color: var(--text); font-weight: 600; }
+
+    .how-to { background: rgba(74,222,128,0.06); border: 1px solid rgba(74,222,128,0.25); border-radius: 10px; padding: 12px 14px; margin-bottom: 14px; display: flex; flex-direction: column; gap: 8px; text-align: left; }
+    .how-step { display: flex; align-items: flex-start; gap: 10px; font-size: 13px; color: var(--text-2); line-height: 1.45; }
+    .how-step .how-num { flex-shrink: 0; width: 20px; height: 20px; border-radius: 50%; background: var(--green); color: #0b0b0f; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; margin-top: 1px; }
+    .how-step b { color: var(--text); font-weight: 700; }
+
+    .bundle-cta { display: block; width: 100%; background: var(--accent); color: #fff; font-family: var(--font); font-size: 16px; font-weight: 800; padding: 15px; border: none; border-radius: 12px; cursor: pointer; -webkit-tap-highlight-color: transparent; letter-spacing: 0.2px; line-height: 1.2; }
+    .bundle-cta:active { opacity: 0.85; }
+    .cta-sub { font-size: 11.5px; color: var(--text-3); margin-top: 8px; text-align: center; }
+
+    #ycbm-container-v2 { background: #fff; border-radius: 10px; min-height: 480px; overflow: hidden; margin-top: 20px; }
+
+    @media (min-width: 600px) {
+      .bundle-box { max-width: 520px; margin-left: auto; margin-right: auto; }
+      .v2-symptoms { max-width: 520px; margin-left: auto; margin-right: auto; }
+      .v2-sec-title { max-width: 520px; margin-left: auto; margin-right: auto; }
+      #ycbm-container-v2 { max-width: 520px; margin-left: auto; margin-right: auto; }
+      .thanks-v2 h2 { font-size: 26px; }
+    }
+
     /* Desktop */
     @media (min-width: 600px) {
       .hero h1 { font-size: 36px; }
@@ -624,6 +685,82 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
 
       </div>
 
+      <!-- Danke V2 - FC-Mirror (A/B-Variante B) -->
+      <div class="step thanks-v2" data-s="thx2">
+        <div class="result-eyebrow">Auswertung abgeschlossen</div>
+        <h2>Dein Ergebnis: Zu <em><span id="v2-score-h">89</span>%</em> blockiert Deine Schilddrüse Deinen Stoffwechsel</h2>
+
+        <div class="score-wrap">
+          <div class="score">
+            <svg viewBox="0 0 200 200">
+              <circle class="score-track" cx="100" cy="100" r="88"></circle>
+              <circle class="score-fill" id="v2-score-ring" cx="100" cy="100" r="88"></circle>
+            </svg>
+            <div class="score-text">
+              <div class="score-num"><span id="v2-score-num">0</span><span class="pct">%</span></div>
+              <div class="score-label">Blockade-Grad</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="v2-sec-title">Symptome:</div>
+        <div class="v2-symptoms">
+          <div class="v2-symptom"><span class="ic">&#10005;</span><p>Du fühlst Dich <b>ständig müde</b>, egal wie lange Du schläfst.</p></div>
+          <div class="v2-symptom"><span class="ic">&#10005;</span><p>Deine <b>Energie ist im Keller</b>, besonders am Nachmittag.</p></div>
+          <div class="v2-symptom"><span class="ic">&#10005;</span><p>Abnehmen scheint <b>unmöglich</b>, obwohl Du weniger isst als andere.</p></div>
+          <div class="v2-symptom"><span class="ic">&#10005;</span><p>Du fühlst Dich <b>demotiviert</b>, weil die Waage trotz Verzicht stillsteht.</p></div>
+        </div>
+
+        <div class="bundle-box">
+          <span class="bundle-badge">&#127873; Geschenk zum Erstgespräch</span>
+          <h3>Dein 0&euro; "Schilddrüsen-Starter-Bundle" für eine blockierte Schilddrüse</h3>
+
+          <img class="bundle-hero-img" src="/images/schilddruesen/auswertung-1-mockup.png" alt="Schilddrüsen-Starter-Bundle: Einkaufsliste, 7-Tage-Reset, Notfallplan" loading="lazy" />
+
+          <p class="b-sub">Du bekommst das komplette Bundle <b>kostenlos im Erstgespräch</b> ausgehändigt &mdash; persönlich abgestimmt auf Deine Auswertung.</p>
+
+          <div class="countdown" id="v2-countdown">
+            <div class="cd-cell"><div class="cd-num" id="cd-h">00</div><div class="cd-lbl">Stunden</div></div>
+            <div class="cd-cell"><div class="cd-num" id="cd-m">07</div><div class="cd-lbl">Minuten</div></div>
+            <div class="cd-cell"><div class="cd-num" id="cd-s">00</div><div class="cd-lbl">Sekunden</div></div>
+          </div>
+
+          <div class="bundle-products">
+            <div class="bundle-product">
+              <img class="bp-img" src="/images/schilddruesen/auswertung-4-result.png" alt="Schilddrüsen-Safe Einkaufsliste" loading="lazy" />
+              <div class="bp-txt">
+                <div class="bp-title">Schilddrüsen-Safe Einkaufsliste</div>
+                <div class="bp-desc">Erfahre genau, welche <b>Lebensmittel Deine Hormone bremsen</b>. Gesunde, jodarme &amp; nährstoffreiche Lebensmittel für die Schilddrüse.</div>
+              </div>
+            </div>
+            <div class="bundle-product">
+              <img class="bp-img" src="/images/schilddruesen/auswertung-2-bundle.png" alt="7-Tage Schilddrüsen Reset" loading="lazy" />
+              <div class="bp-txt">
+                <div class="bp-title">7-Tage Schilddrüsen-Reset</div>
+                <div class="bp-desc">Starte noch heute mit Deinem <b>7-Tage-Reset</b> in die Fettverbrennung. Darmgesundheit stärken, Entzündungen hemmen, Energie zurückgewinnen.</div>
+              </div>
+            </div>
+            <div class="bundle-product">
+              <img class="bp-img" src="/images/schilddruesen/auswertung-3-fb.png" alt="Notfallplan gegen Heißhunger" loading="lazy" />
+              <div class="bp-txt">
+                <div class="bp-title">Notfallplan gegen Heißhunger</div>
+                <div class="bp-desc">Erhalte unsere <b>SOS-Strategien</b> für die schwierigen Momente im Alltag. Sofortmaßnahmen für Heißhungerattacken &amp; gesunde Alternativen.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="how-to">
+            <div class="how-step"><span class="how-num">1</span><span>Wähle unten einen Termin für Dein <b>kostenloses Erstgespräch</b></span></div>
+            <div class="how-step"><span class="how-num">2</span><span>Im Gespräch (ca. 20 Min.) bekommst Du das <b>Bundle gratis</b> &amp; Deine Auswertung erklärt</span></div>
+          </div>
+
+          <button type="button" class="bundle-cta" onclick="v2ScrollToBooking()">Termin sichern &amp; Bundle gratis erhalten</button>
+          <div class="cta-sub">&#10003; Kostenfrei &nbsp;&middot;&nbsp; &#10003; Unverbindlich &nbsp;&middot;&nbsp; &#10003; Bundle als Geschenk</div>
+        </div>
+
+        <div id="ycbm-container-v2"></div>
+      </div>
+
     </div>
   </div>
 
@@ -649,6 +786,47 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
       fire();
     }
     tk('page_view');
+
+    // Preview-Shortcut: ?show=thx2 oder ?show=thx springt direkt zum Step (Dev/QA)
+    (function() {
+      var p = new URLSearchParams(location.search);
+      var s = p.get('show');
+      if (s !== 'thx' && s !== 'thx2') return;
+      document.getElementById('lp').style.display = 'none';
+      var q = document.getElementById('quiz');
+      q.style.display = 'flex';
+      q.classList.add('on');
+      document.querySelectorAll('.step').forEach(function(el){ el.classList.remove('on'); });
+      var target = document.querySelector('.step[data-s="' + s + '"]');
+      if (target) target.classList.add('on');
+      document.getElementById('qf').style.width = '100%';
+      document.getElementById('qn').textContent = 'Fertig!';
+      if (s === 'thx2') {
+        if (typeof v2InitScore === 'function') v2InitScore();
+        if (typeof v2StartCountdown === 'function') v2StartCountdown();
+        var c = document.getElementById('ycbm-container-v2');
+        if (c && !c.dataset.loaded) {
+          c.dataset.loaded = '1';
+          var sc = document.createElement('script');
+          sc.src = 'https://embed.ycb.me';
+          sc.async = true;
+          sc.setAttribute('data-domain', 'fitontime-stoffwechsel-report');
+          sc.setAttribute('data-displaymode', 'auto');
+          c.appendChild(sc);
+        }
+      } else if (s === 'thx') {
+        var ca = document.getElementById('ycbm-container');
+        if (ca && !ca.dataset.loaded) {
+          ca.dataset.loaded = '1';
+          var sa = document.createElement('script');
+          sa.src = 'https://embed.ycb.me';
+          sa.async = true;
+          sa.setAttribute('data-domain', 'fitontime-stoffwechsel-report');
+          sa.setAttribute('data-displaymode', 'auto');
+          ca.appendChild(sa);
+        }
+      }
+    })();
 
     function go(g) {
       tk('quiz_start', { detail: g });
@@ -727,19 +905,123 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
         // Insert erfolgreich — jetzt erst tracken
         tk('lead_submit', { detail: fn });
         document.querySelector('.step[data-s="form"]').classList.remove('on');
-        document.querySelector('.step[data-s="thx"]').classList.add('on');
         document.getElementById('qn').textContent = 'Fertig!';
-        var s = document.createElement('script');
-        s.src = 'https://embed.ycb.me';
-        s.async = true;
-        s.setAttribute('data-domain', 'fitontime-stoffwechsel-report');
-        s.setAttribute('data-displaymode', 'auto');
-        document.getElementById('ycbm-container').appendChild(s);
+
+        // === A/B-Split: 50/50 zwischen thx (A=Original) und thx2 (B=FC-Mirror) ===
+        // Sticky via sessionStorage, Force via ?ab=A|B
+        var variant;
+        try {
+          var p = new URLSearchParams(location.search);
+          var forced = (p.get('ab') || '').toUpperCase();
+          if (forced === 'A' || forced === 'B') {
+            variant = forced;
+          } else {
+            variant = sessionStorage.getItem('fot_ab_thx');
+            if (variant !== 'A' && variant !== 'B') {
+              variant = Math.random() < 0.5 ? 'A' : 'B';
+            }
+          }
+          sessionStorage.setItem('fot_ab_thx', variant);
+        } catch (e) { variant = Math.random() < 0.5 ? 'A' : 'B'; }
+        tk('ab_assign_thx', { detail: variant, variant: variant });
+
+        if (variant === 'A') {
+          document.querySelector('.step[data-s="thx"]').classList.add('on');
+          var sa = document.createElement('script');
+          sa.src = 'https://embed.ycb.me';
+          sa.async = true;
+          sa.setAttribute('data-domain', 'fitontime-stoffwechsel-report');
+          sa.setAttribute('data-displaymode', 'auto');
+          document.getElementById('ycbm-container').appendChild(sa);
+        } else {
+          document.querySelector('.step[data-s="thx2"]').classList.add('on');
+          v2InitScore();
+          v2StartCountdown();
+          var sb = document.createElement('script');
+          sb.src = 'https://embed.ycb.me';
+          sb.async = true;
+          sb.setAttribute('data-domain', 'fitontime-stoffwechsel-report');
+          sb.setAttribute('data-displaymode', 'auto');
+          document.getElementById('ycbm-container-v2').appendChild(sb);
+        }
       }).catch(function(){
         btn.disabled = false;
         btn.textContent = 'Jetzt Report sichern';
         alert('Etwas ist schiefgelaufen. Bitte nochmal versuchen.');
       });
+    }
+
+    // === V2-Helpers (FC-Mirror Variante) ===
+    function v2InitScore() {
+      var score;
+      try {
+        var p = new URLSearchParams(location.search);
+        var raw = p.get('score');
+        if (raw) {
+          var v = parseInt(raw, 10);
+          if (!isNaN(v)) score = Math.max(70, Math.min(95, v));
+        }
+        if (!score) {
+          var cached = sessionStorage.getItem('sd_score');
+          if (cached) { var cv = parseInt(cached, 10); if (!isNaN(cv)) score = cv; }
+        }
+      } catch(e){}
+      if (!score) {
+        score = 84 + Math.floor(Math.random() * 9); // 84..92
+        try { sessionStorage.setItem('sd_score', String(score)); } catch(e){}
+      }
+      document.getElementById('v2-score-h').textContent = score;
+      var radius = 88;
+      var circumference = 2 * Math.PI * radius;
+      var ring = document.getElementById('v2-score-ring');
+      var display = document.getElementById('v2-score-num');
+      ring.style.strokeDasharray = '0 ' + circumference;
+      var start = null;
+      var duration = 1500;
+      function step(ts) {
+        if (!start) start = ts;
+        var t = Math.min(1, (ts - start) / duration);
+        var eased = 1 - Math.pow(1 - t, 3);
+        display.textContent = Math.round(score * eased);
+        ring.style.strokeDasharray = (circumference * (score / 100) * eased) + ' ' + circumference;
+        if (t < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    }
+
+    function v2StartCountdown() {
+      // 8-Minuten Urgency-Timer (per Session resetbar)
+      var deadline;
+      try {
+        var stored = sessionStorage.getItem('sd_cd_deadline');
+        deadline = stored ? parseInt(stored, 10) : 0;
+        if (!deadline || deadline < Date.now()) {
+          deadline = Date.now() + 8 * 60 * 1000;
+          sessionStorage.setItem('sd_cd_deadline', String(deadline));
+        }
+      } catch(e) { deadline = Date.now() + 8 * 60 * 1000; }
+      function pad(n) { return n < 10 ? '0' + n : '' + n; }
+      function tick() {
+        var ms = Math.max(0, deadline - Date.now());
+        var totalSec = Math.floor(ms / 1000);
+        var h = Math.floor(totalSec / 3600);
+        var m = Math.floor((totalSec % 3600) / 60);
+        var s = totalSec % 60;
+        var hEl = document.getElementById('cd-h');
+        var mEl = document.getElementById('cd-m');
+        var sEl = document.getElementById('cd-s');
+        if (hEl) hEl.textContent = pad(h);
+        if (mEl) mEl.textContent = pad(m);
+        if (sEl) sEl.textContent = pad(s);
+        if (ms > 0) setTimeout(tick, 1000);
+      }
+      tick();
+    }
+
+    function v2ScrollToBooking() {
+      tk('v2_bundle_cta_click');
+      var el = document.getElementById('ycbm-container-v2');
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   </script>
 
