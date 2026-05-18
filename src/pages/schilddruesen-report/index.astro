@@ -768,9 +768,9 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
     // Quiz-Antworten speichern
     var quizAnswers = {};
 
-    // Tracking-Helfer — nutzt window.__lp aus CookieBanner
+    // Tracking-Helfer, nutzt window.__lp aus CookieBanner
     // Race-Schutz: __lp wird erst nach Parse des CookieBanner-Scripts gesetzt.
-    // Wenn nicht da, retry alle 50ms (max 2s) — sonst geht page_view verloren.
+    // Wenn nicht da, retry alle 50ms (max 2s), sonst geht page_view verloren.
     function tk(e, d) {
       var tries = 0;
       function fire() {
@@ -779,6 +779,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
           if (e === 'quiz_start') window.__lp.meta('ViewContent', { content_name: 'Schilddruesen-Report Quiz Start', currency: 'EUR' });
           if (e === 'quiz_complete') window.__lp.meta('CompleteRegistration', { content_name: 'Schilddruesen-Report Quiz Complete', currency: 'EUR' });
           if (e === 'lead_submit') window.__lp.meta('Lead', { content_name: 'Schilddruesen-Report Lead', currency: 'EUR' });
+          if (e === 'booking_confirmed') window.__lp.meta('Schedule', { content_name: 'Schilddruesen-Report Termin gebucht', currency: 'EUR' });
         } else if (tries++ < 40) {
           setTimeout(fire, 50);
         }
@@ -786,6 +787,41 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
       fire();
     }
     tk('page_view');
+
+    // === Symmetrischer Booking-Detektor (A + B identisch) ===
+    // YouCanBook.me-Embed (embed.ycb.me) postet eine Message ans Parent-Window,
+    // wenn eine Buchung bestaetigt ist. Wir erkennen das origin- + keyword-gefiltert
+    // und feuern EIN gemeinsames booking_confirmed-Event mit der A/B-Variante.
+    // Damit wird der Test endlich messbar: booking_confirmed pro Variante = Conversion.
+    (function () {
+      window.addEventListener('message', function (ev) {
+        // Nur Messages vom YCBM-Widget akzeptieren
+        var origin = String(ev.origin || '');
+        if (!/(^|\.)ycb\.me$/.test(origin) && origin.indexOf('youcanbook') === -1) return;
+
+        // Payload als String normalisieren (YCBM sendet String ODER Objekt)
+        var raw = ev.data;
+        var txt = '';
+        try { txt = (typeof raw === 'string') ? raw : JSON.stringify(raw); } catch (e) { return; }
+        txt = txt.toLowerCase();
+
+        // Buchung-bestaetigt-Signal: 'book' + abgeschlossen-Marker
+        if (txt.indexOf('book') === -1) return;
+        if (!/confirm|complete|created|success|made|finished/.test(txt)) return;
+
+        // Pro Session nur einmal zaehlen (Doppel-Messages / Re-Render absichern)
+        try {
+          if (sessionStorage.getItem('fot_booking_fired') === '1') return;
+          sessionStorage.setItem('fot_booking_fired', '1');
+        } catch (e) {}
+
+        // Zugewiesene Variante (in fot_ab_thx persistiert beim Split)
+        var v = 'unknown';
+        try { v = sessionStorage.getItem('fot_ab_thx') || 'unknown'; } catch (e) {}
+
+        tk('booking_confirmed', { variant: v, detail: v });
+      }, false);
+    })();
 
     // Preview-Shortcut: ?show=thx2 oder ?show=thx springt direkt zum Step (Dev/QA)
     (function() {
@@ -902,7 +938,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
         })
       }).then(function(res){
         if (!res.ok) throw new Error('insert-failed');
-        // Insert erfolgreich — jetzt erst tracken
+        // Insert erfolgreich, jetzt erst tracken
         tk('lead_submit', { detail: fn });
         document.querySelector('.step[data-s="form"]').classList.remove('on');
         document.getElementById('qn').textContent = 'Fertig!';
