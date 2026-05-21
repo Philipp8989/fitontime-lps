@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro';
 import { google } from 'googleapis';
+import { waitUntil } from '@vercel/functions';
 
 // Pro LP: Sheet-ID + Spalten-Schema. Fehlt der Eintrag, wird kein Sheet-Write gemacht.
 type SheetConfig = {
@@ -155,36 +156,41 @@ export const POST: APIRoute = async ({ request }) => {
       });
     }
 
-    // Lead an zentrale Dashboard-API senden (Postgres-CRM = Ground-Truth für Reporting).
-    // AWAITED: wenn der Insert fehlschlägt, 500 zurück. Dadurch feuert Meta-Pixel auf dem
-    // Client nicht und Postgres bleibt konsistent mit Pixel-Count. Akzeptiertes Risiko bei
-    // Retry: mögliche Sheets-Duplikate (manuelle Dedup durch Kunde).
+    // Lead an zentrale Dashboard-API senden (Postgres-CRM für Reporting + Mail-Notification).
+    // Sheet ist Source-of-Truth (oben bereits synchron geschrieben). Dashboard-Insert
+    // laeuft via waitUntil mit Retry: Funktion bleibt bis Insert+Mail durch sind, aber
+    // der Client kriegt sofort 200, sobald das Sheet steht. Verhindert User-Resubmits
+    // bei transienten DB-/Quota-Fehlern (siehe Neon-402-Incident).
     const dashUrl = import.meta.env.DASHBOARD_LEADS_URL;
     const dashKey = import.meta.env.DASHBOARD_LEADS_KEY;
     if (dashUrl && dashKey) {
-      const dashRes = await fetch(dashUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-api-key': dashKey },
-        body: JSON.stringify({
-          name: data.name,
-          email: data.email,
-          phone: data.phone || '',
-          lp_slug: lpSlug,
-          lp_name: data.lp_name || lpSlug,
-          quiz_answers: data.answers || {},
-        }),
-      }).catch((e: any) => {
-        console.error('Dashboard Lead Fehler:', e?.message || e);
-        return null as unknown as Response;
+      const payload = JSON.stringify({
+        name: data.name,
+        email: data.email,
+        phone: data.phone || '',
+        lp_slug: lpSlug,
+        lp_name: data.lp_name || lpSlug,
+        quiz_answers: data.answers || {},
       });
-      if (!dashRes || !dashRes.ok) {
-        const detail = dashRes ? await dashRes.text().catch(() => '') : 'network';
-        console.error('Dashboard Lead Insert non-OK:', dashRes?.status, detail);
-        return new Response(JSON.stringify({ error: 'Lead-CRM-Insert fehlgeschlagen' }), {
-          status: 500,
-          headers: { 'Content-Type': 'application/json' },
-        });
-      }
+      waitUntil((async () => {
+        const delays = [0, 1500, 5000]; // 3 Versuche: sofort, +1.5s, +5s
+        for (let i = 0; i < delays.length; i++) {
+          if (delays[i] > 0) await new Promise((r) => setTimeout(r, delays[i]));
+          try {
+            const res = await fetch(dashUrl, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'x-api-key': dashKey },
+              body: payload,
+            });
+            if (res.ok) return;
+            const detail = await res.text().catch(() => '');
+            console.error(`Dashboard Lead Insert try ${i + 1} non-OK:`, res.status, detail);
+          } catch (e: any) {
+            console.error(`Dashboard Lead Insert try ${i + 1} error:`, e?.message || e);
+          }
+        }
+        console.error('Dashboard Lead Insert FINAL FAIL — Lead nur im Sheet:', { lpSlug, email: data.email });
+      })());
     }
 
     // Synthetisches lead_submit-Event für Attribution/CR-Sanity. Fire-and-forget.
