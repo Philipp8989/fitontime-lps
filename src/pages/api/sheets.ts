@@ -135,23 +135,18 @@ export const POST: APIRoute = async ({ request }) => {
       const sheets = google.sheets({ version: 'v4', auth });
       const row = config.buildRow(datum, data);
 
-      // Append mit Table-Detection verschiebt Werte wenn das Sheet seltsame Layouts hat.
-      // Deshalb: Anzahl Zeilen über ALLE Spalten ermitteln und explizit via update() schreiben.
+      // Atomarer Append statt read-count-then-update: Letzteres hatte eine Race
+      // Condition (zwei gleichzeitige Leads berechnen dieselbe nextRow und
+      // ueberschreiben sich), wodurch Leads aus dem Sheet verschwanden und nie
+      // in HubSpot LOT landeten. append() mit festem A:A-Anker + INSERT_ROWS ist
+      // serverseitig atomar und verschiebt keine Werte durch Table-Detection.
       const sheetName = (config.range.split('!')[0] || 'Sheet1').replace(/['"]/g, '');
-      const lastColLetter = (config.range.split(':')[1] || 'Z').replace(/[^A-Z]/g, '') || 'Z';
-      const fullRange = `${sheetName}!A:${lastColLetter}`;
-      const existing = await sheets.spreadsheets.values.get({
-        spreadsheetId: config.id,
-        range: fullRange,
-      });
-      const usedRows = (existing.data.values || []).length;
-      const nextRow = usedRows + 1;
-      const writeRange = `${sheetName}!A${nextRow}:${lastColLetter}${nextRow}`;
 
-      await sheets.spreadsheets.values.update({
+      await sheets.spreadsheets.values.append({
         spreadsheetId: config.id,
-        range: writeRange,
+        range: `${sheetName}!A:A`,
         valueInputOption: 'RAW',
+        insertDataOption: 'INSERT_ROWS',
         requestBody: { values: [row] },
       });
     }
