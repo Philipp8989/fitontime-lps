@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro';
 import { google } from 'googleapis';
 import { waitUntil } from '@vercel/functions';
+import { sendCapiEvent, clientMeta } from '../../lib/capi';
 
 // Pro LP: Sheet-ID + Spalten-Schema. Fehlt der Eintrag, wird kein Sheet-Write gemacht.
 type SheetConfig = {
@@ -184,7 +185,42 @@ export const POST: APIRoute = async ({ request }) => {
             console.error(`Dashboard Lead Insert try ${i + 1} error:`, e?.message || e);
           }
         }
-        console.error('Dashboard Lead Insert FINAL FAIL — Lead nur im Sheet:', { lpSlug, email: data.email });
+        console.error('Dashboard Lead Insert FINAL FAIL, Lead nur im Sheet:', { lpSlug, email: data.email });
+      })());
+    }
+
+    // WhatsApp-Bot-Intake: nur bei explizitem WhatsApp-Opt-in. Server-seitig,
+    // damit das Shared-Secret nie im Client landet. Fire-and-forget via waitUntil.
+    const botUrl = import.meta.env.BOT_INTAKE_URL;
+    const botSecret = import.meta.env.BOT_INTAKE_SECRET;
+    if (botUrl && botSecret && data.wa_optin === true && data.phone) {
+      const firstName = (data.first_name || String(data.name || '').trim().split(/\s+/)[0] || '').toString();
+      const botPayload = JSON.stringify({
+        phone: data.phone,
+        first_name: firstName,
+        score: data.score ?? '',
+        answers: data.answers || {},
+        lp_slug: lpSlug,
+        optin_ts: new Date().toISOString(),
+      });
+      waitUntil((async () => {
+        const delays = [0, 1500, 5000];
+        for (let i = 0; i < delays.length; i++) {
+          if (delays[i] > 0) await new Promise((r) => setTimeout(r, delays[i]));
+          try {
+            const res = await fetch(botUrl, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'X-Intake-Secret': botSecret },
+              body: botPayload,
+            });
+            if (res.ok) return;
+            const detail = await res.text().catch(() => '');
+            console.error(`Bot-Intake try ${i + 1} non-OK:`, res.status, detail);
+          } catch (e: any) {
+            console.error(`Bot-Intake try ${i + 1} error:`, e?.message || e);
+          }
+        }
+        console.error('Bot-Intake FINAL FAIL:', { lpSlug, phone: data.phone });
       })());
     }
 
@@ -199,6 +235,35 @@ export const POST: APIRoute = async ({ request }) => {
         schema_version: 'v1',
       }),
     }).catch(() => {});
+
+    // Meta Conversions API, Lead, dedupliziert via event_id (gleiche ID feuert der Browser-Pixel).
+    // NUR bei Marketing-Consent (data.meta.consent), sonst DSGVO-Verstoss. fbp/fbc aus Body (Client) + Cookie-Fallback.
+    const meta = data.meta || {};
+    if (meta.consent === true) {
+      const cookieHdr = request.headers.get('cookie') || '';
+      const fbpCookie = (cookieHdr.match(/(?:^|; )_fbp=([^;]*)/) || [])[1] || '';
+      const fbcCookie = (cookieHdr.match(/(?:^|; )_fbc=([^;]*)/) || [])[1] || '';
+      const fullName = String(data.name || '').trim();
+      const fn = fullName.split(/\s+/)[0] || '';
+      const ln = fullName.split(/\s+/).slice(1).join(' ');
+      const { client_ip, client_user_agent } = clientMeta(request);
+      sendCapiEvent({
+        event_name: 'Lead',
+        event_id: meta.event_id || `lead_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`,
+        event_source_url: request.headers.get('referer') || '',
+        custom_data: { content_name: data.lp_name || lpSlug, lp: lpSlug },
+        user_data: {
+          em: data.email || '',
+          ph: data.phone || '',
+          fn,
+          ln,
+          fbp: meta.fbp || fbpCookie,
+          fbc: meta.fbc || fbcCookie,
+          client_ip,
+          client_user_agent,
+        },
+      }).catch((e: any) => console.error('[CAPI Lead] Fehler:', e?.message || e));
+    }
 
     return new Response(JSON.stringify({ ok: true }), {
       status: 200,

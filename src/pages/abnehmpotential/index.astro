@@ -485,7 +485,7 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
           throw new Error(j.error || 'Fehler beim Senden');
         }
         track('lead_submit');
-        if (window.fbq) window.fbq('track', 'Lead');
+        if (window.__lp) window.__lp.meta('Lead', { content_name: 'Abnehmpotential Lead', currency: 'CHF' });
         // Name für Ergebnisseite merken
         state.lead = { name: (fd.get('fname') || '').toString().split(' ')[0] };
         state.step = 10;

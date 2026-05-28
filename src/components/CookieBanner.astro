@@ -151,6 +151,42 @@ const {
       return Date.now() + '-' + Math.random().toString(36).slice(2, 10);
     }
 
+    function readCookie(name) {
+      try {
+        var m = document.cookie.match('(?:^|; )' + name + '=([^;]*)');
+        return m ? decodeURIComponent(m[1]) : '';
+      } catch (e) { return ''; }
+    }
+
+    function consented() {
+      try { return localStorage.getItem(KEY) === 'all'; } catch (e) { return false; }
+    }
+
+    // Geteilte Lead-event_id: capiMetaObj() erzeugt sie, meta('Lead') verwendet dieselbe → Dedup mit CAPI.
+    var pendingLeadEid = null;
+    function capiMetaObj() {
+      pendingLeadEid = eid();
+      return { consent: consented(), event_id: pendingLeadEid, fbp: readCookie('_fbp'), fbc: readCookie('_fbc') };
+    }
+
+    // fetch-Wrapper: haengt {meta:...} automatisch an jeden /api/sheets-POST (Server-CAPI braucht event_id+consent).
+    if (!window.__lpFetchPatched) {
+      window.__lpFetchPatched = true;
+      var origFetch = window.fetch;
+      window.fetch = function (input, init) {
+        try {
+          var url = typeof input === 'string' ? input : (input && input.url) || '';
+          var opts = init || (typeof input === 'object' ? input : null);
+          if (opts && (opts.method || '').toUpperCase() === 'POST' && /\/api\/sheets\b/.test(url) &&
+              typeof opts.body === 'string' && opts.body.charAt(0) === '{') {
+            var b = JSON.parse(opts.body);
+            if (b && !b.meta) { b.meta = capiMetaObj(); opts.body = JSON.stringify(b); }
+          }
+        } catch (e) {}
+        return origFetch.apply(this, arguments);
+      };
+    }
+
     function loadMetaPixel() {
       if (!metaPixelId || window.fbq) return;
       !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
@@ -196,9 +232,12 @@ const {
     // Globale Tracking-Helfer auf window für inline-Scripts
     window.__lp = {
       eid: eid,
-      // Meta-Event mit event_id feuern
+      consented: consented,
+      capiMeta: capiMetaObj,
+      // Meta-Event mit event_id feuern. Bei 'Lead' die von capiMetaObj() erzeugte ID nutzen (Dedup mit CAPI).
       meta: function(eventName, params) {
-        var id = eid();
+        var id = (eventName === 'Lead' && pendingLeadEid) ? pendingLeadEid : eid();
+        if (eventName === 'Lead') pendingLeadEid = null;
         if (typeof fbq === 'function') {
           fbq('track', eventName, params || {}, { eventID: id });
         }
