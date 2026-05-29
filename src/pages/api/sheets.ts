@@ -2,6 +2,7 @@ import type { APIRoute } from 'astro';
 import { google } from 'googleapis';
 import { waitUntil } from '@vercel/functions';
 import { sendCapiEvent, clientMeta } from '../../lib/capi';
+import { normalizePhone } from '../../lib/phone';
 
 // Pro LP: Sheet-ID + Spalten-Schema. Fehlt der Eintrag, wird kein Sheet-Write gemacht.
 type SheetConfig = {
@@ -108,13 +109,8 @@ export const POST: APIRoute = async ({ request }) => {
   try {
     const data = await request.json();
 
-    // Telefonnummer serverseitig saeubern (Defense-in-depth): Buchstaben raus,
-    // fuehrende 0 -> +41, vorhandenes + bleibt. Verhindert Muell wie "+41CH7722..."
-    // falls eine LP doch ungesaeuberte Werte schickt.
-    if (data.phone) {
-      const c = data.phone.toString().replace(/[^\d+]/g, '');
-      data.phone = !c ? '' : c.charAt(0) === '+' ? c : c.charAt(0) === '0' ? '+41' + c.slice(1) : '+41' + c;
-    }
+    // Telefonnummer serverseitig saeubern (Defense-in-depth, siehe lib/phone.ts).
+    if (data.phone) data.phone = normalizePhone(data.phone);
 
     if (!data.name || !data.email || !data.phone) {
       return new Response(JSON.stringify({ error: 'Name, E-Mail und Telefon sind Pflicht' }), {

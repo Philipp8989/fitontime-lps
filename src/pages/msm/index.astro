@@ -1031,10 +1031,17 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
       document.getElementById('gbtn').disabled = !this.checked;
     });
 
+    function normalizePhone(raw) {
+      var c = (raw || '').replace(/[^\d+]/g, '');
+      if (!c) return '';
+      if (c.charAt(0) === '+') return c;
+      if (c.charAt(0) === '0') return '+41' + c.slice(1);
+      return '+41' + c;
+    }
     function gateSubmit() {
       var fn = document.getElementById('fn').value.trim();
       var em = document.getElementById('em').value.trim();
-      var ph = document.getElementById('ph').value.trim();
+      var ph = normalizePhone(document.getElementById('ph').value);
       if (!fn || !em || !ph) {
         if (!fn) document.getElementById('fn').parentElement.style.borderColor = 'var(--red)';
         if (!em) document.getElementById('em').parentElement.style.borderColor = 'var(--red)';
@@ -1043,7 +1050,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
       }
       quizAnswers.gate_name = fn;
       quizAnswers.gate_email = em;
-      quizAnswers.gate_phone = '+41' + ph;
+      quizAnswers.gate_phone = ph;
       tk('quiz_lead_gate_submitted', { detail: fn });
 
       // Gate ist letzter Schritt → direkt zur Auswertung

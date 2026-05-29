@@ -492,6 +492,15 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
         });
       });
 
+      // Telefonnummer saeubern (Buchstaben raus, 0 -> +41, + bleibt)
+      const normalizePhone = (raw) => {
+        const c = (raw || '').replace(/[^\d+]/g, '');
+        if (!c) return '';
+        if (c.charAt(0) === '+') return c;
+        if (c.charAt(0) === '0') return '+41' + c.slice(1);
+        return '+41' + c;
+      };
+
       // Form-Submit
       const form = document.querySelector('[data-form="recruiting"]');
       if (form) {
@@ -508,7 +517,7 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
           const payload = {
             name: fd.get('fname'),
             email: fd.get('email'),
-            phone: fd.get('phone'),
+            phone: normalizePhone((fd.get('phone') || '').toString()),
             datenschutz: !!fd.get('datenschutz'),
             lp_slug: slug,
             lp_name: funnelName,

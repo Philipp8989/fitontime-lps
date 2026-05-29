@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro';
 import { google } from 'googleapis';
+import { normalizePhone } from '../../lib/phone';
 
 // Recruiting-API: Bewerbungen aus den Recruiting-Funneln (admin/kundenbetreuung/scbewerbung).
 // 1. Schreibt in HR-Sheet (15eBPYY...sxs) mit Status="Neu eingegangen"
@@ -21,6 +22,9 @@ const FUNNEL_LABELS: Record<string, string> = {
 export const POST: APIRoute = async ({ request }) => {
   try {
     const data = await request.json();
+
+    // Telefonnummer serverseitig saeubern (Defense-in-depth, siehe lib/phone.ts).
+    if (data.phone) data.phone = normalizePhone(data.phone);
 
     if (!data.name || !data.email || !data.phone) {
       return new Response(JSON.stringify({ error: 'Name, E-Mail und Telefon sind Pflicht' }), {
