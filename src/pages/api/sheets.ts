@@ -108,6 +108,14 @@ export const POST: APIRoute = async ({ request }) => {
   try {
     const data = await request.json();
 
+    // Telefonnummer serverseitig saeubern (Defense-in-depth): Buchstaben raus,
+    // fuehrende 0 -> +41, vorhandenes + bleibt. Verhindert Muell wie "+41CH7722..."
+    // falls eine LP doch ungesaeuberte Werte schickt.
+    if (data.phone) {
+      const c = data.phone.toString().replace(/[^\d+]/g, '');
+      data.phone = !c ? '' : c.charAt(0) === '+' ? c : c.charAt(0) === '0' ? '+41' + c.slice(1) : '+41' + c;
+    }
+
     if (!data.name || !data.email || !data.phone) {
       return new Response(JSON.stringify({ error: 'Name, E-Mail und Telefon sind Pflicht' }), {
         status: 400,

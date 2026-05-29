@@ -630,18 +630,22 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
       <div class="step form" data-s="form">
         <div class="tag">&#10003; Analyse abgeschlossen</div>
         <h2>Dein Report ist fertig</h2>
-        <p class="sub">Wohin sollen wir ihn schicken?</p>
+        <p class="sub">Wir schicken dir dein Ergebnis per WhatsApp und gehen es kurz mit dir durch.</p>
         <div class="fields">
           <div class="field"><span class="ic">&#128100;</span><input type="text" id="fn" placeholder="Vorname" required /></div>
           <div class="field"><span class="ic">&#128100;</span><input type="text" id="ln" placeholder="Nachname" required /></div>
           <div class="field"><span class="ic">&#9993;</span><input type="email" id="em" placeholder="E-Mail Adresse" required /></div>
-          <div class="field"><span class="ic">&#128222;</span><span class="pre">+41</span><input type="tel" id="ph" placeholder="Telefonnummer" required /></div>
+          <div class="field"><span class="ic">&#128222;</span><span class="pre">+41</span><input type="tel" id="ph" placeholder="WhatsApp-Nummer" required /></div>
+        </div>
+        <div class="cb-row">
+          <input type="checkbox" id="wa" />
+          <label for="wa">Ja, schickt mir mein Ergebnis per WhatsApp und kontaktiert mich dort dazu.</label>
         </div>
         <div class="cb-row">
           <input type="checkbox" id="ds" />
           <label for="ds">Ich akzeptiere die <a href="https://fitontime.ch/impressum-datenschutz" target="_blank">Datenschutzbestimmungen</a></label>
         </div>
-        <button class="submit" id="sbtn" disabled onclick="send()">Report kostenlos erhalten</button>
+        <button class="submit" id="sbtn" disabled onclick="send()">Report per WhatsApp erhalten</button>
 
         <!-- Proof im Formular -->
         <div class="form-proof">
@@ -894,15 +898,27 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
       }, 3200);
     }
 
-    document.getElementById('ds').addEventListener('change', function() {
-      document.getElementById('sbtn').disabled = !this.checked;
-    });
+    // Beide Checkboxen (WhatsApp-Opt-in + Datenschutz) sind Pflicht
+    function syncSubmitState() {
+      var wa = document.getElementById('wa').checked;
+      var ds = document.getElementById('ds').checked;
+      document.getElementById('sbtn').disabled = !(wa && ds);
+    }
+    document.getElementById('wa').addEventListener('change', syncSubmitState);
+    document.getElementById('ds').addEventListener('change', syncSubmitState);
 
+    function normalizePhone(raw) {
+      var c = (raw || '').replace(/[^\d+]/g, '');
+      if (!c) return '';
+      if (c.charAt(0) === '+') return c;
+      if (c.charAt(0) === '0') return '+41' + c.slice(1);
+      return '+41' + c;
+    }
     function send() {
       var fn = document.getElementById('fn').value.trim();
       var ln = document.getElementById('ln').value.trim();
       var em = document.getElementById('em').value.trim();
-      var ph = document.getElementById('ph').value.trim();
+      var ph = normalizePhone(document.getElementById('ph').value);
       var missing = [];
       if (!fn) missing.push('fn');
       if (!ln) missing.push('ln');
@@ -925,8 +941,11 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
           lp_slug: 'schilddruesen-report',
           lp_name: 'Schilddruesen-Report',
           name: fullName,
+          first_name: fn,
           email: em,
-          phone: ph ? '+41' + ph : '',
+          phone: ph,
+          wa_optin: document.getElementById('wa').checked,
+          score: (function(){ try { return parseInt(sessionStorage.getItem('sd_score'), 10) || ''; } catch(e){ return ''; } })(),
           answers: quizAnswers
         })
       }).then(function(res){

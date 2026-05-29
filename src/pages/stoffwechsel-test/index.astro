@@ -605,10 +605,17 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
       document.getElementById('sbtn').disabled = !this.checked;
     });
 
+    function normalizePhone(raw) {
+      var c = (raw || '').replace(/[^\d+]/g, '');
+      if (!c) return '';
+      if (c.charAt(0) === '+') return c;
+      if (c.charAt(0) === '0') return '+41' + c.slice(1);
+      return '+41' + c;
+    }
     function send() {
       var fn = document.getElementById('fn').value.trim();
       var em = document.getElementById('em').value.trim();
-      var ph = document.getElementById('ph').value.trim();
+      var ph = normalizePhone(document.getElementById('ph').value);
       if (!fn || !em || !ph) {
         if (!fn) document.getElementById('fn').parentElement.style.borderColor = 'var(--red)';
         if (!em) document.getElementById('em').parentElement.style.borderColor = 'var(--red)';
@@ -631,7 +638,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
         body: JSON.stringify({
           name: fn,
           email: em,
-          phone: ph ? '+41' + ph : '',
+          phone: ph,
           lp_slug: 'stoffwechsel-test',
           lp_name: 'Stoffwechsel-Test',
           answers: Object.assign({}, quizAnswers, { profile_type: typ })
