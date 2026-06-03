@@ -866,9 +866,9 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
       function fire() {
         if (window.__lp) {
           window.__lp.track(e, Object.assign({ page: 'msm' }, d || {}), 'fot', 'MSM Test');
-          if (e === 'quiz_start') window.__lp.meta('ViewContent', { content_name: 'MSM Test Quiz Start', currency: 'EUR' });
-          if (e === 'quiz_complete') window.__lp.meta('CompleteRegistration', { content_name: 'MSM Test Quiz Complete', currency: 'EUR' });
-          if (e === 'lead_submit') window.__lp.meta('Lead', { content_name: 'MSM Test Lead', currency: 'EUR' });
+          if (e === 'quiz_start') window.__lp.meta('ViewContent', { content_name: 'FoT Quiz Start', currency: 'EUR' });
+          if (e === 'quiz_complete') window.__lp.meta('CompleteRegistration', { content_name: 'FoT Quiz Complete', currency: 'EUR' });
+          if (e === 'lead_submit') window.__lp.meta('Lead', { content_name: 'FoT Lead', currency: 'EUR' });
         } else if (tries++ < 40) {
           setTimeout(fire, 50);
         }

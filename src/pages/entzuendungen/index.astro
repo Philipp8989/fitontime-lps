@@ -550,7 +550,7 @@ const LIVE_DATE_ISO = '2026-05-12T18:00:00+02:00';
           throw new Error(j.error || 'Fehler beim Senden');
         }
         track('lead_submit');
-        if (window.__lp) window.__lp.meta('Lead', { content_name: 'Entzuendungen Lead', currency: 'CHF' });
+        if (window.__lp) window.__lp.meta('Lead', { content_name: 'FoT Lead', currency: 'CHF' });
         const vorname = payload.name.split(/\s+/)[0] || '';
         const url = '/danke-entzuendungen/' + (vorname ? '?n=' + encodeURIComponent(vorname) : '');
         window.location.href = url;

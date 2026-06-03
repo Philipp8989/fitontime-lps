@@ -255,7 +255,7 @@ export const POST: APIRoute = async ({ request }) => {
         event_name: 'Lead',
         event_id: meta.event_id || `lead_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`,
         event_source_url: request.headers.get('referer') || '',
-        custom_data: { content_name: data.lp_name || lpSlug, lp: lpSlug },
+        custom_data: { content_name: 'FoT Lead' },
         user_data: {
           em: data.email || '',
           ph: data.phone || '',

@@ -635,9 +635,9 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
       function fire() {
         if (window.__lp) {
           window.__lp.track(e, Object.assign({ page: 'stoffwechsel-report' }, d || {}), 'fot', 'Stoffwechsel Report');
-          if (e === 'quiz_start') window.__lp.meta('ViewContent', { content_name: 'Stoffwechsel Report Quiz Start', currency: 'CHF' });
-          if (e === 'quiz_complete') window.__lp.meta('CompleteRegistration', { content_name: 'Stoffwechsel Report Quiz Complete', currency: 'CHF' });
-          if (e === 'lead_submit') window.__lp.meta('Lead', { content_name: 'Stoffwechsel Report Lead', currency: 'CHF' });
+          if (e === 'quiz_start') window.__lp.meta('ViewContent', { content_name: 'FoT Quiz Start', currency: 'CHF' });
+          if (e === 'quiz_complete') window.__lp.meta('CompleteRegistration', { content_name: 'FoT Quiz Complete', currency: 'CHF' });
+          if (e === 'lead_submit') window.__lp.meta('Lead', { content_name: 'FoT Lead', currency: 'CHF' });
         } else if (tries++ < 40) {
           setTimeout(fire, 50);
         }
