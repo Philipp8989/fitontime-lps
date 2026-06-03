@@ -251,10 +251,14 @@ export const POST: APIRoute = async ({ request }) => {
       const fn = fullName.split(/\s+/)[0] || '';
       const ln = fullName.split(/\s+/).slice(1).join(' ');
       const { client_ip, client_user_agent } = clientMeta(request);
+      // Gesundheitssignale aus event_source_url entfernen: nur Origin senden,
+      // nie den Funnel-Pfad (z.B. /schilddruesen-report) oder Query-Parameter.
+      let sourceOrigin = '';
+      try { sourceOrigin = new URL(request.headers.get('referer') || '').origin; } catch { sourceOrigin = ''; }
       sendCapiEvent({
         event_name: 'Lead',
         event_id: meta.event_id || `lead_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`,
-        event_source_url: request.headers.get('referer') || '',
+        event_source_url: sourceOrigin,
         custom_data: { content_name: 'FoT Lead' },
         user_data: {
           em: data.email || '',
