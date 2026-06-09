@@ -1,0 +1,1079 @@
+---
+// Figur-Check Funnel v3  -  Mobile-First, Proof, Booking-Prio
+import CookieBanner from '../../components/CookieBanner.astro';
+const impressumUrl = 'https://fitontime.ch/impressum-datenschutz';
+const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
+---
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <!-- Front-End A/B (EIN Adset, on-page 50/50): A=Text-LP, B=nackt Quiz.
+       Entscheidung im <head>, damit fuer B die Text-LP NICHT aufblitzt (kein FOUC). -->
+  <script is:inline>
+    (function () {
+      var v;
+      try {
+        var pf = new URLSearchParams(location.search);
+        var forced = (pf.get('v') || '').toUpperCase();
+        v = (forced === 'A' || forced === 'B') ? forced : sessionStorage.getItem('fot_ab_fe');
+        if (v !== 'A' && v !== 'B') v = Math.random() < 0.5 ? 'A' : 'B';
+        sessionStorage.setItem('fot_ab_fe', v);
+      } catch (e) { v = (Math.random() < 0.5 ? 'A' : 'B'); }
+      window.__fe = v;
+      if (v === 'B') document.documentElement.classList.add('fe-quiz');
+    })();
+  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Kostenloser Fettabbau-Check | Fit on Time</title>
+  <link rel="icon" type="image/png" href="/images/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Tracking (Meta Pixel + Hyros) wird von CookieBanner nach Consent geladen -->
+
+  <style is:global>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #0b0b0f;
+      --surface: #151519;
+      --surface-2: #1c1c22;
+      --accent: #c4697a;
+      --accent-soft: #d4949f;
+      --green: #4ade80;
+      --amber: #fbbf24;
+      --text: #f0eff2;
+      --text-2: #a09cac;
+      --text-3: #6b6778;
+      --r: 14px;
+      --font: 'DM Sans', system-ui, -apple-system, sans-serif;
+    }
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    .wrap { max-width: 720px; margin: 0 auto; padding: 0 20px; }
+
+    /* Logo */
+    .logo { text-align: center; padding: 16px 0 8px; }
+    .logo img { height: 40px; }
+
+    /* Hero */
+    .hero { text-align: center; padding: 16px 0 20px; }
+    .hero h1 { font-size: 24px; font-weight: 700; line-height: 1.3; letter-spacing: -0.3px; margin-bottom: 10px; }
+    .hero h1 em { font-style: normal; color: var(--accent); }
+    .hero p { font-size: 15px; color: var(--text-2); margin-bottom: 20px; }
+    .hero p strong { color: var(--text); font-weight: 600; }
+
+    /* Gender */
+    .gender-q { font-size: 13px; font-weight: 600; color: var(--text-2); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 14px; }
+    .gender-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
+    .g-card { border-radius: var(--r); cursor: pointer; border: 1.5px solid var(--surface-2); transition: border-color 0.2s, transform 0.2s; -webkit-tap-highlight-color: transparent; background: var(--surface); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 24px 16px 18px; gap: 8px; }
+    .g-card:active { transform: scale(0.97); border-color: var(--accent); }
+    .g-card .g-icon { font-size: 48px; line-height: 1; }
+    .g-card .g-label { font-size: 15px; font-weight: 600; }
+
+    /* === PROOF BAR === */
+    .proof-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 0;
+      margin-bottom: 4px;
+    }
+    .proof-avatars {
+      display: flex;
+    }
+    .proof-avatars img {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      border: 2px solid var(--bg);
+      margin-left: -8px;
+      object-fit: cover;
+    }
+    .proof-avatars img:first-child { margin-left: 0; }
+    .proof-info {
+      font-size: 12px;
+      color: var(--text-2);
+      line-height: 1.3;
+    }
+    .proof-info b { color: var(--text); }
+    .proof-stars { color: var(--amber); font-size: 12px; letter-spacing: 1px; }
+
+    /* === TESTIMONIAL === */
+    .testimonial {
+      background: var(--surface);
+      border-radius: var(--r);
+      padding: 16px;
+      margin: 16px 0;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+    .testimonial img {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+    .testimonial .t-body { flex: 1; }
+    .testimonial .t-text {
+      font-size: 13px;
+      color: var(--text-2);
+      font-style: italic;
+      line-height: 1.5;
+      margin-bottom: 6px;
+    }
+    .testimonial .t-name {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-3);
+    }
+    .testimonial .t-stars {
+      color: var(--amber);
+      font-size: 11px;
+      letter-spacing: 1px;
+    }
+
+    /* Divider */
+    .divider { width: 40px; height: 1px; background: var(--accent); margin: 24px auto; opacity: 0.4; }
+
+    /* Mini sections */
+    .mini { text-align: center; padding: 0 0 8px; }
+    .mini h2 { font-size: 20px; font-weight: 700; line-height: 1.3; margin-bottom: 14px; letter-spacing: -0.2px; }
+
+    /* Risks */
+    .risks { list-style: none; display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; text-align: left; }
+    .risks li { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; color: var(--text-2); background: var(--surface); padding: 12px 14px; border-radius: 10px; }
+    .risks li .ic { flex-shrink: 0; width: 20px; height: 20px; border-radius: 50%; background: rgba(196,105,122,0.15); color: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; margin-top: 1px; }
+
+    /* Benefits */
+    .benefits { list-style: none; display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; text-align: left; }
+    .benefits li { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; color: var(--text-2); background: var(--surface); padding: 12px 14px; border-radius: 10px; }
+    .benefits li .ic { flex-shrink: 0; width: 20px; height: 20px; border-radius: 50%; background: rgba(74,222,128,0.12); color: var(--green); display: flex; align-items: center; justify-content: center; font-size: 12px; margin-top: 1px; }
+
+    /* CTA */
+    .cta-wrap { text-align: center; padding: 4px 0 16px; }
+    .cta { display: block; width: 100%; background: var(--accent); color: #fff; font-family: var(--font); font-size: 16px; font-weight: 700; padding: 16px; border: none; border-radius: 12px; cursor: pointer; transition: opacity 0.2s; -webkit-tap-highlight-color: transparent; }
+    .cta:active { opacity: 0.85; }
+    .cta-sub { font-size: 11px; color: var(--text-3); margin-top: 8px; }
+
+    /* Team section */
+    .team-strip {
+      text-align: center;
+      padding: 16px 0;
+      border-top: 1px solid var(--surface-2);
+    }
+    .team-strip img {
+      width: 100%;
+      max-width: 320px;
+      border-radius: var(--r);
+      margin-bottom: 10px;
+    }
+    .team-strip p {
+      font-size: 12px;
+      color: var(--text-3);
+      line-height: 1.4;
+    }
+    .team-strip p strong { color: var(--text-2); }
+
+    /* Footer */
+    footer { text-align: center; padding: 16px 20px; font-size: 11px; color: var(--text-3); border-top: 1px solid var(--surface-2); }
+    footer a { color: var(--text-3); text-decoration: none; }
+
+    /* ================================
+       QUIZ
+       ================================ */
+    #quiz { display: none; position: fixed; inset: 0; background: var(--bg); z-index: 100; flex-direction: column; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+    #quiz.on { display: flex; }
+    /* Intro-Screen (Variante B): minimale Einleitung vor dem Quiz */
+    #intro { position: fixed; inset: 0; background: var(--bg); z-index: 90; display: none; align-items: center; justify-content: center; padding: 24px; }
+    #intro.on { display: flex; }
+    .intro-inner { max-width: 480px; width: 100%; text-align: center; }
+    .intro-logo img { height: 44px; margin-bottom: 40px; }
+    .intro-inner h1 { font-size: 30px; font-weight: 700; line-height: 1.25; letter-spacing: -0.4px; margin-bottom: 36px; }
+    .intro-inner h1 em { font-style: normal; color: var(--accent); }
+    .intro-cta { width: 100%; padding: 18px 24px; background: var(--accent); color: #fff; border: none; border-radius: var(--r); font-family: var(--font); font-size: 18px; font-weight: 700; cursor: pointer; transition: transform .15s ease; box-shadow: 0 8px 24px rgba(196,105,122,0.35); }
+    .intro-cta:active { transform: scale(0.98); }
+    .intro-sub { font-size: 14px; color: var(--text-2); margin-top: 16px; }
+    .intro-legal { margin-top: 40px; font-size: 12px; }
+    .intro-legal a { color: var(--text-3); text-decoration: none; }
+    @media (min-width: 600px) { .intro-inner h1 { font-size: 36px; } }
+    /* Front-End A/B Variante B: Text-LP aus, Intro an (kein FOUC) */
+    html.fe-quiz #lp { display: none !important; }
+    html.fe-quiz #intro { display: flex !important; }
+    .q-head { display: flex; align-items: center; justify-content: center; padding: 14px 20px; border-bottom: 1px solid var(--surface-2); position: sticky; top: 0; background: var(--bg); z-index: 10; }
+    .q-head img { height: 32px; }
+    .q-progress { padding: 12px 20px 0; max-width: 600px; margin: 0 auto; width: 100%; position: sticky; top: 57px; background: var(--bg); z-index: 10; }
+    .q-bar { height: 4px; background: var(--surface-2); border-radius: 2px; overflow: hidden; }
+    .q-fill { height: 100%; background: var(--accent); border-radius: 2px; transition: width 0.4s ease; width: 11%; }
+    .q-num { font-size: 11px; color: var(--text-3); text-align: right; margin-top: 4px; }
+    .q-body { flex: 1; display: flex; align-items: flex-start; justify-content: center; padding: 40px 20px; }
+
+    .step { display: none; max-width: 600px; width: 100%; animation: up 0.3s ease; }
+    .step.on { display: block; }
+    @keyframes up { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+    .step h2 { font-size: 20px; font-weight: 700; text-align: center; margin-bottom: 24px; line-height: 1.3; letter-spacing: -0.2px; }
+    .opts { display: flex; flex-direction: column; gap: 10px; }
+    .opt { background: var(--surface); border: 1.5px solid var(--surface-2); border-radius: 12px; padding: 16px 18px; font-size: 15px; font-weight: 500; color: var(--text); cursor: pointer; transition: border-color 0.2s, background 0.2s; font-family: var(--font); -webkit-tap-highlight-color: transparent; text-align: left; }
+    .opt:active { border-color: var(--accent); background: var(--surface-2); }
+
+    /* Loading */
+    .ld { text-align: center; }
+    .spinner { width: 48px; height: 48px; border: 3px solid var(--surface-2); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 20px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .ld h2 { font-size: 18px; margin-bottom: 6px; }
+    .ld p { font-size: 14px; color: var(--text-2); margin-bottom: 20px; }
+    .checks { text-align: left; max-width: 260px; margin: 0 auto; }
+    .chk { display: flex; align-items: center; gap: 10px; padding: 6px 0; font-size: 13px; color: var(--text-2); opacity: 0; transition: opacity 0.3s; }
+    .chk.show { opacity: 1; }
+    .chk i { width: 18px; height: 18px; border-radius: 50%; background: var(--green); color: #0b0b0f; display: flex; align-items: center; justify-content: center; font-size: 10px; font-style: normal; font-weight: 700; flex-shrink: 0; }
+
+    /* Form */
+    .form { text-align: center; }
+    .form .tag { font-size: 13px; font-weight: 600; color: var(--green); margin-bottom: 6px; }
+    .form h2 { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+    .form .sub { font-size: 14px; color: var(--text-2); margin-bottom: 20px; }
+    .fields { display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px; }
+    .field { background: var(--surface); border: 1.5px solid var(--surface-2); border-radius: 12px; padding: 0 14px; display: flex; align-items: center; gap: 10px; transition: border-color 0.2s; }
+    .field:focus-within { border-color: var(--accent); }
+    .field .ic { font-size: 16px; flex-shrink: 0; opacity: 0.5; }
+    .field input { flex: 1; background: transparent; border: none; outline: none; color: var(--text); font-family: var(--font); font-size: 15px; padding: 14px 0; }
+    .field input::placeholder { color: var(--text-3); }
+    .field .pre { font-size: 14px; color: var(--text-3); flex-shrink: 0; }
+    .cb-row { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 16px; text-align: left; }
+    .cb-row input[type="checkbox"] { accent-color: var(--accent); width: 16px; height: 16px; margin-top: 2px; flex-shrink: 0; }
+    .cb-row label { font-size: 11px; color: var(--text-3); line-height: 1.4; }
+    .cb-row label a { color: var(--text-2); }
+    .submit { display: block; width: 100%; background: var(--accent); color: #fff; font-family: var(--font); font-size: 16px; font-weight: 700; padding: 16px; border: none; border-radius: 12px; cursor: pointer; transition: opacity 0.2s; }
+    .submit:disabled { opacity: 0.4; cursor: not-allowed; }
+    .submit:not(:disabled):active { opacity: 0.85; }
+
+    /* Form proof */
+    .form-proof {
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid var(--surface-2);
+    }
+    .form-proof .fp-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-size: 11px;
+      color: var(--text-3);
+      margin-bottom: 4px;
+    }
+    .form-proof .fp-row b { color: var(--text-2); }
+
+    /* === DANKE-SEITE === */
+    .thanks { text-align: center; max-width: 600px; width: 100%; padding-bottom: 40px; }
+    .thanks .check-big {
+      width: 56px; height: 56px; border-radius: 50%;
+      background: rgba(74,222,128,0.12); color: var(--green);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px; margin: 0 auto 16px;
+    }
+    .thanks h2 { font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+    .thanks .info { font-size: 14px; color: var(--text-2); margin-bottom: 20px; line-height: 1.5; }
+
+    /* Prio-Box */
+    .prio-box {
+      background: var(--surface);
+      border: 1px solid rgba(74,222,128,0.25);
+      border-radius: var(--r);
+      padding: 20px;
+      margin-bottom: 12px;
+      text-align: left;
+    }
+    .prio-box .prio-badge {
+      display: inline-block;
+      background: rgba(74,222,128,0.12);
+      color: var(--green);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 20px;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .prio-box h3 { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+    .prio-box p { font-size: 13px; color: var(--text-2); margin-bottom: 14px; line-height: 1.5; }
+    .prio-box .prio-perks {
+      list-style: none;
+      margin-bottom: 16px;
+    }
+    .prio-box .prio-perks li {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--text-2);
+      padding: 4px 0;
+    }
+    .prio-box .prio-perks li .pic {
+      color: var(--green);
+      font-size: 13px;
+      flex-shrink: 0;
+    }
+    .book-btn {
+      display: block; width: 100%;
+      background: var(--green); color: #0b0b0f;
+      font-family: var(--font); font-size: 15px; font-weight: 700;
+      padding: 14px; border: none; border-radius: 10px;
+      cursor: pointer; text-decoration: none; text-align: center;
+    }
+    .book-btn:active { opacity: 0.85; }
+    .spots {
+      font-size: 11px; color: var(--amber);
+      margin-top: 8px; font-weight: 600;
+    }
+
+    /* Kein-Termin Box */
+    .wait-box {
+      background: var(--surface);
+      border: 1px solid var(--surface-2);
+      border-radius: var(--r);
+      padding: 16px;
+      margin-bottom: 20px;
+      text-align: left;
+    }
+    .wait-box h4 { font-size: 14px; font-weight: 600; margin-bottom: 4px; color: var(--text-2); }
+    .wait-box p { font-size: 12px; color: var(--text-3); line-height: 1.5; }
+
+    /* Danke-Proof */
+    .thanks-proof {
+      padding-top: 16px;
+      border-top: 1px solid var(--surface-2);
+    }
+    .thanks-proof img {
+      width: 100%; max-width: 280px;
+      border-radius: var(--r);
+      margin-bottom: 8px;
+    }
+    .thanks-proof p {
+      font-size: 11px;
+      color: var(--text-3);
+    }
+
+    /* === DANKE-SEITE V2 (FC-Mirror, A/B-Variante B) === */
+    .thanks-v2 { text-align: center; max-width: 600px; width: 100%; padding-bottom: 40px; }
+    .thanks-v2 .result-eyebrow { font-size: 11px; text-transform: uppercase; letter-spacing: 1.4px; color: var(--accent); font-weight: 700; margin-bottom: 10px; }
+    .thanks-v2 h2 { font-size: 22px; font-weight: 800; line-height: 1.25; letter-spacing: -0.4px; margin-bottom: 8px; }
+    .thanks-v2 h2 em { font-style: normal; color: var(--accent); }
+    .score-wrap { display: flex; justify-content: center; padding: 12px 0 6px; }
+    .score { position: relative; width: 160px; height: 160px; }
+    .score svg { transform: rotate(-90deg); width: 100%; height: 100%; }
+    .score-track { fill: none; stroke: var(--surface-2); stroke-width: 14; }
+    .score-fill { fill: none; stroke: var(--accent); stroke-width: 14; stroke-linecap: round; stroke-dasharray: 0 1000; transition: stroke-dasharray 1.6s cubic-bezier(.22,.61,.36,1); }
+    .score-text { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    .score-num { font-size: 40px; font-weight: 800; letter-spacing: -1.5px; color: var(--text); line-height: 1; }
+    .score-num .pct { font-size: 20px; color: var(--accent); margin-left: 2px; }
+    .score-label { font-size: 10px; color: var(--text-3); text-transform: uppercase; letter-spacing: 1px; margin-top: 6px; }
+
+    .v2-sec-title { font-size: 14px; font-weight: 700; text-align: left; color: var(--text); margin: 18px 0 10px; }
+    .v2-symptoms { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; text-align: left; }
+    .v2-symptom { display: flex; align-items: flex-start; gap: 10px; background: var(--surface); border: 1px solid var(--surface-2); border-left: 3px solid var(--accent); border-radius: 10px; padding: 12px 14px; }
+    .v2-symptom .ic { flex-shrink: 0; width: 20px; height: 20px; border-radius: 50%; background: rgba(196,105,122,0.18); color: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; margin-top: 1px; }
+    .v2-symptom p { font-size: 13.5px; color: var(--text-2); line-height: 1.5; }
+    .v2-symptom p b { color: var(--text); font-weight: 600; }
+
+    .bundle-box { background: var(--surface); border: 1.5px solid var(--accent); border-radius: var(--r); padding: 22px 18px 18px; margin-top: 20px; position: relative; box-shadow: 0 8px 28px rgba(196,105,122,0.18); text-align: center; }
+    .bundle-badge { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--accent); color: #fff; padding: 5px 14px; border-radius: 999px; font-size: 11px; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase; white-space: nowrap; }
+    .bundle-box h3 { font-size: 17px; font-weight: 800; margin-bottom: 6px; letter-spacing: -0.3px; line-height: 1.3; }
+    .bundle-box .b-sub { font-size: 13px; color: var(--text-2); margin-bottom: 14px; line-height: 1.5; }
+    .countdown { display: flex; justify-content: center; gap: 8px; margin: 6px 0 14px; }
+    .cd-cell { background: var(--surface-2); border: 1px solid var(--surface-2); border-radius: 8px; padding: 8px 10px; min-width: 56px; }
+    .cd-num { font-size: 22px; font-weight: 800; color: var(--text); line-height: 1; letter-spacing: -0.5px; font-variant-numeric: tabular-nums; }
+    .cd-lbl { font-size: 9px; color: var(--text-3); text-transform: uppercase; letter-spacing: 1px; margin-top: 4px; }
+    /* Bundle Hero-Image */
+    .bundle-hero-img { display: block; width: 100%; max-width: 360px; height: auto; margin: 4px auto 14px; }
+
+    /* Produkt-Cards (3 Bundle-Komponenten mit Mockup) */
+    .bundle-products { display: flex; flex-direction: column; gap: 12px; margin-bottom: 16px; }
+    .bundle-product { display: flex; align-items: center; gap: 12px; background: var(--surface-2); border-radius: 10px; padding: 10px 12px; text-align: left; }
+    .bundle-product .bp-img { flex-shrink: 0; width: 72px; height: 90px; object-fit: contain; background: transparent; }
+    .bundle-product .bp-txt { flex: 1; min-width: 0; }
+    .bundle-product .bp-title { font-size: 13px; font-weight: 800; color: var(--text); margin-bottom: 4px; letter-spacing: -0.1px; line-height: 1.25; }
+    .bundle-product .bp-desc { font-size: 12.5px; color: var(--text-2); line-height: 1.45; }
+    .bundle-product .bp-desc b { color: var(--text); font-weight: 600; }
+
+    .how-to { background: rgba(74,222,128,0.06); border: 1px solid rgba(74,222,128,0.25); border-radius: 10px; padding: 12px 14px; margin-bottom: 14px; display: flex; flex-direction: column; gap: 8px; text-align: left; }
+    .how-step { display: flex; align-items: flex-start; gap: 10px; font-size: 13px; color: var(--text-2); line-height: 1.45; }
+    .how-step .how-num { flex-shrink: 0; width: 20px; height: 20px; border-radius: 50%; background: var(--green); color: #0b0b0f; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; margin-top: 1px; }
+    .how-step b { color: var(--text); font-weight: 700; }
+
+    .bundle-cta { display: block; width: 100%; background: var(--accent); color: #fff; font-family: var(--font); font-size: 16px; font-weight: 800; padding: 15px; border: none; border-radius: 12px; cursor: pointer; -webkit-tap-highlight-color: transparent; letter-spacing: 0.2px; line-height: 1.2; }
+    .bundle-cta:active { opacity: 0.85; }
+    .cta-sub { font-size: 11.5px; color: var(--text-3); margin-top: 8px; text-align: center; }
+
+    #ycbm-container-v2 { background: #fff; border-radius: 10px; min-height: 480px; overflow: hidden; margin-top: 20px; }
+
+    @media (min-width: 600px) {
+      .bundle-box { max-width: 520px; margin-left: auto; margin-right: auto; }
+      .v2-symptoms { max-width: 520px; margin-left: auto; margin-right: auto; }
+      .v2-sec-title { max-width: 520px; margin-left: auto; margin-right: auto; }
+      #ycbm-container-v2 { max-width: 520px; margin-left: auto; margin-right: auto; }
+      .thanks-v2 h2 { font-size: 26px; }
+    }
+
+    /* Desktop */
+    @media (min-width: 600px) {
+      .hero h1 { font-size: 36px; }
+      .hero p { font-size: 17px; }
+      .mini h2 { font-size: 26px; }
+      .gender-row { max-width: 480px; margin-left: auto; margin-right: auto; margin-bottom: 20px; }
+      .risks li, .benefits li { font-size: 15px; padding: 14px 18px; }
+      .testimonial { padding: 20px; gap: 16px; }
+      .testimonial .t-text { font-size: 14px; }
+      .cta { max-width: 400px; margin: 0 auto; font-size: 17px; padding: 18px; }
+      .team-strip img { max-width: 420px; }
+
+      /* Quiz Desktop */
+      .step h2 { font-size: 26px; }
+      .opts { display: grid; grid-template-columns: 1fr 1fr; }
+      .opt { font-size: 16px; padding: 18px 20px; }
+      .opt:hover { border-color: var(--accent); background: var(--surface-2); }
+      .q-body { padding: 60px 20px 40px; }
+
+      /* Formular Desktop */
+      .fields { max-width: 440px; margin-left: auto; margin-right: auto; margin-bottom: 14px; }
+      .submit { max-width: 440px; margin-left: auto; margin-right: auto; }
+      .form h2 { font-size: 26px; }
+      .cb-row { max-width: 440px; margin-left: auto; margin-right: auto; margin-bottom: 16px; }
+
+      /* Danke Desktop */
+      .prio-box { max-width: 520px; margin-left: auto; margin-right: auto; margin-bottom: 12px; }
+      .wait-box { max-width: 520px; margin-left: auto; margin-right: auto; }
+      .thanks-proof { max-width: 520px; margin-left: auto; margin-right: auto; }
+      .thanks h2 { font-size: 28px; }
+    }
+
+    @media (min-width: 900px) {
+      .hero h1 { font-size: 42px; }
+      .hero p { font-size: 18px; }
+      .gender-row { max-width: 520px; gap: 20px; }
+      .risks, .benefits { max-width: 560px; margin-left: auto; margin-right: auto; }
+      .testimonial { max-width: 560px; margin-left: auto; margin-right: auto; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== LANDING ===== -->
+  <div id="lp">
+    <div class="wrap">
+      <div class="logo"><img src="/images/logo.png" alt="Fit on Time" /></div>
+
+      <section class="hero">
+        <h1>Steckt dein Körper <em>im Sparmodus?</em></h1>
+        <p>Finde es in <strong>90 Sekunden</strong> heraus, und erhalte deinen persönlichen Abnehm-Plan. Kostenlos.</p>
+
+        <!-- Proof Bar -->
+        <div class="proof-bar">
+          <div class="proof-avatars">
+            <img src="https://images.unsplash.com/photo-1594744803329-e58b31de8bf5?w=56&h=56&fit=crop&crop=face&q=80" alt="" />
+            <img src="https://images.unsplash.com/photo-1628869503963-6ce8de674c58?w=56&h=56&fit=crop&crop=face&q=80" alt="" />
+            <img src="https://images.unsplash.com/photo-1607962837359-5e7e89f86776?w=56&h=56&fit=crop&crop=face&q=80" alt="" />
+            <img src="https://images.unsplash.com/photo-1519834785169-98be25ec3f84?w=56&h=56&fit=crop&crop=face&q=80" alt="" />
+          </div>
+          <div class="proof-info">
+            <div class="proof-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            <b>3.357+</b> Frauen analysiert
+          </div>
+        </div>
+
+        <div class="gender-q">Ich bin:</div>
+        <div class="gender-row">
+          <div class="g-card" onclick="go('frau')">
+            <span class="g-icon">&#9792;</span>
+            <span class="g-label">Frau</span>
+          </div>
+          <div class="g-card" onclick="go('mann')">
+            <span class="g-icon">&#9794;</span>
+            <span class="g-label">Mann</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Testimonial 1 -->
+      <div class="testimonial">
+        <img src="https://images.unsplash.com/photo-1628869503963-6ce8de674c58?w=80&h=80&fit=crop&crop=face&q=80" alt="" />
+        <div class="t-body">
+          <div class="t-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <div class="t-text">"Ich dachte, ich mache alles richtig, aber mein Körper hat gegen mich gearbeitet. Der Report hat mir endlich die Augen geöffnet."</div>
+          <div class="t-name">Sandra M., 41</div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <section class="mini">
+        <h2>Was passiert, wenn du nichts tust</h2>
+        <ul class="risks">
+          <li><span class="ic">!</span>Dein Körper bleibt im Sparmodus, jede Diät scheitert</li>
+          <li><span class="ic">!</span>Müdigkeit, Heisshunger & Gewichtszunahme werden schlimmer</li>
+          <li><span class="ic">!</span>Langfristig: Herz-Kreislauf-Risiko, Haarausfall, Depression</li>
+        </ul>
+      </section>
+
+      <div class="divider"></div>
+
+      <section class="mini">
+        <h2>Das muss nicht so bleiben</h2>
+        <ul class="benefits">
+          <li><span class="ic">&#10003;</span>Verstehe, warum dein Körper Fett festhält</li>
+          <li><span class="ic">&#10003;</span>Bekomme einen Plan, der auf dich zugeschnitten ist</li>
+          <li><span class="ic">&#10003;</span>Starte mit Klarheit statt Frust</li>
+        </ul>
+      </section>
+
+      <!-- Testimonial 2 -->
+      <div class="testimonial">
+        <div class="t-body">
+          <div class="t-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+          <div class="t-text">"Nach 3 Wochen mit dem Plan hatte ich mehr Energie als seit Jahren. Und die Waage bewegt sich endlich wieder."</div>
+          <div class="t-name">Claudia R., 38</div>
+        </div>
+      </div>
+
+      <!-- CTA -->
+      <div class="cta-wrap">
+        <button class="cta" onclick="document.querySelector('.hero').scrollIntoView({behavior:'smooth'})">Jetzt kostenlosen Check starten</button>
+        <div class="cta-sub">90 Sekunden · 100% kostenlos · kein Spam</div>
+      </div>
+
+      <footer>
+        <a href="https://fitontime.ch/impressum-datenschutz" target="_blank" rel="noopener">Impressum</a> ·
+        <a href="https://fitontime.ch/impressum-datenschutz" target="_blank" rel="noopener">Datenschutz</a>
+      </footer>
+    </div>
+  </div>
+
+  <!-- ===== INTRO (nur Variante B) ===== -->
+  <div id="intro">
+    <div class="intro-inner">
+      <div class="intro-logo"><img src="/images/logo.png" alt="Fit on Time" /></div>
+      <h1>Was blockiert dich <em>wirklich beim Abnehmen?</em></h1>
+      <button class="intro-cta" onclick="startQuiz()">Jetzt Test starten</button>
+      <div class="intro-sub">90 Sekunden &middot; 100% kostenlos</div>
+      <div class="intro-legal">
+        <a href="https://fitontime.ch/impressum-datenschutz" target="_blank" rel="noopener">Impressum</a> &middot;
+        <a href="https://fitontime.ch/impressum-datenschutz" target="_blank" rel="noopener">Datenschutz</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== QUIZ ===== -->
+  <div id="quiz">
+    <div class="q-head"><img src="/images/logo.png" alt="Fit on Time" /></div>
+    <div class="q-progress"><div class="q-bar"><div class="q-fill" id="qf"></div></div><div class="q-num" id="qn">1 / 9</div></div>
+    <div class="q-body">
+
+      <div class="step on" data-s="1">
+        <h2>Wie schwer fällt dir Abnehmen, obwohl du auf deine Ernährung achtest?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(1,this)">Extrem schwer</button>
+          <button class="opt" onclick="nxt(1,this)">Es geht so</button>
+          <button class="opt" onclick="nxt(1,this)">Gar nicht schwer</button>
+          <button class="opt" onclick="nxt(1,this)">Weiss ich nicht</button>
+        </div>
+      </div>
+      <div class="step" data-s="2">
+        <h2>Frierst du oft, z.B. kalte Hände oder Füsse?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(2,this)">Ja, ständig</button>
+          <button class="opt" onclick="nxt(2,this)">Mir ist eher warm</button>
+          <button class="opt" onclick="nxt(2,this)">Oft kalte Füsse</button>
+          <button class="opt" onclick="nxt(2,this)">Nur im Winter</button>
+        </div>
+      </div>
+      <div class="step" data-s="3">
+        <h2>Wie oft fühlst du dich tagsüber erschöpft?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(3,this)">Fast immer</button>
+          <button class="opt" onclick="nxt(3,this)">Oft nachmittags</button>
+          <button class="opt" onclick="nxt(3,this)">Nur nach Stress</button>
+          <button class="opt" onclick="nxt(3,this)">Selten</button>
+        </div>
+      </div>
+      <div class="step" data-s="4">
+        <h2>Hast du Wassereinlagerungen, z.B. geschwollenes Gesicht?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(4,this)">Ja, sehr oft</button>
+          <button class="opt" onclick="nxt(4,this)">Gelegentlich</button>
+          <button class="opt" onclick="nxt(4,this)">Eigentlich nie</button>
+          <button class="opt" onclick="nxt(4,this)">Nur bei Hitze</button>
+        </div>
+      </div>
+      <div class="step" data-s="5">
+        <h2>Wie sind deine Haare & Nägel?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(5,this)">Trocken / dünn</button>
+          <button class="opt" onclick="nxt(5,this)">Ganz normal</button>
+          <button class="opt" onclick="nxt(5,this)">Brüchig / Haarausfall</button>
+          <button class="opt" onclick="nxt(5,this)">Wachsen gut</button>
+        </div>
+      </div>
+      <div class="step" data-s="6">
+        <h2>Hast du oft Brain Fog oder Konzentrationsprobleme?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(6,this)">Ja, regelmässig</button>
+          <button class="opt" onclick="nxt(6,this)">Ab und zu</button>
+          <button class="opt" onclick="nxt(6,this)">Nur bei wenig Schlaf</button>
+          <button class="opt" onclick="nxt(6,this)">Nein, bin fokussiert</button>
+        </div>
+      </div>
+      <div class="step" data-s="7">
+        <h2>Wie ist deine Verdauung?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(7,this)">Eher träge</button>
+          <button class="opt" onclick="nxt(7,this)">Wechselhaft</button>
+          <button class="opt" onclick="nxt(7,this)">Ganz normal</button>
+          <button class="opt" onclick="nxt(7,this)">Weiss nicht</button>
+        </div>
+      </div>
+      <div class="step" data-s="8">
+        <h2>Wie ernährst du dich?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(8,this)">Gesund & ausgewogen</button>
+          <button class="opt" onclick="nxt(8,this)">Achte auf Kalorien</button>
+          <button class="opt" onclick="nxt(8,this)">Achte nicht gross drauf</button>
+          <button class="opt" onclick="nxt(8,this)">Unsicher was mir gut tut</button>
+        </div>
+      </div>
+      <div class="step" data-s="9">
+        <h2>Was ist dein Ziel in den nächsten 3 Monaten?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(9,this)">Gewicht verlieren</button>
+          <button class="opt" onclick="nxt(9,this)">Mehr Energie</button>
+          <button class="opt" onclick="nxt(9,this)">Energie zurück</button>
+          <button class="opt" onclick="nxt(9,this)">Wieder wohlfühlen</button>
+        </div>
+      </div>
+
+      <!-- Loading -->
+      <div class="step ld" data-s="ld">
+        <div class="spinner"></div>
+        <h2>Wird ausgewertet...</h2>
+        <p>Dein persönlicher Report wird erstellt</p>
+        <div class="checks">
+          <div class="chk" id="c1"><i>&#10003;</i>Antworten analysiert</div>
+          <div class="chk" id="c2"><i>&#10003;</i>Körper-Profil erstellt</div>
+          <div class="chk" id="c3"><i>&#10003;</i>Abnehm-Plan generiert</div>
+        </div>
+      </div>
+
+      <!-- Formular -->
+      <div class="step form" data-s="form">
+        <div class="tag">&#10003; Analyse abgeschlossen</div>
+        <h2>Dein Report ist fertig</h2>
+        <p class="sub">Wir schicken dir deinen Report direkt per E-Mail.</p>
+        <div class="fields">
+          <div class="field"><span class="ic">&#128100;</span><input type="text" id="fn" placeholder="Vorname" required /></div>
+          <div class="field"><span class="ic">&#128100;</span><input type="text" id="ln" placeholder="Nachname" required /></div>
+          <div class="field"><span class="ic">&#9993;</span><input type="email" id="em" placeholder="E-Mail Adresse" required /></div>
+        </div>
+        <div class="cb-row">
+          <input type="checkbox" id="ds" />
+          <label for="ds">Ich akzeptiere die <a href="https://fitontime.ch/impressum-datenschutz" target="_blank">Datenschutzbestimmungen</a></label>
+        </div>
+        <button class="submit" id="sbtn" disabled onclick="send()">Report jetzt erhalten</button>
+
+        <!-- Proof im Formular -->
+        <div class="form-proof">
+          <div class="fp-row"><span>&#128274;</span> Deine Daten sind sicher & werden nicht weitergegeben</div>
+          <div class="fp-row"><span class="proof-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span> <b>3.357+</b> zufriedene Teilnehmerinnen</div>
+        </div>
+      </div>
+
+      <!-- Danke-Variante "thx" (simpel) als A/B-Loser entfernt. Nur noch thx2/FC-Mirror. -->
+
+      <!-- Danke V2 - FC-Mirror (Gewinner) -->
+      <div class="step thanks-v2" data-s="thx2">
+        <div class="result-eyebrow">Auswertung abgeschlossen</div>
+        <h2>Dein Ergebnis: Zu <em><span id="v2-score-h">89</span>%</em> steckt Dein Körper im Sparmodus</h2>
+
+        <div class="score-wrap">
+          <div class="score">
+            <svg viewBox="0 0 200 200">
+              <circle class="score-track" cx="100" cy="100" r="88"></circle>
+              <circle class="score-fill" id="v2-score-ring" cx="100" cy="100" r="88"></circle>
+            </svg>
+            <div class="score-text">
+              <div class="score-num"><span id="v2-score-num">0</span><span class="pct">%</span></div>
+              <div class="score-label">Blockade-Grad</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="v2-sec-title">Das merkst du im Alltag:</div>
+        <div class="v2-symptoms">
+          <div class="v2-symptom"><span class="ic">&#10005;</span><p>Du fühlst Dich <b>ständig müde</b>, egal wie lange Du schläfst.</p></div>
+          <div class="v2-symptom"><span class="ic">&#10005;</span><p>Deine <b>Energie ist im Keller</b>, besonders am Nachmittag.</p></div>
+          <div class="v2-symptom"><span class="ic">&#10005;</span><p>Abnehmen scheint <b>unmöglich</b>, obwohl Du weniger isst als andere.</p></div>
+          <div class="v2-symptom"><span class="ic">&#10005;</span><p>Du fühlst Dich <b>demotiviert</b>, weil die Waage trotz Verzicht stillsteht.</p></div>
+        </div>
+
+        <div class="bundle-box">
+          <span class="bundle-badge">&#127873; Geschenk zum Erstgespräch</span>
+          <h3>Dein 0&euro; "Fettabbau-Starter-Bundle" für deinen Körper im Sparmodus</h3>
+
+          <img class="bundle-hero-img" src="/images/figur-check/auswertung-1-mockup.png" alt="Fettabbau-Starter-Bundle: Einkaufsliste, 7-Tage-Reset, Notfallplan" loading="lazy" />
+
+          <p class="b-sub">Du bekommst das komplette Bundle <b>kostenlos im Erstgespräch</b> ausgehändigt &mdash; persönlich abgestimmt auf Deine Auswertung.</p>
+
+          <div class="countdown" id="v2-countdown">
+            <div class="cd-cell"><div class="cd-num" id="cd-h">00</div><div class="cd-lbl">Stunden</div></div>
+            <div class="cd-cell"><div class="cd-num" id="cd-m">07</div><div class="cd-lbl">Minuten</div></div>
+            <div class="cd-cell"><div class="cd-num" id="cd-s">00</div><div class="cd-lbl">Sekunden</div></div>
+          </div>
+
+          <div class="bundle-products">
+            <div class="bundle-product">
+              <img class="bp-img" src="/images/figur-check/auswertung-4-result.png" alt="Fettabbau-Einkaufsliste" loading="lazy" />
+              <div class="bp-txt">
+                <div class="bp-title">Fettabbau-Einkaufsliste</div>
+                <div class="bp-desc">Erfahre genau, welche <b>Lebensmittel deinen Fettabbau bremsen</b>. Nährstoffreiche Lebensmittel, die deinen Körper aus dem Sparmodus holen.</div>
+              </div>
+            </div>
+            <div class="bundle-product">
+              <img class="bp-img" src="/images/figur-check/auswertung-2-bundle.png" alt="7-Tage Körper-Reset" loading="lazy" />
+              <div class="bp-txt">
+                <div class="bp-title">7-Tage Körper-Reset</div>
+                <div class="bp-desc">Starte noch heute mit Deinem <b>7-Tage-Reset</b> in die Fettverbrennung. Darmgesundheit stärken, Entzündungen hemmen, Energie zurückgewinnen.</div>
+              </div>
+            </div>
+            <div class="bundle-product">
+              <img class="bp-img" src="/images/figur-check/auswertung-3-fb.png" alt="Notfallplan gegen Heißhunger" loading="lazy" />
+              <div class="bp-txt">
+                <div class="bp-title">Notfallplan gegen Heißhunger</div>
+                <div class="bp-desc">Erhalte unsere <b>SOS-Strategien</b> für die schwierigen Momente im Alltag. Sofortmaßnahmen für Heißhungerattacken &amp; gesunde Alternativen.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="how-to">
+            <div class="how-step"><span class="how-num">1</span><span>Wähle unten einen Termin für Dein <b>kostenloses Erstgespräch</b></span></div>
+            <div class="how-step"><span class="how-num">2</span><span>Im Gespräch (ca. 20 Min.) bekommst Du das <b>Bundle gratis</b> &amp; Deine Auswertung erklärt</span></div>
+          </div>
+
+          <button type="button" class="bundle-cta" onclick="v2ScrollToBooking()">Termin sichern &amp; Bundle gratis erhalten</button>
+          <div class="cta-sub">&#10003; Kostenfrei &nbsp;&middot;&nbsp; &#10003; Unverbindlich &nbsp;&middot;&nbsp; &#10003; Bundle als Geschenk</div>
+        </div>
+
+        <div id="ycbm-container-v2"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <script is:inline>
+    // Quiz-Antworten speichern
+    var quizAnswers = {};
+
+    // Tracking-Helfer, nutzt window.__lp aus CookieBanner
+    // Race-Schutz: __lp wird erst nach Parse des CookieBanner-Scripts gesetzt.
+    // Wenn nicht da, retry alle 50ms (max 2s), sonst geht page_view verloren.
+    function tk(e, d) {
+      var tries = 0;
+      function fire() {
+        if (window.__lp) {
+          window.__lp.track(e, Object.assign({ page: 'figur-check' }, d || {}), 'fot', 'Figur-Check');
+          if (e === 'quiz_start') window.__lp.meta('ViewContent', { content_name: 'FoT Quiz Start', currency: 'EUR' });
+          if (e === 'quiz_complete') window.__lp.meta('CompleteRegistration', { content_name: 'FoT Quiz Complete', currency: 'EUR' });
+          if (e === 'lead_submit') window.__lp.meta('Lead', { content_name: 'FoT Lead', currency: 'EUR' });
+          if (e === 'booking_confirmed') window.__lp.meta('Schedule', { content_name: 'FoT Termin gebucht', currency: 'EUR' });
+        } else if (tries++ < 40) {
+          setTimeout(fire, 50);
+        }
+      }
+      fire();
+    }
+    tk('page_view');
+
+    // Front-End-Variante kommt aus dem <head>-Skript (window.__fe): A=Text-LP, B=nackt Quiz.
+    // Fuer B haben head-CSS (html.fe-quiz) bereits Landing aus / Quiz an geschaltet.
+    var quizStarted = false;
+    var feVariant = (window.__fe === 'A' || window.__fe === 'B') ? window.__fe : 'A';
+    // Variante B: Intro-Screen ist via head-CSS (html.fe-quiz) schon sichtbar.
+    // Button "Jetzt Test starten" -> startQuiz(): Intro aus, Quiz an, quiz_start.
+    function startQuiz() {
+      if (!quizStarted) { quizStarted = true; tk('quiz_start', { detail: 'intro-cta' }); }
+      // head-CSS setzt #intro mit !important -> hier ebenfalls !important zum Ausblenden.
+      var intro = document.getElementById('intro');
+      if (intro) intro.style.setProperty('display', 'none', 'important');
+      document.getElementById('quiz').classList.add('on');
+    }
+
+    // === Symmetrischer Booking-Detektor (A + B identisch) ===
+    // YouCanBook.me-Embed (embed.ycb.me) postet eine Message ans Parent-Window,
+    // wenn eine Buchung bestaetigt ist. Wir erkennen das origin- + keyword-gefiltert
+    // und feuern EIN gemeinsames booking_confirmed-Event mit der A/B-Variante.
+    // Damit wird der Test endlich messbar: booking_confirmed pro Variante = Conversion.
+    (function () {
+      window.addEventListener('message', function (ev) {
+        // Nur Messages vom YCBM-Widget akzeptieren
+        var origin = String(ev.origin || '');
+        if (!/(^|\.)ycb\.me$/.test(origin) && origin.indexOf('youcanbook') === -1) return;
+
+        // Payload als String normalisieren (YCBM sendet String ODER Objekt)
+        var raw = ev.data;
+        var txt = '';
+        try { txt = (typeof raw === 'string') ? raw : JSON.stringify(raw); } catch (e) { return; }
+        txt = txt.toLowerCase();
+
+        // Buchung-bestaetigt-Signal: 'book' + abgeschlossen-Marker
+        if (txt.indexOf('book') === -1) return;
+        if (!/confirm|complete|created|success|made|finished/.test(txt)) return;
+
+        // Pro Session nur einmal zaehlen (Doppel-Messages / Re-Render absichern)
+        try {
+          if (sessionStorage.getItem('fot_booking_fired') === '1') return;
+          sessionStorage.setItem('fot_booking_fired', '1');
+        } catch (e) {}
+
+        // Zugewiesene Front-End-Variante (A=Text, B=Quiz)
+        var v = 'unknown';
+        try { v = sessionStorage.getItem('fot_ab_fe') || 'unknown'; } catch (e) {}
+
+        tk('booking_confirmed', { variant: v, detail: v });
+      }, false);
+    })();
+
+    // Preview-Shortcut: ?show=thx2 oder ?show=thx springt direkt zum Step (Dev/QA)
+    (function() {
+      var p = new URLSearchParams(location.search);
+      var s = p.get('show');
+      if (s !== 'thx' && s !== 'thx2') return;
+      document.getElementById('lp').style.display = 'none';
+      var q = document.getElementById('quiz');
+      q.style.display = 'flex';
+      q.classList.add('on');
+      document.querySelectorAll('.step').forEach(function(el){ el.classList.remove('on'); });
+      var target = document.querySelector('.step[data-s="' + s + '"]');
+      if (target) target.classList.add('on');
+      document.getElementById('qf').style.width = '100%';
+      document.getElementById('qn').textContent = 'Fertig!';
+      if (s === 'thx2') {
+        if (typeof v2InitScore === 'function') v2InitScore();
+        if (typeof v2StartCountdown === 'function') v2StartCountdown();
+        var c = document.getElementById('ycbm-container-v2');
+        if (c && !c.dataset.loaded) {
+          c.dataset.loaded = '1';
+          var sc = document.createElement('script');
+          sc.src = 'https://embed.ycb.me';
+          sc.async = true;
+          sc.setAttribute('data-domain', 'fitontime-figur-check');
+          sc.setAttribute('data-displaymode', 'auto');
+          c.appendChild(sc);
+        }
+      } else if (s === 'thx') {
+        var ca = document.getElementById('ycbm-container');
+        if (ca && !ca.dataset.loaded) {
+          ca.dataset.loaded = '1';
+          var sa = document.createElement('script');
+          sa.src = 'https://embed.ycb.me';
+          sa.async = true;
+          sa.setAttribute('data-domain', 'fitontime-figur-check');
+          sa.setAttribute('data-displaymode', 'auto');
+          ca.appendChild(sa);
+        }
+      }
+    })();
+
+    function go(g) {
+      if (!quizStarted) { quizStarted = true; tk('quiz_start', { detail: g }); }
+      document.getElementById('lp').style.display = 'none';
+      document.getElementById('quiz').classList.add('on');
+    }
+
+    function nxt(s, el) {
+      // Variante B (nackt Quiz): quiz_start feuert bei der ersten Antwort
+      if (!quizStarted) { quizStarted = true; tk('quiz_start', { detail: 'quiz-direkt' }); }
+      // Antworttext speichern
+      quizAnswers['q' + s] = el ? el.textContent.trim() : '';
+      tk('quiz_answer', { detail: 'q' + s });
+      document.querySelector('.step[data-s="' + s + '"]').classList.remove('on');
+      if (s < 9) {
+        document.querySelector('.step[data-s="' + (s + 1) + '"]').classList.add('on');
+        var p = Math.round(((s + 1) / 9) * 100);
+        document.getElementById('qf').style.width = p + '%';
+        document.getElementById('qn').textContent = (s + 1) + ' / 9';
+      } else {
+        tk('quiz_complete');
+        load();
+      }
+    }
+
+    function load() {
+      var ld = document.querySelector('.step[data-s="ld"]');
+      ld.classList.add('on');
+      document.getElementById('qf').style.width = '100%';
+      document.getElementById('qn').textContent = 'Auswertung...';
+      setTimeout(function(){ document.getElementById('c1').classList.add('show'); }, 600);
+      setTimeout(function(){ document.getElementById('c2').classList.add('show'); }, 1400);
+      setTimeout(function(){ document.getElementById('c3').classList.add('show'); }, 2200);
+      setTimeout(function(){
+        ld.classList.remove('on');
+        document.querySelector('.step[data-s="form"]').classList.add('on');
+        document.getElementById('qn').textContent = 'Fast fertig';
+      }, 3200);
+    }
+
+    // Nur Datenschutz-Haekchen ist Pflicht
+    function syncSubmitState() {
+      var ds = document.getElementById('ds').checked;
+      document.getElementById('sbtn').disabled = !ds;
+    }
+    document.getElementById('ds').addEventListener('change', syncSubmitState);
+
+    function send() {
+      var fn = document.getElementById('fn').value.trim();
+      var ln = document.getElementById('ln').value.trim();
+      var em = document.getElementById('em').value.trim();
+      var missing = [];
+      if (!fn) missing.push('fn');
+      if (!ln) missing.push('ln');
+      if (!em) missing.push('em');
+      if (missing.length) {
+        missing.forEach(function(id){ document.getElementById(id).parentElement.style.borderColor = 'var(--accent)'; });
+        return;
+      }
+      var btn = document.getElementById('sbtn');
+      btn.disabled = true;
+      btn.textContent = 'Wird gesendet...';
+
+      // Atomarer Submit: lead_submit + Meta-Pixel + UI-Weiter NUR bei erfolgreichem Insert
+      var fullName = fn + (ln ? ' ' + ln : '');
+      fetch('/api/sheets', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          lp_slug: 'figur-check',
+          lp_name: feVariant === 'B' ? 'Schilddrüsen-Report v2 (B:Quiz)' : 'Schilddrüsen-Report v2 (A:Text)',
+          name: fullName,
+          first_name: fn,
+          email: em,
+          phone: '',
+          wa_optin: false,
+          score: (function(){ try { return parseInt(sessionStorage.getItem('sd_score'), 10) || ''; } catch(e){ return ''; } })(),
+          answers: quizAnswers
+        })
+      }).then(function(res){
+        if (!res.ok) throw new Error('insert-failed');
+        // Insert erfolgreich, jetzt erst tracken
+        tk('lead_submit', { detail: fn });
+        document.querySelector('.step[data-s="form"]').classList.remove('on');
+        document.getElementById('qn').textContent = 'Fertig!';
+
+        // Front-End-Variante (A=Text, B=Quiz) fuer Messung mitschicken.
+        tk('ab_assign_fe', { detail: feVariant, variant: feVariant });
+
+        // Ergebnis auf separater Seite (immer FC-Mirror/thx2 - thx wurde entfernt).
+        try { sessionStorage.setItem('fot_result_name', fn || 'Du'); } catch(e) {}
+        document.querySelector('.step[data-s="form"]').classList.remove('on');
+        var sc = '';
+        try { sc = sessionStorage.getItem('sd_score') || ''; } catch(e) {}
+        // 250ms Puffer, damit Lead-Pixel + sendBeacon raus sind
+        setTimeout(function(){ window.location.href = '/figur-check/ergebnis/' + (sc ? ('?score=' + encodeURIComponent(sc)) : ''); }, 250);
+      }).catch(function(){
+        btn.disabled = false;
+        btn.textContent = 'Jetzt Report sichern';
+        alert('Etwas ist schiefgelaufen. Bitte nochmal versuchen.');
+      });
+    }
+
+    // === V2-Helpers (FC-Mirror Variante) ===
+    function v2InitScore() {
+      var score;
+      try {
+        var p = new URLSearchParams(location.search);
+        var raw = p.get('score');
+        if (raw) {
+          var v = parseInt(raw, 10);
+          if (!isNaN(v)) score = Math.max(70, Math.min(95, v));
+        }
+        if (!score) {
+          var cached = sessionStorage.getItem('sd_score');
+          if (cached) { var cv = parseInt(cached, 10); if (!isNaN(cv)) score = cv; }
+        }
+      } catch(e){}
+      if (!score) {
+        score = 84 + Math.floor(Math.random() * 9); // 84..92
+        try { sessionStorage.setItem('sd_score', String(score)); } catch(e){}
+      }
+      document.getElementById('v2-score-h').textContent = score;
+      var radius = 88;
+      var circumference = 2 * Math.PI * radius;
+      var ring = document.getElementById('v2-score-ring');
+      var display = document.getElementById('v2-score-num');
+      ring.style.strokeDasharray = '0 ' + circumference;
+      var start = null;
+      var duration = 1500;
+      function step(ts) {
+        if (!start) start = ts;
+        var t = Math.min(1, (ts - start) / duration);
+        var eased = 1 - Math.pow(1 - t, 3);
+        display.textContent = Math.round(score * eased);
+        ring.style.strokeDasharray = (circumference * (score / 100) * eased) + ' ' + circumference;
+        if (t < 1) requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+    }
+
+    function v2StartCountdown() {
+      // 8-Minuten Urgency-Timer (per Session resetbar)
+      var deadline;
+      try {
+        var stored = sessionStorage.getItem('sd_cd_deadline');
+        deadline = stored ? parseInt(stored, 10) : 0;
+        if (!deadline || deadline < Date.now()) {
+          deadline = Date.now() + 8 * 60 * 1000;
+          sessionStorage.setItem('sd_cd_deadline', String(deadline));
+        }
+      } catch(e) { deadline = Date.now() + 8 * 60 * 1000; }
+      function pad(n) { return n < 10 ? '0' + n : '' + n; }
+      function tick() {
+        var ms = Math.max(0, deadline - Date.now());
+        var totalSec = Math.floor(ms / 1000);
+        var h = Math.floor(totalSec / 3600);
+        var m = Math.floor((totalSec % 3600) / 60);
+        var s = totalSec % 60;
+        var hEl = document.getElementById('cd-h');
+        var mEl = document.getElementById('cd-m');
+        var sEl = document.getElementById('cd-s');
+        if (hEl) hEl.textContent = pad(h);
+        if (mEl) mEl.textContent = pad(m);
+        if (sEl) sEl.textContent = pad(s);
+        if (ms > 0) setTimeout(tick, 1000);
+      }
+      tick();
+    }
+
+    function v2ScrollToBooking() {
+      tk('v2_bundle_cta_click');
+      var el = document.getElementById('ycbm-container-v2');
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  </script>
+
+  {/* Hyros als First-Party-Attribution essentiell  -  lädt ohne Consent */}
+  <script is:inline src="https://t.hyros.com/v1/lst/universal-script?ph=689a71ca1ab3be1cb1caddbe6b7902a4ad2c51a228f4ec9ea7fef3123a705f63"></script>
+
+  <CookieBanner
+    metaPixelId="1316450223953563"
+    consentKey="fot_consent"
+    impressumUrl={impressumUrl}
+    datenschutzUrl={datenschutzUrl}
+  />
+</body>
+</html>

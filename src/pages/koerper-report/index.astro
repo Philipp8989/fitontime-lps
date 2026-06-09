@@ -1,0 +1,776 @@
+---
+// Körper-Report (Blockaden-Loesen) - FitonTime
+// Struktur 1:1 an Live-Winner fit-on-time.ch/blockaden-loesen/ orientiert
+// UI/UX-Upgrade: echte Vorher-Nachher-Bilder, cleaneres Typo-System, bessere Mobile-UX
+import CookieBanner from '../../components/CookieBanner.astro';
+const impressumUrl = 'https://fitontime.ch/impressum-datenschutz';
+const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
+---
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Welcher Körper-Typ bist Du? | Fit on Time</title>
+  <link rel="icon" type="image/png" href="/images/logo.png" />
+  <link rel="preload" as="image" href="/images/transformations/t5.jpg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <style is:global>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #fafaf8;
+      --surface: #f0ebe0;
+      --surface-2: #e5dfd2;
+      --accent: #2b7de9;
+      --accent-dark: #1a5bb8;
+      --green: #22c55e;
+      --amber: #f59e0b;
+      --red: #ef4444;
+      --text: #1a1a1a;
+      --text-2: #4a4a4a;
+      --text-3: #888;
+      --r: 14px;
+      --font: 'DM Sans', system-ui, -apple-system, sans-serif;
+    }
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+    body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.5; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    .wrap { max-width: 720px; margin: 0 auto; padding: 0 20px; }
+
+    /* Logo */
+    .logo { text-align: center; padding: 16px 0 8px; }
+    .logo img { height: 40px; }
+
+    /* Hero */
+    .hero { text-align: center; padding: 16px 0 20px; }
+    .hero h1 { font-size: 26px; font-weight: 800; line-height: 1.25; letter-spacing: -0.5px; margin-bottom: 12px; }
+    .hero h1 em { font-style: normal; color: var(--accent); }
+    .hero .sub { font-size: 15px; color: var(--text-2); margin-bottom: 12px; line-height: 1.5; }
+    .hero .sub strong { color: var(--text); font-weight: 600; }
+
+    /* CTA-Block: Geschlechter-Auswahl als Start */
+    .start-block { background: #fff; border: 1px solid #e8e4da; border-radius: var(--r); padding: 20px 18px; margin: 12px 0; box-shadow: 0 2px 12px rgba(0,0,0,0.04); }
+    .start-block .sb-q { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 12px; }
+    .start-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .start-btn { background: var(--accent); color: #fff; border: none; border-radius: 12px; padding: 16px 12px; font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.2s; font-family: var(--font); -webkit-tap-highlight-color: transparent; box-shadow: 0 4px 14px rgba(43,125,233,0.25); }
+    .start-btn:hover { background: var(--accent-dark); transform: translateY(-1px); box-shadow: 0 6px 18px rgba(43,125,233,0.35); }
+    .start-btn:active { transform: scale(0.98); }
+    .start-btn.secondary { background: #fff; color: var(--accent); border: 2px solid var(--accent); box-shadow: none; }
+    .start-btn.secondary:hover { background: #eef6ff; }
+
+    /* Social Proof */
+    .proof-bar { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 14px 0 6px; flex-wrap: wrap; }
+    .proof-avatars { display: flex; }
+    .proof-avatars img { width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--bg); margin-left: -10px; object-fit: cover; object-position: center 30%; }
+    .proof-avatars img:first-child { margin-left: 0; }
+    .proof-info { font-size: 12px; color: var(--text-3); line-height: 1.3; text-align: left; }
+    .proof-info b { color: var(--text); }
+    .proof-stars { color: var(--amber); font-size: 12px; letter-spacing: 1px; }
+    .proof-trust { display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 12px; color: var(--text-2); margin-top: 6px; font-weight: 500; }
+    .proof-trust .ic { color: var(--green); font-weight: 700; }
+
+    /* Transformation Grid */
+    .trans { margin: 28px 0; }
+    .trans-title { font-size: 18px; font-weight: 800; text-align: center; margin-bottom: 6px; }
+    .trans-sub { font-size: 13px; color: var(--text-3); text-align: center; margin-bottom: 16px; }
+    .trans-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+    .trans-grid img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 10px; background: #fff; }
+    .trans-cap { font-size: 11px; color: var(--text-3); text-align: center; margin-top: 10px; }
+
+    /* Section Titles */
+    .sec-eyebrow { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--red); font-weight: 700; text-align: center; margin-bottom: 6px; }
+    .sec-eyebrow.amber { color: var(--amber); }
+    .sec-eyebrow.green { color: var(--green); }
+    .sec-title { font-size: 22px; font-weight: 800; text-align: center; margin-bottom: 18px; letter-spacing: -0.3px; line-height: 1.25; }
+
+    /* Info-Card-Stack (Pain / Benefit / Urgency) */
+    .info-stack { display: flex; flex-direction: column; gap: 12px; }
+    .info-card { background: #fff; border: 1px solid #e8e4da; border-radius: var(--r); padding: 18px; }
+    .info-card.pain { border-left: 4px solid var(--red); }
+    .info-card.benefit { border-left: 4px solid var(--green); }
+    .info-card.urgency { background: #fffbeb; border: 1px solid #fde68a; border-left: 4px solid var(--amber); }
+    .info-card h3 { font-size: 16px; font-weight: 800; margin-bottom: 6px; letter-spacing: -0.2px; }
+    .info-card p { font-size: 14px; color: var(--text-2); line-height: 1.55; }
+    .urgency-list { list-style: none; display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
+    .urgency-list li { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--text-2); padding: 8px 12px; background: #fff; border-radius: 8px; border: 1px solid #fde68a; }
+    .urgency-list li .ic { color: var(--amber); font-weight: 700; flex-shrink: 0; }
+
+    /* Twist-Block */
+    .twist { background: linear-gradient(135deg, #eef6ff 0%, #e0ecff 100%); border-radius: var(--r); padding: 22px 20px; text-align: center; margin: 20px 0; position: relative; overflow: hidden; }
+    .twist h2 { font-size: 20px; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.3px; }
+    .twist p { font-size: 14px; color: var(--text-2); line-height: 1.55; position: relative; z-index: 1; }
+    .twist .twist-emoji { font-size: 38px; margin-bottom: 4px; display: block; }
+
+    /* Icon-Card-Grid (Pain/Benefit kompakt) */
+    .icon-cards { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 6px; }
+    .icon-card { background: #fff; border: 1px solid #e8e4da; border-radius: 12px; padding: 14px 8px; text-align: center; position: relative; }
+    .icon-card.pain { border-top: 3px solid var(--red); }
+    .icon-card.benefit { border-top: 3px solid var(--green); }
+    .icon-card .ic-emoji { font-size: 32px; display: block; margin-bottom: 4px; line-height: 1; }
+    .icon-card h4 { font-size: 12px; font-weight: 800; margin-bottom: 4px; line-height: 1.25; letter-spacing: -0.1px; }
+    .icon-card p { font-size: 11px; color: var(--text-3); line-height: 1.4; }
+
+    /* Stat-Block (3 big numbers) */
+    .stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin: 20px 0; }
+    .stat { background: #fff; border: 1px solid #e8e4da; border-radius: 12px; padding: 14px 6px; text-align: center; }
+    .stat .stat-num { font-size: 24px; font-weight: 800; color: var(--accent); letter-spacing: -0.5px; line-height: 1; }
+    .stat .stat-label { font-size: 10px; color: var(--text-3); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.3px; font-weight: 600; }
+
+    /* Testimonial Cards mit Face */
+    .testis { display: flex; flex-direction: column; gap: 10px; margin: 16px 0; }
+    .testi { background: #fff; border: 1px solid #e8e4da; border-radius: 12px; padding: 14px; display: flex; gap: 12px; align-items: flex-start; }
+    .testi-img { width: 56px; height: 56px; border-radius: 10px; object-fit: cover; flex-shrink: 0; }
+    .testi-body { flex: 1; min-width: 0; }
+    .testi-stars { color: var(--amber); font-size: 11px; letter-spacing: 1px; margin-bottom: 2px; }
+    .testi-quote { font-size: 13px; color: var(--text-2); line-height: 1.5; margin-bottom: 6px; }
+    .testi-quote strong { color: var(--text); font-weight: 700; }
+    .testi-name { font-size: 11px; color: var(--text-3); font-weight: 600; }
+    .testi-name b { color: var(--text-2); }
+
+    /* Urgency Badges (inline) */
+    .warn-badges { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 12px; }
+    .warn-badge { background: #fff; border: 1px solid #fde68a; border-radius: 10px; padding: 12px 6px; text-align: center; }
+    .warn-badge .wb-emoji { font-size: 24px; display: block; margin-bottom: 4px; }
+    .warn-badge .wb-text { font-size: 11px; color: var(--text-2); font-weight: 600; line-height: 1.3; }
+
+    /* Trust-Badges (ersetzt langer Authority-Block) */
+    .trust-badges { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin: 20px 0; }
+    .trust-badge { background: var(--surface); border-radius: 12px; padding: 14px 8px; text-align: center; }
+    .trust-badge .tb-emoji { font-size: 24px; display: block; margin-bottom: 4px; }
+    .trust-badge .tb-text { font-size: 11px; color: var(--text-2); font-weight: 600; line-height: 1.35; }
+
+    /* Tipp-Hinweis */
+    .tipp-hint { background: #eef6ff; border-left: 3px solid var(--accent); border-radius: 8px; padding: 12px 14px; margin: 16px 0; font-size: 13px; color: var(--text-2); line-height: 1.5; }
+    .tipp-hint strong { color: var(--accent); font-weight: 700; }
+
+    /* Divider */
+    .divider { width: 40px; height: 2px; background: var(--accent); margin: 28px auto; opacity: 0.3; }
+
+    /* Footer */
+    footer { text-align: center; padding: 20px; font-size: 11px; color: var(--text-3); border-top: 1px solid #e8e4da; margin-top: 20px; }
+    footer a { color: var(--text-3); text-decoration: none; }
+
+    /* ===== QUIZ ===== */
+    #quiz { display: none; position: fixed; inset: 0; background: var(--bg); z-index: 100; flex-direction: column; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+    #quiz.on { display: flex; }
+    .q-head { display: flex; align-items: center; justify-content: center; padding: 14px 20px; border-bottom: 1px solid #e8e4da; position: sticky; top: 0; background: var(--bg); z-index: 10; }
+    .q-head img { height: 32px; }
+    .q-progress { padding: 12px 20px 0; max-width: 600px; margin: 0 auto; width: 100%; position: sticky; top: 57px; background: var(--bg); z-index: 10; }
+    .q-bar { height: 6px; background: #e8e4da; border-radius: 3px; overflow: hidden; }
+    .q-fill { height: 100%; background: var(--accent); border-radius: 3px; transition: width 0.4s ease; width: 0%; }
+    .q-num { font-size: 12px; color: var(--text-3); text-align: right; margin-top: 4px; font-weight: 500; }
+    .q-body { flex: 1; display: flex; align-items: flex-start; justify-content: center; padding: 32px 20px; }
+
+    .step { display: none; max-width: 600px; width: 100%; animation: up 0.3s ease; }
+    .step.on { display: block; }
+    @keyframes up { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+    .step h2 { font-size: 22px; font-weight: 800; text-align: center; margin-bottom: 20px; line-height: 1.3; letter-spacing: -0.3px; }
+    .opts { display: flex; flex-direction: column; gap: 10px; }
+    .opt { background: var(--surface); border: 2px solid transparent; border-radius: 12px; padding: 16px 18px; font-size: 15px; font-weight: 500; color: var(--text); cursor: pointer; transition: all 0.2s; font-family: var(--font); -webkit-tap-highlight-color: transparent; text-align: left; }
+    .opt:hover { border-color: var(--accent); background: #fff; }
+    .opt:active { transform: scale(0.98); border-color: var(--accent); }
+    .opt strong { display: block; font-weight: 700; margin-bottom: 2px; }
+    .opt span { font-size: 13px; color: var(--text-2); }
+
+    /* Ja/Nein Buttons */
+    .yn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; max-width: 400px; margin: 0 auto; }
+    .yn-btn { background: var(--accent); color: #fff; border: 2px solid var(--accent); border-radius: 12px; padding: 18px 16px; font-size: 18px; font-weight: 700; cursor: pointer; transition: all 0.2s; font-family: var(--font); -webkit-tap-highlight-color: transparent; text-align: center; }
+    .yn-btn:hover { background: var(--accent-dark); border-color: var(--accent-dark); transform: translateY(-2px); }
+    .yn-btn:active { transform: scale(0.97); }
+
+    /* Tipp-Box unter jeder Frage */
+    .tipp { background: #eef6ff; border: 1px solid #c4ddff; border-radius: 10px; padding: 12px 14px; margin-top: 16px; display: flex; align-items: flex-start; gap: 10px; }
+    .tipp .tipp-icon { font-size: 16px; flex-shrink: 0; }
+    .tipp .tipp-text { font-size: 12px; color: var(--text-2); line-height: 1.5; }
+    .tipp .tipp-text strong { color: var(--accent); font-weight: 700; }
+
+    /* Card-Optionen */
+    .card-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .card-opt { background: var(--surface); border: 2px solid transparent; border-radius: 12px; padding: 18px 12px; font-size: 14px; font-weight: 600; color: var(--text); cursor: pointer; transition: all 0.2s; font-family: var(--font); -webkit-tap-highlight-color: transparent; text-align: center; line-height: 1.3; }
+    .card-opt:hover { border-color: var(--accent); background: #fff; transform: translateY(-2px); }
+    .card-opt:active { transform: scale(0.97); border-color: var(--accent); }
+    .card-opt .card-emoji { font-size: 26px; display: block; margin-bottom: 6px; }
+
+    /* Loading */
+    .ld { text-align: center; }
+    .spinner { width: 56px; height: 56px; border: 3px solid #e8e4da; border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 20px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .ld h2 { font-size: 18px; margin-bottom: 6px; }
+    .ld p { font-size: 14px; color: var(--text-2); margin-bottom: 20px; }
+    .checks { text-align: left; max-width: 280px; margin: 0 auto; }
+    .chk { display: flex; align-items: center; gap: 10px; padding: 6px 0; font-size: 14px; color: var(--text-2); opacity: 0; transition: opacity 0.3s; }
+    .chk.show { opacity: 1; }
+    .chk i { width: 20px; height: 20px; border-radius: 50%; background: var(--green); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 11px; font-style: normal; font-weight: 700; flex-shrink: 0; }
+
+    /* Formular */
+    .form { text-align: center; }
+    .form .tag { font-size: 13px; font-weight: 600; color: var(--green); margin-bottom: 6px; }
+    .form h2 { font-size: 22px; font-weight: 800; margin-bottom: 6px; }
+    .form .sub { font-size: 14px; color: var(--text-2); margin-bottom: 20px; }
+    .fields { display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px; max-width: 440px; margin-left: auto; margin-right: auto; }
+    .field { background: #fff; border: 2px solid #e8e4da; border-radius: 12px; padding: 0 14px; display: flex; align-items: center; gap: 10px; transition: border-color 0.2s; }
+    .field:focus-within { border-color: var(--accent); }
+    .field .ic { font-size: 16px; flex-shrink: 0; opacity: 0.5; }
+    .field input { flex: 1; background: transparent; border: none; outline: none; color: var(--text); font-family: var(--font); font-size: 15px; padding: 14px 0; }
+    .field input::placeholder { color: var(--text-3); }
+    .field .pre { font-size: 14px; color: var(--text-3); flex-shrink: 0; }
+    .cb-row { display: flex; align-items: flex-start; gap: 8px; margin: 0 auto 16px; text-align: left; max-width: 440px; }
+    .cb-row input[type="checkbox"] { accent-color: var(--accent); width: 16px; height: 16px; margin-top: 2px; flex-shrink: 0; }
+    .cb-row label { font-size: 11px; color: var(--text-3); line-height: 1.4; }
+    .cb-row label a { color: var(--text-2); }
+    .submit { display: block; width: 100%; max-width: 440px; margin: 0 auto; background: var(--accent); color: #fff; font-family: var(--font); font-size: 16px; font-weight: 700; padding: 16px; border: none; border-radius: 12px; cursor: pointer; transition: all 0.2s; }
+    .submit:disabled { opacity: 0.4; cursor: not-allowed; }
+    .submit:not(:disabled):hover { background: var(--accent-dark); }
+    .submit:not(:disabled):active { opacity: 0.85; }
+    .form-proof { margin-top: 16px; padding-top: 16px; border-top: 1px solid #e8e4da; max-width: 440px; margin-left: auto; margin-right: auto; }
+    .form-proof .fp-row { display: flex; align-items: center; justify-content: center; gap: 6px; font-size: 11px; color: var(--text-3); margin-bottom: 4px; }
+    .form-proof .fp-row b { color: var(--text-2); }
+
+    /* Ergebnis-Seite (wie Live-Winner: Zahnrad-Animation + YCBM + Scarcity) */
+    .result { text-align: center; max-width: 600px; width: 100%; padding-bottom: 40px; }
+    .result .cogs { display: flex; justify-content: center; margin: 10px 0 20px; position: relative; height: 110px; }
+    .result .cog { font-size: 64px; position: absolute; display: inline-block; line-height: 1; }
+    .result .cog.big { top: 6px; left: 50%; transform-origin: center; margin-left: -8px; animation: spin-fwd 4s linear infinite; }
+    .result .cog.small { font-size: 44px; top: 48px; left: 50%; transform-origin: center; margin-left: -56px; animation: spin-bwd 3s linear infinite; }
+    @keyframes spin-fwd { to { transform: rotate(360deg); } }
+    @keyframes spin-bwd { to { transform: rotate(-360deg); } }
+    .result h2 { font-size: 24px; font-weight: 800; margin-bottom: 8px; line-height: 1.25; letter-spacing: -0.3px; }
+    .result h2 .confetti { margin-right: 6px; }
+    .result .r-sub { font-size: 14px; color: var(--text-2); margin-bottom: 14px; }
+    .result .r-lead { font-size: 17px; color: var(--text); font-weight: 600; line-height: 1.4; margin-bottom: 12px; padding: 0 4px; }
+    .result .r-lead .ic { margin-right: 6px; }
+    .result .r-push { font-size: 14px; color: var(--text-2); margin-bottom: 8px; font-weight: 500; }
+    .result .r-when { font-size: 18px; font-weight: 800; margin: 18px 0 12px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .result #ycbm-embed { background: #fff; border: 1px solid #e8e4da; border-radius: var(--r); padding: 10px; min-height: 400px; }
+    .r-bullets { list-style: none; text-align: left; margin: 20px auto; max-width: 440px; padding: 18px 16px; background: #fff; border: 1px solid #e8e4da; border-radius: var(--r); }
+    .r-bullets li { padding: 6px 0; font-size: 14px; color: var(--text-2); display: flex; gap: 10px; line-height: 1.4; }
+    .r-bullets li::before { content: "✓"; color: var(--green); font-weight: 700; flex-shrink: 0; }
+    .r-bullets li strong { color: var(--text); }
+    .r-reminder { font-size: 14px; color: var(--text-2); margin: 14px 0; line-height: 1.5; font-weight: 500; }
+    .r-reminder .strong { color: var(--text); font-weight: 700; }
+    .scarcity { background: var(--accent); color: #fff; border-radius: var(--r); padding: 18px 16px; margin: 20px 0; text-align: center; }
+    .scarcity .sc-title { font-size: 14px; font-weight: 700; margin-bottom: 6px; display: flex; align-items: center; justify-content: center; gap: 6px; }
+    .scarcity p { font-size: 13px; line-height: 1.55; opacity: 0.95; margin-bottom: 6px; }
+    .scarcity p:last-child { margin-bottom: 0; font-size: 12px; opacity: 0.85; }
+    .scarcity strong { font-weight: 700; }
+
+    /* Desktop */
+    @media (min-width: 600px) {
+      .hero h1 { font-size: 36px; }
+      .hero .sub { font-size: 17px; }
+      .step h2 { font-size: 28px; }
+      .opts { display: grid; grid-template-columns: 1fr; gap: 12px; }
+      .opt { font-size: 16px; padding: 18px 20px; }
+      .thankyou h2 { font-size: 32px; }
+      .trans-grid { grid-template-columns: repeat(6, 1fr); }
+    }
+    @media (min-width: 900px) {
+      .hero h1 { font-size: 42px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== LANDING ===== -->
+  <div id="lp">
+    <div class="wrap">
+      <div class="logo"><img src="/images/logo.png" alt="Fit on Time" /></div>
+
+      <section class="hero">
+        <h1>Dein individueller <em>Körper-Fahrplan</em>: Entdecke in 3 Minuten, warum dein Körper nicht abnimmt und wie du es in 4 Wochen änderst</h1>
+        <p class="sub">Beantworte diese <strong>7 Fragen</strong> und erhalte deine individuelle Auswertung von unseren Ernährungs- und Fitness-Coaches, kostenfrei!</p>
+
+        <div class="start-block">
+          <div class="sb-q">Verrate uns vorab dein Geschlecht:</div>
+          <div class="start-row">
+            <button class="start-btn" onclick="startQuiz('frau')">Frau</button>
+            <button class="start-btn secondary" onclick="startQuiz('mann')">Mann</button>
+          </div>
+        </div>
+
+        <div class="proof-bar">
+          <div class="proof-avatars">
+            <img src="/images/transformations/t5.jpg" alt="" loading="lazy" />
+            <img src="/images/transformations/t1.jpg" alt="" loading="lazy" />
+            <img src="/images/transformations/t3.jpg" alt="" loading="lazy" />
+            <img src="/images/transformations/t6.jpg" alt="" loading="lazy" />
+          </div>
+          <div class="proof-info">
+            <div class="proof-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            Über <b>2.847</b> Frauen haben ihren Report bereits erhalten!
+          </div>
+        </div>
+        <div class="proof-trust"><span class="ic">&#10003;</span> Von Ernährungsexperten entwickelt</div>
+      </section>
+
+      <div class="divider"></div>
+
+      <!-- Vorher-Nachher Grid -->
+      <div class="trans">
+        <h3 class="trans-title">Echte Teilnehmerinnen. Echte Resultate.</h3>
+        <p class="trans-sub">Ein kleiner Ausschnitt aus über 1.600 erfolgreichen Transformationen</p>
+        <div class="trans-grid">
+          <img src="/images/transformations/t5.jpg" alt="Vorher-Nachher Fit on Time" loading="lazy" />
+          <img src="/images/transformations/t1.jpg" alt="Vorher-Nachher Fit on Time" loading="lazy" />
+          <img src="/images/transformations/t2.jpg" alt="Vorher-Nachher Fit on Time" loading="lazy" />
+          <img src="/images/transformations/t3.jpg" alt="Vorher-Nachher Fit on Time" loading="lazy" />
+          <img src="/images/transformations/t4.jpg" alt="Vorher-Nachher Fit on Time" loading="lazy" />
+          <img src="/images/transformations/t6.jpg" alt="Vorher-Nachher Fit on Time" loading="lazy" />
+        </div>
+        <p class="trans-cap">&#9733;&#9733;&#9733;&#9733;&#9733; 4.9 von 5 &middot; 1.600 halten ihr Wunschgewicht</p>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Stat-Block: Social Proof visuell -->
+      <div class="stats">
+        <div class="stat"><div class="stat-num">2.847</div><div class="stat-label">Reports erstellt</div></div>
+        <div class="stat"><div class="stat-num">1.600</div><div class="stat-label">Halten ihr Gewicht</div></div>
+        <div class="stat"><div class="stat-num">4.9&#9733;</div><div class="stat-label">Bewertung</div></div>
+      </div>
+
+      <!-- Pain: 3 Icon-Cards kompakt -->
+      <p class="sec-eyebrow">&#9888; Wenn du nichts änderst</p>
+      <h2 class="sec-title">Was der Sparmodus dich kostet</h2>
+      <div class="icon-cards">
+        <div class="icon-card pain">
+          <span class="ic-emoji">&#128546;</span>
+          <h4>Diäten scheitern</h4>
+          <p>Trotz Disziplin, kein Erfolg</p>
+        </div>
+        <div class="icon-card pain">
+          <span class="ic-emoji">&#128148;</span>
+          <h4>Sparmodus-Falle</h4>
+          <p>Crash-Diäten, Jojo-Spirale</p>
+        </div>
+        <div class="icon-card pain">
+          <span class="ic-emoji">&#129302;</span>
+          <h4>Gesundheit</h4>
+          <p>Weniger Energie, mehr Frust</p>
+        </div>
+      </div>
+
+      <!-- Twist-Block mit Emoji -->
+      <div class="twist">
+        <span class="twist-emoji">&#128165;</span>
+        <h2>Es liegt nicht an dir</h2>
+        <p><strong>Dein Körper arbeitet GEGEN dich!</strong> Nicht weil du etwas falsch machst, sondern weil dein Körper im Sparmodus festhängt, das lässt sich ändern.</p>
+      </div>
+
+      <!-- Benefit: 3 Icon-Cards kompakt -->
+      <p class="sec-eyebrow green">&#10003; Was möglich ist</p>
+      <h2 class="sec-title">Dein Leben mit aktivem Körper</h2>
+      <div class="icon-cards">
+        <div class="icon-card benefit">
+          <span class="ic-emoji">&#9878;</span>
+          <h4>Abnehmen</h4>
+          <p>Ohne Stress, ohne Diät</p>
+        </div>
+        <div class="icon-card benefit">
+          <span class="ic-emoji">&#128154;</span>
+          <h4>Gesundheit</h4>
+          <p>Mehr Energie, besserer Schlaf</p>
+        </div>
+        <div class="icon-card benefit">
+          <span class="ic-emoji">&#9889;</span>
+          <h4>Energie</h4>
+          <p>Kein Mittagstief mehr</p>
+        </div>
+      </div>
+
+      <!-- Testimonials mit echten Gesichtern -->
+      <div class="testis">
+        <div class="testi">
+          <img class="testi-img" src="/images/transformations/t5.jpg" alt="" loading="lazy" />
+          <div class="testi-body">
+            <div class="testi-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            <p class="testi-quote">"Nach 20 Jahren Jojo endlich ein Ansatz, der zu mir passt, <strong>14 kg in 16 Wochen</strong>, ohne Hunger!"</p>
+            <div class="testi-name"><b>Silvia M.</b> &middot; Zürich</div>
+          </div>
+        </div>
+        <div class="testi">
+          <img class="testi-img" src="/images/transformations/t7.jpg" alt="" loading="lazy" />
+          <div class="testi-body">
+            <div class="testi-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            <p class="testi-quote">"Der Report hat mir die Augen geöffnet, mein Körper war im Sparmodus. Jetzt bin ich <strong>9 kg leichter</strong> und fühle mich wieder wie 30."</p>
+            <div class="testi-name"><b>Andrea K.</b> &middot; Bern</div>
+          </div>
+        </div>
+        <div class="testi">
+          <img class="testi-img" src="/images/transformations/t8.jpg" alt="" loading="lazy" />
+          <div class="testi-body">
+            <div class="testi-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+            <p class="testi-quote">"Endlich ohne Kalorienzählen. <strong>7 kg weg</strong>, halte mein Gewicht seit 8 Monaten, mein Mann fragt sich, was los ist."</p>
+            <div class="testi-name"><b>Nicole B.</b> &middot; Luzern</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Urgency Badges statt Text -->
+      <p class="sec-eyebrow amber">&#9888; Warnsignale</p>
+      <h2 class="sec-title">Dein Körper sendet dir Warnsignale</h2>
+      <div class="warn-badges">
+        <div class="warn-badge"><span class="wb-emoji">&#128564;</span><span class="wb-text">Ständige Müdigkeit</span></div>
+        <div class="warn-badge"><span class="wb-emoji">&#127850;</span><span class="wb-text">Heisshunger</span></div>
+        <div class="warn-badge"><span class="wb-emoji">&#9878;</span><span class="wb-text">Gewicht stagniert</span></div>
+      </div>
+
+      <div class="divider"></div>
+
+      <!-- Final CTA -->
+      <section class="hero" style="padding-top:0;">
+        <p class="sub"><strong>In 3 Minuten</strong> weisst du, was deinen Körper blockiert.</p>
+        <div class="start-block">
+          <div class="sb-q">Verrate uns vorab dein Geschlecht:</div>
+          <div class="start-row">
+            <button class="start-btn" onclick="startQuiz('frau')">Frau</button>
+            <button class="start-btn secondary" onclick="startQuiz('mann')">Mann</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Trust-Badges statt Authority-Paragraph -->
+      <div class="trust-badges">
+        <div class="trust-badge"><span class="tb-emoji">&#127891;</span><span class="tb-text">Von Experten<br/>entwickelt</span></div>
+        <div class="trust-badge"><span class="tb-emoji">&#128176;</span><span class="tb-text">100%<br/>kostenlos</span></div>
+        <div class="trust-badge"><span class="tb-emoji">&#128274;</span><span class="tb-text">Deine Daten<br/>sind sicher</span></div>
+      </div>
+
+      <footer>
+        <a href={impressumUrl} target="_blank" rel="noopener">Impressum</a> &middot;
+        <a href={datenschutzUrl} target="_blank" rel="noopener">Datenschutzerklärung</a>
+      </footer>
+    </div>
+  </div>
+
+  <!-- ===== QUIZ ===== -->
+  <div id="quiz">
+    <div class="q-head"><img src="/images/logo.png" alt="Fit on Time" /></div>
+    <div class="q-progress"><div class="q-bar"><div class="q-fill" id="qf"></div></div><div class="q-num" id="qn">1 / 7</div></div>
+    <div class="q-body">
+
+      <!-- Frage 1: Ja/Nein -->
+      <div class="step on" data-s="1">
+        <h2>Bist du beruflich sehr ausgelastet?</h2>
+        <div class="yn-row">
+          <button class="yn-btn" onclick="nxt(1,this,'ja')">&#128077; Ja</button>
+          <button class="yn-btn" onclick="nxt(1,this,'nein')">&#128078; Nein</button>
+        </div>
+        <div class="tipp">
+          <span class="tipp-icon">&#128161;</span>
+          <div class="tipp-text"><strong>Tipp:</strong> Morgens Zitronenwasser trinken. Starte den Tag mit einem Glas warmem Zitronenwasser, das kurbelt die Verdauung an.</div>
+        </div>
+      </div>
+
+      <!-- Frage 2: 4 Karten -->
+      <div class="step" data-s="2">
+        <h2>Was hiervon ist dir am wichtigsten?</h2>
+        <div class="card-opts">
+          <button class="card-opt" onclick="nxt(2,this,'aussehen')"><span class="card-emoji">&#128142;</span>Besseres Aussehen</button>
+          <button class="card-opt" onclick="nxt(2,this,'gesundheit')"><span class="card-emoji">&#128154;</span>Mehr Gesundheit</button>
+          <button class="card-opt" onclick="nxt(2,this,'wohlbefinden')"><span class="card-emoji">&#128522;</span>Mehr Wohlbefinden</button>
+          <button class="card-opt" onclick="nxt(2,this,'abnehmen')"><span class="card-emoji">&#9878;</span>Nachhaltig abnehmen</button>
+        </div>
+        <div class="tipp">
+          <span class="tipp-icon">&#128161;</span>
+          <div class="tipp-text"><strong>Tipp:</strong> Mehr Eiweiss, weniger Heisshunger. Eiweissreiche Mahlzeiten halten länger satt und steigern den Kalorienverbrauch.</div>
+        </div>
+      </div>
+
+      <!-- Frage 3: Grösse -->
+      <div class="step" data-s="3">
+        <h2>Wie gross bist du?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(3,this,'klein')"><strong>Kleiner als 1,62 m</strong></button>
+          <button class="opt" onclick="nxt(3,this,'mittel1')"><strong>1,63 m bis 1,68 m</strong></button>
+          <button class="opt" onclick="nxt(3,this,'mittel2')"><strong>1,69 m bis 1,74 m</strong></button>
+          <button class="opt" onclick="nxt(3,this,'gross')"><strong>Grösser als 1,74 m</strong></button>
+        </div>
+        <div class="tipp">
+          <span class="tipp-icon">&#128161;</span>
+          <div class="tipp-text"><strong>Tipp:</strong> 10 Minuten Spaziergang nach dem Essen helfen, den Blutzucker zu stabilisieren und die Verdauung anzuregen.</div>
+        </div>
+      </div>
+
+      <!-- Frage 4: Gewicht -->
+      <div class="step" data-s="4">
+        <h2>Wieviel wiegst du momentan?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(4,this,'u60')"><strong>Weniger als 60 kg</strong></button>
+          <button class="opt" onclick="nxt(4,this,'60-68')"><strong>Zwischen 60 und 68 kg</strong></button>
+          <button class="opt" onclick="nxt(4,this,'69-77')"><strong>Zwischen 69 und 77 kg</strong></button>
+          <button class="opt" onclick="nxt(4,this,'ue78')"><strong>Über 78 kg</strong></button>
+        </div>
+        <div class="tipp">
+          <span class="tipp-icon">&#128161;</span>
+          <div class="tipp-text"><strong>Tipp:</strong> Eiskaltes Wasser trinken zwingt den Körper, Energie zum Erwärmen aufzuwenden, und verbrennt so extra Kalorien.</div>
+        </div>
+      </div>
+
+      <!-- Frage 5: Alter -->
+      <div class="step" data-s="5">
+        <h2>Wie alt bist du?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(5,this,'18-29')"><strong>18 bis 29 Jahre</strong></button>
+          <button class="opt" onclick="nxt(5,this,'30-39')"><strong>30 bis 39 Jahre</strong></button>
+          <button class="opt" onclick="nxt(5,this,'40-49')"><strong>40 bis 49 Jahre</strong></button>
+          <button class="opt" onclick="nxt(5,this,'50+')"><strong>50+ Jahre</strong></button>
+        </div>
+        <div class="tipp">
+          <span class="tipp-icon">&#128161;</span>
+          <div class="tipp-text"><strong>Tipp:</strong> Schlaf optimieren. 7-8 Stunden Schlaf sind der grösste Energie-Booster, den es gibt.</div>
+        </div>
+      </div>
+
+      <!-- Frage 6: Sport -->
+      <div class="step" data-s="6">
+        <h2>Wie oft treibst du Sport?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(6,this,'nie')"><strong>Nie</strong></button>
+          <button class="opt" onclick="nxt(6,this,'1-2x')"><strong>1 bis 2x pro Woche</strong></button>
+          <button class="opt" onclick="nxt(6,this,'3-4x')"><strong>3 bis 4x pro Woche</strong></button>
+          <button class="opt" onclick="nxt(6,this,'taeglich')"><strong>Täglich</strong></button>
+        </div>
+        <div class="tipp">
+          <span class="tipp-icon">&#128161;</span>
+          <div class="tipp-text"><strong>Tipp:</strong> Krafttraining schlägt Cardio. Muskeln verbrennen auch in Ruhe Kalorien. Schon 2x pro Woche macht einen Unterschied.</div>
+        </div>
+      </div>
+
+      <!-- Frage 7: Was probiert -->
+      <div class="step" data-s="7">
+        <h2>Was hast du schon probiert?</h2>
+        <div class="card-opts">
+          <button class="card-opt" onclick="nxt(7,this,'diaeten')"><span class="card-emoji">&#127869;</span>Diäten</button>
+          <button class="card-opt" onclick="nxt(7,this,'sport')"><span class="card-emoji">&#127939;</span>Sport-Programme</button>
+          <button class="card-opt" onclick="nxt(7,this,'nahrungserg')"><span class="card-emoji">&#128138;</span>Nahrungsergänzung</button>
+          <button class="card-opt" onclick="nxt(7,this,'nichts')"><span class="card-emoji">&#129300;</span>Nichts</button>
+        </div>
+        <div class="tipp">
+          <span class="tipp-icon">&#128161;</span>
+          <div class="tipp-text"><strong>Tipp:</strong> Dein Körper ist einzigartig. Was bei anderen funktioniert, muss bei dir nicht klappen. Deshalb ist ein individueller Plan so wichtig.</div>
+        </div>
+      </div>
+
+      <!-- Loading -->
+      <div class="step ld" data-s="ld">
+        <div class="spinner"></div>
+        <h2>Dein Körper-Report wird erstellt...</h2>
+        <p>Das dauert nur ein paar Sekunden</p>
+        <div class="checks">
+          <div class="chk" id="c1"><i>&#10003;</i>Antworten analysiert</div>
+          <div class="chk" id="c2"><i>&#10003;</i>Körper-Typ bestimmt</div>
+          <div class="chk" id="c3"><i>&#10003;</i>Persönlicher 4-Wochen-Fahrplan erstellt</div>
+        </div>
+      </div>
+
+      <!-- Formular -->
+      <div class="step form" data-s="form">
+        <div class="tag">&#10003; Analyse abgeschlossen!</div>
+        <h2>Dein Körper-Fahrplan ist bereit!</h2>
+        <p class="sub">Trage dich ein und erhalte deinen individuellen Report, kostenlos per E-Mail.</p>
+        <div class="fields">
+          <div class="field"><span class="ic">&#128075;</span><input type="text" id="fn" placeholder="Dein Vor- und Nachname" required /></div>
+          <div class="field"><span class="ic">&#128236;</span><input type="email" id="em" placeholder="Deine E-Mail" required /></div>
+          <div class="field"><span class="ic">&#128222;</span><span class="pre">+41</span><input type="tel" id="ph" placeholder="Deine Telefonnummer" required /></div>
+        </div>
+        <div class="cb-row">
+          <input type="checkbox" id="ds" />
+          <label for="ds">Ich akzeptiere die <a href={datenschutzUrl} target="_blank">Datenschutzbestimmungen</a></label>
+        </div>
+        <button class="submit" id="sbtn" disabled onclick="send()">Jetzt Report kostenlos erhalten &#10024;</button>
+        <div class="form-proof">
+          <div class="fp-row"><span>&#128274;</span> Deine Daten sind sicher &amp; werden nicht weitergegeben</div>
+          <div class="fp-row"><span class="proof-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span> <b>2.847+</b> zufriedene Teilnehmerinnen</div>
+        </div>
+      </div>
+
+      <!-- Ergebnis-Seite (1:1 Logik von Live-Winner fit-on-time.ch/blockaden-loesen/) -->
+      <div class="step result" data-s="thankyou" style="display:none;">
+        <div class="cogs">
+          <span class="cog big">&#9881;&#65039;</span>
+          <span class="cog small">&#9881;&#65039;</span>
+        </div>
+        <h2><span class="confetti">&#127881;</span><span id="r-name">Du</span>, Du hast es fast geschafft!</h2>
+        <p class="r-sub">Jetzt kommt der wichtigste Schritt:</p>
+        <p class="r-lead"><span class="ic">&#128210;</span>Wähle dir einen Termin, um dein Ergebnis zu erhalten, persönlich erklärt und auf dich zugeschnitten.</p>
+        <p class="r-push">&#128073; Dein Körper wartet nicht, warum solltest du?</p>
+        <div class="r-when"><span>&#128197;</span><span>Wann willst du dein Ergebnis erhalten?</span></div>
+
+        <!-- YCBM Booking Embed (inline) -->
+        <div id="ycbm-embed"></div>
+
+        <!-- Was du in der Session bekommst -->
+        <ul class="r-bullets">
+          <li><span>Den <strong>Schlüssel zu deinem Körper-Typ</strong></span></li>
+          <li><span>Deinen <strong>individuellen 3-Schritte-Plan</strong></span></li>
+          <li><span>Konkrete Massnahmen, die <strong>ab morgen wirken</strong> können</span></li>
+          <li><span>Expertenwissen aus <strong>4.000+ echten Erfolgsfällen</strong></span></li>
+          <li><span>Eine klare Strategie, um dein Zielgewicht <strong>dauerhaft</strong> zu erreichen</span></li>
+        </ul>
+
+        <p class="r-reminder">&#128073; Dein Körper wartet nicht, warum solltest du?<br/>&#128197; <span class="strong">Jetzt Termin auswählen &amp; Ergebnis direkt erhalten.</span></p>
+
+        <!-- Scarcity-Banner (Live-Winner Logik) -->
+        <div class="scarcity">
+          <div class="sc-title"><span>&#9888;</span><span>Wichtiger Hinweis</span></div>
+          <p>Wir können nur eine begrenzte Zahl an Ergebnissen <strong>sofort persönlich übergeben</strong>.</p>
+          <p><strong>Sichere dir jetzt deinen Platz</strong>, bevor du auf die Warteliste musst.</p>
+          <p>(Falls du keinen Termin buchst, bekommst du dein Ergebnis automatisch später, aber ohne persönliche Erklärung.)</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script is:inline>
+    var quizAnswers = {};
+    var TOTAL = 7;
+
+    // Race-Schutz: __lp wird erst nach CookieBanner-Script gesetzt — retry bis verfügbar.
+    function tk(e, d) {
+      var tries = 0;
+      function fire() {
+        if (window.__lp) {
+          window.__lp.track(e, Object.assign({ page: 'koerper-report' }, d || {}), 'fot', 'Körper Report');
+          if (e === 'quiz_start') window.__lp.meta('ViewContent', { content_name: 'FoT Quiz Start', currency: 'CHF' });
+          if (e === 'quiz_complete') window.__lp.meta('CompleteRegistration', { content_name: 'FoT Quiz Complete', currency: 'CHF' });
+          if (e === 'lead_submit') window.__lp.meta('Lead', { content_name: 'FoT Lead', currency: 'CHF' });
+        } else if (tries++ < 40) {
+          setTimeout(fire, 50);
+        }
+      }
+      fire();
+    }
+    tk('page_view');
+
+    // Preview-Modus: ?preview=result springt direkt auf Ergebnis-Seite
+    if (typeof window !== 'undefined' && /[?&]preview=result/.test(window.location.search)) {
+      window.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('lp').style.display = 'none';
+        document.getElementById('quiz').classList.add('on');
+        document.querySelectorAll('.step').forEach(function(s){ s.classList.remove('on'); });
+        var r = document.querySelector('.step[data-s="thankyou"]');
+        r.style.display = 'block';
+        r.classList.add('on');
+        document.getElementById('r-name').textContent = 'Sarah';
+        var ycbm = document.createElement('script');
+        ycbm.src = 'https://embed.ycb.me';
+        ycbm.async = true;
+        ycbm.setAttribute('data-domain', 'fitontime-koerper-report');
+        ycbm.setAttribute('data-displaymode', 'auto');
+        document.getElementById('ycbm-embed').appendChild(ycbm);
+        document.getElementById('qn').textContent = 'Preview';
+      });
+    }
+
+    function startQuiz(gender) {
+      quizAnswers['gender'] = gender || 'frau';
+      tk('quiz_start', { detail: 'gender_' + quizAnswers.gender });
+      document.getElementById('lp').style.display = 'none';
+      document.getElementById('quiz').classList.add('on');
+      window.scrollTo(0,0);
+    }
+
+    function nxt(s, el, val) {
+      quizAnswers['q' + s] = val;
+      tk('quiz_answer', { detail: 'q' + s + '_' + val });
+
+      document.querySelector('.step[data-s="' + s + '"]').classList.remove('on');
+      if (s < TOTAL) {
+        document.querySelector('.step[data-s="' + (s + 1) + '"]').classList.add('on');
+        var p = Math.round(((s) / TOTAL) * 100);
+        document.getElementById('qf').style.width = p + '%';
+        document.getElementById('qn').textContent = (s + 1) + ' / ' + TOTAL;
+        var body = document.querySelector('.q-body');
+        if (body) body.scrollTop = 0;
+      } else {
+        tk('quiz_complete');
+        load();
+      }
+    }
+
+    function load() {
+      var ld = document.querySelector('.step[data-s="ld"]');
+      ld.classList.add('on');
+      document.getElementById('qf').style.width = '100%';
+      document.getElementById('qn').textContent = 'Auswertung...';
+      setTimeout(function(){ document.getElementById('c1').classList.add('show'); }, 600);
+      setTimeout(function(){ document.getElementById('c2').classList.add('show'); }, 1400);
+      setTimeout(function(){ document.getElementById('c3').classList.add('show'); }, 2200);
+      setTimeout(function(){
+        ld.classList.remove('on');
+        document.querySelector('.step[data-s="form"]').classList.add('on');
+        document.getElementById('qn').textContent = 'Fast fertig';
+      }, 3200);
+    }
+
+    document.getElementById('ds').addEventListener('change', function() {
+      document.getElementById('sbtn').disabled = !this.checked;
+    });
+
+    function normalizePhone(raw) {
+      var c = (raw || '').replace(/[^\d+]/g, '');
+      if (!c) return '';
+      if (c.charAt(0) === '+') return c;
+      if (c.charAt(0) === '0') return '+41' + c.slice(1);
+      return '+41' + c;
+    }
+    function send() {
+      var fn = document.getElementById('fn').value.trim();
+      var em = document.getElementById('em').value.trim();
+      var ph = normalizePhone(document.getElementById('ph').value);
+      if (!fn || !em || !ph) {
+        if (!fn) document.getElementById('fn').parentElement.style.borderColor = 'var(--red)';
+        if (!em) document.getElementById('em').parentElement.style.borderColor = 'var(--red)';
+        if (!ph) document.getElementById('ph').parentElement.style.borderColor = 'var(--red)';
+        return;
+      }
+      var btn = document.getElementById('sbtn');
+      btn.disabled = true;
+      btn.textContent = 'Wird verarbeitet...';
+
+      // Atomarer Submit: lead_submit + Pixel + UI-Weiter NUR bei erfolgreichem Insert
+      fetch('/api/sheets', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          lp_slug: 'koerper-report',
+          lp_name: 'Stoffwechsel-Report v2',
+          name: fn,
+          email: em,
+          phone: ph,
+          answers: quizAnswers
+        })
+      }).then(function(res){
+        if (!res.ok) throw new Error('insert-failed');
+        // Lead-Event feuert HIER auf der neutralen Einstiegsseite (event_source_url sauber),
+        // dann erst Weiterleitung auf die Ergebnisseite.
+        tk('lead_submit', { detail: fn });
+        var firstName = (fn.split(' ')[0] || '').trim();
+        try { sessionStorage.setItem('fot_result_name', firstName || 'Du'); } catch(e) {}
+        tk('result_shown', { detail: 'booking' });
+        btn.textContent = 'Weiter zum Termin...';
+        // 250ms Puffer, damit Pixel + sendBeacon raus sind, bevor navigiert wird
+        setTimeout(function(){ window.location.href = '/koerper-report/ergebnis/'; }, 250);
+      }).catch(function(){
+        btn.disabled = false;
+        btn.textContent = 'Jetzt Report kostenlos erhalten ✨';
+        alert('Etwas ist schiefgelaufen. Bitte nochmal versuchen.');
+      });
+    }
+  </script>
+
+  {/* Hyros als First-Party-Attribution essentiell  -  lädt ohne Consent */}
+  <script is:inline src="https://t.hyros.com/v1/lst/universal-script?ph=689a71ca1ab3be1cb1caddbe6b7902a4ad2c51a228f4ec9ea7fef3123a705f63"></script>
+
+  <CookieBanner
+    metaPixelId="1316450223953563"
+    consentKey="fot_koerper_report_consent"
+    impressumUrl={impressumUrl}
+    datenschutzUrl={datenschutzUrl}
+  />
+</body>
+</html>

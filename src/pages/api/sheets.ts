@@ -103,6 +103,61 @@ const SHEETS: Record<string, SheetConfig> = {
       return [datum, vorname, nachname, d.email, d.phone || '', ziel, ausgelastet, '', '', '', ''];
     },
   },
+
+  // === v2 Clean-Domain-Funnel (go.abnehmen-ohne-stress.ch) -> jeweils selbes Sheet wie Original ===
+  'figur-check': {
+    id: '1pKSK2fB3tjL9sxHMbM95a3NGdHZyeW0g29sIYnzh4js',
+    range: 'Tabellenblatt1!A:M',
+    buildRow: (datum, d) => {
+      const a = d.answers || {};
+      return [datum, d.name, d.email, d.phone || '', a.q1||'', a.q2||'', a.q3||'', a.q4||'', a.q5||'', a.q6||'', a.q7||'', a.q8||'', a.q9||''];
+    },
+  },
+  'koerper-report': {
+    id: '1EsXQzYwL-fxCA3yiczCX_Qv1lMyFt3LmFFQ1sY-klj8',
+    range: 'Tabellenblatt1!A:L',
+    buildRow: (datum, d) => {
+      const a = d.answers || {};
+      return [datum, d.name, d.email, d.phone || '', a.gender || '', a.q1 || '', a.q2 || '', a.q3 || '', a.q4 || '', a.q5 || '', a.q6 || '', a.q7 || ''];
+    },
+  },
+  'koerpertyp-test': {
+    id: '1UGaXbNqfPGXk4EN4BXgvWkwmNekioCYAICY2SzIZrOA',
+    range: 'Leads!A:K',
+    buildRow: (datum, d) => {
+      const a = d.answers || {};
+      const fullName = (d.name || '').trim();
+      const parts = fullName.split(/\s+/);
+      const vorname = parts[0] || '';
+      const nachname = parts.slice(1).join(' ') || '';
+      const typMap: Record<string, string> = { staemmig: 'Stämmig', soft: 'Soft', zierlich: 'Zierlich' };
+      const typ = typMap[a.profile_type] || a.profile_type || '';
+      const zielMap: Record<string, string> = { aussehen: 'Besser aussehen', gesundheit: 'Mehr Gesundheit', wohlbefinden: 'Mehr Wohlbefinden', abnehmen: 'Nachhaltig abnehmen' };
+      const zielText = zielMap[a.q2_val] || a.q2_val || '';
+      const ziel = typ ? `${zielText} · Typ: ${typ}` : zielText;
+      const ausgelastet = a.q1_val === 'ja' ? 'Ja' : a.q1_val === 'nein' ? 'Nein' : '';
+      return [datum, vorname, nachname, d.email, d.phone || '', ziel, ausgelastet, '', '', '', ''];
+    },
+  },
+  'energie-check': {
+    id: '1yIFBbgn8kKcYpbDHQsz7SQZVf2vU7SBkeWWtHGdAYWY',
+    range: 'Leads!A:N',
+    buildRow: (datum, d) => {
+      const a = d.answers || {};
+      const vorname = (d.name || '').trim().split(/\s+/)[0] || '';
+      const score = a.energie_score ?? '';
+      const stufe = a.energie_stufe ?? '';
+      const stufeName = a.energie_stufe_name || '';
+      const critDim = a.energie_crit_dim_label || '';
+      const critPct = a.energie_crit_pct ?? '';
+      const glp1 = a.energie_glp1 ? 'Ja' : 'Nein';
+      const alter = a.q1 || '';
+      const ziel = (a.q12 || '').replace(/\n+/g, ' ').slice(0, 500);
+      const alltag = Array.isArray(a.q11_val) ? a.q11_val.join(', ') : (a.q11 || '');
+      const versuche = Array.isArray(a.q9_val) ? a.q9_val.join(', ') : (a.q9 || '');
+      return [datum, vorname, d.email, d.phone || '', score, stufe, stufeName, critDim, critPct, glp1, alter, ziel, alltag, versuche];
+    },
+  },
 };
 
 export const POST: APIRoute = async ({ request }) => {
