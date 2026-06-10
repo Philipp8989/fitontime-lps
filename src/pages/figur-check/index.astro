@@ -681,6 +681,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
           <div class="field"><span class="ic">&#128100;</span><input type="text" id="fn" placeholder="Vorname" required /></div>
           <div class="field"><span class="ic">&#128100;</span><input type="text" id="ln" placeholder="Nachname" required /></div>
           <div class="field"><span class="ic">&#9993;</span><input type="email" id="em" placeholder="E-Mail Adresse" required /></div>
+          <div class="field"><span class="ic">&#128222;</span><input type="tel" id="ph" inputmode="tel" autocomplete="tel" placeholder="Telefonnummer" required /></div>
         </div>
         <div class="cb-row">
           <input type="checkbox" id="ds" />
@@ -940,10 +941,12 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
       var fn = document.getElementById('fn').value.trim();
       var ln = document.getElementById('ln').value.trim();
       var em = document.getElementById('em').value.trim();
+      var ph = document.getElementById('ph').value.trim();
       var missing = [];
       if (!fn) missing.push('fn');
       if (!ln) missing.push('ln');
       if (!em) missing.push('em');
+      if (!ph) missing.push('ph');
       if (missing.length) {
         missing.forEach(function(id){ document.getElementById(id).parentElement.style.borderColor = 'var(--accent)'; });
         return;
@@ -963,7 +966,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
           name: fullName,
           first_name: fn,
           email: em,
-          phone: '',
+          phone: ph,
           wa_optin: false,
           score: (function(){ try { return parseInt(sessionStorage.getItem('sd_score'), 10) || ''; } catch(e){ return ''; } })(),
           answers: quizAnswers

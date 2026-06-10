@@ -167,8 +167,11 @@ export const POST: APIRoute = async ({ request }) => {
     // Telefonnummer serverseitig saeubern (Defense-in-depth, siehe lib/phone.ts).
     if (data.phone) data.phone = normalizePhone(data.phone);
 
-    if (!data.name || !data.email || !data.phone) {
-      return new Response(JSON.stringify({ error: 'Name, E-Mail und Telefon sind Pflicht' }), {
+    // Telefon ist NICHT generell Pflicht: E-Mail-only-Funnels (z.B. figur-check /
+    // Schilddruesen-Report v2) sammeln bewusst nur Name + E-Mail. Frueher erzwang
+    // die Validierung phone und 400te jede Absendung dieser Funnels -> Totalausfall.
+    if (!data.name || !data.email) {
+      return new Response(JSON.stringify({ error: 'Name und E-Mail sind Pflicht' }), {
         status: 400,
         headers: { 'Content-Type': 'application/json' },
       });
