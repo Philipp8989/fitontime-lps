@@ -815,11 +815,14 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
 
   <script is:inline>
     var quizAnswers = {};
-    // Reihenfolge der Fragen — Gate ans Ende verschoben (committed users → höhere Gate-Conversion)
-    var FLOW = ['1','2','3','4','5','6','7','8','9','10','11','12','gate'];
-    var TOTAL = 13;
+    // CRO 2026-05-13: 12 -> 9 Fragen. Q10-12 sind nicht scoring-relevant
+    // (computeResult nutzt nur q3..q9). Data: 0.9% CR vs 7.5% bei schilddruesen
+    // mit 9 Fragen + Loading-Anim vor Form. Q9 -> Loading -> Gate.
+    var FLOW = ['1','2','3','4','5','6','7','8','9','gate'];
+    var TOTAL = 10;
     var qHistory = ['1'];
     var scoreAccum = 0;
+    var quizCompleteFired = false; // Guard gegen Doppel-Trackung bei Back-Navigation
 
     // Sticky CTA
     (function stickyCta(){
@@ -923,8 +926,8 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
         document.getElementById('qr').textContent = '—';
         document.getElementById('qp').textContent = 'Letzter Schritt · Auswertung erhalten';
       } else if (!isNaN(parseInt(key, 10))) {
-        document.getElementById('qr').textContent = key + '/12';
-        document.getElementById('qp').textContent = 'Frage ' + key + ' von 12';
+        document.getElementById('qr').textContent = key + '/9';
+        document.getElementById('qp').textContent = 'Frage ' + key + ' von 9';
       }
       var left = Math.max(10, Math.round((TOTAL - pos) * 14));
       document.getElementById('qt').textContent = '⏱ ~' + left + ' Sek.';
@@ -989,6 +992,14 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
       }
 
       tk('quiz_answer', { detail: 'q' + s + '_multi' });
+
+      // CRO 2026-05-13: Q9 ist letzte Quiz-Frage -> Loading-Anim VOR Gate (statt
+      // direkt Form). Matched schilddruesen/stoffwechsel-Pattern.
+      if (s === 9) {
+        setTimeout(goToGateWithLoading, 180);
+        return;
+      }
+
       setTimeout(function(){
         var idx = stepIndex(String(s));
         var next = FLOW[idx + 1];
@@ -996,6 +1007,62 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
         show(next);
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }, 180);
+    }
+
+    // CRO 2026-05-13: Loading-Animation zwischen letzter Quiz-Frage und Form.
+    // Pattern aus schilddruesen-report (94.5% quiz_complete rate vs MSM 2.7%).
+    // Feuert quiz_complete VOR Gate -> saubere Funnel-Telemetrie + Anchoring
+    // dass das Ergebnis "fertig" ist bevor Form erscheint.
+    function goToGateWithLoading() {
+      if (!quizCompleteFired) {
+        tk('quiz_complete');
+        quizCompleteFired = true;
+      }
+      show('ld');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      document.getElementById('qf').style.width = '100%';
+      document.getElementById('qback').classList.add('hidden');
+      ['c1','c2','c3','c4'].forEach(function(id){
+        var el = document.getElementById(id);
+        if (el) el.classList.remove('show');
+      });
+      setTimeout(function(){ var el=document.getElementById('c1'); if(el) el.classList.add('show'); }, 500);
+      setTimeout(function(){ var el=document.getElementById('c2'); if(el) el.classList.add('show'); }, 1200);
+      setTimeout(function(){ var el=document.getElementById('c3'); if(el) el.classList.add('show'); }, 1900);
+      setTimeout(function(){ var el=document.getElementById('c4'); if(el) el.classList.add('show'); }, 2600);
+      setTimeout(function(){
+        qHistory.push('gate');
+        show('gate');
+        tk('gate_view');
+        // Score-Preview Card mit echtem Score befüllen (war vorher Placeholder).
+        try { populateScorePreview(); } catch(e) {}
+      }, 3400);
+    }
+
+    // CRO 2026-05-13: Score schon VOR Submit zeigen (echter Reward fürs Quiz).
+    function populateScorePreview() {
+      var r = computeResult();
+      var numEl = document.getElementById('sp-num');
+      var fillEl = document.getElementById('sp-fill');
+      var stufeNEl = document.getElementById('sp-stufe-n');
+      var stufeLEl = document.getElementById('sp-stufe-name');
+      var critEl = document.getElementById('sp-crit');
+      if (numEl) {
+        var n = 0;
+        var start = null;
+        function step(ts){
+          if (!start) start = ts;
+          var t = Math.min(1, (ts - start) / 900);
+          var eased = 1 - Math.pow(1 - t, 3);
+          numEl.textContent = Math.round(r.score * eased);
+          if (fillEl) fillEl.style.width = (r.score * eased) + '%';
+          if (t < 1) requestAnimationFrame(step);
+        }
+        requestAnimationFrame(step);
+      }
+      if (stufeNEl) stufeNEl.textContent = String(r.stufe);
+      if (stufeLEl) stufeLEl.textContent = r.stufeName;
+      if (critEl) critEl.textContent = r.critDimLabel;
     }
 
     // F12: Freitext
@@ -1104,15 +1171,21 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
     }
 
     function finalize() {
-      tk('quiz_complete');
+      // CRO 2026-05-13: quiz_complete feuert jetzt schon in goToGateWithLoading()
+      // VOR Form -> hier nicht erneut zaehlen.
       show('ld');
+      // Reset cards (wurden evtl. in pre-gate Loading bereits gezeigt)
+      ['c1','c2','c3','c4'].forEach(function(id){
+        var el = document.getElementById(id);
+        if (el) el.classList.remove('show');
+      });
       document.getElementById('qf').style.width = '100%';
       document.getElementById('qback').classList.add('hidden');
 
-      setTimeout(function(){ document.getElementById('c1').classList.add('show'); }, 500);
-      setTimeout(function(){ document.getElementById('c2').classList.add('show'); }, 1200);
-      setTimeout(function(){ document.getElementById('c3').classList.add('show'); }, 1900);
-      setTimeout(function(){ document.getElementById('c4').classList.add('show'); }, 2600);
+      setTimeout(function(){ var el=document.getElementById('c1'); if(el) el.classList.add('show'); }, 500);
+      setTimeout(function(){ var el=document.getElementById('c2'); if(el) el.classList.add('show'); }, 1200);
+      setTimeout(function(){ var el=document.getElementById('c3'); if(el) el.classList.add('show'); }, 1900);
+      setTimeout(function(){ var el=document.getElementById('c4'); if(el) el.classList.add('show'); }, 2600);
       setTimeout(function(){
         var result = computeResult();
         submitLead(result);
