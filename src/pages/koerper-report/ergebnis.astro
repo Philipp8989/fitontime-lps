@@ -634,10 +634,11 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
       var tries = 0;
       function fire() {
         if (window.__lp) {
-          window.__lp.track(e, Object.assign({ page: 'stoffwechsel-report' }, d || {}), 'fot', 'Stoffwechsel Report');
+          window.__lp.track(e, Object.assign({ page: 'koerper-report' }, d || {}), 'fot', 'Stoffwechsel-Report v2');
           if (e === 'quiz_start') window.__lp.meta('ViewContent', { content_name: 'FoT Quiz Start', currency: 'CHF' });
           if (e === 'quiz_complete') window.__lp.meta('CompleteRegistration', { content_name: 'FoT Quiz Complete', currency: 'CHF' });
           if (e === 'lead_submit') window.__lp.meta('Lead', { content_name: 'FoT Lead', currency: 'CHF' });
+          if (e === 'booking_confirmed') window.__lp.meta('Schedule', { content_name: 'FoT Termin gebucht', currency: 'CHF' });
         } else if (tries++ < 40) {
           setTimeout(fire, 50);
         }
@@ -645,6 +646,9 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
       fire();
     }
     tk('page_view');
+    // Funnel-Marker fuer die Buchungs-Bestaetigungsseite (/gebucht liest das per
+    // sessionStorage, da der YCBM-Kalender mit anderen Funnels geteilt wird).
+    try { sessionStorage.setItem('fot_funnel', 'koerper-report'); } catch (e) {}
 
     // Preview-Modus: ?preview=result springt direkt auf Ergebnis-Seite
     if (typeof window !== 'undefined' ) {

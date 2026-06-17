@@ -1,0 +1,87 @@
+---
+// Buchungs-Bestaetigung — YCBM leitet nach erfolgreicher Buchung hierher (Redirect-Methode).
+// Feuert EINMALIG booking_confirmed (+ Meta 'Schedule') = saubere Conversion-Messung.
+// Der YCBM-Kalender 'fitontime-stoffwechsel-report' ist mit weiteren Funnels geteilt:
+// koerper-report (diese Domain) wird per sessionStorage korrekt zugeordnet; Buchungen
+// fremder Funnels (andere Domain, kein sessionStorage) laufen als 'stoffwechsel-report'.
+import CookieBanner from '../../components/CookieBanner.astro';
+const impressumUrl = 'https://fitontime.ch/impressum-datenschutz';
+const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
+---
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Termin gebucht | Fit on Time</title>
+  <link rel="icon" type="image/png" href="/images/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style is:global>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #0b0b0f; --accent: #c4697a; --green: #4ade80;
+      --text: #f0eff2; --text-2: #a09cac;
+      --font: 'DM Sans', system-ui, -apple-system, sans-serif;
+    }
+    body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.5; -webkit-font-smoothing: antialiased; }
+    .wrap { min-height: 100dvh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 24px; }
+    .logo img { height: 40px; margin-bottom: 28px; }
+    .check { width: 84px; height: 84px; border-radius: 50%; background: rgba(74,222,128,0.12); display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; }
+    .check svg { width: 44px; height: 44px; stroke: var(--green); }
+    h1 { font-size: 26px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 12px; }
+    p { color: var(--text-2); max-width: 460px; margin: 0 auto 8px; }
+    .sub { font-size: 14px; color: var(--text-2); margin-top: 20px; }
+    .footer { margin-top: 40px; font-size: 12px; color: #6b6778; }
+    .footer a { color: #6b6778; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="logo"><img src="/images/logo.png" alt="Fit on Time" /></div>
+    <div class="check">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+    </div>
+    <h1>Dein Termin ist gebucht!</h1>
+    <p>Du bekommst gleich eine Bestätigung per E-Mail mit allen Details.</p>
+    <p>Bitte schau auch in deinen Spam-Ordner, falls nichts ankommt.</p>
+    <div class="sub">Wir freuen uns auf das Gespräch &#128522;</div>
+    <div class="footer">
+      <a href={impressumUrl} target="_blank" rel="noopener">Impressum</a> &nbsp;&middot;&nbsp;
+      <a href={datenschutzUrl} target="_blank" rel="noopener">Datenschutz</a>
+    </div>
+  </div>
+
+  <CookieBanner />
+
+  <script is:inline>
+    // YCBM-Redirect landet u.U. INNERHALB des Embed-iframes. Dann ins Top-Fenster
+    // ausbrechen; das neu geladene Top-Fenster trackt dann (window.top === self).
+    if (window.top !== window.self) {
+      try { window.top.location.href = window.location.href; } catch (e) { window.location.href = window.location.href; }
+    } else {
+      // Funnel bestimmen: koerper-report-Besucher haben fot_funnel gesetzt (gleiche
+      // Domain). Fremde Funnels auf dem geteilten Kalender -> 'stoffwechsel-report'.
+      var funnel = 'stoffwechsel-report';
+      try { funnel = sessionStorage.getItem('fot_funnel') || 'stoffwechsel-report'; } catch (e) {}
+      var funnelName = funnel === 'koerper-report' ? 'Stoffwechsel-Report v2' : 'Stoffwechsel Report';
+      var tk = function (e, d) {
+        var tries = 0;
+        (function fire() {
+          if (window.__lp) {
+            window.__lp.track(e, Object.assign({ page: funnel }, d || {}), 'fot', funnelName);
+            if (e === 'booking_confirmed') window.__lp.meta('Schedule', { content_name: 'FoT Termin gebucht', currency: 'CHF' });
+          } else if (tries++ < 40) { setTimeout(fire, 50); }
+        })();
+      };
+      var already = false;
+      try { already = sessionStorage.getItem('fot_booking_fired') === '1'; } catch (e) {}
+      if (!already) {
+        try { sessionStorage.setItem('fot_booking_fired', '1'); } catch (e) {}
+        tk('booking_confirmed', { detail: funnel });
+      }
+    }
+  </script>
+</body>
+</html>

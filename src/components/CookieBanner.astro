@@ -137,6 +137,29 @@ const {
   .lp-legal-bar span { color: #666; }
   /* Wenn Cookie-Consent-Banner aktiv ist (kein [hidden]): Legal-Bar ausblenden */
   #cc-banner:not([hidden]) ~ .lp-legal-bar { display: none; }
+
+  /* === Buchungs-Widget Lade-Platzhalter (alle YCBM-Container) ===
+     YCBM braucht ~10s bis das iframe rendert. Bis dahin Spinner + Text statt
+     weisser Kasten. Das iframe (z-index 2, weisser Hintergrund) deckt den
+     Platzhalter automatisch ab, sobald es geladen ist. Rein visuell, kein JS. */
+  [id^="ycbm-container"], [id^="ycbm-embed"], [id^="ycb-embed"] { position: relative; min-height: 480px; }
+  [id^="ycbm-container"]::before, [id^="ycbm-embed"]::before, [id^="ycb-embed"]::before {
+    content: "Kalender wird geladen \2026";
+    position: absolute; inset: 0;
+    display: flex; align-items: flex-end; justify-content: center;
+    padding-bottom: calc(50% - 60px);
+    background: #fff; color: #8a8a8a;
+    font: 500 14px/1.4 system-ui, -apple-system, sans-serif; text-align: center;
+    z-index: 0;
+  }
+  [id^="ycbm-container"]::after, [id^="ycbm-embed"]::after, [id^="ycb-embed"]::after {
+    content: ""; position: absolute; top: calc(50% - 46px); left: 50%;
+    width: 32px; height: 32px; margin-left: -16px;
+    border: 3px solid rgba(0,0,0,0.12); border-top-color: rgba(0,0,0,0.5);
+    border-radius: 50%; animation: ycbm-spin .8s linear infinite; z-index: 1;
+  }
+  [id^="ycbm-container"] iframe, [id^="ycbm-embed"] iframe, [id^="ycb-embed"] iframe { position: relative; z-index: 2; background: #fff; }
+  @keyframes ycbm-spin { to { transform: rotate(360deg); } }
 </style>
 
 <script is:inline define:vars={{ metaPixelId, hyrosPh, consentKey }}>
