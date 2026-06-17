@@ -7,18 +7,18 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
 <html lang="de">
 <head>
   <meta charset="utf-8" />
-  <!-- Front-End A/B (EIN Adset, on-page 50/50): A=Text-LP, B=nackt Quiz.
-       Entscheidung im <head>, damit fuer B die Text-LP NICHT aufblitzt (kein FOUC). -->
+  <!-- A/B-Test beendet 17.06. — Sieger ist B (direkt ins Quiz). Alle Besucher
+       bekommen ab jetzt NUR noch die Quiz-Variante. Text-LP-Code (A) bleibt
+       inaktiv liegen. QA-Override ?v=A blendet die alte Text-LP weiterhin ein. -->
   <script is:inline>
     (function () {
-      var v;
+      var v = 'B';
       try {
         var pf = new URLSearchParams(location.search);
         var forced = (pf.get('v') || '').toUpperCase();
-        v = (forced === 'A' || forced === 'B') ? forced : sessionStorage.getItem('fot_ab_fe');
-        if (v !== 'A' && v !== 'B') v = Math.random() < 0.5 ? 'A' : 'B';
+        if (forced === 'A' || forced === 'B') v = forced;
         sessionStorage.setItem('fot_ab_fe', v);
-      } catch (e) { v = (Math.random() < 0.5 ? 'A' : 'B'); }
+      } catch (e) {}
       window.__fe = v;
       if (v === 'B') document.documentElement.classList.add('fe-quiz');
     })();
