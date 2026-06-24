@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro';
 import { google } from 'googleapis';
 import { normalizePhone } from '../../lib/phone';
+import { pushBewerberToMonday } from '../../lib/monday';
 
 // Recruiting-API: Bewerbungen aus den Recruiting-Funneln (admin/kundenbetreuung/scbewerbung).
 // 1. Schreibt in HR-Sheet (15eBPYY...sxs) mit Status="Neu eingegangen"
@@ -126,6 +127,25 @@ export const POST: APIRoute = async ({ request }) => {
       }
     } else {
       console.error('Recruiting Dashboard-Push skipped: DASHBOARD_LEADS_URL/KEY fehlen');
+    }
+
+    // monday.com Bewerbermanagement: Karte anlegen. Non-blocking — Sheet bleibt Ground-Truth.
+    try {
+      const m = await pushBewerberToMonday({
+        vorname,
+        nachname,
+        fullName,
+        email: data.email,
+        phone: data.phone || '',
+        slug,
+        funnelLabel,
+        q1,
+        q2,
+        q3,
+      });
+      console.log('monday Bewerber-Karte angelegt:', m.id);
+    } catch (e: any) {
+      console.error('monday Bewerber-Push Fehler (nicht blockierend):', e?.message || e);
     }
 
     // Synthetisches recruiting_submit-Event für Dashboard-Aggregation. Fire-and-forget.
