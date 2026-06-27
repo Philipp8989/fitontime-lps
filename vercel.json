@@ -3,7 +3,9 @@
   "redirects": [
     { "source": "/blockaden-report", "destination": "/ayurveda-quiz", "permanent": true },
     { "source": "/blockaden-report/", "destination": "/ayurveda-quiz/", "permanent": true },
-    { "source": "/blockaden-report/:path*", "destination": "/ayurveda-quiz/:path*", "permanent": true }
+    { "source": "/blockaden-report/:path*", "destination": "/ayurveda-quiz/:path*", "permanent": true },
+    { "source": "/longevity", "has": [{ "type": "host", "value": "start.fitontime.ch" }], "destination": "https://longevity.fit-on-time.ch/", "permanent": false },
+    { "source": "/longevity/:path*", "has": [{ "type": "host", "value": "start.fitontime.ch" }], "destination": "https://longevity.fit-on-time.ch/longevity/:path*", "permanent": false }
   ],
   "crons": [
     { "path": "/api/cron/funnel-health", "schedule": "0 */3 * * *" }

@@ -158,6 +158,30 @@ const SHEETS: Record<string, SheetConfig> = {
       return [datum, vorname, d.email, d.phone || '', score, stufe, stufeName, critDim, critPct, glp1, alter, ziel, alltag, versuche];
     },
   },
+
+  // Longevity-Check (Bioalter-Quiz). Eigenes Sheet "FitonTime Longevity Leads"
+  // (mit Service-Account leads-writer@ geteilt). Header: Datum | Vorname | E-Mail |
+  // Telefon | Bioalter | Reales Alter | Verlorene Jahre | Rueckgewinn Jahre | Stufe |
+  // Kritischer Hebel | Alter (Angabe) | Ziel | Lebensphase | Risikofaktoren
+  'longevity': {
+    id: '1d998DSbOB2u7s2l6jijdZXNZ9Z8x5LMK3DvHkwJVQcY',
+    range: 'Leads!A:N',
+    buildRow: (datum, d) => {
+      const a = d.answers || {};
+      const vorname = (d.name || '').trim().split(/\s+/)[0] || '';
+      const bioAge = a.longevity_bio_age ?? '';
+      const realAge = a.longevity_real_age ?? '';
+      const lostYears = a.longevity_lost_years ?? '';
+      const regainYears = a.longevity_regain_years ?? '';
+      const stufeName = a.longevity_stufe_name || '';
+      const critDim = a.longevity_crit_dim_label || '';
+      const alter = a.q1 || '';
+      const ziel = (a.q12 || '').replace(/\n+/g, ' ').slice(0, 500);
+      const lebensphase = Array.isArray(a.q11_val) ? a.q11_val.join(', ') : (a.q11 || '');
+      const risiko = Array.isArray(a.q9_val) ? a.q9_val.join(', ') : (a.q9 || '');
+      return [datum, vorname, d.email, d.phone || '', bioAge, realAge, lostYears, regainYears, stufeName, critDim, alter, ziel, lebensphase, risiko];
+    },
+  },
 };
 
 export const POST: APIRoute = async ({ request }) => {
@@ -317,6 +341,9 @@ export const POST: APIRoute = async ({ request }) => {
         event_name: 'Lead',
         event_id: meta.event_id || `lead_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`,
         event_source_url: sourceOrigin,
+        // Longevity hat einen eigenen, isolierten Pixel (nicht den geteilten Health-Pixel).
+        // Browser-Pixel auf /longevity/* feuert auf dieselbe ID -> Dedup via event_id bleibt intakt.
+        pixel_id_override: lpSlug === 'longevity' ? '1214902253584066' : undefined,
         custom_data: { content_name: 'FoT Lead' },
         user_data: {
           em: data.email || '',

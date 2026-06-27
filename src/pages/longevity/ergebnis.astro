@@ -1,0 +1,419 @@
+---
+// Longevity-Ergebnis und VSL-Seite. Zeigt Bioalter, verlorene und zurueckgewinnbare Jahre.
+// VSL mit Fabian, primaerer CTA = kostenfreies Erstgespraech buchen (YCBM). Liest Ergebnis aus sessionStorage.
+import CookieBanner from '../../components/CookieBanner.astro';
+const impressumUrl = 'https://fitontime.ch/impressum-datenschutz';
+const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
+---
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="theme-color" content="#6f7d4f" />
+  <title>Dein Longevity-Profil | Fit on Time</title>
+  <link rel="icon" type="image/png" href="/images/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <style is:global>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #f5efe2;
+      --card: #fffdf9;
+      --border: #e3d9c4;
+      --accent: #6f7d4f;
+      --accent-dark: #586438;
+      --accent-soft: #e9ece0;
+      --green: #5f7d3c;
+      --amber: #b8893f;
+      --red: #a8503c;
+      --text: #2c2a22;
+      --text-2: #5f5a4c;
+      --text-3: #9a9382;
+      --r: 16px;
+      --font: 'DM Sans', system-ui, -apple-system, sans-serif;
+      --shadow-sm: 0 1px 4px rgba(60,55,40,0.05);
+      --shadow-md: 0 4px 14px rgba(80,78,55,0.10);
+      --shadow-lg: 0 10px 24px rgba(80,78,55,0.14);
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.5; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    .wrap { max-width: 640px; margin: 0 auto; padding: 20px; }
+    .logo { text-align: center; padding: 10px 0 18px; }
+    .logo img { height: 40px; }
+    .wordmark { font-family: var(--font); font-size: 22px; font-weight: 900; letter-spacing: -0.4px; color: var(--accent); line-height: 1; }
+    .wordmark .wm-2 { font-weight: 600; color: var(--text-2); }
+
+    .success-badge { display: inline-flex; align-items: center; gap: 6px; background: var(--green); color: #fff; font-size: 12px; font-weight: 800; padding: 6px 14px; border-radius: 20px; margin: 0 auto 14px; letter-spacing: 0.4px; text-transform: uppercase; }
+
+    .greeting { text-align: center; }
+    .greeting h1 { font-size: 26px; font-weight: 900; line-height: 1.2; letter-spacing: -0.6px; margin-bottom: 8px; }
+    .greeting p { font-size: 14px; color: var(--text-2); }
+
+    /* Score-Card */
+    .score-card { background: linear-gradient(135deg, var(--accent) 0%, #93a06a 100%); color: #fff; border-radius: 20px; padding: 28px 24px; margin: 20px 0; box-shadow: var(--shadow-lg); text-align: center; }
+    .score-card .label { font-size: 12px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; opacity: 0.85; margin-bottom: 6px; }
+    .score-card .score-num { font-size: 64px; font-weight: 900; line-height: 1; letter-spacing: -2px; }
+    .score-card .score-num em { font-style: normal; font-size: 28px; opacity: 0.75; font-weight: 700; margin-left: 4px; }
+    .score-card .bar { margin: 18px auto 0; max-width: 380px; height: 10px; background: rgba(255,255,255,0.22); border-radius: 5px; overflow: hidden; position: relative; }
+    .score-card .bar-fill { height: 100%; background: #fff; border-radius: 5px; transition: width 1.2s cubic-bezier(0.2, 0.9, 0.3, 1); width: 0; }
+    .score-card .bar-steps { display: flex; justify-content: space-between; max-width: 380px; margin: 8px auto 0; font-size: 10px; font-weight: 700; opacity: 0.7; }
+    .score-card .stufe { margin-top: 18px; background: rgba(255,255,255,0.14); border-radius: 12px; padding: 12px 16px; font-size: 14px; font-weight: 700; }
+    .score-card .stufe b { font-size: 16px; font-weight: 800; }
+
+    /* Dimension-Card */
+    .dim-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 20px; margin: 16px 0; box-shadow: var(--shadow-sm); text-align: center; }
+    .dim-card .dim-label { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.6px; color: var(--text-3); margin-bottom: 6px; }
+    .dim-card h3 { font-size: 22px; font-weight: 900; color: var(--accent); margin-bottom: 8px; letter-spacing: -0.4px; }
+    .dim-card .dim-pct { display: inline-flex; align-items: center; gap: 6px; background: var(--accent-soft); color: var(--accent); font-weight: 800; font-size: 14px; padding: 4px 12px; border-radius: 12px; }
+
+    /* Teaser-Bullets */
+    .teasers { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 22px; margin: 16px 0; box-shadow: var(--shadow-sm); }
+    .teasers h3 { font-size: 16px; font-weight: 800; margin-bottom: 14px; letter-spacing: -0.2px; text-align: center; }
+    .teaser-item { display: flex; gap: 12px; margin-bottom: 16px; }
+    .teaser-item:last-child { margin-bottom: 0; }
+    .teaser-item .t-num { width: 28px; height: 28px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 14px; flex-shrink: 0; }
+    .teaser-item .t-body strong { display: block; font-size: 14px; font-weight: 800; margin-bottom: 4px; line-height: 1.35; }
+    .teaser-item .t-body p { font-size: 13px; color: var(--text-2); line-height: 1.55; }
+
+    /* Booking-Block (Primary CTA) */
+    .booking { background: linear-gradient(135deg, #fff 0%, #efe7d6 100%); border: 1px solid var(--accent); border-radius: 16px; padding: 24px 22px; margin: 22px 0; text-align: center; box-shadow: var(--shadow-md); }
+    .booking h3 { font-size: 20px; font-weight: 900; margin-bottom: 10px; letter-spacing: -0.3px; }
+    .booking p { font-size: 14px; color: var(--text-2); line-height: 1.6; margin-bottom: 8px; max-width: 480px; margin-left: auto; margin-right: auto; }
+    .booking-value { background: #fff; border: 1px solid var(--border); border-radius: 12px; padding: 14px 18px; margin: 14px auto; max-width: 440px; text-align: left; }
+    .booking-value li { list-style: none; padding: 5px 0; font-size: 13px; color: var(--text); font-weight: 500; display: flex; align-items: flex-start; gap: 10px; }
+    .booking-value li::before { content: '✓'; color: var(--green); font-weight: 800; flex-shrink: 0; font-size: 14px; margin-top: 1px; }
+    .ycbm-container { background: #fff; border: 1px solid var(--border); border-radius: 14px; margin: 18px auto 0; min-height: 520px; max-width: 520px; overflow: hidden; box-shadow: var(--shadow-md); }
+    .ycbm-container iframe { width: 100%; min-height: 520px; border: 0; display: block; }
+
+    /* Rückruf-Fallback (klein) */
+    .callback { text-align: center; margin: 12px auto 0; max-width: 460px; }
+    .callback summary { font-size: 12px; color: var(--text-3); cursor: pointer; font-weight: 600; padding: 8px; border-radius: 8px; display: inline-block; list-style: none; }
+    .callback summary::-webkit-details-marker { display: none; }
+    .callback summary:hover { color: var(--text-2); }
+    .callback[open] summary { color: var(--text-2); }
+    .callback-body { font-size: 12px; color: var(--text-3); padding: 12px 16px; margin-top: 6px; line-height: 1.55; background: var(--card); border: 1px solid var(--border); border-radius: 10px; }
+
+    /* Video-Teaser */
+    .video-teaser { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 18px; margin: 16px 0; box-shadow: var(--shadow-sm); }
+    .video-teaser h4 { font-size: 14px; font-weight: 800; margin-bottom: 12px; text-align: center; letter-spacing: -0.2px; }
+    .video-thumb { position: relative; aspect-ratio: 1 / 1; background: #000; border-radius: 12px; overflow: hidden; max-width: 480px; margin: 0 auto; }
+    .video-thumb video { width: 100%; height: 100%; object-fit: cover; display: block; background: #000; }
+
+    /* Trust-Zeile */
+    .trust { text-align: center; margin: 28px 0 10px; font-size: 12px; color: var(--text-3); line-height: 1.7; }
+    .trust b { color: var(--text-2); }
+
+    footer { text-align: center; padding: 20px 20px 40px; font-size: 11px; color: var(--text-3); }
+    footer a { color: var(--text-3); text-decoration: none; }
+
+    @media (min-width: 600px) {
+      .greeting h1 { font-size: 32px; }
+      .score-card .score-num { font-size: 76px; }
+      .score-card .score-num em { font-size: 32px; }
+    }
+
+    /* Empty-State (kein Ergebnis im sessionStorage) */
+    .empty { text-align: center; padding: 40px 20px; }
+    .empty h2 { font-size: 22px; margin-bottom: 12px; }
+    .empty p { font-size: 14px; color: var(--text-2); margin-bottom: 20px; line-height: 1.6; }
+    .empty a { display: inline-block; background: var(--accent); color: #fff; text-decoration: none; padding: 14px 24px; border-radius: 12px; font-weight: 700; font-size: 15px; }
+
+    /* Animation */
+    .fade-in { animation: fadeIn 0.6s ease-out both; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+    }
+
+    /* ===== WOW-FX für Score-Reveal ===== */
+    .success-badge { animation: badge-pop 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s both; }
+    @keyframes badge-pop { 0% { transform: scale(0.4); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+
+    .score-card { position: relative; overflow: hidden; }
+    .score-card::before { display: none; }
+    .score-card .score-num { display: inline-block; }
+    .score-card .stufe { animation: fadeIn 0.6s ease-out 0.9s both; }
+
+    /* Konfetti-Layer (CSS-only, kommt nur 1x beim Score-Reveal) */
+    #confetti { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; pointer-events: none; z-index: 200; overflow: hidden; }
+    #confetti.fire .conf { animation: conf-fall var(--d, 2.4s) cubic-bezier(0.4, 0.05, 0.3, 1) forwards; opacity: 0; }
+    .conf {
+      position: absolute; top: 32%; left: 50%; width: 9px; height: 14px; border-radius: 2px;
+      background: var(--c, var(--accent)); transform-origin: center;
+    }
+    @keyframes conf-fall {
+      0% { opacity: 1; transform: translate(0, 0) rotate(0deg) scale(1); }
+      90% { opacity: 1; }
+      100% { opacity: 0; transform: translate(var(--x, 100px), 90vh) rotate(var(--r, 720deg)) scale(0.7); }
+    }
+
+    /* Dimension-Card — Hover-Lift */
+    .dim-card { transition: transform 0.25s, box-shadow 0.25s; }
+    .dim-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+    .dim-pct { transition: transform 0.3s; }
+    .dim-card:hover .dim-pct { transform: scale(1.05); }
+
+    /* Teaser-Items — Stagger Fade */
+    .teaser-item { opacity: 0; transform: translateX(-12px); animation: teaser-in 0.5s cubic-bezier(0.2, 0.9, 0.3, 1) forwards; }
+    .teaser-item:nth-child(1) { animation-delay: 0.55s; }
+    .teaser-item:nth-child(2) { animation-delay: 0.7s; }
+    .teaser-item:nth-child(3) { animation-delay: 0.85s; }
+    @keyframes teaser-in { to { opacity: 1; transform: translateX(0); } }
+
+    /* Booking-Block — Pulse-Glow + bouncing CTA-arrow */
+    .booking { position: relative; }
+    .booking::after { display: none; }
+    .booking-value li { transition: transform 0.18s; }
+    .booking-value li:hover { transform: translateX(4px); }
+
+    /* CTA Shine auf der Booking-Section */
+    .booking iframe { transition: opacity 0.3s; }
+  </style>
+</head>
+<body>
+  <!-- Konfetti-Layer für Score-Reveal (CSS-only, wird via JS gefüllt + getriggert) -->
+  <div id="confetti" aria-hidden="true"></div>
+  <div class="wrap">
+    <div class="logo"><span class="wordmark">fit<span class="wm-2"> for time</span></span></div>
+
+    <!-- Hauptinhalt: sichtbar nur wenn Ergebnis vorhanden -->
+    <div id="result-view" style="display:none;">
+      <div class="greeting fade-in">
+        <div class="success-badge">✓ Profil ausgewertet</div>
+        <h1 id="greet-name">Dein Bioalter ist da</h1>
+        <p>Hier siehst du, wo dein Körper steht. Wie du die verlorenen Jahre zurückholst, zeigt dir Fabian im Video. Danach buchst du dein kostenfreies Erstgespräch.</p>
+      </div>
+
+      <!-- Bioalter-Card -->
+      <div class="score-card fade-in" style="animation-delay:0.1s;">
+        <div class="label">Dein biologisches Alter</div>
+        <div class="score-num"><span id="bio-num">0</span><em>Jahre</em></div>
+        <div class="stufe" id="bio-delta">—</div>
+      </div>
+
+      <!-- Jahre-Grid: verloren vs. Rueckgewinn -->
+      <div class="years-grid fade-in" style="animation-delay:0.25s;display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0;">
+        <div style="background:var(--card);border:1px solid #e6d2c2;border-radius:16px;padding:18px;text-align:center;box-shadow:var(--shadow-sm);">
+          <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:0.5px;color:var(--red);margin-bottom:6px;">Du verlierst gerade</div>
+          <div style="font-size:40px;font-weight:900;color:var(--red);line-height:1;"><span id="lost-num">0</span></div>
+          <div style="font-size:12px;color:var(--text-2);margin-top:6px;">gesunde Jahre</div>
+        </div>
+        <div style="background:var(--card);border:1px solid #d7dec2;border-radius:16px;padding:18px;text-align:center;box-shadow:var(--shadow-sm);">
+          <div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:0.5px;color:var(--green);margin-bottom:6px;">Du gewinnst zurück</div>
+          <div style="font-size:40px;font-weight:900;color:var(--green);line-height:1;">+<span id="regain-num">0</span></div>
+          <div style="font-size:12px;color:var(--text-2);margin-top:6px;">gesunde Jahre, wenn du jetzt handelst</div>
+        </div>
+      </div>
+
+      <!-- Groesster Hebel -->
+      <div class="dim-card fade-in" style="animation-delay:0.4s;">
+        <div class="dim-label">Dein grösster Hebel</div>
+        <h3 id="crit-label">—</h3>
+        <div class="dim-pct">Hier liegt aktuell dein grösstes Potenzial</div>
+      </div>
+
+      <!-- VSL — Fabian -->
+      <div class="video-teaser fade-in" style="animation-delay:0.5s;">
+        <h4>Fabian zeigt dir, wie du deine Jahre zurückholst</h4>
+        <div class="video-thumb" style="aspect-ratio:16 / 9;">
+          <video
+            src="https://bb2etqzbc5v7bxgo.public.blob.vercel-storage.com/longevity/vsl-fabian.mp4"
+            controls
+            playsinline
+            preload="metadata"
+            poster="/images/coaches/fabian.png"
+          ></video>
+        </div>
+      </div>
+
+      <!-- Teaser -->
+      <div class="teasers fade-in" style="animation-delay:0.55s;">
+        <h3>Drei Dinge, die du jetzt wissen musst</h3>
+        <div id="teaser-list"></div>
+      </div>
+
+      <!-- BOOKING — Primary CTA -->
+      <div class="booking fade-in" style="animation-delay:0.6s;">
+        <h3>Hol dir deine gesunden Jahre zurück</h3>
+        <p>Buch dein kostenfreies Erstgespräch. Wir schauen gemeinsam auf dein Ergebnis und klären, wie dein Weg aussieht. Unverbindlich.</p>
+        <ul class="booking-value">
+          <li>Was dein Bioalter konkret bedeutet, ehrlich eingeordnet.</li>
+          <li>Welcher der fünf Hebel bei DIR zuerst dran ist.</li>
+          <li>Die ersten konkreten Schritte, zum Mitnehmen.</li>
+          <li>Ehrliche Einschätzung, ob und wie wir dir helfen können.</li>
+        </ul>
+        <div class="ycbm-container" id="ycbm-container">
+          <div style="padding:40px 20px;text-align:center;color:var(--text-3);font-size:13px;">
+            Kalender lädt…
+          </div>
+        </div>
+      </div>
+
+      <div class="trust" style="margin-top:28px;">
+        Das Team hinter FitonTime begleitet seit 2016 über <b>4.000 Menschen</b> in der Schweiz.<br>
+        Keine leeren Versprechen. Fünf Hebel, die wirklich wirken.
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div id="empty-view" class="empty" style="display:none;">
+      <h2>Kein Ergebnis gefunden</h2>
+      <p>Es sieht so aus als wäre dein Longevity-Profil nicht übertragen worden.<br>Bitte starte den Check erneut.</p>
+      <a href="/longevity/">Zum Longevity-Check →</a>
+    </div>
+
+    <footer>
+      <a href={impressumUrl} target="_blank" rel="noopener">Impressum</a> ·
+      <a href={datenschutzUrl} target="_blank" rel="noopener">Datenschutzerklärung</a>
+    </footer>
+  </div>
+
+  <script is:inline>
+    // Lese Ergebnis aus sessionStorage
+    var raw = null;
+    try { raw = sessionStorage.getItem('fot_longevity_result'); } catch (e) {}
+    var result = null;
+    try { result = raw ? JSON.parse(raw) : null; } catch (e) {}
+
+    if (!result || typeof result.bioAge !== 'number') {
+      document.getElementById('empty-view').style.display = 'block';
+    } else {
+      document.getElementById('result-view').style.display = 'block';
+      renderResult(result);
+    }
+
+    function animateNumber(el, target, dur) {
+      var start = Date.now();
+      function tick() {
+        var p = Math.min(1, (Date.now() - start) / dur);
+        var eased = 1 - Math.pow(1 - p, 3);
+        el.textContent = Math.round(eased * target);
+        if (p < 1) requestAnimationFrame(tick);
+      }
+      tick();
+    }
+
+    function renderResult(r) {
+      var name = r.name || 'Hallo';
+      document.getElementById('greet-name').textContent = name + ', dein Bioalter ist da';
+
+      setTimeout(function(){ animateNumber(document.getElementById('bio-num'), r.bioAge, 1100); }, 300);
+      setTimeout(function(){ animateNumber(document.getElementById('lost-num'), r.lostYears, 900); }, 600);
+      setTimeout(function(){ animateNumber(document.getElementById('regain-num'), r.regainYears, 900); }, 700);
+
+      // Delta zum echten Alter
+      var delta = r.bioAge - r.realAge;
+      var deltaEl = document.getElementById('bio-delta');
+      if (delta > 0) deltaEl.innerHTML = '<b>' + delta + ' Jahre</b> über deinem echten Alter (' + r.realAge + ')';
+      else if (delta < 0) deltaEl.innerHTML = '<b>' + Math.abs(delta) + ' Jahre</b> jünger als dein echtes Alter (' + r.realAge + ')';
+      else deltaEl.innerHTML = 'Genau auf deinem echten Alter (' + r.realAge + ')';
+
+
+      document.getElementById('crit-label').textContent = r.critDimLabel;
+
+      setupYCBM(r);
+
+      var teasers = buildTeasers(r);
+      var list = document.getElementById('teaser-list');
+      list.innerHTML = teasers.map(function(t, i){
+        return '<div class="teaser-item"><div class="t-num">' + (i+1) + '</div><div class="t-body"><strong>' + t.title + '</strong><p>' + t.body + '</p></div></div>';
+      }).join('');
+
+      if (window.__lp) {
+        window.__lp.track('thankyou_view', { bioAge: r.bioAge, stufe: r.stufe, crit: r.critDim }, 'fot', 'Longevity Result');
+      }
+    }
+
+    function buildTeasers(r) {
+      var out = [];
+
+      // 1. Stufen-spezifisches Framing
+      if (r.stufe <= 1) {
+        out.push({ title: 'Du bist in starker Form, halt sie.', body: 'Dein biologisches Alter liegt im grünen Bereich. Jetzt geht es darum, diesen Vorsprung zu sichern, statt ihn schleichend zu verlieren.' });
+      } else if (r.stufe === 2) {
+        out.push({ title: 'Noch im Soll, aber die Uhr läuft.', body: 'Dein Körper altert leicht beschleunigt. Genau jetzt sind die Hebel am leichtesten zu ziehen, später wird es Arbeit.' });
+      } else if (r.stufe === 3) {
+        out.push({ title: 'Dein Körper altert beschleunigt.', body: 'Mehrere Hebel ziehen gleichzeitig in die falsche Richtung. Die gute Nachricht: Genau das lässt sich umkehren, mit dem richtigen Ansatz in der richtigen Reihenfolge.' });
+      } else {
+        out.push({ title: 'Jedes Jahr zählt jetzt doppelt.', body: 'Dein biologisches Alter liegt deutlich über deinem echten. Zu spät ist es nicht, aber die Zeit für Experimente im Alleingang ist vorbei.' });
+      }
+
+      // 2. Groesster Hebel
+      out.push({
+        title: 'Dein grösster Hebel: ' + r.critDimLabel + '.',
+        body: 'Hier holst du die meisten gesunden Jahre am schnellsten zurück. Was das bei DIR konkret heisst und in welcher Reihenfolge, besprechen wir im Erstgespräch.'
+      });
+
+      // 3. Was NICHT tun
+      out.push({
+        title: 'Was du jetzt lieber NICHT tust:',
+        body: 'Nicht zehn Supplements kaufen, kein Eisbad-Programm, keine Crash-Diät. Erst Klarheit über deine fünf Hebel, dann Umsetzung in der richtigen Reihenfolge.'
+      });
+
+      return out;
+    }
+
+    // YCBM-Setup: direktes iframe zur Booking-URL mit Pre-fill via Query-Params.
+    // Hintergrund: embed.ycb.me liest data-domain nicht zuverlässig wenn das
+    // Script-Tag per JS erzeugt wird (iframe-Host wird "undefined.youcanbook.me").
+    // Direktes iframe ist robust und unterstützt Pre-fill via Query-Params.
+    function setupYCBM(r) {
+      var container = document.getElementById('ycbm-container');
+      if (!container) return;
+      var params = new URLSearchParams();
+      params.set('embed', 'true');
+      if (r.name) params.set('FIRSTNAME', r.name);
+      if (r.phone) params.set('PHONE', r.phone);
+      if (r.bioAge != null) params.set('BIOALTER', String(r.bioAge));
+      if (r.regainYears != null) params.set('JAHRE', String(r.regainYears));
+      if (r.critDimLabel) params.set('HEBEL', r.critDimLabel);
+      var iframe = document.createElement('iframe');
+      iframe.src = 'https://fitontime-longevity-analyse.youcanbook.me/?' + params.toString();
+      iframe.style.cssText = 'width:100%;min-height:520px;border:0;display:block;';
+      iframe.setAttribute('frameborder', '0');
+      iframe.setAttribute('allow', 'payment');
+      container.innerHTML = '';
+      container.appendChild(iframe);
+      if (window.__lp) window.__lp.track('booking_embed_loaded', { bioAge: r.bioAge }, 'fot', 'Longevity Result');
+    }
+
+    // Konfetti-Burst — CSS-only Particles, generiert dynamisch
+    function fireConfetti() {
+      if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      var layer = document.getElementById('confetti');
+      if (!layer || layer.classList.contains('fired')) return;
+      var colors = ['#6f7d4f', '#93a06a', '#586438', '#b8893f', '#cdab5e', '#a8503c', '#8a9a63'];
+      var n = 56;
+      var frag = document.createDocumentFragment();
+      for (var i = 0; i < n; i++) {
+        var c = document.createElement('div');
+        c.className = 'conf';
+        var dx = (Math.random() - 0.5) * window.innerWidth * 1.2;
+        var dur = 1.8 + Math.random() * 1.6;
+        var rot = (Math.random() * 1080 - 360) | 0;
+        var col = colors[(Math.random() * colors.length) | 0];
+        c.style.cssText = '--x:' + dx + 'px;--d:' + dur + 's;--r:' + rot + 'deg;--c:' + col + ';left:' + (40 + Math.random() * 20) + '%;top:' + (28 + Math.random() * 8) + '%;animation-delay:' + (Math.random() * 0.18) + 's;width:' + (6 + Math.random() * 6) + 'px;height:' + (10 + Math.random() * 8) + 'px;';
+        frag.appendChild(c);
+      }
+      layer.appendChild(frag);
+      // Trigger animation in next frame
+      requestAnimationFrame(function(){ layer.classList.add('fire'); layer.classList.add('fired'); });
+      // Cleanup
+      setTimeout(function(){ if (layer && layer.parentNode) layer.innerHTML = ''; }, 4500);
+    }
+  </script>
+
+  <script is:inline src="https://t.hyros.com/v1/lst/universal-script?ph=689a71ca1ab3be1cb1caddbe6b7902a4ad2c51a228f4ec9ea7fef3123a705f63"></script>
+
+  <CookieBanner
+    metaPixelId="1214902253584066"
+    consentKey="fot_longevity_consent"
+    impressumUrl={impressumUrl}
+    datenschutzUrl={datenschutzUrl}
+  />
+</body>
+</html>

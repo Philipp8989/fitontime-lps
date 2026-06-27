@@ -29,6 +29,7 @@ export interface CapiEvent {
   user_data: CapiUserData;
   action_source?: 'website' | 'app' | 'email' | 'phone_call' | 'chat' | 'physical_store' | 'system_generated' | 'other';
   event_time?: number; // unix seconds
+  pixel_id_override?: string; // sendet an diesen Pixel statt PUBLIC_META_PIXEL_ID (z.B. Longevity-eigener Pixel)
 }
 
 let warnedNoToken = false;
@@ -63,7 +64,7 @@ function readEnv(name: string): string | undefined {
 }
 
 export async function sendCapiEvent(event: CapiEvent): Promise<{ ok: boolean; status?: number; error?: string }> {
-  const pixelId = readEnv('PUBLIC_META_PIXEL_ID');
+  const pixelId = event.pixel_id_override || readEnv('PUBLIC_META_PIXEL_ID');
   const token = readEnv('META_CAPI_TOKEN');
   const testCode = readEnv('META_TEST_EVENT_CODE');
 

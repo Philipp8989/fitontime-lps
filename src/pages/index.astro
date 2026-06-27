@@ -1,5 +1,9 @@
 ---
 // Übersicht aller Landing Pages
+// Auf der Longevity-Domain zeigt die Wurzel direkt den Longevity-Check (URL bleibt sauber).
+if (Astro.url.hostname === 'longevity.fit-on-time.ch') {
+  return Astro.rewrite('/longevity');
+}
 ---
 <html lang="de">
 <head>
