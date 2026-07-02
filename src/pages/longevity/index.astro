@@ -884,7 +884,9 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
           window.__lp.track(e, Object.assign({ page: 'longevity' }, d || {}), 'fot', 'Longevity Check');
           if (e === 'quiz_start') window.__lp.meta('ViewContent', { content_name: 'FoT Quiz Start', currency: 'EUR' });
           if (e === 'quiz_complete') window.__lp.meta('CompleteRegistration', { content_name: 'FoT Quiz Complete', currency: 'EUR' });
-          if (e === 'lead_submit') window.__lp.meta('Lead', { content_name: 'FoT Lead', currency: 'EUR' });
+          // value = geschaetzter Lead-Wert (reine Zahl, KEINE Gesundheitsdaten). Behebt Meta-Diagnose "gueltige Preisinfo".
+          // PLATZHALTER 50 CHF: bei Bedarf auf euren realen Wert pro gebuchtem Erstgespraech aendern (muss mit CAPI in api/sheets.ts uebereinstimmen).
+          if (e === 'lead_submit') window.__lp.meta('Lead', { content_name: 'FoT Lead', value: 50, currency: 'CHF' });
         } else if (tries++ < 40) {
           setTimeout(fire, 50);
         }

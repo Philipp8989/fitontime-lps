@@ -344,7 +344,11 @@ export const POST: APIRoute = async ({ request }) => {
         // Longevity hat einen eigenen, isolierten Pixel (nicht den geteilten Health-Pixel).
         // Browser-Pixel auf /longevity/* feuert auf dieselbe ID -> Dedup via event_id bleibt intakt.
         pixel_id_override: lpSlug === 'longevity' ? '1214902253584066' : undefined,
-        custom_data: { content_name: 'FoT Lead' },
+        // Nur Longevity: geschaetzter Lead-Wert (reine Zahl, KEINE Gesundheitsdaten) behebt Meta-Diagnose "gueltige Preisinfo".
+        // value/currency muessen mit dem Browser-Pixel (longevity/index.astro) uebereinstimmen. Platzhalter 50 CHF.
+        custom_data: lpSlug === 'longevity'
+          ? { content_name: 'FoT Lead', value: 50, currency: 'CHF' }
+          : { content_name: 'FoT Lead' },
         user_data: {
           em: data.email || '',
           ph: data.phone || '',
