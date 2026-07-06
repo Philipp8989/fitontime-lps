@@ -18,6 +18,25 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
 
+  <script is:inline>
+    // A/B-Test: a = Original (Bioalter breit), b = Erfolgreiche Frauen (Reframe 06.07.).
+    // 50/50 beim Erstbesuch, danach persistent. QA-Override: ?v=a bzw. ?v=b
+    (function(){
+      var v = null;
+      try {
+        var q = new URLSearchParams(location.search).get('v');
+        if (q === 'a' || q === 'b') { v = q; localStorage.setItem('fot_lp_variant', v); }
+        else v = localStorage.getItem('fot_lp_variant');
+      } catch(e) {}
+      if (v !== 'a' && v !== 'b') {
+        v = Math.random() < 0.5 ? 'a' : 'b';
+        try { localStorage.setItem('fot_lp_variant', v); } catch(e) {}
+      }
+      document.documentElement.setAttribute('data-variant', v);
+      window.__variant = v;
+    })();
+  </script>
+
   <style is:global>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
     :root {
@@ -42,6 +61,10 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
     }
     html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
     body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.5; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+
+    /* A/B-Varianten: ohne JS bzw. Variante a zeigt .va, Variante b zeigt .vb */
+    html:not([data-variant="b"]) .vb { display: none !important; }
+    html[data-variant="b"] .va { display: none !important; }
 
     button:focus-visible, a:focus-visible, input:focus-visible, label:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
     .opt:focus-visible, .cta-btn:focus-visible, .submit:focus-visible { outline-offset: 4px; }
@@ -403,20 +426,30 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
       </div>
 
       <section class="hero">
-        <div class="badge">Longevity-Check · Frauen und Männer ab 40</div>
-        <h1>Wie alt ist dein Körper <em>wirklich</em>? Und wie viele gesunde Jahre holst du zurück?</h1>
-        <p class="sub">Dein biologisches Alter sagt mehr aus als dein Geburtsdatum. In 3 Minuten siehst du, wie alt dein Körper wirklich ist, wie viele gesunde Jahre du gerade verlierst und wie viele du zurückgewinnst, wenn du jetzt startest.</p>
+        <div class="badge va">Longevity-Check · Frauen und Männer ab 40</div>
+        <div class="badge vb">Longevity-Check · Für Frauen, die viel erreicht haben</div>
+        <h1 class="va">Wie alt ist dein Körper <em>wirklich</em>? Und wie viele gesunde Jahre holst du zurück?</h1>
+        <h1 class="vb">Du hast viel erreicht. Nur dein Körper hält nicht mehr <em>mit deinem Leben</em> mit.</h1>
+        <p class="sub va">Dein biologisches Alter sagt mehr aus als dein Geburtsdatum. In 3 Minuten siehst du, wie alt dein Körper wirklich ist, wie viele gesunde Jahre du gerade verlierst und wie viele du zurückgewinnst, wenn du jetzt startest.</p>
+        <p class="sub vb">Du hast lange zu viel gegeben und dich selbst hinten angestellt. Der Check zeigt dir in 3 Minuten, wie alt dein Körper wirklich ist, was dich dein aktueller Modus an Energie und gesunden Jahren kostet und mit welchem Hebel du dir beides zurückholst.</p>
 
-        <div class="symptoms reveal-stagger">
+        <div class="symptoms reveal-stagger va">
           <div class="sym"><div class="s-ic">🔋</div><div class="s-text">Nachmittags bist du leer, obwohl du genug geschlafen hast</div></div>
           <div class="sym"><div class="s-ic">😴</div><div class="s-text">Du wachst nachts auf und fühlst dich morgens nie erholt</div></div>
           <div class="sym"><div class="s-ic">🧠</div><div class="s-text">Konzentration und Gedächtnis lassen nach</div></div>
           <div class="sym"><div class="s-ic">⏳</div><div class="s-text">Du fühlst dich älter, als du bist</div></div>
         </div>
-        <p class="sym-hint">Erkennst du <b>2 oder mehr</b> wieder? Dann mach den Check jetzt.</p>
+        <div class="symptoms reveal-stagger vb">
+          <div class="sym"><div class="s-ic">🔋</div><div class="s-text">Der Kalender ist voll, aber dein Akku hält nicht mehr mit</div></div>
+          <div class="sym"><div class="s-ic">🌙</div><div class="s-text">Du funktionierst den ganzen Tag, abends bleibt für dich nichts übrig</div></div>
+          <div class="sym"><div class="s-ic">⏳</div><div class="s-text">Du leistest wie immer, aber die Erholung dauert länger als früher</div></div>
+          <div class="sym"><div class="s-ic">🪞</div><div class="s-text">Nach aussen alles im Griff, innerlich spürst du, dass etwas nicht stimmt</div></div>
+        </div>
+        <p class="sym-hint va">Erkennst du <b>2 oder mehr</b> wieder? Dann mach den Check jetzt.</p>
+        <p class="sym-hint vb">Du kümmerst dich um alles und alle. Diese 3 Minuten gehören nur dir. <b>Sei sie dir wert.</b></p>
 
         <!-- Warum jetzt? (Cost-of-Delay, direkt vor CTA) -->
-        <div class="why-now">
+        <div class="why-now va">
           <div class="wn-title">Warum jetzt und nicht „irgendwann"?</div>
           <ul class="wn-list">
             <li><b>Jedes Jahr zählt doppelt.</b> Die Jahre, die du jetzt verlierst, sind die gesunden Jahre am Ende, nicht irgendwelche.</li>
@@ -424,11 +457,20 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
             <li><b>Heute 3 Minuten.</b> Wenn du es jetzt nicht machst, weisst du in einem Jahr noch immer nicht, wo dein Körper steht.</li>
           </ul>
         </div>
+        <div class="why-now vb">
+          <div class="wn-title">Warum jetzt und nicht „irgendwann"?</div>
+          <ul class="wn-list">
+            <li><b>Du gibst seit Jahren.</b> Jedes weitere Jahr im selben Modus bezahlst du mit gesunden, energiegeladenen Jahren.</li>
+            <li><b>Je früher du misst, desto mehr holst du zurück.</b> Das Rückgewinn-Potenzial ist heute am grössten und schrumpft mit der Zeit.</li>
+            <li><b>3 Minuten nur für dich.</b> Wann hast du dir das zuletzt genommen?</li>
+          </ul>
+        </div>
 
         <div class="cta-wrap">
           <button class="cta-btn" onclick="startQuiz()">Bioalter berechnen, 3 Minuten →</button>
           <p class="cta-sub"><b>Kostenlos</b> <span class="dot">·</span> <b>Anonym</b> <span class="dot">·</span> <b>Keine Diagnose, nur Klarheit</b></p>
-          <p class="note-tag">Schon viel über Longevity gelesen? Der Check zeigt dir, worauf es bei DIR wirklich ankommt.</p>
+          <p class="note-tag va">Schon viel über Longevity gelesen? Der Check zeigt dir, worauf es bei DIR wirklich ankommt.</p>
+          <p class="note-tag vb">Kein Abnehmprogramm. Ein Standort-Check für Körper, Energie und die nächsten Jahrzehnte.</p>
         </div>
 
         <div class="proof-bar">
@@ -517,8 +559,29 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
         <p class="cta-sub"><b>3 Minuten</b> <span class="dot">·</span> <b>Kostenlos</b> <span class="dot">·</span> <b>Keine Diagnose</b></p>
       </div>
 
-      <!-- Transformationen -->
-      <div class="trans reveal">
+      <!-- Nur Variante b: Für wen / für wen nicht (Positionierung erfolgreiche Frauen, kein Abnehm-Frame) -->
+      <section class="vb reveal" style="margin: 32px 0;">
+        <h2 style="font-size:22px;font-weight:800;text-align:center;margin-bottom:6px;letter-spacing:-0.4px;">Für wen das hier ist. Und für wen nicht.</h2>
+        <p style="text-align:center;font-size:14px;color:var(--text-2);margin-bottom:16px;">Damit wir uns nicht falsch verstehen.</p>
+        <div style="max-width:520px;margin:0 auto;">
+          <div class="benefit" style="background:#fff7ed;border-color:#fed7aa;"><span class="ic" style="background:#fed7aa;color:#9a3412;">×</span><span>Nicht für Frauen, die gerade erst anfangen, ihr Leben aufzubauen.</span></div>
+          <div class="benefit" style="background:#fff7ed;border-color:#fed7aa;margin-top:10px;"><span class="ic" style="background:#fed7aa;color:#9a3412;">×</span><span>Nicht für Frauen, die ein Abnehmprogramm suchen.</span></div>
+          <div class="benefit" style="background:#fff7ed;border-color:#fed7aa;margin-top:10px;"><span class="ic" style="background:#fed7aa;color:#9a3412;">×</span><span>Nicht für Frauen, die sich mit dem Mittelweg zufriedengeben.</span></div>
+          <div class="benefit" style="margin-top:10px;"><span class="ic">✓</span><span><b>Sondern für Frauen, die schon sehr viel erreicht haben</b> und genau deshalb wissen, dass da noch mehr sein sollte: mehr Energie, mehr Klarheit, mehr gesunde Jahre.</span></div>
+        </div>
+      </section>
+
+      <!-- Nur Variante b: Selbstwert-Trigger vor dem CTA -->
+      <section class="vb reveal" style="margin: 32px 0;">
+        <div style="max-width:560px;margin:0 auto;background:var(--card);border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:var(--r);padding:22px 24px;box-shadow:var(--shadow-sm);">
+          <p style="font-size:15px;color:var(--text-2);line-height:1.7;margin-bottom:10px;">Du hast Karriere, Familie und Verantwortung gestemmt und dich selbst dabei auf später verschoben. Das Problem: Aus später ist irgendwann geworden. Und aus irgendwann wird nie.</p>
+          <p style="font-size:15px;color:var(--text-2);line-height:1.7;margin-bottom:10px;">In deinen Körper zu investieren ist kein Luxus und kein Egoismus. Es ist die Grundlage für alles, was du dir aufgebaut hast, und für alle, die sich auf dich verlassen.</p>
+          <p style="font-size:16px;font-weight:800;color:var(--text);">Du stehst bei allen anderen an erster Stelle. Zeit, dass du das auch bei dir selbst tust.</p>
+        </div>
+      </section>
+
+      <!-- Transformationen (nur Variante a, Abnehm-Vorher/Nachher passt nicht zum b-Frame) -->
+      <div class="trans reveal va">
         <div class="trans-title">Menschen, die ihren Körper zurückgeholt haben</div>
         <div class="trans-sub">Das Team hinter FitonTime begleitet seit 2016 über 4.000 Menschen in der Schweiz</div>
         <div class="trans-grid reveal-stagger">
@@ -561,11 +624,16 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
       <!-- FAQ -->
       <section class="faq">
         <h2 class="faq-title">Häufige Fragen</h2>
+        <details class="vb"><summary>Ich habe einen vollen Kalender. Wie viel Zeit brauche ich?</summary><p>Der Check dauert 3 Minuten. Alles, was danach kommt, ist dafür gebaut, in ein volles Leben zu passen: wenige klare Hebel statt Stunden-Programm. Was das für dich konkret heisst, klären wir im kostenfreien Erstgespräch.</p></details>
+        <details class="vb"><summary>Ist das ein Abnehmprogramm?</summary><p>Nein. Es geht um dein biologisches Alter: Energie, Schlaf, Kraft, Stress und Regeneration. Ein stabiles Gewicht ist oft eine Folge davon, aber nicht das Ziel.</p></details>
         <details><summary>Was ist das biologische Alter?</summary><p>Es beschreibt, wie alt dein Körper anhand von Energie, Schlaf, Muskeln, Stoffwechsel und Stress wirklich ist, unabhängig von deinem Geburtsdatum. Ein Alltagsmodell zur Standortbestimmung, kein medizinischer Diagnosebegriff.</p></details>
         <details><summary>Ist das ein ärztlicher Test?</summary><p>Nein. Es ist ein freiwilliger Selbsttest zur persönlichen Reflexion. Er stellt keine Diagnose und ersetzt keine medizinische Untersuchung. Bei gesundheitlichen Anliegen wende dich bitte an eine Ärztin oder einen Arzt.</p></details>
-        <details><summary>Für wen ist der Check?</summary><p>Für Frauen und Männer ab etwa 40, die fit, klar und beweglich alt werden wollen, statt das Älterwerden einfach hinzunehmen.</p></details>
-        <details><summary>Was passiert nach dem Test?</summary><p>Du erhältst dein Ergebnis sofort. Wenn du willst, buchst du im Anschluss ein kostenfreies Erstgespräch, in dem wir auf dein Ergebnis schauen und klären, ob und wie wir dir helfen können.</p></details>
-        <details><summary>Was kostet das?</summary><p>Der Check und das Erstgespräch sind kostenlos. Was eine Begleitung kostet, hängt von deiner Ausgangslage ab und besprechen wir, falls es passt, im Gespräch.</p></details>
+        <details class="va"><summary>Für wen ist der Check?</summary><p>Für Frauen und Männer ab etwa 40, die fit, klar und beweglich alt werden wollen, statt das Älterwerden einfach hinzunehmen.</p></details>
+        <details class="vb"><summary>Für wen ist der Check?</summary><p>Für Frauen ab etwa 40, die viel leisten und viel erreicht haben, und die spüren, dass Energie und Körper nicht mehr mithalten. Für Frauen, die es gewohnt sind, Dinge anzugehen, statt sie hinzunehmen.</p></details>
+        <details class="va"><summary>Was passiert nach dem Test?</summary><p>Du erhältst dein Ergebnis sofort. Wenn du willst, buchst du im Anschluss ein kostenfreies Erstgespräch, in dem wir auf dein Ergebnis schauen und klären, ob und wie wir dir helfen können.</p></details>
+        <details class="vb"><summary>Was passiert nach dem Test?</summary><p>Du erhältst dein Ergebnis sofort. Wenn du es ernst meinst, buchst du direkt im Anschluss dein kostenfreies Erstgespräch: 30 Minuten mit Fabian, in denen wir dein Ergebnis auswerten und du entscheidest, ob du es angehen willst.</p></details>
+        <details class="va"><summary>Was kostet das?</summary><p>Der Check und das Erstgespräch sind kostenlos. Was eine Begleitung kostet, hängt von deiner Ausgangslage ab und besprechen wir, falls es passt, im Gespräch.</p></details>
+        <details class="vb"><summary>Was kostet das?</summary><p>Der Check und das Erstgespräch kosten dich nichts ausser 3 Minuten plus 30 Minuten Ehrlichkeit mit dir selbst. Eine Begleitung danach ist eine Investition in dich und deine nächsten Jahrzehnte. Was sie kostet, besprechen wir im Gespräch, wenn es für beide Seiten passt.</p></details>
         <details><summary>Ich habe schon viel über Longevity gelesen.</summary><p>Gut. Der Check zeigt dir, welche der fünf Hebel bei DIR den grössten Unterschied machen, statt dass du dich weiter durch widersprüchliche Tipps wühlst.</p></details>
       </section>
 
@@ -881,12 +949,13 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
       var tries = 0;
       function fire() {
         if (window.__lp) {
-          window.__lp.track(e, Object.assign({ page: 'longevity' }, d || {}), 'fot', 'Longevity Check');
-          if (e === 'quiz_start') window.__lp.meta('ViewContent', { content_name: 'FoT Quiz Start', currency: 'EUR' });
-          if (e === 'quiz_complete') window.__lp.meta('CompleteRegistration', { content_name: 'FoT Quiz Complete', currency: 'EUR' });
+          var vv = window.__variant || 'a';
+          window.__lp.track(e, Object.assign({ page: 'longevity', variant: vv }, d || {}), 'fot', 'Longevity Check');
+          if (e === 'quiz_start') window.__lp.meta('ViewContent', { content_name: 'FoT Quiz Start', currency: 'EUR', variant: vv });
+          if (e === 'quiz_complete') window.__lp.meta('CompleteRegistration', { content_name: 'FoT Quiz Complete', currency: 'EUR', variant: vv });
           // value = geschaetzter Lead-Wert (reine Zahl, KEINE Gesundheitsdaten). Behebt Meta-Diagnose "gueltige Preisinfo".
           // PLATZHALTER 50 CHF: bei Bedarf auf euren realen Wert pro gebuchtem Erstgespraech aendern (muss mit CAPI in api/sheets.ts uebereinstimmen).
-          if (e === 'lead_submit') window.__lp.meta('Lead', { content_name: 'FoT Lead', value: 50, currency: 'CHF' });
+          if (e === 'lead_submit') window.__lp.meta('Lead', { content_name: 'FoT Lead', value: 50, currency: 'CHF', variant: vv });
         } else if (tries++ < 40) {
           setTimeout(fire, 50);
         }
@@ -1157,6 +1226,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
         lp_slug: 'longevity',
         lp_name: 'Longevity-Check v1',
         answers: Object.assign({}, quizAnswers, {
+          lp_variant: window.__variant || 'a',
           longevity_real_age: result.realAge,
           longevity_bio_age: result.bioAge,
           longevity_lost_years: result.lostYears,

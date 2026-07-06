@@ -165,7 +165,8 @@ const SHEETS: Record<string, SheetConfig> = {
   // Kritischer Hebel | Alter (Angabe) | Ziel | Lebensphase | Risikofaktoren
   'longevity': {
     id: '1d998DSbOB2u7s2l6jijdZXNZ9Z8x5LMK3DvHkwJVQcY',
-    range: 'Leads!A:N',
+    // Spalte O = A/B-Variante (a = Original, b = Reframe erfolgreiche Frauen, seit 06.07.)
+    range: 'Leads!A:O',
     buildRow: (datum, d) => {
       const a = d.answers || {};
       const vorname = (d.name || '').trim().split(/\s+/)[0] || '';
@@ -179,7 +180,8 @@ const SHEETS: Record<string, SheetConfig> = {
       const ziel = (a.q12 || '').replace(/\n+/g, ' ').slice(0, 500);
       const lebensphase = Array.isArray(a.q11_val) ? a.q11_val.join(', ') : (a.q11 || '');
       const risiko = Array.isArray(a.q9_val) ? a.q9_val.join(', ') : (a.q9 || '');
-      return [datum, vorname, d.email, d.phone || '', bioAge, realAge, lostYears, regainYears, stufeName, critDim, alter, ziel, lebensphase, risiko];
+      const variant = a.lp_variant || 'a';
+      return [datum, vorname, d.email, d.phone || '', bioAge, realAge, lostYears, regainYears, stufeName, critDim, alter, ziel, lebensphase, risiko, variant];
     },
   },
 };

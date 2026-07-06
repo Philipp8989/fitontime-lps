@@ -17,8 +17,22 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
 
+  <script is:inline>
+    // A/B-Variante von der Quiz-Seite uebernehmen (nur lesen, kein neues Zulosen)
+    (function(){
+      var v = null;
+      try { v = localStorage.getItem('fot_lp_variant'); } catch(e) {}
+      if (v !== 'b') v = 'a';
+      document.documentElement.setAttribute('data-variant', v);
+      window.__variant = v;
+    })();
+  </script>
+
   <style is:global>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    /* A/B-Varianten: a zeigt .va, b zeigt .vb */
+    html:not([data-variant="b"]) .vb { display: none !important; }
+    html[data-variant="b"] .va { display: none !important; }
     :root {
       --bg: #f5efe2;
       --card: #fffdf9;
@@ -238,14 +252,17 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
 
       <!-- BOOKING — Primary CTA -->
       <div class="booking fade-in" style="animation-delay:0.6s;">
-        <h3>Hol dir deine gesunden Jahre zurück</h3>
-        <p>Buch dein kostenfreies Erstgespräch. Wir schauen gemeinsam auf dein Ergebnis und klären, wie dein Weg aussieht. Unverbindlich.</p>
+        <h3 class="va">Hol dir deine gesunden Jahre zurück</h3>
+        <h3 class="vb">Jetzt bist du dran. Zum ersten Mal seit langem.</h3>
+        <p class="va">Buch dein kostenfreies Erstgespräch. Wir schauen gemeinsam auf dein Ergebnis und klären, wie dein Weg aussieht. Unverbindlich.</p>
+        <p class="vb">Buch dein kostenfreies Erstgespräch mit Fabian: 30 Minuten, in denen es ausschliesslich um dich geht. Kein Verkaufsgespräch, sondern der Termin, den du dir sonst nie nimmst.</p>
         <ul class="booking-value">
           <li>Was dein Bioalter konkret bedeutet, ehrlich eingeordnet.</li>
           <li>Welcher der fünf Hebel bei DIR zuerst dran ist.</li>
           <li>Die ersten konkreten Schritte, zum Mitnehmen.</li>
           <li>Ehrliche Einschätzung, ob und wie wir dir helfen können.</li>
         </ul>
+        <p class="vb" style="margin-top:14px;font-size:13.5px;color:var(--text-2);background:var(--accent-soft);border-radius:10px;padding:12px 14px;"><b>Ehrlich gesagt:</b> Buch den Termin nur, wenn du wirklich bereit bist, etwas zu verändern. Die Plätze pro Monat sind begrenzt, und sie sollen an Frauen gehen, die es ernst meinen. Wenn du das liest und spürst „das bin ich", dann such dir jetzt einen Termin aus.</p>
         <div class="ycbm-container" id="ycbm-container">
           <div style="padding:40px 20px;text-align:center;color:var(--text-3);font-size:13px;">
             Kalender lädt…
@@ -324,7 +341,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
       }).join('');
 
       if (window.__lp) {
-        window.__lp.track('thankyou_view', { bioAge: r.bioAge, stufe: r.stufe, crit: r.critDim }, 'fot', 'Longevity Result');
+        window.__lp.track('thankyou_view', { bioAge: r.bioAge, stufe: r.stufe, crit: r.critDim, variant: window.__variant || 'a' }, 'fot', 'Longevity Result');
       }
     }
 
@@ -378,7 +395,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
       iframe.setAttribute('allow', 'payment');
       container.innerHTML = '';
       container.appendChild(iframe);
-      if (window.__lp) window.__lp.track('booking_embed_loaded', { bioAge: r.bioAge }, 'fot', 'Longevity Result');
+      if (window.__lp) window.__lp.track('booking_embed_loaded', { bioAge: r.bioAge, variant: window.__variant || 'a' }, 'fot', 'Longevity Result');
     }
 
     // Konfetti-Burst — CSS-only Particles, generiert dynamisch
