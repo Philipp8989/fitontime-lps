@@ -34,7 +34,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
       --red: #dc2626;
       --text: #0f172a;
       --text-2: #475569;
-      --text-3: #94a3b8;
+      --text-3: #64748b; /* WCAG 4.5:1 auf hellem Grund, vorher #94a3b8 mit 10 axe-Violations */
       --r: 16px;
       --font: 'DM Sans', system-ui, -apple-system, sans-serif;
       --shadow-sm: 0 2px 8px rgba(15,23,42,0.04);
@@ -74,6 +74,15 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
     .hero h1 em::after { content: ''; position: absolute; left: -2px; right: -2px; bottom: 2px; height: 12px; background: linear-gradient(90deg, rgba(29,115,211,0.18) 0%, rgba(59,146,240,0.28) 100%); z-index: -1; border-radius: 4px; transform: skewX(-4deg); }
     .hero .sub { font-size: 16px; color: var(--text-2); margin-bottom: 10px; line-height: 1.5; max-width: 560px; margin-left: auto; margin-right: auto; }
     .hero .sub strong { color: var(--text); font-weight: 700; }
+
+    /* Typ-Teaser im Hero: Selbst-Identifikation als Quiz-Einstieg (Ad-Match zu den 3-Figuren-Ads) */
+    .type-teaser { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; max-width: 460px; margin: 20px auto 0; }
+    .type-card { background: var(--card); border: 2px solid var(--border); border-radius: 14px; padding: 10px 8px 12px; cursor: pointer; font-family: var(--font); transition: all 0.2s; box-shadow: var(--shadow-sm); -webkit-tap-highlight-color: transparent; }
+    .type-card:hover { border-color: var(--accent); transform: translateY(-3px); box-shadow: var(--shadow-md); }
+    .type-card:active { transform: scale(0.97); }
+    .type-card img { width: 100%; height: 96px; object-fit: contain; mix-blend-mode: multiply; }
+    .type-card span { display: block; margin-top: 6px; font-size: 13px; font-weight: 800; color: var(--text); }
+    .type-teaser-hint { font-size: 12px; color: var(--text-3); margin-top: 10px; font-weight: 600; }
 
     /* Proof unter Hero */
     .proof-bar { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 16px 0 6px; }
@@ -183,6 +192,16 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
 
     /* Formular (Opt-in) */
     .form { text-align: center; }
+    /* Ergebnis-Tease: teilverdecktes Resultat als Curiosity-Gap vor dem Opt-in */
+    .tease { display: flex; align-items: center; gap: 14px; max-width: 460px; margin: 0 auto 18px; background: var(--card); border: 2px solid var(--accent-soft); border-radius: 16px; padding: 14px 16px; text-align: left; position: relative; box-shadow: var(--shadow-sm); }
+    .tease-visual { width: 74px; height: 74px; flex-shrink: 0; background: #fff; border-radius: 12px; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+    .tease-visual img { width: 100%; height: 100%; object-fit: contain; filter: blur(7px); mix-blend-mode: multiply; }
+    .tease-label { display: block; font-size: 11px; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.5px; }
+    .tease-name { display: inline-block; margin-top: 4px; font-size: 17px; font-weight: 900; color: var(--text); background: linear-gradient(90deg, var(--border), var(--bg-soft)); color: transparent; border-radius: 6px; padding: 1px 8px; user-select: none; }
+    .tease-sub { display: block; margin-top: 4px; font-size: 12px; color: var(--text-2); }
+    .tease-lock { position: absolute; top: 12px; right: 14px; font-size: 16px; }
+    .field-hint { font-size: 11px; color: var(--text-3); text-align: left; max-width: 460px; margin: -4px auto 0; padding: 0 4px; line-height: 1.5; }
+    .cb-row.error { outline: 2px solid var(--red); outline-offset: 6px; border-radius: 6px; }
     .form .tag { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 700; color: var(--green); background: #ecfdf5; padding: 6px 12px; border-radius: 20px; margin-bottom: 12px; }
     .form h2 { font-size: 24px; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.3px; }
     .form .sub { font-size: 14px; color: var(--text-2); margin-bottom: 22px; line-height: 1.5; }
@@ -266,9 +285,25 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
       </div>
 
       <section class="hero">
-          <div class="badge">60-Sekunden-Test &middot; 45'000+ Frauen</div>
-          <h1>Warum bei dir bisher <em>keine Diät</em> wirklich funktioniert hat.</h1>
-          <p class="sub">In <strong>7 kurzen Fragen</strong> erfährst du deinen Stoffwechsel-Typ und was wirklich für dich funktioniert. <b>Ohne Verzicht. Ohne Jojo.</b></p>
+          <div class="badge">60-Sekunden-Test &middot; 45'000+ Teilnehmerinnen</div>
+          <h1>Welcher der 3 <em>Stoffwechsel-Typen</em> bist du?</h1>
+          <p class="sub">Finde in <strong>60 Sekunden</strong> heraus, warum bisher keine Diät bei dir funktioniert hat und was für deinen Typ wirklich wirkt. <b>Ohne Verzicht. Ohne Jojo.</b></p>
+
+        <div class="type-teaser" role="group" aria-label="Die 3 Stoffwechsel-Typen">
+          <button class="type-card" onclick="startQuiz()">
+            <img src="/images/bodytypes/zierlich.png" alt="Silhouette Typ Zierlich" />
+            <span>Zierlich</span>
+          </button>
+          <button class="type-card" onclick="startQuiz()">
+            <img src="/images/bodytypes/soft.png" alt="Silhouette Typ Soft" />
+            <span>Soft</span>
+          </button>
+          <button class="type-card" onclick="startQuiz()">
+            <img src="/images/bodytypes/staemmig.png" alt="Silhouette Typ Stämmig" />
+            <span>Stämmig</span>
+          </button>
+        </div>
+        <p class="type-teaser-hint">Jede Frau gehört zu einem Typ. Der Test zeigt dir deinen.</p>
 
         <div class="proof-bar">
           <div class="proof-avatars">
@@ -279,8 +314,13 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
           <div class="proof-info">
             <div class="proof-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
             <b>94% halten ihr Wunschgewicht</b> nach 12 Monaten
-            <div style="font-size:12px;color:var(--text-2);margin-top:4px;">Krankenkassen-anerkanntes Coaching &middot; 4'000+ Erfolge</div>
+            <div style="font-size:12px;color:var(--text-2);margin-top:4px;">Krankenkassen-anerkanntes Coaching &middot; 4'000+ Frauen begleitet</div>
           </div>
+        </div>
+
+        <div class="cta-wrap">
+          <button class="cta-btn" onclick="startQuiz()">Jetzt meinen Typ herausfinden &rarr;</button>
+          <p class="cta-sub"><b>&#128274; 100% kostenlos</b> <span class="dot">&middot;</span> <b>Nur 60 Sekunden</b> <span class="dot">&middot;</span> <b>Ergebnis sofort</b></p>
         </div>
 
         <div class="benefits">
@@ -288,11 +328,6 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
           <div class="benefit"><span class="ic">&#10003;</span><span>Dein Wunschgewicht, ohne Jojo-Effekt</span></div>
           <div class="benefit"><span class="ic">&#10003;</span><span>Alltagstauglich, auch bei viel Stress</span></div>
           <div class="benefit"><span class="ic">&#10003;</span><span>Ein individueller Plan für deinen Körper</span></div>
-        </div>
-
-        <div class="cta-wrap">
-          <button class="cta-btn" onclick="startQuiz()">Jetzt mein Stoffwechsel-Profil entdecken &rarr;</button>
-          <p class="cta-sub"><b>&#128274; 100% kostenlos</b> <span class="dot">&middot;</span> <b>Keine Anmeldung</b> <span class="dot">&middot;</span> <b>Ergebnis sofort</b></p>
         </div>
       </section>
 
@@ -461,20 +496,30 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
 
       <!-- Opt-in -->
       <div class="step form" data-s="form">
-        <div class="tag">&#10003; Fast geschafft</div>
-        <h2>Dein Ergebnis ist fertig.</h2>
-        <p class="sub">Trage dich ein, um dein <b>persönliches Stoffwechsel-Profil</b> und den Fahrplan zu sehen.</p>
+        <div class="tag">&#10003; Auswertung abgeschlossen</div>
+        <h2>Dein Stoffwechsel-Profil ist fertig.</h2>
+        <div class="tease">
+          <div class="tease-visual"><img id="teaseImg" src="/images/bodytypes/soft.png" alt="" /></div>
+          <div>
+            <span class="tease-label">Dein Stoffwechsel-Typ</span>
+            <span class="tease-name" aria-hidden="true">Verdeckt&nbsp;&nbsp;&nbsp;</span>
+            <span class="tease-sub">+ dein persönlicher Fahrplan</span>
+          </div>
+          <span class="tease-lock" aria-hidden="true">&#128274;</span>
+        </div>
+        <p class="sub">Trage dich ein, dein Ergebnis erscheint <b>sofort im nächsten Schritt</b>.</p>
         <div class="fields">
           <div class="field"><span class="ic" aria-hidden="true">&#128100;</span><input type="text" id="fn" placeholder="Dein Vor- und Nachname" autocomplete="name" aria-label="Vor- und Nachname" required /></div>
           <div class="field"><span class="ic" aria-hidden="true">&#128231;</span><input type="email" id="em" placeholder="Deine E-Mail-Adresse" autocomplete="email" aria-label="E-Mail-Adresse" required /></div>
           <div class="field"><span class="ic" aria-hidden="true">&#128222;</span><span class="pre">+41</span><input type="tel" id="ph" placeholder="Telefonnummer" autocomplete="tel-national" aria-label="Telefonnummer" required /></div>
         </div>
-        <p style="font-size:11px;color:var(--text-3);margin:-4px auto 14px;max-width:460px;text-align:center;">Kein Newsletter. Nur dein Ergebnis.</p>
-        <div class="cb-row">
+        <p class="field-hint">&#128222; Eine Ernährungsberaterin geht dein Ergebnis kurz und kostenlos mit dir durch, damit du weisst, was es für dich bedeutet.</p>
+        <p style="font-size:11px;color:var(--text-3);margin:10px auto 14px;max-width:460px;text-align:center;">Kein Newsletter, kein Spam. Nur dein Ergebnis und dein Fahrplan.</p>
+        <div class="cb-row" id="dsRow">
           <input type="checkbox" id="ds" />
           <label for="ds">Ich akzeptiere die <a href={datenschutzUrl} target="_blank" rel="noopener">Datenschutzbestimmungen</a> und erhalte mein Stoffwechsel-Profil per E-Mail.</label>
         </div>
-        <button class="submit" id="sbtn" disabled onclick="send()">Jetzt Ergebnis anzeigen &rarr;</button>
+        <button class="submit" id="sbtn" onclick="send()">Jetzt Ergebnis anzeigen &rarr;</button>
         <div class="form-proof">
           <div class="fp-row"><span>&#128274;</span> <b>SSL-verschlüsselt</b> &middot; Deine Daten bleiben bei uns.</div>
           <div class="fp-row"><span class="proof-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span> <b>45'000+ Frauen</b> haben ihr Ergebnis bereits erhalten</div>
@@ -595,6 +640,12 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
       setTimeout(function(){ document.getElementById('c1').classList.add('show'); }, 500);
       setTimeout(function(){ document.getElementById('c2').classList.add('show'); }, 1300);
       setTimeout(function(){ document.getElementById('c3').classList.add('show'); }, 2100);
+      // Tease-Bild auf den erkannten Typ setzen (bleibt geblurrt bis zum Opt-in)
+      var teaseTyp = quizAnswers.q7_val || 'soft';
+      if (!{ staemmig: 1, soft: 1, zierlich: 1 }[teaseTyp]) teaseTyp = 'soft';
+      var ti = document.getElementById('teaseImg');
+      if (ti) ti.src = '/images/bodytypes/' + teaseTyp + '.png';
+
       setTimeout(function(){
         show('form');
         document.getElementById('qp').textContent = 'Fast fertig';
@@ -602,7 +653,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
     }
 
     document.getElementById('ds').addEventListener('change', function(){
-      document.getElementById('sbtn').disabled = !this.checked;
+      if (this.checked) document.getElementById('dsRow').classList.remove('error');
     });
 
     function normalizePhone(raw) {
@@ -620,6 +671,12 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
         if (!fn) document.getElementById('fn').parentElement.style.borderColor = 'var(--red)';
         if (!em) document.getElementById('em').parentElement.style.borderColor = 'var(--red)';
         if (!ph) document.getElementById('ph').parentElement.style.borderColor = 'var(--red)';
+        return;
+      }
+      // Checkbox inline validieren statt Button tot zu schalten
+      if (!document.getElementById('ds').checked) {
+        document.getElementById('dsRow').classList.add('error');
+        document.getElementById('dsRow').scrollIntoView({ behavior: 'smooth', block: 'center' });
         return;
       }
       var btn = document.getElementById('sbtn');
