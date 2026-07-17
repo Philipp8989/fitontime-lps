@@ -132,8 +132,9 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
       <form class="optin" id="optinForm" novalidate>
         <input type="text" name="fname" placeholder="Dein Vorname" autocomplete="given-name" required />
         <input type="email" name="email" placeholder="Deine E-Mail-Adresse" autocomplete="email" required />
+        <input type="tel" name="phone" placeholder="Deine Handynummer" autocomplete="tel" required />
         <button class="btn" id="submitBtn" type="submit">Ja, zeig mir das Video →</button>
-        <p class="err" id="formErr">Bitte Vorname und eine gültige E-Mail-Adresse eintragen.</p>
+        <p class="err" id="formErr">Bitte Vorname, eine gültige E-Mail-Adresse und deine Handynummer eintragen.</p>
         <p class="privacy-note">100% kostenlos. Kein Spam. Mit dem Absenden akzeptierst du die <a href={DATENSCHUTZ_URL} target="_blank" rel="noopener">Datenschutzerklärung</a>.</p>
       </form>
     </div>
@@ -216,7 +217,8 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
       const fd = new FormData(form);
       const name = (fd.get('fname') || '').toString().trim();
       const email = (fd.get('email') || '').toString().trim();
-      if (!name || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      const phone = (fd.get('phone') || '').toString().trim();
+      if (!name || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || phone.replace(/\D/g, '').length < 7) {
         err.classList.add('show');
         return;
       }
@@ -226,7 +228,7 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
         const res = await fetch('/api/sheets', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, email, lp_slug: LP_SLUG, lp_name: LP_NAME, session, answers: {} }),
+          body: JSON.stringify({ name, email, phone, lp_slug: LP_SLUG, lp_name: LP_NAME, session, answers: {} }),
         });
         if (!res.ok) {
           const j = await res.json().catch(() => ({}));
