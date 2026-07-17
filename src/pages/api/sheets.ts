@@ -26,6 +26,16 @@ const SHEETS: Record<string, SheetConfig> = {
     range: 'Tabellenblatt1!A:C',
     buildRow: (datum, d) => [datum, d.name, d.email],
   },
+  // Bewerbungs-Funnel: schreibt ins Ab-40-Sheet (gleiches Angebot, gleicher Call).
+  // Spalten: Datum | Name | E-Mail | Telefon | Funnel-Marker | Situation | Ziel | Invest | Entscheidung
+  'stoffwechsel-bewerbung': {
+    id: '1VGtODlUlyWDftRYYf96JL_GhHTJxnPLwDBAqp_Dgbkc',
+    range: 'Tabellenblatt1!A:I',
+    buildRow: (datum, d) => {
+      const a = d.answers || {};
+      return [datum, d.name, d.email, d.phone || '', 'Bewerbung', a.situation || '', a.ziel || '', a.invest || '', a.entscheidung || ''];
+    },
+  },
   // Abnehmpotential-Sheet: Datum | Name | Telefon | Email
   'abnehmpotential': {
     id: '1Eyzi7Hh8e20UQx44b5fikCA6sN-wngJvO0I4k4flQUM',

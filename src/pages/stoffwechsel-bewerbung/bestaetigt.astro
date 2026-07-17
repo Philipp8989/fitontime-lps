@@ -1,0 +1,186 @@
+---
+// Bewerbungs-Funnel, Schritt 3: Bestätigung als Pre-Sell-Maschine
+// Gleiches Pattern wie ab-40/bestaetigt: 3-Schritte-Framing + Pre-Call-Video + Testimonials,
+// senkt No-Shows und bringt die Frau vorbereitet ins Gespräch.
+import CookieBanner from '../../components/CookieBanner.astro';
+
+const LP_SLUG = 'stoffwechsel-bewerbung';
+const LP_NAME = 'Stoffwechsel Bewerbungs-Funnel';
+const PIXEL_ID = (import.meta.env.PUBLIC_META_PIXEL_ID || '').trim();
+const HYROS_ID = (import.meta.env.PUBLIC_HYROS_ID || '').trim();
+const IMPRESSUM_URL = 'https://fitontime.ch/impressum-datenschutz';
+const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
+
+// Optional: kurzes Pre-Call-Video von Fabian ("Was dich im Gespräch erwartet")
+const PRECALL_EMBED = (import.meta.env.PUBLIC_FOT_AB40_PRECALL_URL || '').trim();
+---
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Termin bestätigt: deine nächsten Schritte | Fit on Time</title>
+  <link rel="icon" type="image/png" href="/images/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script is:inline src="https://t.hyros.com/v1/lst/universal-script?ph=689a71ca1ab3be1cb1caddbe6b7902a4ad2c51a228f4ec9ea7fef3123a705f63"></script>
+
+  <style is:global>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #fafaf8;
+      --accent: #2b7de9;
+      --green: #22c55e;
+      --amber: #f59e0b;
+      --text: #1a1a1a;
+      --text-2: #4a4a4a;
+      --text-3: #888;
+      --r: 14px;
+      --font: 'DM Sans', system-ui, -apple-system, sans-serif;
+    }
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+    body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.5; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    .wrap { max-width: 680px; margin: 0 auto; padding: 0 20px; }
+
+    .logo { text-align: center; padding: 16px 0 8px; }
+    .logo img { height: 40px; }
+
+    .hero { text-align: center; padding: 4px 0 12px; }
+    .hero .check { width: 62px; height: 62px; border-radius: 50%; background: var(--green); color: #fff; font-size: 30px; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; box-shadow: 0 6px 20px rgba(34,197,94,0.35); }
+    .hero h1 { font-size: 25px; font-weight: 800; line-height: 1.22; letter-spacing: -0.4px; margin-bottom: 8px; }
+    .hero .sub { font-size: 14.5px; color: var(--text-2); }
+
+    .steps-card { background: #fff; border: 1px solid #e8e4da; border-radius: var(--r); padding: 22px 20px; margin: 16px 0; box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
+    .steps-card h2 { font-size: 16px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; text-align: center; margin-bottom: 16px; color: var(--text-2); }
+    .stepline { display: flex; flex-direction: column; gap: 14px; }
+    .sl { display: flex; gap: 12px; align-items: flex-start; }
+    .sl .num { width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 800; }
+    .sl.done .num { background: var(--green); color: #fff; }
+    .sl.todo .num { background: #eef6ff; color: var(--accent); border: 2px solid var(--accent); }
+    .sl h3 { font-size: 15px; font-weight: 800; margin-bottom: 2px; }
+    .sl p { font-size: 13.5px; color: var(--text-2); line-height: 1.5; }
+    .sl p strong { color: var(--text); }
+
+    .video-shell { position: relative; border-radius: var(--r); overflow: hidden; background: #111; aspect-ratio: 16 / 9; box-shadow: 0 10px 34px rgba(0,0,0,0.16); margin: 14px 0; }
+    .video-shell iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+    .video-placeholder { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; color: #fff; text-align: center; padding: 20px; }
+    .video-placeholder .pp { width: 56px; height: 56px; border-radius: 50%; background: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 22px; }
+    .video-placeholder p { font-size: 13px; color: #ddd; max-width: 360px; }
+
+    .prep { display: flex; flex-direction: column; gap: 10px; margin: 14px 0; }
+    .prep-item { background: #fff; border: 1px solid #e8e4da; border-radius: 12px; padding: 13px 15px; display: flex; gap: 10px; align-items: flex-start; font-size: 14px; color: var(--text-2); line-height: 1.5; }
+    .prep-item .ic { flex-shrink: 0; }
+    .prep-item strong { color: var(--text); }
+
+    .sec-title { font-size: 20px; font-weight: 800; text-align: center; margin: 26px 0 4px; letter-spacing: -0.3px; }
+    .sec-sub { font-size: 13px; color: var(--text-3); text-align: center; margin-bottom: 14px; }
+    .trans-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+    .trans-grid img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 10px; background: #fff; }
+
+    .testis { display: flex; flex-direction: column; gap: 10px; margin: 16px 0 24px; }
+    .testi { background: #fff; border: 1px solid #e8e4da; border-radius: 12px; padding: 14px; }
+    .testi-stars { color: var(--amber); font-size: 11px; letter-spacing: 1px; margin-bottom: 4px; }
+    .testi-quote { font-size: 13.5px; color: var(--text-2); line-height: 1.55; margin-bottom: 6px; }
+    .testi-quote strong { color: var(--text); font-weight: 700; }
+    .testi-name { font-size: 11px; color: var(--text-3); font-weight: 600; }
+
+    footer { padding: 26px 16px 22px; text-align: center; color: var(--text-3); font-size: 11.5px; }
+    footer a { color: var(--text-3); }
+  </style>
+</head>
+<body>
+  <div class="logo"><img src="/images/logo.png" alt="Fit on Time" /></div>
+
+  <main class="wrap">
+    <section class="hero">
+      <div class="check">✓</div>
+      <h1>Deine Bewerbung ist angenommen, dein Termin steht!</h1>
+      <p class="sub">Du bekommst gleich eine Bestätigung per E-Mail. Aber warte: <strong>2 Dinge fehlen noch</strong>, damit dein Gespräch richtig wertvoll wird.</p>
+    </section>
+
+    <div class="steps-card">
+      <h2>Deine 3 Schritte</h2>
+      <div class="stepline">
+        <div class="sl done">
+          <div class="num">✓</div>
+          <div><h3>Schritt 1: Beworben und Termin gebucht</h3><p>Erledigt. Trag dir den Termin am besten sofort in deinen Kalender ein.</p></div>
+        </div>
+        <div class="sl todo">
+          <div class="num">2</div>
+          <div><h3>Schritt 2: Schau dir Fabians kurze Nachricht an</h3><p>Fabian erklärt dir in 3 Minuten, <strong>was im Gespräch passiert</strong> und wie du das Maximum herausholst.</p></div>
+        </div>
+        <div class="sl todo">
+          <div class="num">3</div>
+          <div><h3>Schritt 3: Erschein zu deinem Termin</h3><p>Nimm dir 30 ungestörte Minuten. <strong>Die Plätze sind begrenzt.</strong> Wenn du nicht kannst, verschieb den Termin bitte über den Link in der E-Mail.</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="video-shell">
+      {PRECALL_EMBED ? (
+        <iframe src={PRECALL_EMBED} allow="autoplay; fullscreen" allowfullscreen title="Was dich im Gespräch erwartet"></iframe>
+      ) : (
+        <div class="video-placeholder">
+          <div class="pp">▶</div>
+          <p><strong>Hier erscheint Fabians Pre-Call-Video</strong><br />„Was dich im Stoffwechsel-Check erwartet" (ca. 3 Minuten)</p>
+        </div>
+      )}
+    </div>
+
+    <div class="prep">
+      <div class="prep-item"><span class="ic">📝</span><span><strong>Überleg dir vorab:</strong> Was hast du schon alles versucht, und woran ist es jeweils gescheitert?</span></div>
+      <div class="prep-item"><span class="ic">🎯</span><span><strong>Dein Ziel:</strong> Wie willst du dich in 6 Monaten fühlen, wenn alles klappt?</span></div>
+      <div class="prep-item"><span class="ic">📵</span><span><strong>Im Gespräch:</strong> Sei an einem ruhigen Ort, ohne Ablenkung. Es geht um dich.</span></div>
+    </div>
+
+    <p class="sec-title">Diese Frauen sassen genau da, wo du jetzt sitzt</p>
+    <p class="sec-sub">Ihr erster Schritt war dasselbe Gespräch, das du gerade gebucht hast</p>
+    <div class="trans-grid">
+      <img src="/images/transformations/t5.jpg" alt="Transformation" loading="lazy" />
+      <img src="/images/transformations/t6.jpg" alt="Transformation" loading="lazy" />
+      <img src="/images/transformations/t9.jpg" alt="Transformation" loading="lazy" />
+    </div>
+
+    <div class="testis">
+      <div class="testi">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-quote">„Ich war vor dem Gespräch skeptisch, noch ein Coaching? Aber es war das erste Mal, dass mir jemand <strong>erklärt hat, warum</strong> bei mir nichts funktioniert hat. Keine Standardfloskeln."</p>
+        <p class="testi-name">Teilnehmerin aus dem FitonTime Coaching</p>
+      </div>
+      <div class="testi">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-quote">„<strong>Minus 11 Kilo in 7 Monaten</strong>, nach 5 Jahren Stillstand. Das Gespräch damals war der Wendepunkt."</p>
+        <p class="testi-name">Teilnehmerin aus dem FitonTime Coaching</p>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <a href={IMPRESSUM_URL} target="_blank" rel="noopener">Impressum</a> · <a href={DATENSCHUTZ_URL} target="_blank" rel="noopener">Datenschutz</a>
+  </footer>
+
+  <CookieBanner
+    metaPixelId={PIXEL_ID}
+    hyrosPh={HYROS_ID}
+    impressumUrl={IMPRESSUM_URL}
+    datenschutzUrl={DATENSCHUTZ_URL}
+    consentKey="fot_consent"
+  />
+
+  <script is:inline define:vars={{ LP_SLUG, LP_NAME }}>
+    const SESSION_KEY = 'fot_session';
+    let session = sessionStorage.getItem(SESSION_KEY);
+    if (!session) {
+      session = (crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2) + Date.now());
+      sessionStorage.setItem(SESSION_KEY, session);
+    }
+    const payload = JSON.stringify({ event: 'page_view', page: 'bestaetigt', lp: LP_SLUG, lp_name: LP_NAME, session });
+    try {
+      navigator.sendBeacon('/api/track', new Blob([payload], { type: 'application/json' }));
+    } catch (e) {
+      fetch('/api/track', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload, keepalive: true }).catch(() => {});
+    }
+  </script>
+</body>
+</html>
