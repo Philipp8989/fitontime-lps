@@ -20,6 +20,12 @@ const SHEETS: Record<string, SheetConfig> = {
       return [datum, d.name, d.email, d.phone || '', a.q1||'', a.q2||'', a.q3||'', a.q4||'', a.q5||'', a.q6||'', a.q7||'', a.q8||'', a.q9||''];
     },
   },
+  // Ab-40 VSL-Funnel: Datum | Name | E-Mail (Opt-in vor dem VSL, Qualifier-Antworten laufen als Events ins Dashboard)
+  'ab-40': {
+    id: '1VGtODlUlyWDftRYYf96JL_GhHTJxnPLwDBAqp_Dgbkc',
+    range: 'Tabellenblatt1!A:C',
+    buildRow: (datum, d) => [datum, d.name, d.email],
+  },
   // Abnehmpotential-Sheet: Datum | Name | Telefon | Email
   'abnehmpotential': {
     id: '1Eyzi7Hh8e20UQx44b5fikCA6sN-wngJvO0I4k4flQUM',

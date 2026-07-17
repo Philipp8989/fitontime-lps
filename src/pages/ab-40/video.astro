@@ -1,0 +1,282 @@
+---
+// VSL-Call-Funnel "Ab 40" — Schritt 2: VSL-Seite
+// Video oben, Qualifier-Checkbox vor dem Termin-CTA (Hyperscale-Pattern "If NO, do NOT book")
+// VSL_EMBED: Loom/Vimeo-Embed-URL eintragen, sobald Fabian das Video aufgenommen hat.
+import CookieBanner from '../../components/CookieBanner.astro';
+
+const LP_SLUG = 'ab-40';
+const LP_NAME = 'Ab-40 VSL Funnel';
+const PIXEL_ID = (import.meta.env.PUBLIC_META_PIXEL_ID || '').trim();
+const HYROS_ID = (import.meta.env.PUBLIC_HYROS_ID || '').trim();
+const IMPRESSUM_URL = 'https://fitontime.ch/impressum-datenschutz';
+const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
+
+// Loom: https://www.loom.com/embed/<id> · Vimeo: https://player.vimeo.com/video/<id>
+const VSL_EMBED = (import.meta.env.PUBLIC_FOT_AB40_VSL_URL || '').trim();
+---
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Der Speicher-Schalter: Das Video | Fit on Time</title>
+  <link rel="icon" type="image/png" href="/images/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script is:inline src="https://t.hyros.com/v1/lst/universal-script?ph=689a71ca1ab3be1cb1caddbe6b7902a4ad2c51a228f4ec9ea7fef3123a705f63"></script>
+
+  <style is:global>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #fafaf8;
+      --accent: #2b7de9;
+      --accent-dark: #1a5bb8;
+      --green: #22c55e;
+      --amber: #f59e0b;
+      --red: #ef4444;
+      --text: #1a1a1a;
+      --text-2: #4a4a4a;
+      --text-3: #888;
+      --r: 14px;
+      --font: 'DM Sans', system-ui, -apple-system, sans-serif;
+    }
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+    body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.5; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    .wrap { max-width: 680px; margin: 0 auto; padding: 0 20px; }
+
+    .logo { text-align: center; padding: 16px 0 8px; }
+    .logo img { height: 40px; }
+
+    .hero { text-align: center; padding: 4px 0 10px; }
+    .hero .greet { font-size: 14px; color: var(--text-3); margin-bottom: 6px; font-weight: 600; }
+    .hero h1 { font-size: 24px; font-weight: 800; line-height: 1.25; letter-spacing: -0.4px; margin-bottom: 8px; }
+    .hero h1 em { font-style: normal; color: var(--accent); }
+    .hero .sub { font-size: 14.5px; color: var(--text-2); }
+
+    .play-hint { display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 13px; font-weight: 700; color: var(--red); text-transform: uppercase; letter-spacing: 0.5px; margin: 10px 0 8px; }
+    .play-hint .arrow { animation: bounce 1.2s infinite; display: inline-block; }
+    @keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(4px); } }
+
+    .video-shell { position: relative; border-radius: var(--r); overflow: hidden; background: #111; aspect-ratio: 16 / 9; box-shadow: 0 10px 34px rgba(0,0,0,0.18); margin-bottom: 14px; }
+    .video-shell iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+    .video-placeholder { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; color: #fff; text-align: center; padding: 20px; }
+    .video-placeholder .pp { width: 68px; height: 68px; border-radius: 50%; background: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 26px; color: #fff; box-shadow: 0 6px 22px rgba(43,125,233,0.5); }
+    .video-placeholder p { font-size: 14px; color: #ddd; max-width: 380px; }
+
+    /* Der Schalter: Speichern → Verbrennen (Micro-Commitment nach dem Video) */
+    .switch-sec { background: #111; border-radius: var(--r); padding: 28px 20px 24px; margin: 22px 0; text-align: center; box-shadow: 0 10px 34px rgba(0,0,0,0.18); }
+    .switch-sec h2 { color: #fff; font-size: 20px; font-weight: 800; letter-spacing: -0.3px; margin-bottom: 4px; }
+    .switch-sec .sw-sub { color: #bbb; font-size: 13.5px; margin-bottom: 20px; line-height: 1.5; }
+    .switch-row { display: flex; align-items: center; justify-content: center; gap: 14px; user-select: none; }
+    .sw-label { font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; transition: all 0.3s; }
+    .sw-label.store { color: var(--red); }
+    .sw-label.burn { color: #555; }
+    .switch { position: relative; width: 108px; height: 56px; border-radius: 999px; background: var(--red); border: none; cursor: pointer; transition: background 0.35s; flex-shrink: 0; -webkit-tap-highlight-color: transparent; box-shadow: inset 0 2px 8px rgba(0,0,0,0.35); }
+    .switch .knob { position: absolute; top: 5px; left: 5px; width: 46px; height: 46px; border-radius: 50%; background: #fff; transition: transform 0.35s cubic-bezier(.34,1.56,.64,1); box-shadow: 0 3px 10px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; font-size: 20px; }
+    .switch.on { background: var(--green); }
+    .switch.on .knob { transform: translateX(52px); }
+    .switch-sec.flipped .sw-label.store { color: #555; }
+    .switch-sec.flipped .sw-label.burn { color: var(--green); }
+    .sw-hint { color: #888; font-size: 12px; margin-top: 14px; }
+    .sw-hint .arrow { display: inline-block; animation: bounce 1.2s infinite; }
+    .sw-done { display: none; color: #fff; font-size: 15px; font-weight: 700; margin-top: 14px; line-height: 1.5; }
+    .sw-done em { font-style: normal; color: var(--green); }
+    .switch-sec.flipped .sw-hint { display: none; }
+    .switch-sec.flipped .sw-done { display: block; animation: fadeUp 0.4s ease; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+    .cta-wrap { display: none; }
+    .cta-wrap.revealed { display: block; animation: fadeUp 0.45s ease; }
+
+    .cta-card { background: #fff; border: 1px solid #e8e4da; border-radius: var(--r); padding: 22px 20px; margin: 18px 0; box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
+    .cta-card h2 { font-size: 18px; font-weight: 800; text-align: center; margin-bottom: 6px; }
+    .cta-card .cc-sub { font-size: 13.5px; color: var(--text-2); text-align: center; margin-bottom: 14px; line-height: 1.5; }
+    .qualifier { display: flex; gap: 10px; align-items: flex-start; background: #fffbeb; border: 1px solid #fde68a; border-radius: 10px; padding: 12px 14px; margin-bottom: 14px; cursor: pointer; }
+    .qualifier input { width: 20px; height: 20px; margin-top: 2px; accent-color: var(--accent); flex-shrink: 0; cursor: pointer; }
+    .qualifier span { font-size: 13.5px; color: var(--text-2); line-height: 1.5; }
+    .qualifier strong { color: var(--text); }
+    .btn { display: block; width: 100%; background: var(--accent); color: #fff; border: none; border-radius: 999px; padding: 17px 28px; font: inherit; font-size: 17px; font-weight: 700; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 14px rgba(43,125,233,0.3); text-align: center; text-decoration: none; -webkit-tap-highlight-color: transparent; }
+    .btn:hover { background: var(--accent-dark); transform: translateY(-1px); }
+    .btn.locked { background: #b9c6d8; box-shadow: none; cursor: not-allowed; transform: none; }
+    .slots { font-size: 12px; color: var(--text-3); text-align: center; margin-top: 10px; }
+    .slots b { color: var(--amber); }
+
+    .stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin: 20px 0; }
+    .stat { background: #fff; border: 1px solid #e8e4da; border-radius: 12px; padding: 14px 6px; text-align: center; }
+    .stat .stat-num { font-size: 24px; font-weight: 800; color: var(--accent); letter-spacing: -0.5px; line-height: 1; }
+    .stat .stat-label { font-size: 10px; color: var(--text-3); margin-top: 5px; text-transform: uppercase; letter-spacing: 0.3px; font-weight: 600; }
+
+    .sec-title { font-size: 20px; font-weight: 800; text-align: center; margin: 26px 0 4px; letter-spacing: -0.3px; }
+    .sec-sub { font-size: 13px; color: var(--text-3); text-align: center; margin-bottom: 14px; }
+    .trans-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+    .trans-grid img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 10px; background: #fff; }
+
+    .testis { display: flex; flex-direction: column; gap: 10px; margin: 16px 0; }
+    .testi { background: #fff; border: 1px solid #e8e4da; border-radius: 12px; padding: 14px; }
+    .testi-stars { color: var(--amber); font-size: 11px; letter-spacing: 1px; margin-bottom: 4px; }
+    .testi-quote { font-size: 13.5px; color: var(--text-2); line-height: 1.55; margin-bottom: 6px; }
+    .testi-quote strong { color: var(--text); font-weight: 700; }
+    .testi-name { font-size: 11px; color: var(--text-3); font-weight: 600; }
+
+    footer { padding: 26px 16px 22px; text-align: center; color: var(--text-3); font-size: 11.5px; line-height: 1.6; }
+    footer a { color: var(--text-3); }
+    .disclaimer { max-width: 640px; margin: 0 auto 10px; font-size: 10.5px; color: #aaa; }
+
+    @media (max-width: 480px) { .hero h1 { font-size: 21px; } }
+  </style>
+</head>
+<body>
+  <div class="logo"><img src="/images/logo.png" alt="Fit on Time" /></div>
+
+  <main class="wrap">
+    <section class="hero">
+      <p class="greet" id="greet">Dein Video ist bereit</p>
+      <h1>Der <em>„Speicher-Schalter"</em>: Warum ab 40 nichts mehr funktioniert, was früher funktioniert hat</h1>
+      <p class="sub">Nimm dir 12 Minuten Zeit und schau das Video in Ruhe an. Es erklärt dir mehr über deinen Körper als die letzten 10 Diäten zusammen.</p>
+    </section>
+
+    <p class="play-hint"><span>Drück einfach auf Play</span> <span class="arrow">▼</span></p>
+
+    <div class="video-shell" id="videoShell">
+      {VSL_EMBED ? (
+        <iframe src={VSL_EMBED} allow="autoplay; fullscreen" allowfullscreen title="Der Speicher-Schalter"></iframe>
+      ) : (
+        <div class="video-placeholder">
+          <div class="pp">▶</div>
+          <p><strong>Video wird gerade produziert.</strong><br />Hier erscheint Fabians 12-Minuten-Video „Der Speicher-Schalter".</p>
+        </div>
+      )}
+    </div>
+
+    <div class="switch-sec" id="switchSec">
+      <h2>Jetzt bist du dran.</h2>
+      <p class="sw-sub">Du hast im Video gesehen, warum dein Schalter auf „Speichern" steht.<br />Triff jetzt die Entscheidung – und leg ihn um.</p>
+      <div class="switch-row">
+        <span class="sw-label store">Speichern</span>
+        <button class="switch" id="theSwitch" aria-label="Schalter umlegen: von Speichern auf Verbrennen">
+          <span class="knob">🔒</span>
+        </button>
+        <span class="sw-label burn">Verbrennen</span>
+      </div>
+      <p class="sw-hint">Tipp auf den Schalter <span class="arrow">→</span></p>
+      <p class="sw-done">Dein Schalter steht auf <em>„Verbrennen"</em>.<br />Jetzt lass uns dafür sorgen, dass er da auch bleibt. ↓</p>
+    </div>
+
+    <div class="cta-wrap" id="ctaWrap">
+    <div class="cta-card" id="cta">
+      <h2>Bereit für deinen Stoffwechsel-Test?</h2>
+      <p class="cc-sub">Im kostenlosen Gespräch (ca. 30 Minuten) testen wir gemeinsam, welche Blockade deinen Schalter festhält – und wie dein persönlicher 3-Phasen-Fahrplan aussieht. Kein Verkaufsdruck: Wenn es nicht passt, sagen wir dir das ehrlich.</p>
+      <label class="qualifier">
+        <input type="checkbox" id="qualifyCheck" />
+        <span><strong>Ja, ich bin eine Frau 35+ und bereit, etwas an meiner Situation zu ändern.</strong> Mir ist klar, dass professionelle Begleitung eine Investition in mich ist. Wenn das nicht auf dich zutrifft, buche bitte keinen Termin – die Plätze sind begrenzt.</span>
+      </label>
+      <a class="btn locked" id="bookBtn" href="/ab-40/termin">Kostenlosen Stoffwechsel-Test sichern →</a>
+      <p class="slots">Fabians Team führt nur <b>eine begrenzte Zahl an Gesprächen pro Woche</b>.</p>
+    </div>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><div class="stat-num">4.000+</div><div class="stat-label">Frauen begleitet</div></div>
+      <div class="stat"><div class="stat-num">97%</div><div class="stat-label">erreichen ihr Ziel</div></div>
+      <div class="stat"><div class="stat-num">94%</div><div class="stat-label">halten es nach 12 Mo.</div></div>
+    </div>
+
+    <p class="sec-title">Sie alle dachten: „Bei mir funktioniert nichts mehr"</p>
+    <p class="sec-sub">Bis sie verstanden haben, was ihr Körper wirklich braucht</p>
+    <div class="trans-grid">
+      <img src="/images/transformations/t5.jpg" alt="Transformation" loading="lazy" />
+      <img src="/images/transformations/t8.jpg" alt="Transformation" loading="lazy" />
+      <img src="/images/transformations/t9.jpg" alt="Transformation" loading="lazy" />
+    </div>
+
+    <div class="testis">
+      <div class="testi">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-quote">„Ich habe seit den Wechseljahren <strong>alles</strong> probiert. Erst hier habe ich verstanden, warum nichts funktioniert hat. <strong>Minus 9 Kilo</strong> – und ich esse mehr als vorher."</p>
+        <p class="testi-name">Teilnehmerin aus dem FitonTime Coaching</p>
+      </div>
+      <div class="testi">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-quote">„Keine Verbote, keine Punkte zählen, keine Spritze. Zum ersten Mal fühlt sich abnehmen <strong>nicht wie Kampf</strong> an."</p>
+        <p class="testi-name">Teilnehmerin aus dem FitonTime Coaching</p>
+      </div>
+    </div>
+
+    <div class="cta-card">
+      <h2>Dein nächster Schritt</h2>
+      <p class="cc-sub">Sichere dir jetzt deinen kostenlosen Stoffwechsel-Test, bevor die Termine der Woche vergeben sind.</p>
+      <a class="btn" href="#switchSec">Nach oben zum Schalter ↑</a>
+    </div>
+  </main>
+
+  <footer>
+    <p class="disclaimer">Die gezeigten Ergebnisse sind individuelle Erfahrungen und keine Erfolgsgarantie. Ergebnisse hängen von persönlichen Voraussetzungen, Ausgangslage und Mitarbeit ab. Kein Ersatz für ärztliche Beratung.</p>
+    <a href={IMPRESSUM_URL} target="_blank" rel="noopener">Impressum</a> · <a href={DATENSCHUTZ_URL} target="_blank" rel="noopener">Datenschutz</a>
+  </footer>
+
+  <CookieBanner
+    metaPixelId={PIXEL_ID}
+    hyrosPh={HYROS_ID}
+    impressumUrl={IMPRESSUM_URL}
+    datenschutzUrl={DATENSCHUTZ_URL}
+    consentKey="fot_consent"
+  />
+
+  <script is:inline define:vars={{ LP_SLUG, LP_NAME }}>
+    const SESSION_KEY = 'fot_session';
+    let session = sessionStorage.getItem(SESSION_KEY);
+    if (!session) {
+      session = (crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2) + Date.now());
+      sessionStorage.setItem(SESSION_KEY, session);
+    }
+    function track(event, extra) {
+      const payload = JSON.stringify(Object.assign({ event, lp: LP_SLUG, lp_name: LP_NAME, session }, extra || {}));
+      try {
+        if (navigator.sendBeacon) { navigator.sendBeacon('/api/track', new Blob([payload], { type: 'application/json' })); return; }
+      } catch (e) {}
+      fetch('/api/track', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload, keepalive: true }).catch(() => {});
+    }
+
+    track('page_view', { page: 'vsl' });
+
+    // Persönliche Begrüßung, wenn Opt-in-Daten vorhanden
+    try {
+      const lead = JSON.parse(sessionStorage.getItem('fot_ab40_lead') || 'null');
+      if (lead && lead.name) document.getElementById('greet').textContent = lead.name + ', dein Video ist bereit';
+    } catch (e) {}
+
+    // Der Schalter: Umlegen enthüllt den Termin-Block (Micro-Commitment)
+    const switchSec = document.getElementById('switchSec');
+    const theSwitch = document.getElementById('theSwitch');
+    const ctaWrap = document.getElementById('ctaWrap');
+    theSwitch.addEventListener('click', () => {
+      if (theSwitch.classList.contains('on')) return;
+      theSwitch.classList.add('on');
+      theSwitch.querySelector('.knob').textContent = '🔥';
+      switchSec.classList.add('flipped');
+      ctaWrap.classList.add('revealed');
+      track('schalter_umgelegt');
+      if (navigator.vibrate) navigator.vibrate(40);
+      setTimeout(() => { ctaWrap.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 650);
+    });
+
+    // Qualifier-Checkbox schaltet den Termin-Button frei
+    const check = document.getElementById('qualifyCheck');
+    const bookBtn = document.getElementById('bookBtn');
+    check.addEventListener('change', () => {
+      bookBtn.classList.toggle('locked', !check.checked);
+      if (check.checked) track('qualifier_checked');
+    });
+    bookBtn.addEventListener('click', (e) => {
+      if (!check.checked) {
+        e.preventDefault();
+        check.closest('.qualifier').style.outline = '2px solid var(--amber)';
+        setTimeout(() => { check.closest('.qualifier').style.outline = 'none'; }, 1200);
+        return;
+      }
+      track('vsl_cta_click');
+    });
+  </script>
+</body>
+</html>
