@@ -215,24 +215,13 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
     let ycbmLoaded = false;
     function loadYcbm() {
       // YouCanBook.me Embed-Script (rendert das Booking-Widget in #ycbmEmbed).
-      // Prefill aus dem Opt-in via URL-Parameter (YCBM Shorthand NAME/EMAIL).
+      // data-domain nimmt nur die Subdomain, KEIN Prefill-Query (das wuerde die URL brechen).
       if (ycbmLoaded) return;
       ycbmLoaded = true;
-      let domain = YCBM_DOMAIN;
-      try {
-        const lead = JSON.parse(sessionStorage.getItem('fot_ab40_lead') || 'null');
-        if (lead) {
-          const params = new URLSearchParams();
-          if (lead.name) params.set('NAME', lead.name);
-          if (lead.email) params.set('EMAIL', lead.email);
-          const qs = params.toString();
-          if (qs) domain += '/?' + qs;
-        }
-      } catch (e) {}
       const s = document.createElement('script');
       s.src = 'https://embed.ycb.me';
       s.async = true;
-      s.setAttribute('data-domain', domain);
+      s.setAttribute('data-domain', YCBM_DOMAIN);
       s.setAttribute('data-displaymode', 'auto');
       document.getElementById('ycbmEmbed').appendChild(s);
       // call_booked feuert auf /ab-40/bestaetigt (YCBM leitet nach Buchung dorthin weiter).
