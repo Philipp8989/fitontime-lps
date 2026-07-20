@@ -1,6 +1,6 @@
 ---
 // VSL-Call-Funnel "Ab 40", Schritt 1: Opt-in
-// Blueprint: Hyperscale-Analyse 07/2026 (Opt-in → VSL → Qualifier → Calendly → Bestätigt)
+// Blueprint: Hyperscale-Analyse 07/2026 (Opt-in → VSL → Qualifier → Booking → Bestätigt)
 // Headline-Formel: Callout + Ergebnis + ohne-Einwände, Mechanismus = "Speicher-Schalter"
 import CookieBanner from '../../components/CookieBanner.astro';
 
@@ -236,7 +236,7 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
         }
         track('lead_submit');
         if (window.__lp) window.__lp.meta('Lead', { content_name: 'FoT Ab-40 Lead', currency: 'CHF' });
-        // Name/E-Mail für VSL-Seite + Calendly-Prefill merken
+        // Name/E-Mail für VSL-Seite + Booking-Prefill merken
         sessionStorage.setItem('fot_ab40_lead', JSON.stringify({ name: name.split(' ')[0], email }));
         window.location.href = '/ab-40/video';
       } catch (ex) {

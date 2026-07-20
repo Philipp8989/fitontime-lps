@@ -1,14 +1,16 @@
 ---
-// VSL-Call-Funnel "Ab 40", Schritt 3: Qualifizierung + Calendly-Booking
+// VSL-Call-Funnel "Ab 40", Schritt 3: Qualifizierung + YouCanBook.me-Booking
 // 4 Pflichtfragen VOR dem Kalender (Hyperscale-Pattern: Application vor Booking),
-// Antworten gehen als Event ins Tracking, Calendly wird mit Name/E-Mail vorbefüllt.
+// Antworten gehen als Event ins Tracking. YCBM sendet kein Buchungs-Event (nur Hoehe),
+// daher leitet YCBM nach der Buchung auf /ab-40/bestaetigt weiter, wo call_booked feuert.
 import CookieBanner from '../../components/CookieBanner.astro';
 
 const LP_SLUG = 'ab-40';
 const LP_NAME = 'Ab-40 VSL Funnel';
 const PIXEL_ID = (import.meta.env.PUBLIC_META_PIXEL_ID || '').trim();
 const HYROS_ID = (import.meta.env.PUBLIC_HYROS_ID || '').trim();
-const CALENDAR_URL = (import.meta.env.PUBLIC_FOT_CALENDAR_URL || 'https://calendly.com/fitontime/abnehm-strategie').trim();
+// YouCanBook.me Subdomain (data-domain aus dem Embed-Snippet)
+const YCBM_DOMAIN = (import.meta.env.PUBLIC_FOT_YCBM_DOMAIN || 'fitontime-analyse-fot-vsl').trim();
 const IMPRESSUM_URL = 'https://fitontime.ch/impressum-datenschutz';
 const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
 ---
@@ -76,7 +78,7 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
     .cal-head h2 { font-size: 19px; font-weight: 800; margin-bottom: 4px; }
     .cal-head p { font-size: 13px; color: var(--text-2); }
     .cal-note { font-size: 12px; color: var(--text-3); text-align: center; margin-top: 4px; }
-    #calendlyEmbed { min-height: 760px; }
+    #ycbmEmbed { min-height: 760px; }
 
     footer { padding: 26px 16px 22px; text-align: center; color: var(--text-3); font-size: 11.5px; }
     footer a { color: var(--text-3); }
@@ -160,7 +162,7 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
         <h2>Such dir jetzt deinen Wunschtermin aus</h2>
         <p>Das Gespräch dauert ca. 30 Minuten und findet per Telefon oder Zoom statt.</p>
       </div>
-      <div id="calendlyEmbed"></div>
+      <div id="ycbmEmbed"></div>
       <p class="cal-note">Der Kalender kann einen Moment zum Laden brauchen.</p>
     </div>
   </main>
@@ -177,7 +179,7 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
     consentKey="fot_consent"
   />
 
-  <script is:inline define:vars={{ LP_SLUG, LP_NAME, CALENDAR_URL }}>
+  <script is:inline define:vars={{ LP_SLUG, LP_NAME, YCBM_DOMAIN }}>
     const SESSION_KEY = 'fot_session';
     let session = sessionStorage.getItem(SESSION_KEY);
     if (!session) {
@@ -210,40 +212,33 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
       window.scrollTo({ top: 0, behavior: 'instant' });
     }
 
-    function loadCalendly() {
-      // Calendly-Inline-Widget mit Prefill aus dem Opt-in
-      let prefill = '';
+    let ycbmLoaded = false;
+    function loadYcbm() {
+      // YouCanBook.me Embed-Script (rendert das Booking-Widget in #ycbmEmbed).
+      // Prefill aus dem Opt-in via URL-Parameter (YCBM Shorthand NAME/EMAIL).
+      if (ycbmLoaded) return;
+      ycbmLoaded = true;
+      let domain = YCBM_DOMAIN;
       try {
         const lead = JSON.parse(sessionStorage.getItem('fot_ab40_lead') || 'null');
         if (lead) {
           const params = new URLSearchParams();
-          if (lead.name) params.set('name', lead.name);
-          if (lead.email) params.set('email', lead.email);
-          params.set('utm_source', 'ab-40-funnel');
-          prefill = '?' + params.toString();
+          if (lead.name) params.set('NAME', lead.name);
+          if (lead.email) params.set('EMAIL', lead.email);
+          const qs = params.toString();
+          if (qs) domain += '/?' + qs;
         }
       } catch (e) {}
       const s = document.createElement('script');
-      s.src = 'https://assets.calendly.com/assets/external/widget.js';
+      s.src = 'https://embed.ycb.me';
       s.async = true;
-      document.head.appendChild(s);
-      const div = document.getElementById('calendlyEmbed');
-      div.className = 'calendly-inline-widget';
-      div.dataset.url = CALENDAR_URL + prefill;
-      div.style.minWidth = '300px';
-      div.style.height = '760px';
+      s.setAttribute('data-domain', domain);
+      s.setAttribute('data-displaymode', 'auto');
+      document.getElementById('ycbmEmbed').appendChild(s);
+      // call_booked feuert auf /ab-40/bestaetigt (YCBM leitet nach Buchung dorthin weiter).
+      // Qualifizierungs-Antworten fuer das dortige Event zwischenspeichern.
+      try { sessionStorage.setItem('fot_ab40_answers', JSON.stringify(answers)); } catch (e) {}
     }
-
-    // Booking-Event von Calendly abfangen → Tracking + Weiterleitung auf Bestätigungsseite
-    window.addEventListener('message', (e) => {
-      if (e.origin.indexOf('calendly.com') === -1) return;
-      const type = e.data && e.data.event;
-      if (type === 'calendly.event_scheduled') {
-        track('call_booked', answers);
-        if (window.__lp) window.__lp.meta('Schedule', { content_name: 'FoT Ab-40 Call' });
-        setTimeout(() => { window.location.href = '/ab-40/bestaetigt'; }, 1500);
-      }
-    });
 
     document.querySelectorAll('.answer').forEach((btn) => {
       btn.addEventListener('click', () => {
@@ -262,7 +257,7 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
         } else {
           track('qualify_complete', answers);
           show(5);
-          loadCalendly();
+          loadYcbm();
         }
       });
     });
