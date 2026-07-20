@@ -1,5 +1,5 @@
 ---
-// VSL-Call-Funnel "Ab 40" — Schritt 1: Opt-in
+// VSL-Call-Funnel "Ab 40", Schritt 1: Opt-in
 // Blueprint: Hyperscale-Analyse 07/2026 (Opt-in → VSL → Qualifier → Calendly → Bestätigt)
 // Headline-Formel: Callout + Ergebnis + ohne-Einwände, Mechanismus = "Speicher-Schalter"
 import CookieBanner from '../../components/CookieBanner.astro';
@@ -115,8 +115,8 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
     <p class="eyebrow">Für Frauen ab 40, die trotz allem nicht abnehmen</p>
 
     <section class="hero">
-      <h1>Warum dein Körper auf <em>„Speichern"</em> geschaltet hat, obwohl du alles richtig machst – und wie über 4.000 Frauen den Schalter wieder umgelegt haben</h1>
-      <p class="sub">Das kostenlose Video (ca. 12 Minuten) zeigt dir, was Diäten, Sport und Kalorienzählen ab 40 <strong>nicht mehr</strong> für dich tun können – und was stattdessen funktioniert. <strong>Ohne Diät, ohne Spritze, ohne Verzicht.</strong></p>
+      <h1>Warum dein Körper auf <em>„Speichern"</em> geschaltet hat, obwohl du alles richtig machst. Und wie über 4.000 Frauen den Schalter wieder umgelegt haben</h1>
+      <p class="sub">Das kostenlose Video (ca. 12 Minuten) zeigt dir, was Diäten, Sport und Kalorienzählen ab 40 <strong>nicht mehr</strong> für dich tun können, und was stattdessen funktioniert. <strong>Ohne Diät, ohne Spritze, ohne Verzicht.</strong></p>
     </section>
 
     <div class="proof-bar">
@@ -140,9 +140,9 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
     </div>
 
     <div class="bullets">
-      <div class="bullet"><span class="ic">✓</span><span><strong>Der „Speicher-Schalter":</strong> Was in deinem Stoffwechsel ab 40 wirklich passiert – und warum ausgerechnet Kaloriendefizit ihn noch fester zudreht.</span></div>
+      <div class="bullet"><span class="ic">✓</span><span><strong>Der „Speicher-Schalter":</strong> Was in deinem Stoffwechsel ab 40 wirklich passiert, und warum ausgerechnet Kaloriendefizit ihn noch fester zudreht.</span></div>
       <div class="bullet"><span class="ic">✓</span><span><strong>Die 3 Phasen des Fettstoffwechsels:</strong> Der Grund, warum 4.000+ Frauen bei uns abnehmen, obwohl vorher „nichts mehr funktioniert" hat.</span></div>
-      <div class="bullet"><span class="ic">✓</span><span><strong>Die Spritzen-Wahrheit:</strong> Was dir zu Abnehmspritzen niemand sagt – und warum der Jojo danach härter zurückkommt als je zuvor.</span></div>
+      <div class="bullet"><span class="ic">✓</span><span><strong>Die Spritzen-Wahrheit:</strong> Was dir zu Abnehmspritzen niemand sagt, und warum der Jojo danach härter zurückkommt als je zuvor.</span></div>
     </div>
 
     <section class="trans">
@@ -200,7 +200,7 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
     track('page_view', { page: 'optin' });
 
     // Feld-Fortschritt ohne PII: welche Felder ausgefüllt wurden, nicht deren Inhalt
-    // (bewusst KEIN Partial-Lead-Capture mit Klardaten vor dem Absenden — DSGVO)
+    // (bewusst KEIN Partial-Lead-Capture mit Klardaten vor dem Absenden, DSGVO)
     document.querySelectorAll('#optinForm input').forEach((el) => {
       el.addEventListener('blur', () => {
         if (el.value.trim()) track('field_filled', { field: el.name });
