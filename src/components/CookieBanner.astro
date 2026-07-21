@@ -192,11 +192,28 @@ const {
       return { consent: consented(), event_id: pendingLeadEid, fbp: readCookie('_fbp'), fbc: readCookie('_fbc') };
     }
 
+    // Hyros Auto-Capture AUS: Universal-Script sendet getippte E-Mails/Telefone sonst
+    // schon bei Eingabe (change/keyup) an Hyros — auch bei Formular-Abbrechern.
+    // Inputs mit Klasse "hyros-ignore" werden vom Script komplett uebersprungen.
+    // Lead-Meldung an Hyros passiert stattdessen submit-only im fetch-Wrapper unten.
+    function hyrosShield() {
+      var list = document.querySelectorAll('input:not(.hyros-ignore)');
+      for (var i = 0; i < list.length; i++) list[i].classList.add('hyros-ignore');
+    }
+    hyrosShield();
+    document.addEventListener('DOMContentLoaded', hyrosShield);
+    try {
+      new MutationObserver(hyrosShield).observe(document.documentElement, { childList: true, subtree: true });
+    } catch (e) {}
+
     // fetch-Wrapper: haengt {meta:...} automatisch an jeden /api/sheets-POST (Server-CAPI braucht event_id+consent).
+    // Zusaetzlich: Hyros-Lead erst NACH erfolgreichem Insert melden (hyros_email-Event,
+    // wird vom Universal-Script validiert und als Lead angelegt; Telefon via window.hrs).
     if (!window.__lpFetchPatched) {
       window.__lpFetchPatched = true;
       var origFetch = window.fetch;
       window.fetch = function (input, init) {
+        var hyrosLead = null;
         try {
           var url = typeof input === 'string' ? input : (input && input.url) || '';
           var opts = init || (typeof input === 'object' ? input : null);
@@ -204,9 +221,18 @@ const {
               typeof opts.body === 'string' && opts.body.charAt(0) === '{') {
             var b = JSON.parse(opts.body);
             if (b && !b.meta) { b.meta = capiMetaObj(); opts.body = JSON.stringify(b); }
+            if (b && b.email) hyrosLead = { email: String(b.email), phone: String(b.phone || '') };
           }
         } catch (e) {}
-        return origFetch.apply(this, arguments);
+        var p = origFetch.apply(this, arguments);
+        if (hyrosLead) {
+          p.then(function (res) {
+            if (!res || !res.ok) return;
+            try { window.dispatchEvent(new CustomEvent('hyros_email', { detail: { email: hyrosLead.email } })); } catch (e) {}
+            try { if (hyrosLead.phone && window.hrs) window.hrs.addLeadPhone(hyrosLead.phone); } catch (e) {}
+          }, function () {});
+        }
+        return p;
       };
     }
 
