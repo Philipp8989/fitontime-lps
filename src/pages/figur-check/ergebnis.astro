@@ -354,6 +354,18 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
     .v2-symptom p { font-size: 13.5px; color: var(--text-2); line-height: 1.5; }
     .v2-symptom p b { color: var(--text); font-weight: 600; }
 
+    /* VSL Video-Auswertung */
+    .vsl-box { background: var(--surface); border: 1px solid var(--surface-2); border-radius: var(--r); padding: 18px 16px; margin-top: 16px; text-align: center; }
+    .vsl-badge { display: inline-block; background: rgba(196,105,122,0.15); color: var(--accent); font-size: 11px; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase; padding: 4px 12px; border-radius: 999px; margin-bottom: 10px; }
+    .vsl-box h3 { font-size: 17px; font-weight: 800; letter-spacing: -0.3px; line-height: 1.3; margin-bottom: 6px; }
+    .vsl-sub { font-size: 13px; color: var(--text-2); line-height: 1.5; margin-bottom: 14px; }
+    .vsl-frame { position: relative; width: 100%; aspect-ratio: 4 / 3; border-radius: 10px; overflow: hidden; background: #000; margin-bottom: 14px; }
+    .vsl-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+    .vsl-points { list-style: none; display: flex; flex-direction: column; gap: 8px; text-align: left; margin-bottom: 12px; }
+    .vsl-points li { display: flex; align-items: flex-start; gap: 10px; font-size: 13px; color: var(--text-2); line-height: 1.45; }
+    .vsl-points li .pic { flex-shrink: 0; width: 20px; height: 20px; border-radius: 50%; background: rgba(74,222,128,0.12); color: var(--green); display: flex; align-items: center; justify-content: center; font-size: 12px; margin-top: 1px; }
+    .vsl-note { font-size: 12px; color: var(--text-3); line-height: 1.5; }
+
     .bundle-box { background: var(--surface); border: 1.5px solid var(--accent); border-radius: var(--r); padding: 22px 18px 18px; margin-top: 20px; position: relative; box-shadow: 0 8px 28px rgba(196,105,122,0.18); text-align: center; }
     .bundle-badge { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--accent); color: #fff; padding: 5px 14px; border-radius: 999px; font-size: 11px; font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase; white-space: nowrap; }
     .bundle-box h3 { font-size: 17px; font-weight: 800; margin-bottom: 6px; letter-spacing: -0.3px; line-height: 1.3; }
@@ -386,6 +398,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
     #ycbm-container-v2 { background: #fff; border-radius: 10px; min-height: 480px; overflow: hidden; margin-top: 20px; }
 
     @media (min-width: 600px) {
+      .vsl-box { max-width: 520px; margin-left: auto; margin-right: auto; padding: 22px 20px; }
       .bundle-box { max-width: 520px; margin-left: auto; margin-right: auto; }
       .v2-symptoms { max-width: 520px; margin-left: auto; margin-right: auto; }
       .v2-sec-title { max-width: 520px; margin-left: auto; margin-right: auto; }
@@ -669,7 +682,22 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
           </div>
         </div>
 
-        <div class="v2-sec-title">Symptome:</div>
+        <div class="vsl-box">
+          <span class="vsl-badge">&#9654; Deine persönliche Video-Auswertung</span>
+          <h3>Was dein Blockade-Grad wirklich bedeutet</h3>
+          <p class="vsl-sub">Fabian erklärt dir in dieser Auswertung, warum dein Körper trotz gesunder Ernährung jedes Kilo festhält und wie sich die Schilddrüsen-Bremse wieder lösen lässt. Schau dir das Video an, bevor du unten deinen Termin wählst.</p>
+          <div class="vsl-frame">
+            <iframe id="vsl-video" src="https://www.loom.com/embed/24e3ed9d9741469abd06ff8bccf0d4f7?hide_owner=true&amp;hide_share=true&amp;hide_title=true&amp;hideEmbedTopBar=true" allowfullscreen loading="lazy" title="Deine Video-Auswertung"></iframe>
+          </div>
+          <ul class="vsl-points">
+            <li><span class="pic">&#10003;</span>Warum weniger essen und mehr Sport die Blockade bisher nur fester gezogen haben</li>
+            <li><span class="pic">&#10003;</span>Die 3 Anzeichen der Schilddrüsen-Bremse und welche davon bei dir aktiv sind</li>
+            <li><span class="pic">&#10003;</span>Der 3-Säulen-Ansatz, mit dem dein Stoffwechsel wieder für dich arbeitet, ohne Hunger, ohne Verzicht</li>
+          </ul>
+          <p class="vsl-note">Danach gehen wir im kostenlosen Erstgespräch gemeinsam durch, wie das bei dir konkret aussieht.</p>
+        </div>
+
+        <div class="v2-sec-title">Das hat deine Auswertung ergeben:</div>
         <div class="v2-symptoms">
           <div class="v2-symptom"><span class="ic">&#10005;</span><p>Du fühlst Dich <b>ständig müde</b>, egal wie lange Du schläfst.</p></div>
           <div class="v2-symptom"><span class="ic">&#10005;</span><p>Deine <b>Energie ist im Keller</b>, besonders am Nachmittag.</p></div>
@@ -687,7 +715,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
 
           <div class="countdown" id="v2-countdown">
             <div class="cd-cell"><div class="cd-num" id="cd-h">00</div><div class="cd-lbl">Stunden</div></div>
-            <div class="cd-cell"><div class="cd-num" id="cd-m">07</div><div class="cd-lbl">Minuten</div></div>
+            <div class="cd-cell"><div class="cd-num" id="cd-m">24</div><div class="cd-lbl">Minuten</div></div>
             <div class="cd-cell"><div class="cd-num" id="cd-s">00</div><div class="cd-lbl">Sekunden</div></div>
           </div>
 
@@ -969,16 +997,18 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
     }
 
     function v2StartCountdown() {
-      // 8-Minuten Urgency-Timer (per Session resetbar)
+      // 25-Minuten Urgency-Timer: laenger als das VSL (ca. 17 Min), damit er
+      // nicht ablaeuft, bevor das Video fertig geschaut ist (per Session resetbar)
+      var CD_MS = 25 * 60 * 1000;
       var deadline;
       try {
-        var stored = sessionStorage.getItem('sd_cd_deadline');
+        var stored = sessionStorage.getItem('sd_cd_deadline_v2');
         deadline = stored ? parseInt(stored, 10) : 0;
         if (!deadline || deadline < Date.now()) {
-          deadline = Date.now() + 8 * 60 * 1000;
-          sessionStorage.setItem('sd_cd_deadline', String(deadline));
+          deadline = Date.now() + CD_MS;
+          sessionStorage.setItem('sd_cd_deadline_v2', String(deadline));
         }
-      } catch(e) { deadline = Date.now() + 8 * 60 * 1000; }
+      } catch(e) { deadline = Date.now() + CD_MS; }
       function pad(n) { return n < 10 ? '0' + n : '' + n; }
       function tick() {
         var ms = Math.max(0, deadline - Date.now());
@@ -996,6 +1026,18 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
       }
       tick();
     }
+
+    // VSL im Viewport = vsl_view (einmalig), damit messbar ist wie viele das Video ueberhaupt sehen
+    (function () {
+      var el = document.getElementById('vsl-video');
+      if (!el || !('IntersectionObserver' in window)) return;
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+          if (en.isIntersecting) { tk('vsl_view'); io.disconnect(); }
+        });
+      }, { threshold: 0.5 });
+      io.observe(el);
+    })();
 
     function v2ScrollToBooking() {
       tk('v2_bundle_cta_click');
