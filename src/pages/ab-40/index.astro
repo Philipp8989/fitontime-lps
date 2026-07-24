@@ -238,7 +238,7 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
         }
         track('lead_submit');
         if (window.__lp) window.__lp.meta('Lead', { content_name: 'FoT Ab-40 Lead', currency: 'CHF' });
-        if (window.__lp) window.__lp.google('generate_lead');
+        if (window.__lp) window.__lp.google('generate_lead', 'j12JCMr5-9UcEOfryccD');
         // Name/E-Mail für VSL-Seite + Booking-Prefill merken
         sessionStorage.setItem('fot_ab40_lead', JSON.stringify({ name: name.split(' ')[0], email }));
         window.location.href = '/ab-40/video';
