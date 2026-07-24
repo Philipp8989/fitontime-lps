@@ -9,6 +9,7 @@ const LP_SLUG = 'ab-40';
 const LP_NAME = 'Ab-40 VSL Funnel';
 const PIXEL_ID = (import.meta.env.PUBLIC_META_PIXEL_ID || '').trim();
 const HYROS_ID = (import.meta.env.PUBLIC_HYROS_ID || '').trim();
+const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').trim();
 // YouCanBook.me Subdomain (data-domain aus dem Embed-Snippet)
 const YCBM_DOMAIN = (import.meta.env.PUBLIC_FOT_YCBM_DOMAIN || 'fitontime-analyse-fot-vsl').trim();
 const IMPRESSUM_URL = 'https://fitontime.ch/impressum-datenschutz';
@@ -174,6 +175,7 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
   <CookieBanner
     metaPixelId={PIXEL_ID}
     hyrosPh={HYROS_ID}
+    googleAdsId={GOOGLE_ADS_ID}
     impressumUrl={IMPRESSUM_URL}
     datenschutzUrl={DATENSCHUTZ_URL}
     consentKey="fot_consent"

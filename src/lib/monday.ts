@@ -100,7 +100,13 @@ export async function pushBewerberToMonday(input: BewerberInput): Promise<{ id: 
   if (!itemId) throw new Error('create_item lieferte keine id');
 
   // Quiz-Antworten als Update anhaengen (nur wenn vorhanden).
+  // Kontaktdaten bewusst mit ins Update schreiben: stehen zwar auch in den
+  // Spalten (E-Mail/Telefon), die sind aber je nach Board-Ansicht ausgeblendet.
+  // Im Update sind sie immer sichtbar.
   const lines = [
+    `Name: ${input.fullName}`,
+    `E-Mail: ${input.email}`,
+    input.phone ? `Telefon: ${input.phone}` : '',
     `Quelle: ${input.funnelLabel} (${input.slug})`,
     input.q1 ? `Frage 1: ${input.q1}` : '',
     input.q2 ? `Frage 2: ${input.q2}` : '',

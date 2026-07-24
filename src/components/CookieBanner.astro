@@ -5,6 +5,7 @@
 export interface Props {
   metaPixelId?: string;
   hyrosPh?: string;
+  googleAdsId?: string;
   impressumUrl: string;
   datenschutzUrl: string;
   consentKey?: string;
@@ -12,6 +13,7 @@ export interface Props {
 const {
   metaPixelId = '',
   hyrosPh = '',
+  googleAdsId = '',
   impressumUrl,
   datenschutzUrl,
   consentKey = 'lp_consent',
@@ -22,7 +24,7 @@ const {
     <div class="cc-text">
       <h3>Cookies & Tracking</h3>
       <p>
-        Wir verwenden Cookies und Tracking-Tools (Meta, Hyros), um unsere Angebote zu verbessern und
+        Wir verwenden Cookies und Tracking-Tools (Meta, Google, Hyros), um unsere Angebote zu verbessern und
         relevante Werbung auszuspielen. Du kannst selbst entscheiden, was du erlaubst.
         Mehr Infos in unserer <a href={datenschutzUrl} target="_blank" rel="noopener">Datenschutzerklärung</a>.
       </p>
@@ -162,12 +164,42 @@ const {
   @keyframes ycbm-spin { to { transform: rotate(360deg); } }
 </style>
 
-<script is:inline define:vars={{ metaPixelId, hyrosPh, consentKey }}>
+<script is:inline define:vars={{ metaPixelId, hyrosPh, googleAdsId, consentKey }}>
   (function () {
     var KEY = consentKey;
     var banner = document.getElementById('cc-banner');
     var current = null;
     try { current = localStorage.getItem(KEY); } catch (e) {}
+
+    // Google Ads gtag mit Consent Mode v2: Tag laedt sofort (cookielose Pings fuer
+    // Conversion-Modeling), Cookies/Personalisierung erst nach "Alle akzeptieren".
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { window.dataLayer.push(arguments); }
+    if (!window.gtag) window.gtag = gtag;
+    if (googleAdsId && !window.__lpGtagLoaded) {
+      window.__lpGtagLoaded = true;
+      window.gtag('consent', 'default', {
+        ad_storage: 'denied',
+        ad_user_data: 'denied',
+        ad_personalization: 'denied',
+        analytics_storage: 'denied'
+      });
+      var gs = document.createElement('script');
+      gs.async = true;
+      gs.src = 'https://www.googletagmanager.com/gtag/js?id=' + googleAdsId;
+      document.head.appendChild(gs);
+      window.gtag('js', new Date());
+      window.gtag('config', googleAdsId);
+    }
+    function grantGoogleConsent() {
+      if (!googleAdsId) return;
+      window.gtag('consent', 'update', {
+        ad_storage: 'granted',
+        ad_user_data: 'granted',
+        ad_personalization: 'granted',
+        analytics_storage: 'granted'
+      });
+    }
 
     // Event-ID Generator für Meta-Deduplizierung
     function eid() {
@@ -262,12 +294,14 @@ const {
       if (level === 'all') {
         loadMetaPixel();
         loadHyros();
+        grantGoogleConsent();
       }
     }
 
     if (current === 'all') {
       loadMetaPixel();
       loadHyros();
+      grantGoogleConsent();
     } else if (current !== 'essential') {
       if (banner) banner.hidden = false;
     }
@@ -291,6 +325,16 @@ const {
           fbq('track', eventName, params || {}, { eventID: id });
         }
         return id;
+      },
+      // Google-Ads-Event feuern. Mit label als Conversion (send_to AW-ID/Label),
+      // ohne label als benanntes Event (fuer spaetere Conversion-Aktionen/Remarketing).
+      google: function(eventName, label, params) {
+        if (!googleAdsId || typeof window.gtag !== 'function') return;
+        if (label) {
+          window.gtag('event', 'conversion', Object.assign({ send_to: googleAdsId + '/' + label }, params || {}));
+        } else {
+          window.gtag('event', eventName, params || {});
+        }
       },
       // Dashboard-Event per sendBeacon (navigations-sicher)
       track: function(event, data, funnel, funnelName) {

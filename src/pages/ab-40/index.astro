@@ -8,6 +8,7 @@ const LP_SLUG = 'ab-40';
 const LP_NAME = 'Ab-40 VSL Funnel';
 const PIXEL_ID = (import.meta.env.PUBLIC_META_PIXEL_ID || '').trim();
 const HYROS_ID = (import.meta.env.PUBLIC_HYROS_ID || '').trim();
+const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').trim();
 const IMPRESSUM_URL = 'https://fitontime.ch/impressum-datenschutz';
 const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
 ---
@@ -173,6 +174,7 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
   <CookieBanner
     metaPixelId={PIXEL_ID}
     hyrosPh={HYROS_ID}
+    googleAdsId={GOOGLE_ADS_ID}
     impressumUrl={IMPRESSUM_URL}
     datenschutzUrl={DATENSCHUTZ_URL}
     consentKey="fot_consent"
@@ -236,6 +238,7 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
         }
         track('lead_submit');
         if (window.__lp) window.__lp.meta('Lead', { content_name: 'FoT Ab-40 Lead', currency: 'CHF' });
+        if (window.__lp) window.__lp.google('generate_lead');
         // Name/E-Mail für VSL-Seite + Booking-Prefill merken
         sessionStorage.setItem('fot_ab40_lead', JSON.stringify({ name: name.split(' ')[0], email }));
         window.location.href = '/ab-40/video';

@@ -8,6 +8,7 @@ const LP_SLUG = 'ab-40';
 const LP_NAME = 'Ab-40 VSL Funnel';
 const PIXEL_ID = (import.meta.env.PUBLIC_META_PIXEL_ID || '').trim();
 const HYROS_ID = (import.meta.env.PUBLIC_HYROS_ID || '').trim();
+const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').trim();
 const IMPRESSUM_URL = 'https://fitontime.ch/impressum-datenschutz';
 const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
 
@@ -163,6 +164,7 @@ const PRECALL_EMBED = (import.meta.env.PUBLIC_FOT_AB40_PRECALL_URL || '').trim()
   <CookieBanner
     metaPixelId={PIXEL_ID}
     hyrosPh={HYROS_ID}
+    googleAdsId={GOOGLE_ADS_ID}
     impressumUrl={IMPRESSUM_URL}
     datenschutzUrl={DATENSCHUTZ_URL}
     consentKey="fot_consent"
@@ -193,6 +195,7 @@ const PRECALL_EMBED = (import.meta.env.PUBLIC_FOT_AB40_PRECALL_URL || '').trim()
       try { answers = JSON.parse(sessionStorage.getItem('fot_ab40_answers') || '{}'); } catch (e) {}
       send(Object.assign({ event: 'call_booked' }, answers));
       if (window.__lp) window.__lp.meta('Schedule', { content_name: 'FoT Ab-40 Call' });
+      if (window.__lp) window.__lp.google('book_appointment');
     }
   </script>
 </body>
