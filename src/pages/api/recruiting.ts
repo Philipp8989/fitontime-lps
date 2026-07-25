@@ -164,7 +164,11 @@ export const POST: APIRoute = async ({ request }) => {
       body: JSON.stringify({
         event: 'recruiting_submit',
         lp: slug,
-        session: data.session_id || data.session || 'server-side',
+        // Die Recruiting-Seiten tracken nicht im Browser, dieses Event ist das einzige
+        // Signal. Ohne Session vom Client eine eigene erzeugen: die frühere Konstante
+        // "server-side" liess alle Bewerbungen zu EINER Session verschmelzen, das
+        // Dashboard zeigte dadurch dauerhaft 1 statt der echten Anzahl.
+        session: data.session_id || data.session || crypto.randomUUID(),
         schema_version: 'v1',
       }),
     }).catch(() => {});
