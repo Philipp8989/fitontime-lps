@@ -82,6 +82,9 @@ export const GET: APIRoute = async ({ url }) => {
       const step = String(e.step ?? '').toLowerCase();
       const day = String(e.timestamp ?? '').slice(0, 10);
       const lp = String(e.lp ?? 'unknown');
+      // Altlast: der frühere Server-Call in /api/sheets schrieb Events ohne echte Session
+      // unter der Sammel-ID "server-side". Die zaehlt als genau ein Phantom-Lead pro LP.
+      if (e.session === 'server-side') e.session = '';
 
       if (!byDay.has(day)) byDay.set(day, { views: 0, leadsBySession: new Set() });
       if (!byLp.has(lp)) byLp.set(lp, { views: 0, leadsBySession: new Set(), sessions: new Set() });

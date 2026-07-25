@@ -328,17 +328,11 @@ export const POST: APIRoute = async ({ request }) => {
       })());
     }
 
-    // Synthetisches lead_submit-Event für Attribution/CR-Sanity. Fire-and-forget.
-    fetch(new URL('/api/track', request.url).toString(), {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        event: 'lead_submit',
-        lp: lpSlug,
-        session: data.session_id || data.session || 'server-side',
-        schema_version: 'v1',
-      }),
-    }).catch(() => {});
+    // KEIN synthetisches lead_submit hier. Alle LPs mit Sheet-Anbindung feuern das Event
+    // selbst im Browser (nach erfolgreichem Insert), mit echter Session-ID. Der zusaetzliche
+    // Server-Call hat jeden Lead doppelt in den Blob-Store geschrieben und bei LPs ohne
+    // session im Body eine Phantom-Session "server-side" erzeugt. Source of Truth fuer
+    // Leads bleibt das Google Sheet.
 
     // Meta Conversions API, Lead, dedupliziert via event_id (gleiche ID feuert der Browser-Pixel).
     // NUR bei Marketing-Consent (data.meta.consent), sonst DSGVO-Verstoss. fbp/fbc aus Body (Client) + Cookie-Fallback.
