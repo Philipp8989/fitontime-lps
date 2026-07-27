@@ -217,6 +217,81 @@ const {
       try { return localStorage.getItem(KEY) === 'all'; } catch (e) { return false; }
     }
 
+    // ── Kanal-Erkennung ────────────────────────────────────────────────
+    // Auf denselben Landingpages laufen Google- und Meta-Ads gleichzeitig. Ohne
+    // diese Erkennung meldet jede Seite jeden Lead an beide Netzwerke.
+    // Der Klick wird beim ersten Aufruf gespeichert und gilt 30 Tage
+    // (= Google-Lookback), damit auch die spaetere Terminbuchung zuordenbar ist.
+    var CLICK_KEY = 'lp_click';
+    var CLICK_TTL = 30 * 86400000;
+
+    function readClick() {
+      try {
+        var c = JSON.parse(localStorage.getItem(CLICK_KEY) || 'null');
+        if (!c || !c.ts || Date.now() - c.ts > CLICK_TTL) return null;
+        return c;
+      } catch (e) { return null; }
+    }
+
+    function detectClick() {
+      var qs, g = '', fb = '', src = '';
+      try {
+        qs = new URLSearchParams(location.search);
+        g = qs.get('gclid') || qs.get('gbraid') || qs.get('wbraid') || '';
+        fb = qs.get('fbclid') || '';
+        src = (qs.get('utm_source') || '').toLowerCase();
+      } catch (e) {}
+      // Ohne eigenen Klick-Parameter bleibt der zuvor gespeicherte Kanal stehen.
+      if (!g && !fb && !src) return readClick();
+      var c = {
+        google: !!g || src.indexOf('google') === 0 || src === 'youtube' || src === 'yt',
+        meta: !!fb || src === 'meta' || src === 'facebook' || src === 'fb' || src === 'instagram' || src === 'ig',
+        src: src || (g ? 'google' : (fb ? 'meta' : '')),
+        ts: Date.now(),
+      };
+      try { localStorage.setItem(CLICK_KEY, JSON.stringify(c)); } catch (e) {}
+      return c;
+    }
+
+    var lpClick = detectClick();
+
+    // Google-Klick nachweisbar? URL-Parameter, gespeicherter Klick oder _gcl_aw-Cookie.
+    function hasGoogleClick() {
+      var c = lpClick || readClick();
+      if (c && c.google) return true;
+      return !!readCookie('_gcl_aw');
+    }
+
+    function channelName() {
+      var c = lpClick || readClick();
+      if (c && c.google) return 'google';
+      if (c && c.meta) return 'meta';
+      // Wiederkehrer ohne Klick-Parameter: die Netzwerk-Cookies verraten die Herkunft.
+      if (readCookie('_gcl_aw')) return 'google';
+      if (readCookie('_fbc')) return 'meta';
+      return (c && c.src) || 'direct';
+    }
+
+    // Kanal als Query-Parameter an /api/track haengen — synchron moeglich,
+    // anders als der sendBeacon-Blob, der sich nicht mehr auslesen laesst.
+    function tagTrackUrl(url) {
+      try {
+        if (!/\/api\/track\b/.test(url) || /[?&]ch=/.test(url)) return url;
+        var c = lpClick || readClick();
+        var q = 'ch=' + encodeURIComponent(channelName());
+        if (c && c.src) q += '&src=' + encodeURIComponent(c.src);
+        return url + (url.indexOf('?') === -1 ? '?' : '&') + q;
+      } catch (e) { return url; }
+    }
+
+    if (!window.__lpBeaconPatched && navigator.sendBeacon) {
+      window.__lpBeaconPatched = true;
+      var origBeacon = navigator.sendBeacon.bind(navigator);
+      navigator.sendBeacon = function (url, data) {
+        try { return origBeacon(tagTrackUrl(String(url)), data); } catch (e) { return origBeacon(url, data); }
+      };
+    }
+
     // Geteilte Lead-event_id: capiMetaObj() erzeugt sie, meta('Lead') verwendet dieselbe → Dedup mit CAPI.
     var pendingLeadEid = null;
     function capiMetaObj() {
@@ -248,6 +323,11 @@ const {
         var hyrosLead = null;
         try {
           var url = typeof input === 'string' ? input : (input && input.url) || '';
+          // sendBeacon-Fallback laeuft ueber fetch — Kanal auch hier anhaengen.
+          if (typeof input === 'string' && /\/api\/track\b/.test(url)) {
+            input = tagTrackUrl(url);
+            arguments[0] = input;
+          }
           var opts = init || (typeof input === 'object' ? input : null);
           if (opts && (opts.method || '').toUpperCase() === 'POST' && /\/api\/sheets\b/.test(url) &&
               typeof opts.body === 'string' && opts.body.charAt(0) === '{') {
@@ -317,6 +397,9 @@ const {
       eid: eid,
       consented: consented,
       capiMeta: capiMetaObj,
+      // Kanal des Besuchers: 'google' | 'meta' | utm_source | 'direct'
+      channel: channelName,
+      hasGoogleClick: hasGoogleClick,
       // Meta-Event mit event_id feuern. Bei 'Lead' die von capiMetaObj() erzeugte ID nutzen (Dedup mit CAPI).
       meta: function(eventName, params) {
         var id = (eventName === 'Lead' && pendingLeadEid) ? pendingLeadEid : eid();
@@ -330,6 +413,9 @@ const {
       // ohne label als benanntes Event (fuer spaetere Conversion-Aktionen/Remarketing).
       google: function(eventName, label, params) {
         if (!googleAdsId || typeof window.gtag !== 'function') return;
+        // Auf der geteilten Landingpage laeuft auch Meta-Traffic. Ohne nachweisbaren
+        // Google-Klick wuerde Google fremde Leads mitmodellieren — deshalb hier Schluss.
+        if (!hasGoogleClick()) return;
         if (label) {
           window.gtag('event', 'conversion', Object.assign({ send_to: googleAdsId + '/' + label }, params || {}));
         } else {

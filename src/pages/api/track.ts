@@ -4,11 +4,17 @@ import { put } from '@vercel/blob';
 
 export const prerender = false;
 
-export const POST: APIRoute = async ({ request }) => {
+export const POST: APIRoute = async ({ request, url }) => {
   try {
     const body = await request.json();
+    // Kanal kommt als Query-Parameter (sendBeacon-Blob laesst sich clientseitig
+    // nicht mehr veraendern) — siehe tagTrackUrl in CookieBanner.astro.
+    const channel = body.channel || url.searchParams.get('ch') || '';
+    const src = body.src || url.searchParams.get('src') || '';
     const event = {
       ...body,
+      channel,
+      src,
       lp: body.lp || body.page || body.funnel || '',
       step: body.step || body.event || body.type || '',
       session: body.session || body.sessionId || request.headers.get('x-forwarded-for') || 'anon',
