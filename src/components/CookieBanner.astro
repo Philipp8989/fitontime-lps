@@ -225,6 +225,12 @@ const {
     var CLICK_KEY = 'lp_click';
     var CLICK_TTL = 30 * 86400000;
 
+    // Rohwerte, die mit dem Lead in die CRM-Datenbank wandern. Ohne sie steht im
+    // CRM zwar der Lead, aber nicht der Kanal — und Google-Ads-Offline-Conversions
+    // lassen sich ohne gclid gar nicht zurueckspielen.
+    var CLICK_IDS = ['gclid', 'gbraid', 'wbraid', 'fbclid', 'ttclid', 'msclkid'];
+    var UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'utm_id'];
+
     function readClick() {
       try {
         var c = JSON.parse(localStorage.getItem(CLICK_KEY) || 'null');
@@ -233,24 +239,61 @@ const {
       } catch (e) { return null; }
     }
 
+    // Externer Referrer der Einstiegsseite. Eigene URLs sind wertlos (Folgeseiten-Klicks).
+    function extRef() {
+      try {
+        var r = document.referrer || '';
+        if (!r || r.indexOf(location.origin) === 0) return '';
+        return r.slice(0, 300);
+      } catch (e) { return ''; }
+    }
+
+    function storeClick(c) {
+      try { localStorage.setItem(CLICK_KEY, JSON.stringify(c)); } catch (e) {}
+      return c;
+    }
+
     function detectClick() {
-      var qs, g = '', fb = '', src = '';
+      var qs, g = '', fb = '', src = '', params = {};
       try {
         qs = new URLSearchParams(location.search);
+        var all = CLICK_IDS.concat(UTM_KEYS);
+        for (var i = 0; i < all.length; i++) {
+          var v = qs.get(all[i]);
+          if (v) params[all[i]] = v.slice(0, 400);
+        }
         g = qs.get('gclid') || qs.get('gbraid') || qs.get('wbraid') || '';
         fb = qs.get('fbclid') || '';
         src = (qs.get('utm_source') || '').toLowerCase();
       } catch (e) {}
       // Ohne eigenen Klick-Parameter bleibt der zuvor gespeicherte Kanal stehen.
-      if (!g && !fb && !src) return readClick();
-      var c = {
+      if (!g && !fb && !src) {
+        var prev = readClick();
+        if (prev) {
+          // Referrer nachtragen, solange kein echter Klick gespeichert ist: Wer zuerst
+          // direkt landet und spaeter ueber eine nicht getaggte Anzeige zurueckkommt,
+          // haette sonst gar keine Herkunft. Eine vorhandene Klick-Attribution bleibt
+          // unangetastet — der Erstklick gewinnt.
+          if (!prev.ref && !prev.google && !prev.meta) {
+            var r = extRef();
+            if (r) { prev.ref = r; storeClick(prev); }
+          }
+          return prev;
+        }
+        // Erster Besuch ohne Klick-Parameter: nur den Referrer festhalten (z.B.
+        // youtube.com bei nicht getaggten Ads). google/meta bleiben bewusst false,
+        // damit die Conversion-Gates unveraendert nur auf echte Klick-IDs reagieren.
+        return storeClick({ google: false, meta: false, src: '', params: {}, ref: extRef(), landing: location.pathname, ts: Date.now() });
+      }
+      return storeClick({
         google: !!g || src.indexOf('google') === 0 || src === 'youtube' || src === 'yt',
         meta: !!fb || src === 'meta' || src === 'facebook' || src === 'fb' || src === 'instagram' || src === 'ig',
         src: src || (g ? 'google' : (fb ? 'meta' : '')),
+        params: params,
+        ref: extRef(),
+        landing: location.pathname,
         ts: Date.now(),
-      };
-      try { localStorage.setItem(CLICK_KEY, JSON.stringify(c)); } catch (e) {}
-      return c;
+      });
     }
 
     var lpClick = detectClick();
@@ -292,6 +335,23 @@ const {
       };
     }
 
+    // Attributions-Paket fuer den Lead-Insert ins CRM: gespeicherte Klick-IDs + UTMs
+    // des Erstkontakts, dazu Kanal, Einstiegs-Referrer und die Seite des Opt-ins.
+    // Ueberlebt Folgeseiten, weil die Werte aus localStorage kommen (30 Tage).
+    function attrObj() {
+      var c = lpClick || readClick() || {};
+      var p = c.params || {};
+      var a = {};
+      for (var k in p) {
+        if (Object.prototype.hasOwnProperty.call(p, k) && p[k]) a[k] = p[k];
+      }
+      a.channel = channelName();
+      if (c.ref) a.landing_ref = c.ref;
+      if (c.landing) a.landing_path = c.landing;
+      try { a.page = location.pathname; } catch (e) {}
+      return a;
+    }
+
     // Geteilte Lead-event_id: capiMetaObj() erzeugt sie, meta('Lead') verwendet dieselbe → Dedup mit CAPI.
     var pendingLeadEid = null;
     function capiMetaObj() {
@@ -313,8 +373,9 @@ const {
       new MutationObserver(hyrosShield).observe(document.documentElement, { childList: true, subtree: true });
     } catch (e) {}
 
-    // fetch-Wrapper: haengt {meta:...} automatisch an jeden /api/sheets-POST (Server-CAPI braucht event_id+consent).
-    // Zusaetzlich: Hyros-Lead erst NACH erfolgreichem Insert melden (hyros_email-Event,
+    // fetch-Wrapper: haengt {meta:...} automatisch an jeden /api/sheets-POST (Server-CAPI braucht event_id+consent)
+    // und {attr:...} an jeden Lead-POST (/api/sheets + /api/recruiting), damit Klick-IDs und UTMs
+    // im CRM landen. Zusaetzlich: Hyros-Lead erst NACH erfolgreichem Insert melden (hyros_email-Event,
     // wird vom Universal-Script validiert und als Lead angelegt; Telefon via window.hrs).
     if (!window.__lpFetchPatched) {
       window.__lpFetchPatched = true;
@@ -329,11 +390,17 @@ const {
             arguments[0] = input;
           }
           var opts = init || (typeof input === 'object' ? input : null);
-          if (opts && (opts.method || '').toUpperCase() === 'POST' && /\/api\/sheets\b/.test(url) &&
+          var isSheets = /\/api\/sheets\b/.test(url);
+          var isLeadPost = isSheets || /\/api\/recruiting\b/.test(url);
+          if (opts && (opts.method || '').toUpperCase() === 'POST' && isLeadPost &&
               typeof opts.body === 'string' && opts.body.charAt(0) === '{') {
             var b = JSON.parse(opts.body);
-            if (b && !b.meta) { b.meta = capiMetaObj(); opts.body = JSON.stringify(b); }
-            if (b && b.email) hyrosLead = { email: String(b.email), phone: String(b.phone || '') };
+            var changed = false;
+            // Meta-CAPI nur fuer den Marketing-Funnel — Recruiting laeuft ohne Pixel-Lead.
+            if (b && isSheets && !b.meta) { b.meta = capiMetaObj(); changed = true; }
+            if (b && !b.attr) { b.attr = attrObj(); changed = true; }
+            if (changed) opts.body = JSON.stringify(b);
+            if (b && isSheets && b.email) hyrosLead = { email: String(b.email), phone: String(b.phone || '') };
           }
         } catch (e) {}
         var p = origFetch.apply(this, arguments);
@@ -399,6 +466,8 @@ const {
       capiMeta: capiMetaObj,
       // Kanal des Besuchers: 'google' | 'meta' | utm_source | 'direct'
       channel: channelName,
+      // Klick-IDs + UTMs des Erstkontakts (wird automatisch an Lead-POSTs gehaengt)
+      attr: attrObj,
       hasGoogleClick: hasGoogleClick,
       // Meta-Event mit event_id feuern. Bei 'Lead' die von capiMetaObj() erzeugte ID nutzen (Dedup mit CAPI).
       meta: function(eventName, params) {

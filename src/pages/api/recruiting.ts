@@ -3,6 +3,7 @@ import { google } from 'googleapis';
 import { normalizePhone } from '../../lib/phone';
 import { pushBewerberToMonday } from '../../lib/monday';
 import { sendApplicantConfirmation } from '../../lib/recruiting-mail';
+import { buildAttribution } from '../../lib/attribution';
 
 // Recruiting-API: Bewerbungen aus den Recruiting-Funneln (admin/kundenbetreuung/scbewerbung).
 // 1. Schreibt in HR-Sheet (15eBPYY...sxs) mit Status="Neu eingegangen"
@@ -116,6 +117,8 @@ export const POST: APIRoute = async ({ request }) => {
           lp_name: funnelLabel,
           is_recruiting: true,
           quiz_answers: { q1, q2, q3 },
+          // Herkunft der Bewerbung (Klick-IDs + UTMs) fuer die Kanal-Auswertung im CRM.
+          ...buildAttribution(data, request),
         }),
       }).catch((e: any) => {
         console.error('Dashboard Recruiting-Lead Fehler:', e?.message || e);

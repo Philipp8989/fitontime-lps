@@ -3,6 +3,7 @@ import { google } from 'googleapis';
 import { waitUntil } from '@vercel/functions';
 import { sendCapiEvent, clientMeta } from '../../lib/capi';
 import { normalizePhone } from '../../lib/phone';
+import { buildAttribution } from '../../lib/attribution';
 
 // Pro LP: Sheet-ID + Spalten-Schema. Fehlt der Eintrag, wird kein Sheet-Write gemacht.
 type SheetConfig = {
@@ -264,6 +265,9 @@ export const POST: APIRoute = async ({ request }) => {
     const dashUrl = import.meta.env.DASHBOARD_LEADS_URL;
     const dashKey = import.meta.env.DASHBOARD_LEADS_KEY;
     if (dashUrl && dashKey) {
+      // Herkunft mitschreiben: ohne gclid kein Offline-Conversion-Upload zu Google Ads,
+      // ohne UTMs keine Kanal-Auswertung pro Lead im CRM.
+      const attribution = buildAttribution(data, request);
       const payload = JSON.stringify({
         name: data.name,
         email: data.email,
@@ -271,6 +275,8 @@ export const POST: APIRoute = async ({ request }) => {
         lp_slug: lpSlug,
         lp_name: data.lp_name || lpSlug,
         quiz_answers: data.answers || {},
+        gclid: attribution.gclid,
+        utms: attribution.utms,
       });
       waitUntil((async () => {
         const delays = [0, 1500, 5000]; // 3 Versuche: sofort, +1.5s, +5s
