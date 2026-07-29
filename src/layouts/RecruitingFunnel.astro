@@ -17,13 +17,21 @@ export interface FunnelStep {
   kind: 'job' | 'benefits' | 'quiz' | 'form' | 'thanks';
   // Job-Step
   jobTitle?: string;
+  jobEyebrow?: string;          // Kicker ueber der H1
+  jobPill?: string;             // ersetzt den generischen "ohne Anschreiben"-Satz
   jobIntro?: string;
   jobMeta?: { icon: string; text: string }[];
+  proofBar?: { value: string; label: string }[];
+  payBox?: { label: string; title: string; lines: string[]; note?: string };
+  fitLists?: { tone: 'yes' | 'no'; title: string; items: string[] }[];
+  fitTitle?: string;
+  sectionsTitle?: string;       // Default: "So sieht dein Tag bei Fit on Time aus:"
   jobHook?: { title: string; primary: { label: string; emoji: string }; secondary?: { label: string; emoji: string } };
   jobSections?: { emoji: string; heading: string; lines: string[] }[];
   jobLeidenschaftTitle?: string;
   jobLeidenschaftBody?: string;
   jobCta?: string;
+  jobCtaSub?: string;
   // Benefits-Step
   benefitsTitle?: string;
   benefitsList?: { emoji: string; heading?: string; text: string }[];
@@ -39,6 +47,7 @@ export interface FunnelStep {
   thanksTitle?: string;
   thanksBody?: string;
   thanksHomeUrl?: string;
+  thanksSteps?: { title: string; text: string }[];
 }
 
 export interface Props {
@@ -48,9 +57,10 @@ export interface Props {
   steps: FunnelStep[];
   // Globale Texte / Aufgaben-Liste / Über-dich für kundenbetreuung (zwischen Quiz und Form auf P1)
   extraSection?: { title: string; items: string[] }[];
+  locationBadge?: string; // z.B. "Frauenfeld TG, 100 Prozent vor Ort"
 }
 
-const { slug, funnelName, pageTitle, steps, extraSection } = Astro.props;
+const { slug, funnelName, pageTitle, steps, extraSection, locationBadge } = Astro.props;
 
 const PIXEL_ID = (import.meta.env.PUBLIC_META_PIXEL_ID || '').trim();
 const HYROS_ID = (import.meta.env.PUBLIC_HYROS_ID || '').trim();
@@ -76,115 +86,204 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
       *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
       :root {
         --bg: #ffffff;
-        --surface: #f8f9fb;
-        --surface-2: #eef2f7;
-        --border: #e5e7eb;
-        --text: #1f2937;
-        --text-2: #6b7280;
-        --text-3: #9ca3af;
-        --accent: #3b82f6;
-        --accent-dark: #2563eb;
+        --surface: #f7f9fc;
+        --surface-2: #eef7ff;      /* CI Light Blue */
+        --blush: #fff1ee;          /* CI Secondary */
+        --peach: #f5c3b7;          /* CI Accent */
+        --border: #e4e8ef;
+        --border-strong: #cfd8e6;
+        --text: #101828;
+        --text-2: #5a6577;
+        --text-3: #98a2b3;
+        --accent: #4584ee;         /* CI Primary Blue */
+        --accent-dark: #2f6ad6;
+        --accent-soft: #e9f1fe;
+        --ink: #0d1b34;            /* Dark Sections */
+        --ok: #128a5a;
+        --no: #b0473a;
         --r: 14px;
+        --r-lg: 20px;
+        --shadow-sm: 0 1px 2px rgba(16, 24, 40, .05);
+        --shadow-md: 0 4px 16px rgba(16, 24, 40, .07);
+        --shadow-lg: 0 18px 44px rgba(16, 24, 40, .12);
         --font: 'Inter', system-ui, -apple-system, sans-serif;
       }
-      html { -webkit-text-size-adjust: 100%; }
+      html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
       body {
         font-family: var(--font);
         background: var(--bg);
         color: var(--text);
-        line-height: 1.55;
+        line-height: 1.6;
         -webkit-font-smoothing: antialiased;
         min-height: 100dvh;
         display: flex;
         flex-direction: column;
       }
-      main { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 0 16px; }
-      .wrap { width: 100%; max-width: 760px; margin: 0 auto; padding: 24px 0 80px; }
+      main { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 0 18px; }
+      .wrap { width: 100%; max-width: 780px; margin: 0 auto; padding: 16px 0 96px; }
+      @media (max-width: 720px) { .wrap.has-sticky { padding-bottom: 132px; } }
 
-      header.brand { padding: 18px 0 8px; text-align: center; }
-      header.brand img { height: 44px; }
+      /* Kopfzeile: Logo + Standort-Badge, damit "vor Ort" sofort sichtbar ist */
+      header.brand { padding: 16px 18px 6px; text-align: center; }
+      header.brand img { height: 40px; }
+      .topbar { display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap; padding: 0 18px 4px; }
+      .loc-badge { display: inline-flex; align-items: center; gap: 6px; background: var(--accent-soft); color: var(--accent-dark); font-size: 13px; font-weight: 600; padding: 5px 12px; border-radius: 999px; letter-spacing: -.1px; }
 
       .step { display: none; }
-      .step.active { display: block; animation: fade .25s ease; }
-      @keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+      .step.active { display: block; animation: fade .3s ease; }
+      @keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+        html { scroll-behavior: auto; }
+      }
 
-      h1 { font-size: 28px; font-weight: 800; letter-spacing: -.4px; line-height: 1.2; text-align: center; margin: 24px 0 12px; }
-      h2 { font-size: 22px; font-weight: 700; line-height: 1.3; text-align: center; margin: 24px 0 16px; }
-      h3 { font-size: 18px; font-weight: 700; margin: 18px 0 8px; color: var(--text); }
-      p.lead { color: var(--text-2); font-size: 15px; text-align: center; margin: 0 auto 6px; max-width: 620px; }
+      h1 { font-size: clamp(28px, 6.4vw, 42px); font-weight: 800; letter-spacing: -1px; line-height: 1.1; text-align: center; margin: 14px 0 12px; text-wrap: balance; }
+      h2 { font-size: clamp(21px, 4.4vw, 27px); font-weight: 800; letter-spacing: -.5px; line-height: 1.25; text-align: center; margin: 44px 0 18px; text-wrap: balance; }
+      h3 { font-size: 18px; font-weight: 700; margin: 18px 0 8px; color: var(--text); letter-spacing: -.2px; }
+      p.lead { color: var(--text-2); font-size: 16px; text-align: center; margin: 0 auto 6px; max-width: 620px; text-wrap: pretty; }
       p.center { text-align: center; }
 
-      .meta-line { display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; color: var(--text-2); font-size: 15px; margin: 8px 0 22px; }
+      .eyebrow { display: block; text-align: center; font-size: 13px; font-weight: 700; letter-spacing: 1.6px; text-transform: uppercase; color: var(--accent); margin: 6px 0 2px; }
+      .pill { display: block; width: fit-content; max-width: 100%; margin: 0 auto; background: var(--blush); color: #8a4636; font-size: 13px; font-weight: 600; padding: 7px 16px; border-radius: 999px; text-align: center; line-height: 1.45; }
 
-      .hook-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 24px auto 28px; max-width: 640px; }
-      .hook-card { border-radius: 18px; overflow: hidden; cursor: pointer; transition: transform .2s ease, box-shadow .2s ease; background: var(--surface); display: flex; flex-direction: column; -webkit-tap-highlight-color: transparent; border: 0; padding: 0; font: inherit; box-shadow: 0 2px 8px rgba(15, 23, 42, .06); }
-      .hook-card:hover { transform: translateY(-4px); box-shadow: 0 16px 36px rgba(15, 23, 42, .12); }
+      .meta-line { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 16px 0 8px; }
+      .meta-line span { display: inline-flex; align-items: center; gap: 7px; background: #fff; border: 1px solid var(--border); box-shadow: var(--shadow-sm); color: var(--text); font-size: 14px; font-weight: 600; padding: 8px 14px; border-radius: 999px; }
+
+      /* Proof-Leiste: harte Zahlen statt Behauptungen */
+      .proof-bar { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: var(--r-lg); overflow: hidden; margin: 26px auto 8px; max-width: 640px; }
+      @media (min-width: 640px) { .proof-bar { grid-template-columns: repeat(4, 1fr); } }
+      .proof-item { background: #fff; padding: 16px 10px; text-align: center; }
+      .proof-item b { display: block; font-size: 22px; font-weight: 800; letter-spacing: -.6px; color: var(--text); line-height: 1.15; }
+      .proof-item span { display: block; font-size: 12px; color: var(--text-2); margin-top: 3px; line-height: 1.35; }
+
+      /* Verguetungs-Box: der wichtigste Block der Seite */
+      .paybox { background: var(--ink); color: #fff; border-radius: var(--r-lg); padding: 28px 24px; margin: 30px auto; max-width: 640px; box-shadow: var(--shadow-lg); }
+      .paybox .label { font-size: 12px; letter-spacing: 1.6px; text-transform: uppercase; color: #8fb4f5; font-weight: 700; text-align: center; }
+      .paybox h3 { color: #fff; text-align: center; font-size: clamp(22px, 5vw, 28px); margin: 8px 0 18px; letter-spacing: -.6px; }
+      .paybox ul { list-style: none; display: grid; gap: 12px; }
+      .paybox li { display: flex; gap: 11px; align-items: flex-start; font-size: 15px; color: #dbe5f5; line-height: 1.5; }
+      .paybox li::before { content: '→'; color: #8fb4f5; font-weight: 800; flex: 0 0 auto; }
+      .paybox li b { color: #fff; }
+      .paybox .note { text-align: center; font-size: 13px; color: #93a3bd; margin-top: 16px; line-height: 1.5; }
+
+      .hook-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 22px auto 10px; max-width: 560px; }
+      .hook-card { border-radius: var(--r-lg); overflow: hidden; cursor: pointer; transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease; background: #fff; border: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; -webkit-tap-highlight-color: transparent; padding: 22px 14px; font: inherit; box-shadow: var(--shadow-sm); }
+      .hook-card:hover, .hook-card:focus-visible { transform: translateY(-3px); box-shadow: var(--shadow-lg); border-color: var(--accent); outline: none; }
       .hook-card:active { transform: translateY(-1px) scale(.99); }
-      .hook-card .hook-emoji { aspect-ratio: 1 / 1; display: flex; align-items: center; justify-content: center; font-size: 110px; background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 60%, #2563eb 100%); position: relative; }
-      .hook-card .hook-emoji::after { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, .25) 0%, transparent 60%); pointer-events: none; }
-      .hook-card:nth-child(2) .hook-emoji { background: linear-gradient(135deg, #94a3b8 0%, #64748b 60%, #475569 100%); }
-      .hook-card .hook-label { background: #fff; color: var(--text); font-weight: 700; padding: 18px 14px; text-align: center; font-size: 17px; letter-spacing: -.2px; }
+      .hook-card .hook-emoji { width: 62px; height: 62px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; background: var(--accent-soft); margin-bottom: 12px; }
+      .hook-card:nth-child(2) .hook-emoji { background: var(--blush); }
+      .hook-card .hook-label { color: var(--text); font-weight: 700; text-align: center; font-size: 16px; letter-spacing: -.2px; line-height: 1.35; }
+      .hook-card:first-child { border-color: var(--accent); background: linear-gradient(180deg, var(--accent-soft) 0%, #fff 58%); }
 
-      .scroll-arrow { color: var(--accent); text-align: center; font-size: 28px; line-height: 1; margin: 8px 0 32px; }
+      .scroll-arrow { color: var(--text-3); text-align: center; font-size: 24px; line-height: 1; margin: 4px 0 8px; }
 
-      .sections { display: grid; gap: 22px; margin: 24px 0 18px; }
-      @media (min-width: 720px) { .sections { grid-template-columns: 1fr 1fr; gap: 28px; } }
-      .section-card { display: flex; gap: 14px; align-items: flex-start; }
-      .section-card .icon { font-size: 26px; line-height: 1.1; flex: 0 0 auto; }
-      .section-card .body { font-size: 15px; }
-      .section-card .body strong { display: block; margin-bottom: 6px; font-weight: 700; }
+      .sections { display: grid; gap: 14px; margin: 20px 0 6px; }
+      @media (min-width: 720px) { .sections { grid-template-columns: 1fr 1fr; gap: 16px; } }
+      .section-card { display: flex; gap: 14px; align-items: flex-start; background: #fff; border: 1px solid var(--border); border-radius: var(--r); padding: 18px 18px; box-shadow: var(--shadow-sm); transition: border-color .18s ease, box-shadow .18s ease; }
+      .section-card:hover { border-color: var(--border-strong); box-shadow: var(--shadow-md); }
+      .section-card .icon { font-size: 22px; line-height: 1.1; flex: 0 0 auto; width: 40px; height: 40px; border-radius: 11px; background: var(--surface-2); display: flex; align-items: center; justify-content: center; }
+      .section-card .body { font-size: 15px; color: var(--text-2); }
+      .section-card .body strong { display: block; margin-bottom: 5px; font-weight: 700; color: var(--text); font-size: 16px; letter-spacing: -.2px; line-height: 1.35; }
 
-      .leidenschaft { text-align: center; margin: 32px auto; max-width: 620px; }
-      .leidenschaft h2 { margin-bottom: 12px; }
-      .leidenschaft p { color: var(--text); font-size: 15px; margin-bottom: 10px; }
+      /* Passt / Passt nicht: der eigentliche Filter */
+      .fit-grid { display: grid; gap: 14px; margin: 20px 0 6px; }
+      @media (min-width: 720px) { .fit-grid { grid-template-columns: 1fr 1fr; } }
+      .fit-card { border-radius: var(--r-lg); padding: 22px 20px; border: 1px solid var(--border); background: #fff; }
+      .fit-card h3 { margin: 0 0 12px; font-size: 17px; display: flex; align-items: center; gap: 8px; }
+      .fit-card ul { list-style: none; display: grid; gap: 10px; }
+      .fit-card li { display: flex; gap: 10px; align-items: flex-start; font-size: 15px; color: var(--text-2); line-height: 1.5; }
+      .fit-card li::before { flex: 0 0 auto; font-weight: 800; }
+      .fit-card.yes { background: #f2fbf6; border-color: #cdebdc; }
+      .fit-card.yes li::before { content: '✓'; color: var(--ok); }
+      .fit-card.no { background: #fdf5f4; border-color: #f0d5d0; }
+      .fit-card.no li::before { content: '✕'; color: var(--no); }
+
+      .leidenschaft { text-align: center; margin: 36px auto; max-width: 620px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-lg); padding: 28px 24px; }
+      .leidenschaft h2 { margin: 0 0 12px; }
+      .leidenschaft p { color: var(--text-2); font-size: 15px; margin-bottom: 10px; }
+      .leidenschaft p:last-child { margin-bottom: 0; }
 
       .extra { display: grid; gap: 12px; margin: 24px 0; }
-      .extra-card { background: var(--surface); border-radius: var(--r); padding: 18px; }
+      .extra-card { background: #fff; border: 1px solid var(--border); border-radius: var(--r-lg); padding: 22px; box-shadow: var(--shadow-sm); }
       .extra-card h3 { margin-top: 0; text-align: center; }
       .extra-card ul { list-style: none; padding: 0; margin: 8px 0 0; display: grid; gap: 8px; }
-      .extra-card li { padding: 8px 0; font-size: 14px; color: var(--text); border-bottom: 1px solid var(--border); }
+      .extra-card li { padding: 10px 0; font-size: 15px; color: var(--text-2); border-bottom: 1px solid var(--border); line-height: 1.55; }
       .extra-card li:last-child { border-bottom: 0; }
 
-      .answers { display: grid; gap: 12px; margin: 22px auto 6px; max-width: 540px; }
+      .answers { display: grid; gap: 12px; margin: 22px auto 6px; max-width: 560px; }
       .answers.cols { grid-template-columns: repeat(2, 1fr); }
       @media (min-width: 720px) { .answers.cols { grid-template-columns: repeat(4, 1fr); } }
-      .answer { background: #fff; border: 2px solid var(--border); border-radius: var(--r); padding: 18px 18px; font-size: 15px; font-weight: 600; cursor: pointer; text-align: center; transition: all .15s; -webkit-tap-highlight-color: transparent; line-height: 1.4; }
-      .answer:hover, .answer:focus-visible { border-color: var(--accent); background: #eff6ff; outline: none; }
-      .answer.selected { border-color: var(--accent); background: var(--accent); color: #fff; }
+      .answer { position: relative; background: #fff; border: 2px solid var(--border); border-radius: var(--r); padding: 17px 18px; font-size: 15px; font-weight: 600; cursor: pointer; text-align: center; transition: border-color .15s, background .15s, transform .1s; -webkit-tap-highlight-color: transparent; line-height: 1.4; color: var(--text); }
+      .answer:hover, .answer:focus-visible { border-color: var(--accent); background: var(--accent-soft); outline: none; }
+      .answer:active { transform: scale(.99); }
+      .answer.selected { border-color: var(--accent); background: var(--accent); color: #fff; box-shadow: var(--shadow-md); }
       .answer .emoji { display: block; font-size: 26px; margin-bottom: 8px; }
+      /* Mehrfachauswahl braucht eine sichtbare Checkbox, sonst raten die Leute */
+      .answers.multi .answer { text-align: left; padding-left: 52px; }
+      .answers.multi .answer::before { content: ''; position: absolute; left: 16px; top: 50%; transform: translateY(-50%); width: 22px; height: 22px; border: 2px solid var(--border-strong); border-radius: 6px; background: #fff; transition: all .15s; }
+      .answers.multi .answer.selected::before { background: #fff; border-color: #fff; }
+      .answers.multi .answer::after { content: ''; position: absolute; left: 22px; top: 50%; width: 10px; height: 6px; border-left: 2.5px solid var(--accent); border-bottom: 2.5px solid var(--accent); transform: translateY(-72%) rotate(-45deg); opacity: 0; transition: opacity .12s; }
+      .answers.multi .answer.selected::after { opacity: 1; }
 
       .answers.binary { grid-template-columns: 1fr 1fr; max-width: 460px; gap: 14px; }
       .answers.binary .answer { padding: 32px 12px; min-height: 140px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
       .answers.binary .answer .emoji { font-size: 40px; margin-bottom: 12px; }
 
-      .btn { display: inline-block; background: var(--accent); color: #fff; border: 0; border-radius: 12px; padding: 16px 28px; font: inherit; font-weight: 700; font-size: 17px; cursor: pointer; transition: background .15s, transform .1s; -webkit-tap-highlight-color: transparent; }
-      .btn:hover { background: var(--accent-dark); }
+      .btn { display: inline-block; background: var(--accent); color: #fff; border: 0; border-radius: 12px; padding: 17px 28px; font: inherit; font-weight: 700; font-size: 17px; cursor: pointer; transition: background .15s, transform .1s, box-shadow .15s; -webkit-tap-highlight-color: transparent; box-shadow: 0 6px 18px rgba(69, 132, 238, .28); letter-spacing: -.2px; }
+      .btn:hover { background: var(--accent-dark); box-shadow: 0 10px 26px rgba(69, 132, 238, .34); }
       .btn:active { transform: scale(.98); }
-      .btn-block { display: block; width: 100%; max-width: 460px; margin: 18px auto 8px; }
-      .btn-secondary { background: #fff; color: var(--accent); border: 2px solid var(--accent); }
+      .btn:focus-visible { outline: 3px solid rgba(69, 132, 238, .45); outline-offset: 2px; }
+      .btn:disabled { opacity: .6; cursor: not-allowed; box-shadow: none; }
+      .btn-block { display: block; width: 100%; max-width: 480px; margin: 20px auto 8px; }
+      .btn-secondary { background: #fff; color: var(--accent); border: 2px solid var(--accent); box-shadow: none; }
+      .btn-secondary:hover { background: var(--accent-soft); box-shadow: none; }
+      .cta-sub { text-align: center; font-size: 13px; color: var(--text-2); margin-top: 2px; }
 
-      .benefit-box { background: var(--surface); border-radius: var(--r); padding: 22px; margin: 26px auto; max-width: 540px; text-align: center; }
-      .benefit-box .label { font-size: 13px; color: var(--text-2); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+      /* Zurueck-Navigation: fehlte komplett, haeufigster Abbruchgrund in Multi-Step-Funnels */
+      .backbtn { display: inline-flex; align-items: center; gap: 6px; background: none; border: 0; color: var(--text-2); font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; padding: 8px 4px; margin-bottom: 2px; }
+      .backbtn:hover { color: var(--accent); }
+      .backbtn[hidden] { display: none; }
+
+      /* Sticky-CTA auf Mobile: langer Job-Text, Button darf nie ausser Sicht sein */
+      .sticky-cta { position: fixed; left: 0; right: 0; bottom: 0; z-index: 60; background: rgba(255, 255, 255, .94); backdrop-filter: blur(10px); border-top: 1px solid var(--border); padding: 10px 16px calc(10px + env(safe-area-inset-bottom)); transform: translateY(110%); transition: transform .25s ease; }
+      .sticky-cta.show { transform: none; }
+      .sticky-cta .btn { display: block; width: 100%; max-width: 480px; margin: 0 auto; padding: 15px 20px; font-size: 16px; }
+      @media (min-width: 721px) { .sticky-cta { display: none; } }
+      /* Legal-Bar (fixed, z-index 50) darf den Sticky-CTA nicht ueberdecken */
+      body.sticky-on .lp-legal-bar { bottom: calc(74px + env(safe-area-inset-bottom)); transition: bottom .25s ease; }
+      @media (min-width: 721px) { body.sticky-on .lp-legal-bar { bottom: 8px; } }
+
+      .benefit-box { background: var(--surface-2); border: 1px solid #d7e8fb; border-radius: var(--r-lg); padding: 22px; margin: 26px auto; max-width: 560px; text-align: center; }
+      .benefit-box .label { font-size: 12px; color: var(--accent-dark); text-transform: uppercase; letter-spacing: 1.4px; margin-bottom: 6px; font-weight: 700; }
       .benefit-box h3 { margin-top: 4px; font-size: 20px; }
       .benefit-box p { color: var(--text-2); font-size: 14px; margin: 8px 0 0; }
 
-      .progress { height: 6px; background: var(--border); border-radius: 999px; overflow: hidden; margin: 8px auto 4px; max-width: 460px; }
-      .progress-fill { height: 100%; background: var(--accent); border-radius: 999px; transition: width .3s ease; width: 0%; }
-      .progress-label { font-size: 12px; color: var(--text-3); text-align: center; margin-bottom: 12px; }
+      .progress { height: 6px; background: var(--border); border-radius: 999px; overflow: hidden; margin: 10px auto 6px; max-width: 480px; }
+      .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent) 0%, #6ea3f5 100%); border-radius: 999px; transition: width .35s cubic-bezier(.4, 0, .2, 1); width: 0%; }
+      .progress-label { font-size: 12px; color: var(--text-3); text-align: center; margin-bottom: 14px; font-weight: 600; letter-spacing: .2px; }
 
-      form.optin { display: grid; gap: 12px; margin: 22px auto 6px; max-width: 460px; }
-      form.optin label { display: flex; align-items: center; gap: 10px; font-size: 13px; color: var(--text-2); padding: 6px 4px; }
-      form.optin input[type=text], form.optin input[type=email], form.optin input[type=tel] { width: 100%; padding: 14px 18px; font: inherit; font-size: 16px; border: 2px solid var(--border); border-radius: var(--r); background: #fff; color: var(--text); }
-      form.optin input:focus { outline: none; border-color: var(--accent); }
-      form.optin input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--accent); flex: 0 0 auto; }
+      form.optin { display: grid; gap: 12px; margin: 22px auto 6px; max-width: 470px; }
+      form.optin label { display: flex; align-items: flex-start; gap: 10px; font-size: 13px; color: var(--text-2); padding: 6px 4px; line-height: 1.5; }
+      form.optin input[type=text], form.optin input[type=email], form.optin input[type=tel] { width: 100%; padding: 15px 18px; font: inherit; font-size: 16px; border: 2px solid var(--border); border-radius: var(--r); background: #fff; color: var(--text); transition: border-color .15s, box-shadow .15s; }
+      form.optin input::placeholder { color: var(--text-3); }
+      form.optin input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 4px rgba(69, 132, 238, .12); }
+      form.optin input[type=checkbox] { width: 19px; height: 19px; accent-color: var(--accent); flex: 0 0 auto; margin-top: 1px; }
+
+      .trust-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 18px; margin: 16px auto 0; max-width: 480px; }
+      .trust-row span { font-size: 12.5px; color: var(--text-2); display: inline-flex; align-items: center; gap: 6px; }
 
       .err { color: #b91c1c; font-size: 13px; text-align: center; margin-top: 6px; min-height: 18px; }
       .small-note { color: var(--text-3); font-size: 12px; text-align: center; margin-top: 12px; line-height: 1.5; }
 
-      .thanks-box { text-align: center; padding: 40px 20px; }
-      .thanks-box .icon { font-size: 64px; margin-bottom: 18px; }
+      .thanks-box { text-align: center; padding: 36px 20px; }
+      .thanks-box .icon { font-size: 60px; margin-bottom: 14px; }
       .thanks-box h1 { margin-bottom: 14px; }
       .thanks-box p { color: var(--text-2); font-size: 16px; max-width: 540px; margin: 0 auto 14px; }
+      .next-steps { list-style: none; display: grid; gap: 12px; max-width: 460px; margin: 26px auto 0; text-align: left; }
+      .next-steps li { display: flex; gap: 13px; align-items: flex-start; background: #fff; border: 1px solid var(--border); border-radius: var(--r); padding: 15px 16px; box-shadow: var(--shadow-sm); }
+      .next-steps li b { display: flex; align-items: center; justify-content: center; flex: 0 0 auto; width: 27px; height: 27px; border-radius: 50%; background: var(--accent); color: #fff; font-size: 13px; font-weight: 800; }
+      .next-steps li span { font-size: 14.5px; color: var(--text-2); line-height: 1.5; }
+      .next-steps li span strong { color: var(--text); display: block; margin-bottom: 2px; }
 
       footer { padding: 32px 16px 40px; text-align: center; color: var(--text-3); font-size: 12px; }
       footer a { color: var(--text-3); margin: 0 6px; text-decoration: underline; }
@@ -192,9 +291,13 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
   </head>
   <body>
     <header class="brand"><img src="/images/logo.png" alt="Fit on Time" /></header>
+    {locationBadge && (
+      <div class="topbar"><span class="loc-badge">📍 {locationBadge}</span></div>
+    )}
 
     <main>
-      <div class="wrap">
+      <div class="wrap" id="wrap">
+        <button class="backbtn" type="button" id="backBtn" hidden>← Zurück</button>
         <div class="progress" id="progress" hidden><div class="progress-fill" id="progressFill"></div></div>
         <div class="progress-label" id="progressLabel" hidden></div>
 
@@ -202,12 +305,21 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
           <section class={`step${i === 0 ? ' active' : ''}`} data-step={i} data-kind={step.kind}>
             {step.kind === 'job' && (
               <>
-                <p class="lead">Bewirb dich jetzt in wenigen Minuten, ganz ohne Anschreiben oder Lebenslauf!</p>
+                <p class="pill">{step.jobPill || 'Bewirb dich in 60 Sekunden, ganz ohne Anschreiben oder Lebenslauf'}</p>
+                {step.jobEyebrow && <span class="eyebrow">{step.jobEyebrow}</span>}
                 <h1>{step.jobTitle}</h1>
                 {step.jobIntro && <p class="lead">{step.jobIntro}</p>}
                 {step.jobMeta && (
                   <div class="meta-line">
                     {step.jobMeta.map((m) => <span>{m.icon} {m.text}</span>)}
+                  </div>
+                )}
+
+                {step.proofBar && (
+                  <div class="proof-bar">
+                    {step.proofBar.map((p) => (
+                      <div class="proof-item"><b>{p.value}</b><span>{p.label}</span></div>
+                    ))}
                   </div>
                 )}
 
@@ -232,7 +344,7 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
 
                 {step.jobSections && (
                   <>
-                    <h2>So sieht dein Tag bei Fit on Time aus:</h2>
+                    <h2>{step.sectionsTitle || 'So sieht dein Tag bei Fit on Time aus:'}</h2>
                     <div class="sections">
                       {step.jobSections.map((s) => (
                         <div class="section-card">
@@ -241,6 +353,31 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
                             <strong>{s.heading}</strong>
                             {s.lines.map((l) => <div>{l}</div>)}
                           </div>
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                )}
+
+                {step.payBox && (
+                  <div class="paybox">
+                    <div class="label">{step.payBox.label}</div>
+                    <h3>{step.payBox.title}</h3>
+                    <ul>
+                      {step.payBox.lines.map((l) => <li set:html={l} />)}
+                    </ul>
+                    {step.payBox.note && <p class="note">{step.payBox.note}</p>}
+                  </div>
+                )}
+
+                {step.fitLists && (
+                  <>
+                    <h2>{step.fitTitle || 'Passt das zu dir?'}</h2>
+                    <div class="fit-grid">
+                      {step.fitLists.map((f) => (
+                        <div class={`fit-card ${f.tone}`}>
+                          <h3>{f.title}</h3>
+                          <ul>{f.items.map((it) => <li>{it}</li>)}</ul>
                         </div>
                       ))}
                     </div>
@@ -266,7 +403,10 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
                 )}
 
                 {step.jobCta && (
-                  <button class="btn btn-block" type="button" data-action="next-step">{step.jobCta}</button>
+                  <>
+                    <button class="btn btn-block" type="button" data-action="next-step" data-primary-cta>{step.jobCta}</button>
+                    {step.jobCtaSub && <p class="cta-sub">{step.jobCtaSub}</p>}
+                  </>
                 )}
               </>
             )}
@@ -298,7 +438,7 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
                 <p class="lead">Frage {step.quiz.id === 'q1' ? '1' : step.quiz.id === 'q2' ? '2' : '3'} von 3</p>
                 <h2>{step.quiz.title}</h2>
                 {step.quiz.subtitle && <p class="lead">{step.quiz.subtitle}</p>}
-                <div class={`answers${step.quiz.type === 'single' ? ' cols' : ''}${step.quiz.type === 'binary' ? ' binary' : ''}`} data-quiz-id={step.quiz.id} data-quiz-type={step.quiz.type}>
+                <div class={`answers${step.quiz.type === 'single' ? ' cols' : ''}${step.quiz.type === 'binary' ? ' binary' : ''}${step.quiz.type === 'multi' ? ' multi' : ''}`} data-quiz-id={step.quiz.id} data-quiz-type={step.quiz.type}>
                   {step.quiz.options.map((opt) => (
                     <button class="answer" type="button" data-quiz-value={opt.value}>
                       {opt.emoji && <span class="emoji">{opt.emoji}</span>}
@@ -323,7 +463,7 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
 
             {step.kind === 'form' && (
               <>
-                <h1>{step.formTitle || 'Großartig, du hast es geschafft! 💛'}</h1>
+                <h1>{step.formTitle || 'Grossartig, du hast es geschafft! 💛'}</h1>
                 <p class="lead">{step.formSubtitle || 'Wie können wir dich am besten erreichen?'}</p>
                 <form class="optin" data-form="recruiting" novalidate>
                   <input type="text" name="fname" placeholder="Dein vollständiger Name" required autocomplete="name" />
@@ -336,8 +476,12 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
                   <button class="btn" type="submit" data-submit-btn>{step.formCta || 'Deine Bewerbung jetzt absenden'}</button>
                   <div class="err" data-err></div>
                 </form>
-                <p class="small-note">🔒 Sichere Verbindung. *Kein Spam*</p>
-                <p class="small-note">*Wir verwenden deine Daten lediglich für den Bewerbungsprozess und die Kontaktaufnahme mit dir.</p>
+                <div class="trust-row">
+                  <span>🔒 Sichere Verbindung</span>
+                  <span>⏱️ Antwort in 48 Stunden</span>
+                  <span>🤐 Absolut vertraulich</span>
+                </div>
+                <p class="small-note">Wir verwenden deine Daten ausschliesslich für den Bewerbungsprozess und die Kontaktaufnahme mit dir.</p>
               </>
             )}
 
@@ -346,13 +490,25 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
                 <div class="icon">🎉</div>
                 <h1>{step.thanksTitle || 'Vielen Dank für deine Bewerbung!'}</h1>
                 <p>{step.thanksBody || 'Wir haben deine Bewerbung erhalten und melden uns innerhalb der nächsten 48 Stunden bei dir.'}</p>
-                <p>Bis bald 👋</p>
+                {step.thanksSteps ? (
+                  <ol class="next-steps">
+                    {step.thanksSteps.map((s, n) => (
+                      <li><b>{n + 1}</b><span><strong>{s.title}</strong>{s.text}</span></li>
+                    ))}
+                  </ol>
+                ) : (
+                  <p>Bis bald 👋</p>
+                )}
               </div>
             )}
           </section>
         ))}
       </div>
     </main>
+
+    <div class="sticky-cta" id="stickyCta" aria-hidden="true">
+      <button class="btn" type="button" data-action="next-step" id="stickyBtn">Jetzt bewerben</button>
+    </div>
 
     <footer>
       <a href="https://fitontime.ch/impressum-datenschutz" target="_blank" rel="noopener">Impressum</a>·
@@ -396,6 +552,11 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
         fetch('/api/track', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: payload, keepalive: true }).catch(() => {});
       }
 
+      const backBtn = document.getElementById('backBtn');
+      const stickyCta = document.getElementById('stickyCta');
+      const stickyBtn = document.getElementById('stickyBtn');
+      const wrapEl = document.getElementById('wrap');
+
       function showStep(i) {
         stepsEls.forEach((s) => s.classList.toggle('active', Number(s.dataset.step) === i));
         window.scrollTo({ top: 0, behavior: 'instant' });
@@ -417,6 +578,20 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
           lbl.textContent = `Schritt ${quizIndex} von ${totalQuizSteps}`;
         }
 
+        // Zurueck nur ab Step 1 und nie auf der Danke-Seite
+        if (backBtn) backBtn.hidden = i === 0 || kind === 'thanks';
+
+        // Sticky-CTA (Mobile): nur auf langen Info-Steps, Label vom sichtbaren Haupt-Button
+        const pageCta = current?.querySelector('[data-action="next-step"].btn-block');
+        const wantSticky = (kind === 'job' || kind === 'benefits') && !!pageCta;
+        if (stickyCta) {
+          stickyCta.classList.remove('show');
+          stickyCta.setAttribute('aria-hidden', wantSticky ? 'false' : 'true');
+          if (wantSticky && stickyBtn) stickyBtn.textContent = pageCta.textContent.trim();
+          if (wrapEl) wrapEl.classList.toggle('has-sticky', wantSticky);
+          watchSticky(wantSticky ? pageCta : null);
+        }
+
         track('step_view', { step_index: i, step_kind: kind });
 
         if (kind === 'quiz' && !state.startedFired) {
@@ -432,6 +607,33 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
         saveState();
         showStep(state.step);
       }
+
+      function back() {
+        if (state.step <= 0) return;
+        state.step--;
+        saveState();
+        showStep(state.step);
+        track('step_back', { step_index: state.step });
+      }
+      if (backBtn) backBtn.addEventListener('click', back);
+
+      // Sticky-CTA: ab 500px Scroll einblenden, aber nie wenn der echte Button im Bild ist
+      let stickyTarget = null;
+      function syncSticky() {
+        if (!stickyCta) return;
+        if (!stickyTarget) { stickyCta.classList.remove('show'); document.body.classList.remove('sticky-on'); return; }
+        const r = stickyTarget.getBoundingClientRect();
+        const ctaVisible = r.top < window.innerHeight - 40 && r.bottom > 0;
+        const show = window.scrollY > 500 && !ctaVisible;
+        stickyCta.classList.toggle('show', show);
+        document.body.classList.toggle('sticky-on', show);
+      }
+      function watchSticky(target) {
+        stickyTarget = target;
+        syncSticky();
+      }
+      window.addEventListener('scroll', syncSticky, { passive: true });
+      window.addEventListener('resize', syncSticky, { passive: true });
 
       // Click-Handler: Hook-Cards / "Next-Step"-Buttons
       document.querySelectorAll('[data-action="next-step"]').forEach((el) => {
@@ -462,6 +664,7 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
               btn.classList.add('selected');
               state.answers[quizId] = btn.dataset.quizValue;
               saveState();
+              syncSubmit(quizId);
             });
           });
         } else if (type === 'multi') {
@@ -471,22 +674,35 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
               const selected = Array.from(container.querySelectorAll('[data-quiz-value].selected')).map((b) => b.dataset.quizValue);
               state.answers[quizId] = selected;
               saveState();
+              syncSubmit(quizId);
             });
           });
         }
+        syncSubmit(quizId);
       });
+
+      // Submit-Button spiegelt den Auswahl-Stand, statt hinterher zu meckern
+      function syncSubmit(quizId) {
+        const btn = document.querySelector(`[data-action="quiz-submit"][data-quiz-id="${quizId}"]`);
+        if (!btn) return;
+        const type = btn.dataset.quizType;
+        const val = state.answers[quizId];
+        const empty = type === 'multi' ? !Array.isArray(val) || val.length === 0 : !val;
+        btn.disabled = empty;
+        if (!btn.dataset.label) btn.dataset.label = btn.textContent.trim();
+        btn.textContent = empty
+          ? (type === 'multi' ? 'Bitte mindestens eine Antwort wählen' : 'Bitte eine Antwort wählen')
+          : btn.dataset.label;
+      }
 
       // Single/Multi-Quiz-Submit-Buttons
       document.querySelectorAll('[data-action="quiz-submit"]').forEach((btn) => {
         btn.addEventListener('click', () => {
           const quizId = btn.dataset.quizId;
-          const type = btn.dataset.quizType;
           const val = state.answers[quizId];
+          const type = btn.dataset.quizType;
           const empty = type === 'multi' ? !Array.isArray(val) || val.length === 0 : !val;
-          if (empty) {
-            alert('Bitte wähle eine oder mehrere Antworten aus.');
-            return;
-          }
+          if (empty) return;
           track('quiz_answer', { key: quizId, value: val });
           next();
         });

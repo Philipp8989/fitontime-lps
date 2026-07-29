@@ -1,157 +1,255 @@
 ---
-// Recruiting-Funnel: Setter / Closer-innen 80-100% (w/m/d)
-// 1:1-Replik von https://www.fit-on-time.ch/scbewerbung/
+// Recruiting-Funnel: Setter / Closer (w/m/d), Arbeitsort Frauenfeld TG
+// Umbau 25.07.2026: raus aus dem Remote-Framing, Team wird am Standort erweitert.
+// Anmerkungen Philipp 28.07.: erweitern statt aufbauen, Leads statt Termine,
+// Vertriebsleitung statt Geschaeftsleitung, Verguetungs-Box komplett raus, Frauen-Ton reduziert.
+// Nachschaerfung 25.07.: "100 Prozent vor Ort" ueberall raus (Philipp), der Ortsname
+// Frauenfeld traegt die Botschaft. Ein Filter-Satz bleibt in der Passt-nicht-Liste.
+// Kein scharfes s (Schweiz). Coach-Sprache bewusst entfernt, die gehoert auf /recruiting/kundenbetreuung.
 import RecruitingFunnel from '../../../layouts/RecruitingFunnel.astro';
 
+// ── ZAHLEN-SLOTS (von Philipp/Fabian, 28.07.) ──────────────────────────────
+// Nur hier aendern, die Werte werden unten ueberall eingesetzt.
+const LEADS_PRO_TAG = '50 bis 100';
+const LEADS_PRO_WOCHE = '300 bis 400';
+const BUERO_QM = '300+ m²';
+// Verguetungs-Zahlen sind auf Philipps Ansage komplett raus (28.07.).
+// ────────────────────────────────────────────────────────────────────────────
+
 const steps = [
-  // Step 0: Job + Hook + Sections + Leidenschaft + CTA
+  // Step 0: Job + Zahlen + Filter + CTA
   {
     kind: 'job',
-    jobTitle: 'Wir suchen Setter/Closer-innen 80-100% (w/m/d)',
+    jobPill: 'Bewerbung in 60 Sekunden, ohne Anschreiben, ohne Lebenslauf',
+    jobEyebrow: 'Vertrieb bei Fit on Time',
+    jobTitle: 'Setter und Closer (w/m/d) gesucht in Frauenfeld',
+    jobIntro:
+      'Wir erweitern in Frauenfeld unser Vertriebsteam. Ein Team, das im selben Raum sitzt, zusammen trainiert und zusammen gewinnt. Wenn du Telefonie ernst meinst, ist genau das dein Vorteil.',
     jobMeta: [
-      { icon: '📍', text: 'Remote (Schweiz)' },
-      { icon: '🕑', text: 'ab sofort 80 - 100%' },
+      { icon: '📍', text: 'Frauenfeld TG' },
+      { icon: '🕑', text: 'ab sofort, 100 Prozent' },
+      { icon: '💰', text: 'Fixum plus ungedeckelte Provision' },
+    ],
+    proofBar: [
+      { value: '4.000+', label: 'betreute Kundinnen' },
+      { value: LEADS_PRO_TAG, label: 'frische Leads pro Tag' },
+      { value: BUERO_QM, label: 'Büro in Frauenfeld' },
+      { value: '0', label: 'Kaltakquise' },
     ],
     jobHook: {
-      title: 'Hast du Lust herauszufinden ob du zu uns passt?',
-      primary: { label: 'Ja, absolut!', emoji: '🚀' },
-      secondary: { label: 'Mehr erfahren.', emoji: '🔍' },
+      title: 'Klingt nach dir?',
+      primary: { label: 'Ja, zeig mir mehr', emoji: '🚀' },
+      secondary: { label: 'Erst mehr erfahren', emoji: '🔍' },
     },
+    sectionsTitle: 'So sieht dein Tag im Sales aus:',
     jobSections: [
       {
-        emoji: '✨',
-        heading: 'Du bist ein wichtiger Teil unseres Vertriebteams',
+        emoji: '📞',
+        heading: 'Du sprichst mit Leads, die sich selbst eingetragen haben',
         lines: [
-          'Telefonische Kundenakquise (Inbound-Leads) und Verkauf von Dienstleistungen im Bereich Fitness und Abnehmen.',
+          `${LEADS_PRO_WOCHE} Leads pro Woche aus unserer eigenen Werbung. Keine Kaltakquise, keine gekauften Listen, kein Klinkenputzen.`,
         ],
       },
       {
-        emoji: '💬',
-        heading: 'Du ownst deine eigenen Kunden und Projekte',
+        emoji: '🎯',
+        heading: 'Setter oder Closer, du entscheidest mit',
         lines: [
-          'Professionelle Beratung und Betreuung von Kunden, um deren Bedürfnisse und Anforderungen zu verstehen.',
+          'Als Setter qualifizierst du und übergibst. Als Closer führst du das Verkaufsgespräch bis zum Abschluss. Wer als Setter startet und liefert, wächst zum Closer.',
         ],
       },
       {
-        emoji: '🚀',
-        heading: 'Du gestaltest den Prozess, den unsere Kunden durchleben',
+        emoji: '🧠',
+        heading: 'Du trainierst jede Woche, nicht einmal im Jahr',
         lines: [
-          'Erstellung von individuellen Lösungen und Angeboten, die auf die Bedürfnisse der Kunden zugeschnitten sind.',
+          'Roleplays, Gesprächsanalysen und Coaching direkt mit der Vertriebsleitung. Wir hören uns deine Calls gemeinsam an und machen sie besser.',
         ],
       },
       {
-        emoji: '👩‍💻',
-        heading: 'Du brennst für unsere Kunden',
+        emoji: '🏢',
+        heading: 'Ihr sitzt zusammen, nicht in Zoom-Kacheln',
         lines: [
-          'Gewährleistung einer hervorragenden Kundenerfahrung und Aufbau langfristiger Kundenbeziehungen',
+          'Kurze Wege, direkte Rückfragen, sofortiges Feedback nach einem Call. Genau deshalb arbeiten wir gemeinsam im Büro.',
         ],
       },
       {
         emoji: '💛',
-        heading: 'Kommunikation und Spass in unserem jungen Team',
+        heading: 'Du verkaufst etwas, das funktioniert',
         lines: [
-          'Du arbeitest in einem jungen Umfeld, das motiviert ist. Die Unternehmensführung ist auch vor Ort und immer für Nachfragen verfügbar.',
+          'Über 4.000 Kundinnen haben mit uns ihre Gesundheit und Energie zurückgeholt. Du musst niemanden überreden, sondern die Richtigen erkennen.',
+        ],
+      },
+      {
+        emoji: '📈',
+        heading: 'Du wächst mit, wenn wir wachsen',
+        lines: [
+          'Wir erweitern das Team gerade. Wer jetzt einsteigt und Leistung bringt, führt in zwei Jahren einen Teil davon.',
         ],
       },
     ],
-    jobLeidenschaftTitle: 'Deine Leidenschaft 🔥',
+    fitTitle: 'Bevor du 60 Sekunden investierst',
+    fitLists: [
+      {
+        tone: 'yes',
+        title: '✅ Das passt, wenn du',
+        items: [
+          'in oder um Frauenfeld wohnst oder bereit bist, täglich zu pendeln',
+          'Telefonverkauf als Handwerk siehst, das man trainieren kann',
+          'lieber an einer Zahl gemessen wirst als an Anwesenheit',
+          'Feedback zu deinen Calls willst, auch wenn es unbequem ist',
+          'Lust hast, ein Team mit auszubauen statt in ein fertiges zu rutschen',
+        ],
+      },
+      {
+        tone: 'no',
+        title: '❌ Das passt nicht, wenn du',
+        items: [
+          'nur remote arbeiten willst',
+          'ein paar Calls nebenbei machen möchtest',
+          'ein festes Gehalt ohne Leistungsbezug suchst',
+          'Verkaufen unangenehm findest und lieber nur berätst',
+          'am liebsten unbeobachtet arbeitest',
+        ],
+      },
+    ],
+    jobLeidenschaftTitle: 'Worum es hier wirklich geht 🔥',
     jobLeidenschaftBody:
-      'Bei uns steht der Erfolg unserer Kundinnen und Kunden im Mittelpunkt, wir versuchen für jeden das perfekte Ergebnis und Erlebnis zu generieren und ihnen das Gefühl zu geben, immer gut betreut zu sein.\nDu identifizierst dich mit unseren Kunden und willst in einem sich ständig weiterentwickelnden Unternehmen wachsen.',
-    jobCta: 'Jetzt in nur 60 Sekunden bei uns bewerben ✨',
+      'Wir erweitern die führende Women’s Health Company der Schweiz. Über 4.000 Kundinnen haben mit uns bereits ihre Energie, ihre Gesundheit und ihr Selbstvertrauen zurückgeholt.\nDein Gespräch ist der Moment, in dem sich jemand dafür entscheidet. Du bist nicht der letzte Schritt im Marketing, du bist der erste Schritt einer Veränderung. Das funktioniert aber nur, wenn du verkaufen kannst. Beides gehört zusammen.',
+    jobCta: 'Jetzt in 60 Sekunden bewerben',
+    jobCtaSub: 'Kein Lebenslauf nötig. Wir melden uns innerhalb von 48 Stunden.',
   },
   // Step 1: Vorteile
   {
     kind: 'benefits',
-    benefitsTitle: 'Deine Vorteile bei Fit on Time 👋',
+    benefitsTitle: 'Was du bei uns bekommst 👋',
     benefitsList: [
-      { emoji: '💸', heading: 'Starkes Fixum und erfolgsbasierte Provision:', text: 'Wenn du richtig Gas gibst, verdienst du auch richtig gutes Geld.' },
-      { emoji: '⭐', heading: 'Du kannst dich einbringen:', text: 'Abwechslungsreiches und verantwortungsvolles Aufgabengebiet in einem kleinen motivierten Team' },
-      { emoji: '💬', heading: 'Ownership & Impact:', text: 'Eine spannende Position in einem wachsenden Unternehmen mit grossartigen Entwicklungsmöglichkeiten.' },
-      { emoji: '🚀', heading: 'Deine Meinung zählt:', text: 'Innovativer Betrieb mit viel Offenheit für den eigenen Wirkungsgrad in der Kundenberatung' },
-      { emoji: '🏖️', heading: 'Wohlfühl-Garantie:', text: 'Attraktive Anstellungsbedingungen sowie ein Arbeitsort mit viel Lebensqualität' },
-      { emoji: '🔼', heading: 'Wir entwickeln uns - du entwickelst dich:', text: 'Attraktive Schulungs- und Weiterbildungsmöglichkeiten' },
-      { emoji: '❤️', heading: 'Kollegiales und familiäres Arbeitsklima:', text: 'Ein herzliches Team wird dich in Empfang nehmen und freut sich bereits jetzt auf dich.' },
+      {
+        emoji: '💸',
+        heading: 'Fixum plus ungedeckelte Provision:',
+        text: 'Ein festes Grundgehalt und darauf Provision ohne Deckel. Wer liefert, verdient. Die Zahlen bekommst du im ersten Gespräch.',
+      },
+      {
+        emoji: '📞',
+        heading: 'Leads kommen zu dir:',
+        text: `${LEADS_PRO_TAG} frische Leads pro Tag aus eigener Werbung, ${LEADS_PRO_WOCHE} pro Woche. Du suchst keine Leads, du führst Gespräche.`,
+      },
+      {
+        emoji: '🏢',
+        heading: `${BUERO_QM} Büro in Frauenfeld:`,
+        text: 'Eigener Arbeitsplatz, gute Technik, Verpflegung. Fünf Gehminuten vom Bahnhof, Parkplatz vorhanden.',
+      },
+      {
+        emoji: '🧠',
+        heading: 'Wöchentliches Sales-Training:',
+        text: 'Roleplays, Call-Analysen und Coaching direkt mit der Vertriebsleitung. Du wirst hier messbar besser, nicht nur älter.',
+      },
+      {
+        emoji: '🚀',
+        heading: 'Aufstieg ist eingeplant:',
+        text: 'Setter zu Closer, Closer zu Teamlead. Wir besetzen zuerst intern, weil wir gerade erweitern.',
+      },
+      {
+        emoji: '💬',
+        heading: 'Kurze Wege, echte Mitsprache:',
+        text: 'Die Geschäftsleitung sitzt im selben Büro. Deine Idee braucht kein Meeting in drei Wochen.',
+      },
+      {
+        emoji: '❤️',
+        heading: 'Ein Team, das zusammen gewinnt:',
+        text: 'Wir feiern Abschlüsse laut und helfen uns bei den schwierigen Gesprächen. Einzelkämpfer werden hier nicht glücklich.',
+      },
     ],
     benefitsCta: 'Lass uns schauen, ob wir zueinander passen 🙌',
   },
-  // Step 2: Quiz Q1 (Single)
+  // Step 2: Quiz Q1 (Single) — Rolle
   {
     kind: 'quiz',
     quiz: {
       id: 'q1',
       type: 'single',
-      title: 'Was ist dir bei deinem Job am wichtigsten?',
-      subtitle: '(wir bieten alles 🚀)',
+      title: 'Wofür brennst du mehr?',
+      subtitle: '(Beides ist möglich, wir wollen nur wissen, wo du startest)',
       cta: 'Weiter',
       options: [
-        { value: 'gehalt', label: 'Gutes Gehalt', emoji: '💰' },
-        { value: 'bewegen', label: 'Etwas bewegen', emoji: '🚀' },
-        { value: 'boni', label: 'Starke Boni', emoji: '💎' },
-        { value: 'team', label: 'Angenehmes Team', emoji: '👥' },
+        { value: 'setter', label: 'Setten: qualifizieren und Termine setzen', emoji: '🎯' },
+        { value: 'closer', label: 'Closen: das Gespräch zum Abschluss führen', emoji: '🤝' },
+        { value: 'beides', label: 'Beides, ich will den ganzen Weg', emoji: '🚀' },
+        { value: 'quereinstieg', label: 'Quereinstieg: noch keine Sales-Erfahrung', emoji: '🌱' },
       ],
-      bottomNote: 'Du entscheidest: 80% oder 100% — einen Tag von Daheim oder doch in unserem tollen neuen Büro?',
+      bottomNote: 'Gearbeitet wird bei uns gemeinsam im Büro in Frauenfeld.',
     },
   },
-  // Step 3: Quiz Q2 (Multi)
+  // Step 3: Quiz Q2 (Multi) — Erfahrung
   {
     kind: 'quiz',
     quiz: {
       id: 'q2',
       type: 'multi',
-      title: 'Erzähl uns was von dir, was bringst du mit?',
-      subtitle: '(Mehrfachauswahl möglich)',
-      cta: 'Absenden',
+      title: 'Was bringst du mit?',
+      subtitle: '(Mehrfachauswahl, ehrlich ist besser als vollständig)',
+      cta: 'Weiter',
       options: [
-        { value: 'telesales', label: 'Erfahrung im Bereich Telesales oder Verkauf' },
-        { value: 'fitness_affinitaet', label: 'Begeisterung und Affinität im Bereich Fitness und Abnehmen' },
-        { value: 'kommunikation', label: 'Ausgezeichnete Kommunikationsfähigkeiten und eine positive Einstellung' },
-        { value: 'zielorientiert', label: 'Zielorientiertes Denken und Handeln sowie ein hohes Mass an Eigenmotivation' },
-        { value: 'teamfaehig', label: 'Teamfähigkeit und die Fähigkeit, auch saisonal mit sportlichen Zielen klarzukommen.' },
+        { value: 'telesales', label: 'Erfahrung im Telefonverkauf oder Closing' },
+        { value: 'highticket', label: 'Erfahrung mit Beträgen über CHF 2000 pro Abschluss' },
+        { value: 'gesundheit', label: 'Begeisterung für Gesundheit, Fitness und Ernährung' },
+        { value: 'kommunikation', label: 'Ich kann zuhören und trotzdem führen' },
+        { value: 'zahlen', label: 'Ich arbeite gern mit klaren Zielen und Zahlen' },
+        { value: 'lernbereit', label: 'Noch wenig Erfahrung, dafür sehr lernbereit' },
       ],
     },
     benefitBox: {
-      title: 'Dein Benefit:',
-      subtitle: 'Entwicklung und Expertise',
-      body: 'Bei Fit on Time hast du die Möglichkeit, deine Fähigkeiten im Verkauf und in der Kundenbetreuung zu verbessern. Wenn du an Schulungen teilnehmen oder deine Kenntnisse auf andere Weise verbessern möchtest, bieten wir dir die volle Unterstützung, die du brauchst.',
+      title: 'Dein Vorteil:',
+      subtitle: 'Du wirst hier ausgebildet',
+      body: `Wöchentliche Roleplays, Call-Analysen und Coaching mit der Vertriebsleitung. Wir haben lieber jemanden mit Haltung, den wir zum Closer machen, als einen fertigen Closer ohne Haltung.`,
     },
   },
-  // Step 4: Quiz Q3 (Multi)
+  // Step 4: Quiz Q3 (Single) — der harte Filter, bewusst als eigene Frage
   {
     kind: 'quiz',
     quiz: {
       id: 'q3',
-      type: 'multi',
-      title: 'Was möchtest du in den nächsten 2 Jahren erreichen?',
-      subtitle: '(Mehrfach-Auswahl möglich)',
-      cta: 'Weiter zur nächsten Frage 🤩',
+      type: 'single',
+      title: 'Wie sieht dein Arbeitsweg nach Frauenfeld aus?',
+      subtitle: '(Arbeitsort ist unser Büro in Frauenfeld)',
+      cta: 'Weiter',
       options: [
-        { value: 'wachsen', label: 'Persönlich wachsen' },
-        { value: 'fuehrung', label: 'Führungsaufgaben übernehmen' },
-        { value: 'fachlich', label: 'Fachlich weiterentwickeln' },
-        { value: 'tolle_zeit', label: 'Eine tolle Zeit haben' },
-        { value: 'geld', label: 'Sehr viel Geld verdienen' },
+        { value: 'vor_ort', label: 'Ich wohne in Frauenfeld oder in der Nähe', emoji: '🏠' },
+        { value: 'pendeln', label: 'Ich pendle gern täglich hierher', emoji: '🚆' },
+        { value: 'umzug', label: 'Ich würde für die Stelle umziehen', emoji: '📦' },
+        { value: 'unklar', label: 'Frauenfeld wäre für mich schwierig', emoji: '🤔' },
       ],
+      bottomNote:
+        'Wir fragen das offen, weil wir niemandem die Zeit stehlen wollen. Der Arbeitsort ist gesetzt.',
     },
     benefitBox: {
-      title: 'Dein Benefit:',
-      subtitle: 'Unser Bonus!',
-      body: 'Unsere leistungsabhängigen Boni runden dein attraktives Fixgehalt ab. Wir sind auf gute Leistungen unseres Teams angewiesen, deshalb zahlen wir gerne Boni, die sich sehen lassen können!',
+      title: 'Warum im Büro:',
+      subtitle: 'Weil du dadurch mehr verdienst',
+      body: 'Nach einem schwierigen Call drehst du dich um und bekommst sofort Feedback. Genau das ist der Unterschied zwischen einem soliden und einem sehr guten Monat.',
     },
   },
   // Step 5: Form
   {
     kind: 'form',
-    formTitle: 'Großartig, du hast es geschafft! 💛',
-    formSubtitle: 'Wie können wir dich am besten erreichen?',
-    formCta: 'Deine Bewerbung jetzt absenden',
+    formTitle: 'Fast geschafft 💛',
+    formSubtitle: 'Wie erreichen wir dich am besten?',
+    formCta: 'Bewerbung jetzt absenden',
   },
   // Step 6: Danke
-  { kind: 'thanks' },
+  {
+    kind: 'thanks',
+    thanksTitle: 'Deine Bewerbung ist da 🎉',
+    thanksBody: 'Wir schauen sie uns persönlich an und melden uns innerhalb von 48 Stunden bei dir.',
+    thanksSteps: [
+      { title: 'Kurzes Telefonat, 15 Minuten. ', text: 'Wir klären gegenseitig die Basics, inklusive Zahlen.' },
+      { title: 'Gespräch im Büro in Frauenfeld. ', text: 'Du siehst den Arbeitsplatz und lernst das Team kennen.' },
+      { title: 'Ein Roleplay. ', text: 'Ein echtes Verkaufsgespräch, gemeinsam ausgewertet. Danach wissen wir beide Bescheid.' },
+    ],
+  },
 ];
 ---
 <RecruitingFunnel
   slug="recruiting-scbewerbung"
   funnelName="Setter / Closer"
-  pageTitle="Sichere dir jetzt deinen Traumjob in 60 Sekunden 💫"
+  pageTitle="Setter und Closer gesucht in Frauenfeld"
+  locationBadge="Frauenfeld TG · ab sofort"
   steps={steps}
 />
