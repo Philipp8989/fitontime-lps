@@ -308,6 +308,9 @@ export const POST: APIRoute = async ({ request }) => {
       const botPayload = JSON.stringify({
         phone: data.phone,
         first_name: firstName,
+        // E-Mail ist doppelt nötig: Abgleich im /intake/booked-Webhook (hat der Lead
+        // selbst gebucht?) und Direktbuchung durch den Bot ohne Rückfrage im Chat.
+        email: data.email || '',
         score: data.score ?? '',
         answers: data.answers || {},
         lp_slug: lpSlug,

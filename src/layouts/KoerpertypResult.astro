@@ -267,6 +267,43 @@ const imageSrc = `/images/bodytypes/${typ}.png`;
       document.getElementById('ycbm-container').appendChild(ys);
     })();
 
+    // Buchung an den WhatsApp-Bot melden: wer hier selbst einen Termin bucht,
+    // bekommt keinen Opener mehr (der laeuft sonst 30 Min nach dem Opt-in).
+    // Das Widget meldet den Abschluss per postMessage; das Format ist nicht
+    // dokumentiert und hat sich schon geaendert, darum bewusst tolerant:
+    // jede Nachricht vom YCBM-Origin, die nach Buchung aussieht, zaehlt.
+    // Der Bot-Endpoint ist idempotent, ein Fehlalarm kostet nichts.
+    (function(){
+      var gemeldet = false;
+      function melden(){
+        if (gemeldet) return;
+        var lead = {};
+        try { lead = JSON.parse(sessionStorage.getItem('fot_result') || '{}'); } catch (e) {}
+        if (!lead.email && !lead.phone) return;
+        gemeldet = true;
+        try {
+          fetch('/api/booked', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            keepalive: true,
+            body: JSON.stringify({ email: lead.email || '', phone: lead.phone || '' })
+          }).catch(function(){});
+        } catch (e) {}
+      }
+      window.addEventListener('message', function(ev){
+        var o = String(ev.origin || '');
+        if (o.indexOf('ycb.me') === -1 && o.indexOf('youcanbook.me') === -1) return;
+        var raw = '';
+        try { raw = typeof ev.data === 'string' ? ev.data : JSON.stringify(ev.data); } catch (e) { return; }
+        raw = raw.toLowerCase();
+        // "booked"/"confirmed" markiert den Abschluss, "cancel" schliesst
+        // Stornierungs-Events aus, die denselben Wortstamm tragen.
+        var abschluss = raw.indexOf('booked') !== -1 || raw.indexOf('confirmed') !== -1
+          || raw.indexOf('booking_complete') !== -1 || raw.indexOf('bookingcomplete') !== -1;
+        if (abschluss && raw.indexOf('cancel') === -1) melden();
+      });
+    })();
+
     // Tracking: result_shown (LP-Machine Pattern)
     (function(){
       var tries = 0;

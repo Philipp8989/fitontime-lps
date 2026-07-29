@@ -519,6 +519,10 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
           <input type="checkbox" id="ds" />
           <label for="ds">Ich akzeptiere die <a href={datenschutzUrl} target="_blank" rel="noopener">Datenschutzbestimmungen</a> und erhalte mein Körper-Profil per E-Mail.</label>
         </div>
+        <div class="cb-row" id="waRow">
+          <input type="checkbox" id="wa" />
+          <label for="wa">Ja, meine Ernährungsberaterin darf mir per WhatsApp auf die angegebene Nummer schreiben und mein Ergebnis mit mir durchgehen.</label>
+        </div>
         <button class="submit" id="sbtn" onclick="send()">Jetzt Ergebnis anzeigen &rarr;</button>
         <div class="form-proof">
           <div class="fp-row"><span>&#128274;</span> <b>SSL-verschlüsselt</b> &middot; Deine Daten bleiben bei uns.</div>
@@ -655,6 +659,9 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
     document.getElementById('ds').addEventListener('change', function(){
       if (this.checked) document.getElementById('dsRow').classList.remove('error');
     });
+    document.getElementById('wa').addEventListener('change', function(){
+      if (this.checked) document.getElementById('waRow').classList.remove('error');
+    });
 
     function normalizePhone(raw) {
       var c = (raw || '').replace(/[^\d+]/g, '');
@@ -679,6 +686,12 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
         document.getElementById('dsRow').scrollIntoView({ behavior: 'smooth', block: 'center' });
         return;
       }
+      // WhatsApp-Opt-in ist Pflicht: ohne ihn darf der Bot nicht anschreiben.
+      if (!document.getElementById('wa').checked) {
+        document.getElementById('waRow').classList.add('error');
+        document.getElementById('waRow').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
       var btn = document.getElementById('sbtn');
       btn.disabled = true;
       btn.textContent = 'Wird ausgewertet...';
@@ -696,6 +709,9 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
           name: fn,
           email: em,
           phone: ph,
+          first_name: fn.split(' ')[0],
+          // Pflicht-Opt-in: schaltet den WhatsApp-Bot-Intake in /api/sheets frei.
+          wa_optin: document.getElementById('wa').checked,
           lp_slug: 'koerpertyp-test',
           lp_name: 'Stoffwechsel-Test v2',
           answers: Object.assign({}, quizAnswers, { profile_type: typ })
@@ -706,6 +722,10 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
         try {
           sessionStorage.setItem('fot_result', JSON.stringify({
             name: fn.split(' ')[0],
+            // E-Mail/Telefon nur fuer die Buchungsmeldung an den WhatsApp-Bot:
+            // bucht die Person auf der Ergebnisseite selbst, wird der Opener gestoppt.
+            email: em,
+            phone: ph,
             typ: typ,
             problem: quizAnswers.q6_val,
             goal: quizAnswers.q2_val,
