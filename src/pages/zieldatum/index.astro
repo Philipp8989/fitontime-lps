@@ -1,0 +1,788 @@
+---
+// Zieldatum-Rechner  -  Copy des BetterMe/Luvly-Mechanismus (US), adaptiert für FoT
+// Kern: Interaktion ab Sekunde 0 (Doppel-Slider im Hero) + geblurrter Datums-Teaser
+// Danach: 8 Tap/Slide-Schritte, Lead-Gate, Prognose-Korridor auf /zieldatum/ergebnis/
+import CookieBanner from '../../components/CookieBanner.astro';
+const impressumUrl = 'https://fitontime.ch/impressum-datenschutz';
+const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
+---
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="theme-color" content="#1d73d3" />
+  <title>Zieldatum-Rechner - An welchem Tag bist du dort? | Fit on Time</title>
+  <link rel="icon" type="image/png" href="/images/logo.png" />
+  <link rel="preload" as="image" href="/images/logo.png" fetchpriority="high" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <style is:global>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #fafaf8;
+      --bg-soft: #f3ede1;
+      --card: #ffffff;
+      --border: #e8e4da;
+      --accent: #1d73d3;
+      --accent-dark: #155aa8;
+      --accent-soft: #eaf2fc;
+      --green: #16a34a;
+      --amber: #f59e0b;
+      --red: #dc2626;
+      --text: #0f172a;
+      --text-2: #475569;
+      --text-3: #94a3b8;
+      --r: 16px;
+      --font: 'DM Sans', system-ui, -apple-system, sans-serif;
+      --shadow-sm: 0 2px 8px rgba(15,23,42,0.04);
+      --shadow-md: 0 6px 20px rgba(29,115,211,0.14);
+      --shadow-lg: 0 12px 28px rgba(29,115,211,0.22);
+    }
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+    body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.5; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    button:focus-visible, a:focus-visible, input:focus-visible, label:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; border-radius: 6px; }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+    }
+
+    .wrap { max-width: 640px; margin: 0 auto; padding: 0 18px; }
+
+    /* ===== Topbar ===== */
+    .topbar { padding: 16px 0 4px; text-align: center; }
+    .topbar img { height: 34px; width: auto; }
+
+    /* ===== Hero ===== */
+    .hero { padding: 14px 0 34px; text-align: center; }
+    .badge { display: inline-flex; align-items: center; gap: 7px; background: var(--accent-soft); color: var(--accent-dark); font-size: 12.5px; font-weight: 700; padding: 7px 13px; border-radius: 999px; letter-spacing: 0.2px; }
+    .hero h1 { font-size: clamp(27px, 7.2vw, 40px); font-weight: 900; line-height: 1.12; letter-spacing: -0.9px; margin: 15px 0 10px; }
+    .hero h1 em { font-style: normal; position: relative; white-space: nowrap; }
+    .hero h1 em::after { content: ''; position: absolute; left: -3px; right: -3px; bottom: 2px; height: 38%; background: rgba(29,115,211,0.18); border-radius: 3px; z-index: -1; transform: skewX(-4deg); }
+    .hero .sub { font-size: 16.5px; color: var(--text-2); max-width: 460px; margin: 0 auto; }
+
+    /* ===== Das Regler-Widget (Herzstueck, Interaktion ab Sekunde 0) ===== */
+    .rig { background: var(--card); border: 1px solid var(--border); border-radius: 22px; padding: 20px 18px 22px; margin-top: 22px; box-shadow: var(--shadow-md); }
+    .rig-top { display: grid; grid-template-columns: 1fr auto 1fr; align-items: end; gap: 8px; }
+    .fig { text-align: center; }
+    .fig svg { display: block; margin: 0 auto; height: 168px; width: auto; }
+    .fig .cap { font-size: 11.5px; font-weight: 800; letter-spacing: 0.8px; text-transform: uppercase; color: var(--text-3); margin-bottom: 6px; }
+    .fig .kg { font-size: 20px; font-weight: 900; margin-top: 4px; letter-spacing: -0.4px; }
+    .fig.goal .kg { color: var(--accent); }
+    .delta { text-align: center; padding-bottom: 34px; }
+    .delta .num { font-size: 30px; font-weight: 900; color: var(--accent); letter-spacing: -1.2px; line-height: 1; }
+    .delta .lbl { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-3); margin-top: 3px; }
+
+    .sl { margin-top: 18px; }
+    .sl + .sl { margin-top: 14px; }
+    .sl-head { display: flex; justify-content: space-between; align-items: baseline; font-size: 13.5px; font-weight: 700; color: var(--text-2); margin-bottom: 7px; }
+    .sl-head b { font-size: 16px; color: var(--text); font-weight: 900; }
+    input[type=range] { -webkit-appearance: none; appearance: none; width: 100%; height: 30px; background: transparent; cursor: grab; }
+    input[type=range]:active { cursor: grabbing; }
+    input[type=range]::-webkit-slider-runnable-track { height: 8px; border-radius: 99px; background: linear-gradient(90deg, var(--accent) var(--p, 40%), #e8e4da var(--p, 40%)); }
+    input[type=range]::-moz-range-track { height: 8px; border-radius: 99px; background: #e8e4da; }
+    input[type=range]::-moz-range-progress { height: 8px; border-radius: 99px; background: var(--accent); }
+    input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 30px; height: 30px; margin-top: -11px; border-radius: 50%; background: #fff; border: 3px solid var(--accent); box-shadow: 0 3px 10px rgba(29,115,211,0.35); transition: transform 0.12s; }
+    input[type=range]:active::-webkit-slider-thumb { transform: scale(1.12); }
+    input[type=range]::-moz-range-thumb { width: 26px; height: 26px; border-radius: 50%; background: #fff; border: 3px solid var(--accent); box-shadow: 0 3px 10px rgba(29,115,211,0.35); }
+
+    /* Geblurrter Datums-Teaser = der Klick-Ausloeser */
+    .tease { margin-top: 20px; border-top: 1px dashed var(--border); padding-top: 18px; }
+    .tease .t-lbl { font-size: 12.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.9px; color: var(--text-3); }
+    .tease .t-date { font-size: clamp(24px, 6.4vw, 32px); font-weight: 900; letter-spacing: -0.8px; margin-top: 5px; filter: blur(7px); user-select: none; transition: filter 0.4s; color: var(--accent-dark); }
+    .tease .t-note { font-size: 13px; color: var(--text-2); margin-top: 12px; }
+    .cta-btn { display: block; width: 100%; margin-top: 15px; background: var(--accent); color: #fff; border: 0; border-radius: 14px; padding: 17px 20px; font-family: var(--font); font-size: 17px; font-weight: 900; letter-spacing: -0.2px; cursor: pointer; box-shadow: var(--shadow-lg); position: relative; overflow: hidden; transition: transform 0.15s, background 0.2s; }
+    .cta-btn:hover { background: var(--accent-dark); }
+    .cta-btn:active { transform: scale(0.985); }
+    .cta-btn::before { content: ''; position: absolute; top: 0; left: -120%; width: 60%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent); animation: shine 3.2s ease-in-out infinite; pointer-events: none; }
+    @keyframes shine { 0%, 75%, 100% { left: -120%; } 85% { left: 220%; } }
+    .micro { font-size: 12px; color: var(--text-3); text-align: center; margin-top: 10px; }
+
+    .proof { display: flex; align-items: center; justify-content: center; gap: 9px; margin-top: 20px; font-size: 13.5px; color: var(--text-2); font-weight: 600; }
+    .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); box-shadow: 0 0 0 0 rgba(22,163,74,0.5); animation: pulse 2.1s infinite; }
+    @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(22,163,74,0.45); } 70% { box-shadow: 0 0 0 9px rgba(22,163,74,0); } 100% { box-shadow: 0 0 0 0 rgba(22,163,74,0); } }
+
+    /* ===== Sektionen ===== */
+    section { padding: 30px 0; }
+    .h2 { font-size: clamp(21px, 5.4vw, 27px); font-weight: 900; letter-spacing: -0.6px; text-align: center; line-height: 1.2; }
+    .h2-sub { text-align: center; color: var(--text-2); font-size: 15px; margin-top: 9px; }
+    .cards { display: grid; gap: 11px; margin-top: 20px; }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 16px 17px; }
+    .card h3 { font-size: 15.5px; font-weight: 800; margin-bottom: 5px; }
+    .card p { font-size: 14.5px; color: var(--text-2); }
+    .card .n { display: inline-flex; width: 25px; height: 25px; border-radius: 8px; background: var(--accent-soft); color: var(--accent-dark); font-size: 13px; font-weight: 900; align-items: center; justify-content: center; margin-bottom: 9px; }
+
+    .trans { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 18px; }
+    .trans img { width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 11px; display: block; }
+
+    .reveal { opacity: 0; transform: translateY(22px); transition: opacity 0.65s cubic-bezier(0.2,0.9,0.3,1), transform 0.65s cubic-bezier(0.2,0.9,0.3,1); }
+    .reveal.in { opacity: 1; transform: translateY(0); }
+
+    footer { padding: 26px 0 40px; text-align: center; font-size: 12.5px; color: var(--text-3); }
+    footer a { color: var(--text-3); }
+    .disc { font-size: 11.5px; color: var(--text-3); line-height: 1.5; margin-top: 14px; max-width: 520px; margin-left: auto; margin-right: auto; }
+
+    /* ===== Quiz-Overlay ===== */
+    #quiz { display: none; position: fixed; inset: 0; background: var(--bg); z-index: 60; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+    #quiz.on { display: block; }
+    .qbar { position: sticky; top: 0; background: rgba(250,250,248,0.96); backdrop-filter: blur(8px); border-bottom: 1px solid var(--border); padding: 12px 18px 11px; z-index: 2; }
+    .qbar-in { max-width: 560px; margin: 0 auto; }
+    .qbar-row { display: flex; align-items: center; gap: 12px; }
+    .qback { background: none; border: 0; font-family: var(--font); font-size: 22px; line-height: 1; color: var(--text-3); cursor: pointer; padding: 2px 4px; }
+    .qback.hidden { visibility: hidden; }
+    .qtrack { flex: 1; height: 6px; background: #e8e4da; border-radius: 99px; overflow: hidden; }
+    .qfill { height: 100%; background: var(--accent); border-radius: 99px; width: 8%; transition: width 0.4s cubic-bezier(0.2,0.9,0.3,1); }
+    .qstep { font-size: 12px; font-weight: 800; color: var(--text-3); min-width: 34px; text-align: right; }
+
+    .qbody { max-width: 560px; margin: 0 auto; padding: 26px 18px 44px; }
+    .qh { font-size: clamp(21px, 5.6vw, 27px); font-weight: 900; letter-spacing: -0.6px; line-height: 1.2; }
+    .qhint { font-size: 14px; color: var(--text-2); margin-top: 8px; }
+    .opts { display: grid; gap: 9px; margin-top: 20px; }
+    .opt { background: var(--card); border: 2px solid var(--border); border-radius: 13px; padding: 15px 16px; font-family: var(--font); font-size: 15.5px; font-weight: 600; text-align: left; cursor: pointer; transition: border-color 0.16s, background 0.16s, transform 0.12s; color: var(--text); display: flex; align-items: center; gap: 12px; }
+    .opt:hover { border-color: #cfd9e6; }
+    .opt:active { transform: scale(0.985); }
+    .opt.sel { border-color: var(--accent); background: var(--accent-soft); }
+    .opt .ic { font-size: 20px; line-height: 1; }
+    .opt .chk { margin-left: auto; width: 21px; height: 21px; border-radius: 6px; border: 2px solid var(--border); flex: none; }
+    .opt.sel .chk { border-color: var(--accent); background: var(--accent); position: relative; }
+    .opt.sel .chk::after { content: '✓'; position: absolute; inset: 0; color: #fff; font-size: 13px; font-weight: 900; display: flex; align-items: center; justify-content: center; }
+
+    /* Silhouetten-Auswahl */
+    .shapes { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 20px; }
+    .shape { background: var(--card); border: 2px solid var(--border); border-radius: 13px; padding: 10px 4px 9px; cursor: pointer; transition: border-color 0.16s, background 0.16s, transform 0.12s; }
+    .shape:active { transform: scale(0.97); }
+    .shape.sel { border-color: var(--accent); background: var(--accent-soft); }
+    .shape svg { display: block; margin: 0 auto; height: 92px; width: auto; }
+    .shape span { display: block; font-size: 11.5px; font-weight: 800; color: var(--text-2); margin-top: 6px; }
+    .shape.sel span { color: var(--accent-dark); }
+
+    /* Monats-Chips */
+    .chips { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 20px; }
+    .chip { background: var(--card); border: 2px solid var(--border); border-radius: 11px; padding: 12px 6px; font-family: var(--font); font-size: 14px; font-weight: 700; cursor: pointer; transition: border-color 0.16s, background 0.16s; color: var(--text); }
+    .chip.sel { border-color: var(--accent); background: var(--accent-soft); color: var(--accent-dark); }
+
+    /* Slider-Frage */
+    .qslide { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 26px 18px 20px; margin-top: 22px; text-align: center; }
+    .qslide .big { font-size: 44px; font-weight: 900; letter-spacing: -1.6px; color: var(--accent); line-height: 1; }
+    .qslide .unit { font-size: 17px; font-weight: 800; color: var(--text-3); margin-left: 4px; }
+    .qslide input[type=range] { margin-top: 18px; }
+    .qnext { display: block; width: 100%; margin-top: 18px; background: var(--accent); color: #fff; border: 0; border-radius: 13px; padding: 16px; font-family: var(--font); font-size: 16.5px; font-weight: 900; cursor: pointer; }
+    .qnext:disabled { background: #cbd5e1; cursor: not-allowed; }
+
+    /* Gate */
+    .field { margin-top: 12px; }
+    .field label { display: block; font-size: 13px; font-weight: 800; color: var(--text-2); margin-bottom: 6px; }
+    .field input { width: 100%; background: var(--card); border: 2px solid var(--border); border-radius: 12px; padding: 14px 15px; font-family: var(--font); font-size: 16px; color: var(--text); }
+    .field input:focus { outline: none; border-color: var(--accent); }
+    .consent { display: flex; gap: 10px; align-items: flex-start; margin-top: 15px; font-size: 12.5px; color: var(--text-2); line-height: 1.45; }
+    .consent input { width: 19px; height: 19px; flex: none; margin-top: 1px; accent-color: var(--accent); }
+    .err { color: var(--red); font-size: 13px; font-weight: 700; margin-top: 10px; display: none; }
+    .err.on { display: block; }
+    .gate-box { background: var(--accent-soft); border: 1px solid #cfe0f5; border-radius: 13px; padding: 14px 15px; margin-top: 18px; }
+    .gate-box .gb-date { font-size: 21px; font-weight: 900; color: var(--accent-dark); letter-spacing: -0.5px; filter: blur(6px); user-select: none; }
+    .gate-box .gb-lbl { font-size: 11.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px; color: var(--accent-dark); opacity: 0.75; }
+
+    /* Rechen-Screen */
+    #calc { display: none; text-align: center; padding: 60px 18px; }
+    #calc.on { display: block; }
+    .spin { width: 46px; height: 46px; border: 4px solid var(--accent-soft); border-top-color: var(--accent); border-radius: 50%; margin: 0 auto 22px; animation: spin 0.9s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .chk-line { opacity: 0; transform: translateY(8px); transition: opacity 0.4s, transform 0.4s; font-size: 15px; font-weight: 600; color: var(--text-2); margin-top: 11px; }
+    .chk-line.show { opacity: 1; transform: translateY(0); }
+    .chk-line i { color: var(--green); font-style: normal; font-weight: 900; margin-right: 7px; }
+  </style>
+</head>
+<body>
+
+<div id="lp">
+  <div class="topbar"><img src="/images/logo.png" alt="Fit on Time" /></div>
+
+  <div class="wrap">
+    <div class="hero">
+      <span class="badge">Kostenlos · 90 Sekunden · Nur für Frauen</span>
+      <h1>An welchem Tag stehst du wieder bei <em>deinem Wunschgewicht</em>?</h1>
+      <p class="sub">Zieh die beiden Regler. Den Rest rechnen wir aus.</p>
+
+      <!-- Regler-Widget: Interaktion beginnt vor dem ersten Klick -->
+      <div class="rig">
+        <div class="rig-top">
+          <div class="fig now">
+            <div class="cap">Heute</div>
+            <svg viewBox="0 0 120 268" aria-hidden="true">
+              <circle id="hNow" cx="60" cy="22" r="14" fill="#94a3b8"/>
+              <rect x="55" y="34" width="10" height="12" fill="#94a3b8"/>
+              <path id="bodyNow" fill="#94a3b8" d=""/>
+            </svg>
+            <div class="kg"><span id="kgNow">84</span> kg</div>
+          </div>
+          <div class="delta">
+            <div class="num" id="dNum">-16</div>
+            <div class="lbl">Kilo</div>
+          </div>
+          <div class="fig goal">
+            <div class="cap">Dein Ziel</div>
+            <svg viewBox="0 0 120 268" aria-hidden="true">
+              <circle id="hGoal" cx="60" cy="22" r="14" fill="#1d73d3"/>
+              <rect x="55" y="34" width="10" height="12" fill="#1d73d3"/>
+              <path id="bodyGoal" fill="#1d73d3" d=""/>
+            </svg>
+            <div class="kg"><span id="kgGoal">68</span> kg</div>
+          </div>
+        </div>
+
+        <div class="sl">
+          <div class="sl-head"><span>Dein Gewicht heute</span><b><span id="lblNow">84</span> kg</b></div>
+          <input type="range" id="slNow" min="55" max="145" value="84" step="1" aria-label="Dein Gewicht heute" />
+        </div>
+        <div class="sl">
+          <div class="sl-head"><span>Dein Wunschgewicht</span><b><span id="lblGoal">68</span> kg</b></div>
+          <input type="range" id="slGoal" min="48" max="140" value="68" step="1" aria-label="Dein Wunschgewicht" />
+        </div>
+
+        <div class="tease">
+          <div class="t-lbl">Dein Zieldatum</div>
+          <div class="t-date" id="teaseDate">14. März 2027</div>
+          <div class="t-note">Das Datum hängt von 6 Faktoren ab, die dein Tempo bestimmen. Beantworte sie und du siehst deinen echten Termin.</div>
+          <button class="cta-btn" onclick="startQuiz()">Mein Zieldatum freischalten</button>
+          <div class="micro">Keine Kosten. Kein Abo. Ergebnis sofort auf dem Bildschirm.</div>
+        </div>
+      </div>
+
+      <div class="proof"><span class="dot"></span><span>Gerade berechnen <b id="liveCnt">14</b> Frauen ihr Datum</span></div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <section class="reveal">
+      <h2 class="h2">Warum ein Datum mehr bringt als ein Ziel</h2>
+      <p class="h2-sub">"Ich will abnehmen" hat kein Ende. Ein Datum schon.</p>
+      <div class="cards">
+        <div class="card">
+          <span class="n">1</span>
+          <h3>Ein Ziel ohne Datum verschiebt sich ewig</h3>
+          <p>Solange kein Tag im Kalender steht, ist immer nächste Woche der bessere Start. Genau deshalb liegen die meisten Frauen nach drei Jahren beim selben Gewicht.</p>
+        </div>
+        <div class="card">
+          <span class="n">2</span>
+          <h3>Dein Tempo ist nicht das Tempo aus dem Internet</h3>
+          <p>Alter, Hormonlage, Startgewicht und Alltag verschieben deinen Termin um Monate. Pauschale Rechner ignorieren das komplett.</p>
+        </div>
+        <div class="card">
+          <span class="n">3</span>
+          <h3>Du siehst sofort, ob dein Anlass noch drin ist</h3>
+          <p>Hochzeit, Ferien, Klassentreffen: Wir legen deinen Termin neben dein Datum. Dann weisst du, ob es reicht oder wie viel Zeit dir fehlt.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="reveal">
+      <h2 class="h2">Frauen, die ihr Datum erreicht haben</h2>
+      <div class="trans">
+        <img src="/images/transformations/t1.jpg" alt="Ergebnis einer Teilnehmerin" loading="lazy" />
+        <img src="/images/transformations/t2.jpg" alt="Ergebnis einer Teilnehmerin" loading="lazy" />
+        <img src="/images/transformations/t3.jpg" alt="Ergebnis einer Teilnehmerin" loading="lazy" />
+        <img src="/images/transformations/t4.jpg" alt="Ergebnis einer Teilnehmerin" loading="lazy" />
+        <img src="/images/transformations/t5.jpg" alt="Ergebnis einer Teilnehmerin" loading="lazy" />
+        <img src="/images/transformations/t6.jpg" alt="Ergebnis einer Teilnehmerin" loading="lazy" />
+      </div>
+      <button class="cta-btn" style="margin-top:22px" onclick="startQuiz()">Mein Zieldatum freischalten</button>
+    </section>
+
+    <footer>
+      <p class="disc">Der Zieldatum-Rechner liefert eine Einschätzung auf Basis deiner Angaben und typischer Verläufe, keine medizinische Prognose und kein garantiertes Ergebnis. Jeder Körper reagiert anders. Bei Erkrankungen, Medikamenten oder in der Schwangerschaft sprich bitte vorher mit deiner Ärztin oder deinem Arzt.</p>
+      <p style="margin-top:14px"><a href={impressumUrl}>Impressum</a> · <a href={datenschutzUrl}>Datenschutz</a></p>
+    </footer>
+  </div>
+</div>
+
+<!-- ===================== QUIZ ===================== -->
+<div id="quiz">
+  <div class="qbar">
+    <div class="qbar-in">
+      <div class="qbar-row">
+        <button class="qback hidden" id="qback" onclick="goBack()" aria-label="Zurück">‹</button>
+        <div class="qtrack"><div class="qfill" id="qfill"></div></div>
+        <div class="qstep" id="qstep">1/9</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="qbody" id="qbody"></div>
+
+  <div id="calc">
+    <div class="spin"></div>
+    <h2 class="qh" style="text-align:center">Wir legen deinen Kalender an</h2>
+    <div class="chk-line" id="c1"><i>✓</i>Startwert und Zielwert geprüft</div>
+    <div class="chk-line" id="c2"><i>✓</i>Tempo nach Alter und Hormonlage angepasst</div>
+    <div class="chk-line" id="c3"><i>✓</i>Alltags-Bremsen eingerechnet</div>
+    <div class="chk-line" id="c4"><i>✓</i>Zieldatum und Korridor stehen</div>
+  </div>
+</div>
+
+<script is:inline>
+  // ===== Zustand =====
+  var A = {};              // alle Antworten
+  var wNow = 84, wGoal = 68;
+  var STEPS = ['form', 'zone', 'alter', 'groesse', 'anlass', 'monat', 'versucht', 'blocker', 'gate'];
+  var TOTAL = STEPS.length;
+  var pos = 0;
+
+  // ===== Silhouetten-Pfad, parametrisch =====
+  // f = 0 (schlank) bis 1 (kräftig). Erzeugt eine symmetrische Kontur um cx=60.
+  function bodyPath(f) {
+    f = Math.max(0, Math.min(1, f));
+    var sw = 25 + 9 * f;    // Schulter
+    var bw = 24 + 12 * f;   // Brust
+    var ww = 17 + 19 * f;   // Taille
+    var hw = 27 + 16 * f;   // Hüfte
+    var tw = 13 + 8 * f;    // Oberschenkel
+    var c = 60;
+    var r = function (n) { return Math.round(n * 10) / 10; };
+    return [
+      'M', r(c - sw), 46,
+      'C', r(c - sw - 2), 60, r(c - bw), 64, r(c - bw), 76,
+      'C', r(c - bw), 90, r(c - ww), 94, r(c - ww), 104,
+      'C', r(c - ww), 116, r(c - hw), 118, r(c - hw), 132,
+      'C', r(c - hw), 148, r(c - tw - 4), 154, r(c - tw), 164,
+      'L', r(c - tw + 3), 204,
+      'L', r(c - 9), 254,
+      'L', r(c - 2.5), 254,
+      'L', r(c - 3.5), 204,
+      'L', r(c - 1.5), 160,
+      'L', r(c + 1.5), 160,
+      'L', r(c + 3.5), 204,
+      'L', r(c + 2.5), 254,
+      'L', r(c + 9), 254,
+      'L', r(c + tw - 3), 204,
+      'L', r(c + tw), 164,
+      'C', r(c + tw + 4), 154, r(c + hw), 148, r(c + hw), 132,
+      'C', r(c + hw), 118, r(c + ww), 116, r(c + ww), 104,
+      'C', r(c + ww), 94, r(c + bw), 90, r(c + bw), 76,
+      'C', r(c + bw), 64, r(c + sw + 2), 60, r(c + sw), 46,
+      'Z'
+    ].join(' ');
+  }
+  // Gewicht auf Fülle-Faktor mappen (55 kg = schlank, 130 kg = voll)
+  function fill(kg) { return Math.max(0, Math.min(1, (kg - 55) / 75)); }
+
+  // ===== Tempo-Modell =====
+  // Basisrate kg/Woche nach Startgewicht, danach Faktoren fuer Alter, Hormone, Alltag.
+  function weeklyRate() {
+    var h = A.groesse || 167;
+    var bmi = wNow / Math.pow(h / 100, 2);
+    var base = bmi < 27 ? 0.42 : (bmi < 32 ? 0.58 : 0.72);
+    var age = A.alter || 42;
+    var fAge = age < 35 ? 1.0 : (age < 46 ? 0.93 : (age < 56 ? 0.86 : 0.8));
+    var fBlock = 1.0;
+    if (A.blocker === 'hormone') fBlock = 0.88;
+    else if (A.blocker === 'abend') fBlock = 0.94;
+    else if (A.blocker === 'zeit') fBlock = 0.95;
+    return Math.max(0.22, base * fAge * fBlock);
+  }
+  function weeksNeeded() {
+    var kg = Math.max(1, wNow - wGoal);
+    return kg / weeklyRate();
+  }
+  var MON = ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
+  function dateInWeeks(w) {
+    var d = new Date();
+    d.setDate(d.getDate() + Math.round(w * 7));
+    return d;
+  }
+  function fmt(d) { return d.getDate() + '. ' + MON[d.getMonth()] + ' ' + d.getFullYear(); }
+
+  // ===== Hero-Widget =====
+  function paintRange(el) {
+    var p = (el.value - el.min) / (el.max - el.min) * 100;
+    el.style.setProperty('--p', p + '%');
+  }
+  function renderRig() {
+    document.getElementById('bodyNow').setAttribute('d', bodyPath(fill(wNow)));
+    document.getElementById('bodyGoal').setAttribute('d', bodyPath(fill(wGoal)));
+    document.getElementById('hNow').setAttribute('r', String(13 + 2.5 * fill(wNow)));
+    document.getElementById('hGoal').setAttribute('r', String(13 + 2.5 * fill(wGoal)));
+    document.getElementById('kgNow').textContent = wNow;
+    document.getElementById('kgGoal').textContent = wGoal;
+    document.getElementById('lblNow').textContent = wNow;
+    document.getElementById('lblGoal').textContent = wGoal;
+    document.getElementById('dNum').textContent = '-' + (wNow - wGoal);
+    document.getElementById('teaseDate').textContent = fmt(dateInWeeks(weeksNeeded()));
+  }
+  (function initRig() {
+    var a = document.getElementById('slNow'), b = document.getElementById('slGoal');
+    function sync(src) {
+      wNow = parseInt(a.value, 10);
+      wGoal = parseInt(b.value, 10);
+      // Ziel muss mindestens 3 kg unter dem Startgewicht liegen
+      if (wGoal > wNow - 3) {
+        if (src === 'goal') { wGoal = wNow - 3; b.value = wGoal; }
+        else { wNow = wGoal + 3; a.value = wNow; }
+      }
+      paintRange(a); paintRange(b);
+      renderRig();
+    }
+    a.addEventListener('input', function () { sync('now'); });
+    b.addEventListener('input', function () { sync('goal'); });
+    ['change'].forEach(function (ev) {
+      a.addEventListener(ev, function () { tkOnce('slider_move'); });
+      b.addEventListener(ev, function () { tkOnce('slider_move'); });
+    });
+    sync('now');
+  })();
+
+  // ===== Tracking =====
+  function tk(e, d) {
+    var tries = 0;
+    (function fire() {
+      if (window.__lp) {
+        window.__lp.track(e, Object.assign({ page: 'zieldatum' }, d || {}), 'fot', 'Zieldatum-Rechner');
+        if (e === 'quiz_start') window.__lp.meta('ViewContent', { content_name: 'FoT Quiz Start', currency: 'EUR' });
+        if (e === 'quiz_complete') window.__lp.meta('CompleteRegistration', { content_name: 'FoT Quiz Complete', currency: 'EUR' });
+        if (e === 'lead_submit') window.__lp.meta('Lead', { content_name: 'FoT Lead', currency: 'EUR' });
+      } else if (tries++ < 40) { setTimeout(fire, 50); }
+    })();
+  }
+  var fired = {};
+  function tkOnce(e, d) { if (fired[e]) return; fired[e] = 1; tk(e, d); }
+  tk('page_view');
+
+  // Live-Counter mit Tageszeit-Bezug
+  (function liveCounter() {
+    var el = document.getElementById('liveCnt');
+    if (!el) return;
+    function range(h) {
+      if (h >= 9 && h < 12) return [12, 21];
+      if (h >= 12 && h < 17) return [10, 19];
+      if (h >= 17 && h < 21) return [11, 17];
+      if (h >= 21 || h < 6) return [7, 11];
+      return [9, 14];
+    }
+    var r = range(new Date().getHours());
+    var n = r[0] + Math.floor(Math.random() * (r[1] - r[0] + 1));
+    el.textContent = n;
+    (function tick() {
+      setTimeout(function () {
+        var rr = range(new Date().getHours());
+        var step = Math.random() < 0.5 ? -1 : 1;
+        if (Math.random() < 0.25) step *= 2;
+        n = Math.max(rr[0], Math.min(rr[1], n + step));
+        el.textContent = n;
+        tick();
+      }, 25000 + Math.floor(Math.random() * 12000));
+    })();
+  })();
+
+  // Reveal-on-Scroll
+  (function reveal() {
+    if (!('IntersectionObserver' in window)) {
+      document.querySelectorAll('.reveal').forEach(function (el) { el.classList.add('in'); });
+      return;
+    }
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.reveal').forEach(function (el) { io.observe(el); });
+  })();
+
+  // ===== Quiz-Steuerung =====
+  function startQuiz() {
+    tk('quiz_start', { detail: wNow + ' auf ' + wGoal + ' kg' });
+    document.getElementById('lp').style.display = 'none';
+    document.getElementById('quiz').classList.add('on');
+    window.scrollTo(0, 0);
+    pos = 0;
+    render();
+  }
+  function goBack() {
+    if (pos === 0) {
+      document.getElementById('quiz').classList.remove('on');
+      document.getElementById('lp').style.display = '';
+      return;
+    }
+    pos--; render();
+  }
+  function next() {
+    if (pos < TOTAL - 1) { pos++; render(); window.scrollTo(0, 0); }
+  }
+  function pick(key, val, label) {
+    A[key] = val;
+    if (label) A[key + '_label'] = label;
+    tk('quiz_answer', { detail: key + ': ' + (label || val), step: pos + 1 });
+    setTimeout(next, 190);
+  }
+
+  function render() {
+    var s = STEPS[pos];
+    document.getElementById('qfill').style.width = ((pos + 1) / TOTAL * 100) + '%';
+    document.getElementById('qstep').textContent = (pos + 1) + '/' + TOTAL;
+    document.getElementById('qback').classList.remove('hidden');
+    var b = document.getElementById('qbody');
+    b.innerHTML = TPL[s]();
+    if (AFTER[s]) AFTER[s]();
+  }
+
+  function optList(key, items) {
+    return '<div class="opts">' + items.map(function (it) {
+      var sel = A[key] === it.v ? ' sel' : '';
+      return '<button class="opt' + sel + '" onclick="pick(\'' + key + '\',\'' + it.v + '\',\'' + it.t.replace(/'/g, "") + '\')">' +
+        (it.ic ? '<span class="ic">' + it.ic + '</span>' : '') +
+        '<span>' + it.t + '</span><span class="chk"></span></button>';
+    }).join('') + '</div>';
+  }
+
+  var TPL = {};
+  var AFTER = {};
+
+  // 1 - Körperform heute (Silhouetten antippen, BetterMe-Mechanik)
+  TPL.form = function () {
+    var opts = [
+      { v: 'schlank', t: 'Eher schlank', f: 0.12 },
+      { v: 'birne', t: 'Unten mehr', f: 0.42 },
+      { v: 'apfel', t: 'Mitte mehr', f: 0.66 },
+      { v: 'kraeftig', t: 'Kräftiger', f: 0.92 }
+    ];
+    return '<h2 class="qh">Welche Figur kommt deiner heute am nächsten?</h2>' +
+      '<p class="qhint">Tipp einfach an. Es geht nicht um perfekt, sondern um ungefähr.</p>' +
+      '<div class="shapes">' + opts.map(function (o) {
+        var sel = A.form === o.v ? ' sel' : '';
+        return '<button class="shape' + sel + '" onclick="pick(\'form\',\'' + o.v + '\',\'' + o.t + '\')">' +
+          '<svg viewBox="0 0 120 268"><circle cx="60" cy="22" r="' + (13 + 2.5 * o.f) + '" fill="#94a3b8"/>' +
+          '<rect x="55" y="34" width="10" height="12" fill="#94a3b8"/>' +
+          '<path fill="#94a3b8" d="' + bodyPath(o.f) + '"/></svg>' +
+          '<span>' + o.t + '</span></button>';
+      }).join('') + '</div>';
+  };
+
+  // 2 - Problemzone
+  TPL.zone = function () {
+    return '<h2 class="qh">Wo landet es bei dir zuerst?</h2>' +
+      '<p class="qhint">Das verrät mehr über deinen Stoffwechsel als die Zahl auf der Waage.</p>' +
+      optList('zone', [
+        { v: 'bauch', t: 'Am Bauch', ic: '🎯' },
+        { v: 'hueften', t: 'An Hüfte und Po', ic: '🍐' },
+        { v: 'beine', t: 'An den Beinen', ic: '🦵' },
+        { v: 'ueberall', t: 'Überall gleichmässig', ic: '🔄' },
+        { v: 'oben', t: 'Oberarme und Rücken', ic: '💪' }
+      ]);
+  };
+
+  // 3 - Alter (Slider)
+  TPL.alter = function () {
+    var v = A.alter || 42;
+    return '<h2 class="qh">Wie alt bist du?</h2>' +
+      '<p class="qhint">Ab 40 verschiebt sich das Tempo deutlich. Deshalb fragen wir.</p>' +
+      '<div class="qslide"><div><span class="big" id="vAlter">' + v + '</span><span class="unit">Jahre</span></div>' +
+      '<input type="range" id="rAlter" min="20" max="72" step="1" value="' + v + '" aria-label="Alter" />' +
+      '<button class="qnext" onclick="pick(\'alter\', document.getElementById(\'rAlter\').value, document.getElementById(\'rAlter\').value + \' Jahre\')">Weiter</button></div>';
+  };
+  AFTER.alter = function () {
+    var r = document.getElementById('rAlter');
+    paintRange(r);
+    r.addEventListener('input', function () { document.getElementById('vAlter').textContent = r.value; paintRange(r); });
+  };
+
+  // 4 - Grösse (Slider)
+  TPL.groesse = function () {
+    var v = A.groesse || 167;
+    return '<h2 class="qh">Wie gross bist du?</h2>' +
+      '<p class="qhint">Damit rechnen wir dein Startniveau statt einer Pauschale.</p>' +
+      '<div class="qslide"><div><span class="big" id="vGr">' + v + '</span><span class="unit">cm</span></div>' +
+      '<input type="range" id="rGr" min="148" max="192" step="1" value="' + v + '" aria-label="Körpergrösse" />' +
+      '<button class="qnext" onclick="pick(\'groesse\', parseInt(document.getElementById(\'rGr\').value,10), document.getElementById(\'rGr\').value + \' cm\')">Weiter</button></div>';
+  };
+  AFTER.groesse = function () {
+    var r = document.getElementById('rGr');
+    paintRange(r);
+    r.addEventListener('input', function () { document.getElementById('vGr').textContent = r.value; paintRange(r); });
+  };
+
+  // 5 - Anlass (der emotionale Anker aus dem US-Original)
+  TPL.anlass = function () {
+    return '<h2 class="qh">Wofür willst du es?</h2>' +
+      '<p class="qhint">Wir legen deinen Anlass später direkt neben dein Zieldatum.</p>' +
+      optList('anlass', [
+        { v: 'ferien', t: 'Ferien und Badi', ic: '🏖️' },
+        { v: 'hochzeit', t: 'Eine Hochzeit', ic: '💍' },
+        { v: 'geburtstag', t: 'Ein runder Geburtstag', ic: '🎂' },
+        { v: 'treffen', t: 'Klassen- oder Familientreffen', ic: '🥂' },
+        { v: 'fotos', t: 'Fotos, bei denen ich nicht wegschaue', ic: '📸' },
+        { v: 'ich', t: 'Kein Anlass. Für mich.', ic: '🫶' }
+      ]);
+  };
+
+  // 6 - Monat des Anlasses
+  TPL.monat = function () {
+    var now = new Date();
+    var chips = '';
+    for (var i = 1; i <= 12; i++) {
+      var d = new Date(now.getFullYear(), now.getMonth() + i, 1);
+      var v = d.getFullYear() + '-' + (d.getMonth() + 1);
+      var t = MON[d.getMonth()].slice(0, 3) + ' ' + String(d.getFullYear()).slice(2);
+      chips += '<button class="chip' + (A.monat === v ? ' sel' : '') + '" onclick="pick(\'monat\',\'' + v + '\',\'' + MON[d.getMonth()] + ' ' + d.getFullYear() + '\')">' + t + '</button>';
+    }
+    var kopf = A.anlass === 'ich' ? 'Bis wann willst du dort sein?' : 'Wann ist es so weit?';
+    return '<h2 class="qh">' + kopf + '</h2>' +
+      '<p class="qhint">Grob reicht. Wir brauchen nur den Monat.</p>' +
+      '<div class="chips">' + chips + '</div>';
+  };
+
+  // 7 - Was schon versucht (Mehrfachauswahl)
+  TPL.versucht = function () {
+    var sel = A.versucht || [];
+    var items = [
+      { v: 'kalorien', t: 'Kalorien zählen', ic: '🔢' },
+      { v: 'lowcarb', t: 'Low Carb oder Keto', ic: '🥑' },
+      { v: 'fasten', t: 'Intervallfasten', ic: '⏱️' },
+      { v: 'sport', t: 'Fitness und Sport', ic: '🏃‍♀️' },
+      { v: 'shakes', t: 'Shakes und Kuren', ic: '🥤' },
+      { v: 'spritze', t: 'Abnehmspritze', ic: '💉' },
+      { v: 'nichts', t: 'Nichts davon richtig', ic: '🤷‍♀️' }
+    ];
+    return '<h2 class="qh">Was hast du schon probiert?</h2>' +
+      '<p class="qhint">Mehrfachauswahl. Was nicht gehalten hat, zählt trotzdem.</p>' +
+      '<div class="opts">' + items.map(function (it) {
+        var on = sel.indexOf(it.v) > -1 ? ' sel' : '';
+        return '<button class="opt' + on + '" onclick="toggleVersucht(\'' + it.v + '\')">' +
+          '<span class="ic">' + it.ic + '</span><span>' + it.t + '</span><span class="chk"></span></button>';
+      }).join('') + '</div>' +
+      '<button class="qnext" id="vNext" onclick="tk(\'quiz_answer\',{detail:\'versucht: \'+(A.versucht||[]).join(\',\')});next()"' + (sel.length ? '' : ' disabled') + '>Weiter</button>';
+  };
+  function toggleVersucht(v) {
+    A.versucht = A.versucht || [];
+    var i = A.versucht.indexOf(v);
+    if (i > -1) A.versucht.splice(i, 1); else A.versucht.push(v);
+    render();
+  }
+
+  // 8 - Grösste Bremse
+  TPL.blocker = function () {
+    return '<h2 class="qh">Was bremst dich am meisten?</h2>' +
+      '<p class="qhint">Der ehrlichste Klick bringt dir das genaueste Datum.</p>' +
+      optList('blocker', [
+        { v: 'abend', t: 'Heisshunger am Abend', ic: '🌙' },
+        { v: 'zeit', t: 'Keine Zeit im Alltag', ic: '⏳' },
+        { v: 'durchhalten', t: 'Ich starte gut und breche ab', ic: '📉' },
+        { v: 'hormone', t: 'Hormone und Wechseljahre', ic: '🌡️' },
+        { v: 'stress', t: 'Stress und schlechter Schlaf', ic: '😮‍💨' }
+      ]);
+  };
+
+  // 9 - Lead-Gate
+  TPL.gate = function () {
+    var d = fmt(dateInWeeks(weeksNeeded()));
+    return '<h2 class="qh">Dein Datum ist berechnet.</h2>' +
+      '<p class="qhint">Sag uns, wohin wir es schicken. Danach siehst du es sofort auf dem Bildschirm.</p>' +
+      '<div class="gate-box"><div class="gb-lbl">Dein Zieldatum</div><div class="gb-date">' + d + '</div></div>' +
+      '<div class="field"><label for="fName">Dein Vorname</label><input type="text" id="fName" autocomplete="given-name" placeholder="Sandra" /></div>' +
+      '<div class="field"><label for="fMail">Deine E-Mail</label><input type="email" id="fMail" autocomplete="email" inputmode="email" placeholder="sandra@beispiel.ch" /></div>' +
+      '<div class="field"><label for="fTel">Deine Telefonnummer</label><input type="tel" id="fTel" autocomplete="tel" inputmode="tel" placeholder="079 123 45 67" /></div>' +
+      '<label class="consent"><input type="checkbox" id="fOk" /><span>Ich möchte mein Zieldatum und den passenden Plan von Fit on Time erhalten. Widerruf jederzeit möglich.</span></label>' +
+      '<div class="err" id="fErr"></div>' +
+      '<button class="qnext" id="gBtn" onclick="submitGate()">Zieldatum anzeigen</button>' +
+      '<p style="font-size:11.5px;color:#94a3b8;margin-top:12px;line-height:1.5">Einschätzung auf Basis deiner Angaben, kein garantiertes Ergebnis und keine medizinische Beratung.</p>';
+  };
+
+  function submitGate() {
+    var n = (document.getElementById('fName').value || '').trim();
+    var m = (document.getElementById('fMail').value || '').trim();
+    var t = (document.getElementById('fTel').value || '').trim();
+    var ok = document.getElementById('fOk').checked;
+    var err = document.getElementById('fErr');
+    function bad(msg) { err.textContent = msg; err.classList.add('on'); }
+    if (n.length < 2) return bad('Bitte trag deinen Vornamen ein.');
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(m)) return bad('Diese E-Mail sieht nicht gültig aus.');
+    if (t.replace(/\D/g, '').length < 9) return bad('Bitte trag eine gültige Telefonnummer ein.');
+    if (!ok) return bad('Bitte setz das Häkchen, damit wir dir dein Datum schicken dürfen.');
+    err.classList.remove('on');
+    A.gate_name = n; A.gate_email = m; A.gate_phone = t;
+    tk('quiz_complete', { detail: wNow + ' auf ' + wGoal + ' kg' });
+    showCalc();
+  }
+
+  function showCalc() {
+    document.getElementById('qbody').style.display = 'none';
+    document.querySelector('.qbar').style.display = 'none';
+    document.getElementById('calc').classList.add('on');
+    window.scrollTo(0, 0);
+    [500, 1250, 2000, 2750].forEach(function (ms, i) {
+      setTimeout(function () { document.getElementById('c' + (i + 1)).classList.add('show'); }, ms);
+    });
+    setTimeout(sendLead, 3500);
+  }
+
+  // ===== Ergebnis berechnen + Lead schreiben =====
+  function computeResult() {
+    var w = weeksNeeded();
+    var fast = Math.max(2, w * 0.84);
+    var slow = w * 1.22;
+    var ziel = dateInWeeks(w);
+    var anlassDate = null, gapWeeks = null;
+    if (A.monat) {
+      var p = A.monat.split('-');
+      anlassDate = new Date(parseInt(p[0], 10), parseInt(p[1], 10) - 1, 15);
+      gapWeeks = Math.round((anlassDate - ziel) / (7 * 24 * 3600 * 1000));
+    }
+    return {
+      wNow: wNow, wGoal: wGoal, kg: wNow - wGoal,
+      rate: Math.round(weeklyRate() * 100) / 100,
+      weeks: Math.round(w),
+      zielISO: ziel.toISOString(),
+      zielText: fmt(ziel),
+      fastText: fmt(dateInWeeks(fast)),
+      slowText: fmt(dateInWeeks(slow)),
+      anlassISO: anlassDate ? anlassDate.toISOString() : '',
+      anlassLabel: A.anlass_label || '',
+      anlassMonat: A.monat_label || '',
+      gapWeeks: gapWeeks
+    };
+  }
+
+  function sendLead() {
+    var r = computeResult();
+    var payload = {
+      name: A.gate_name,
+      email: A.gate_email,
+      phone: A.gate_phone,
+      lp_slug: 'zieldatum',
+      lp_name: 'Zieldatum-Rechner',
+      answers: Object.assign({}, A, {
+        gewicht_jetzt: r.wNow,
+        gewicht_ziel: r.wGoal,
+        kg_differenz: r.kg,
+        tempo_kg_woche: r.rate,
+        wochen: r.weeks,
+        zieldatum: r.zielText,
+        anlass_monat: r.anlassMonat,
+        gap_wochen: r.gapWeeks
+      })
+    };
+    function forward() {
+      try { sessionStorage.setItem('fot_zieldatum', JSON.stringify(Object.assign({ name: (A.gate_name || '').split(' ')[0], phone: A.gate_phone, blocker: A.blocker, alltag: A.alltag, alter: A.alter, ts: Date.now() }, r))); } catch (e) {}
+      window.location.href = '/zieldatum/ergebnis/';
+    }
+    fetch('/api/sheets', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    }).then(function (res) {
+      if (!res.ok) throw new Error('insert-failed');
+      tk('lead_submit', { detail: A.gate_name + ' · ' + r.kg + ' kg bis ' + r.zielText });
+      forward();
+    }).catch(function () {
+      // Auch bei Fehler weiterleiten, damit die Nutzerin ihr Datum sieht
+      forward();
+    });
+  }
+</script>
+
+<script is:inline src="https://t.hyros.com/v1/lst/universal-script?ph=689a71ca1ab3be1cb1caddbe6b7902a4ad2c51a228f4ec9ea7fef3123a705f63"></script>
+
+<CookieBanner
+  metaPixelId="1349136525891811"
+  consentKey="fot_zieldatum_consent"
+  impressumUrl={impressumUrl}
+  datenschutzUrl={datenschutzUrl}
+/>
+</body>
+</html>

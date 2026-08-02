@@ -37,6 +37,27 @@ const SHEETS: Record<string, SheetConfig> = {
       return [datum, d.name, d.email, d.phone || '', 'Bewerbung', a.situation || '', a.ziel || '', a.invest || '', a.entscheidung || ''];
     },
   },
+  // Zieldatum-Rechner (neu 2026-08)
+  // Sheet-ID kommt aus der Vercel-Env ZIELDATUM_SHEET_ID. Ist sie nicht gesetzt, läuft
+  // der Lead trotzdem ins Dashboard-CRM und in die Meta-CAPI, nur ohne Sheet-Zeile.
+  // Schema: Datum | Vorname | E-Mail | Telefon | kg heute | kg Ziel | Differenz | Tempo kg/Woche | Wochen | Zieldatum | Anlass | Anlass-Monat | Gap Wochen | Bremse | Alter
+  ...(import.meta.env.ZIELDATUM_SHEET_ID ? {
+    'zieldatum': {
+      id: import.meta.env.ZIELDATUM_SHEET_ID as string,
+      range: 'Leads!A:O',
+      buildRow: (datum: string, d: any) => {
+        const a = d.answers || {};
+        return [
+          datum, d.name, d.email, d.phone || '',
+          a.gewicht_jetzt ?? '', a.gewicht_ziel ?? '', a.kg_differenz ?? '',
+          a.tempo_kg_woche ?? '', a.wochen ?? '', a.zieldatum || '',
+          a.anlass_label || '', a.anlass_monat || '', a.gap_wochen ?? '',
+          a.blocker_label || a.blocker || '', a.alter ?? '',
+        ];
+      },
+    },
+  } : {}),
+
   // Abnehmpotential-Sheet: Datum | Name | Telefon | Email
   'abnehmpotential': {
     id: '1Eyzi7Hh8e20UQx44b5fikCA6sN-wngJvO0I4k4flQUM',

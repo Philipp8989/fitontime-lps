@@ -1,0 +1,431 @@
+---
+// Zieldatum-Ergebnis  -  animierte Prognose-Kurve + Vorher/Nachher-Drag + Anlass-Abgleich
+// Liest alles aus sessionStorage (gesetzt in /zieldatum/index.astro)
+import CookieBanner from '../../components/CookieBanner.astro';
+const impressumUrl = 'https://fitontime.ch/impressum-datenschutz';
+const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
+---
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="theme-color" content="#1d73d3" />
+  <title>Dein Zieldatum - Fit on Time</title>
+  <link rel="icon" type="image/png" href="/images/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <style is:global>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #fafaf8; --card: #ffffff; --border: #e8e4da;
+      --accent: #1d73d3; --accent-dark: #155aa8; --accent-soft: #eaf2fc;
+      --green: #16a34a; --amber: #f59e0b; --red: #dc2626;
+      --text: #0f172a; --text-2: #475569; --text-3: #94a3b8;
+      --font: 'DM Sans', system-ui, -apple-system, sans-serif;
+      --shadow-md: 0 6px 20px rgba(29,115,211,0.14);
+      --shadow-lg: 0 12px 28px rgba(29,115,211,0.22);
+    }
+    body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.5; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    .wrap { max-width: 640px; margin: 0 auto; padding: 0 18px; }
+    .topbar { padding: 16px 0 6px; text-align: center; }
+    .topbar img { height: 34px; }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }
+
+    .fade { opacity: 0; animation: fadeUp 0.6s cubic-bezier(0.2,0.9,0.3,1) forwards; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* ===== Datums-Headline ===== */
+    .head { text-align: center; padding: 12px 0 6px; }
+    .head .eyebrow { font-size: 12.5px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--accent); }
+    .head h1 { font-size: clamp(26px, 7vw, 38px); font-weight: 900; letter-spacing: -1px; line-height: 1.14; margin-top: 10px; }
+    .head .date { color: var(--accent); }
+    .head .corridor { font-size: 14px; color: var(--text-2); margin-top: 12px; }
+    .head .corridor b { color: var(--text); }
+
+    /* ===== Prognose-Kurve ===== */
+    .chart-box { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 18px 14px 12px; margin-top: 20px; box-shadow: var(--shadow-md); }
+    .chart-box .cb-h { font-size: 12.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.9px; color: var(--text-3); padding: 0 4px 10px; }
+    .chart-box svg { display: block; width: 100%; height: auto; }
+    .curve { fill: none; stroke: var(--accent); stroke-width: 3.2; stroke-linecap: round; stroke-dasharray: 900; stroke-dashoffset: 900; animation: draw 1.9s cubic-bezier(0.4,0,0.2,1) 0.35s forwards; }
+    @keyframes draw { to { stroke-dashoffset: 0; } }
+    .area { fill: url(#g1); opacity: 0; animation: fadeIn 0.9s ease 1.5s forwards; }
+    @keyframes fadeIn { to { opacity: 1; } }
+    .endDot { opacity: 0; animation: pop 0.5s cubic-bezier(0.34,1.56,0.64,1) 2.1s forwards; }
+    @keyframes pop { from { opacity: 0; transform: scale(0.3); } to { opacity: 1; transform: scale(1); } }
+    .anlassLine { opacity: 0; animation: fadeIn 0.6s ease 2.3s forwards; }
+    .axis { font-size: 10px; fill: var(--text-3); font-weight: 700; }
+    .lbl-kg { font-size: 11px; fill: var(--text-2); font-weight: 800; }
+
+    /* ===== Gap-Box ===== */
+    .gap { border-radius: 16px; padding: 17px 18px; margin-top: 16px; border: 1.5px solid; }
+    .gap.good { background: #f0fdf4; border-color: #bbf7d0; }
+    .gap.tight { background: #fffbeb; border-color: #fde68a; }
+    .gap.miss { background: #fef2f2; border-color: #fecaca; }
+    .gap .g-t { font-size: 16.5px; font-weight: 900; letter-spacing: -0.3px; }
+    .gap.good .g-t { color: #15803d; }
+    .gap.tight .g-t { color: #b45309; }
+    .gap.miss .g-t { color: #b91c1c; }
+    .gap p { font-size: 14.5px; color: var(--text-2); margin-top: 6px; }
+
+    /* ===== Vorher/Nachher-Drag ===== */
+    .cmp { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 18px 16px 14px; margin-top: 18px; }
+    .cmp .cb-h { font-size: 12.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.9px; color: var(--text-3); text-align: center; }
+    .cmp-stage { position: relative; width: 100%; max-width: 300px; margin: 12px auto 0; aspect-ratio: 300/300; overflow: hidden; border-radius: 14px; background: linear-gradient(180deg, #f6f8fb, #eef2f7); touch-action: none; cursor: ew-resize; user-select: none; }
+    .cmp-layer { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+    .cmp-layer svg { height: 92%; width: auto; }
+    .cmp-layer.after { clip-path: inset(0 0 0 50%); }
+    .cmp-handle { position: absolute; top: 0; bottom: 0; width: 3px; background: #fff; left: 50%; transform: translateX(-50%); box-shadow: 0 0 0 1px rgba(15,23,42,0.08); pointer-events: none; }
+    .cmp-knob { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 42px; height: 42px; border-radius: 50%; background: #fff; border: 3px solid var(--accent); box-shadow: 0 4px 14px rgba(29,115,211,0.3); display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 900; color: var(--accent); pointer-events: none; }
+    .cmp-tag { position: absolute; top: 10px; font-size: 11px; font-weight: 900; letter-spacing: 0.6px; text-transform: uppercase; padding: 4px 9px; border-radius: 99px; }
+    .cmp-tag.l { left: 10px; background: rgba(148,163,184,0.18); color: #64748b; }
+    .cmp-tag.r { right: 10px; background: var(--accent-soft); color: var(--accent-dark); }
+    .cmp .hint { text-align: center; font-size: 12.5px; color: var(--text-3); margin-top: 10px; }
+
+    /* ===== Faktoren ===== */
+    h2.sec { font-size: clamp(20px, 5.2vw, 25px); font-weight: 900; letter-spacing: -0.6px; text-align: center; margin-top: 34px; }
+    .facts { display: grid; gap: 10px; margin-top: 16px; }
+    .fact { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 15px 16px; display: flex; gap: 13px; }
+    .fact .fi { font-size: 21px; line-height: 1.2; flex: none; }
+    .fact h3 { font-size: 15px; font-weight: 800; }
+    .fact p { font-size: 14px; color: var(--text-2); margin-top: 3px; }
+
+    /* ===== Booking ===== */
+    .booking { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 22px 18px; margin-top: 30px; box-shadow: var(--shadow-md); text-align: center; }
+    .booking h3 { font-size: 21px; font-weight: 900; letter-spacing: -0.5px; }
+    .booking > p { font-size: 14.5px; color: var(--text-2); margin-top: 7px; }
+    .bl { text-align: left; margin: 16px auto 0; max-width: 440px; display: grid; gap: 9px; }
+    .bl li { list-style: none; font-size: 14.5px; color: var(--text-2); padding-left: 26px; position: relative; }
+    .bl li::before { content: '✓'; position: absolute; left: 0; top: 0; color: var(--green); font-weight: 900; }
+    .ycbm { background: #fff; border: 1px solid var(--border); border-radius: 14px; margin: 18px auto 0; min-height: 520px; max-width: 520px; overflow: hidden; }
+    .ycbm iframe { width: 100%; min-height: 520px; border: 0; display: block; }
+
+    .trust { text-align: center; font-size: 13.5px; color: var(--text-2); margin-top: 26px; line-height: 1.6; }
+    .disc { font-size: 11.5px; color: var(--text-3); line-height: 1.5; margin-top: 22px; text-align: center; }
+    footer { padding: 22px 0 40px; text-align: center; font-size: 12.5px; color: var(--text-3); }
+    footer a { color: var(--text-3); }
+    .empty { text-align: center; padding: 70px 20px; }
+    .empty a { display: inline-block; margin-top: 16px; background: var(--accent); color: #fff; text-decoration: none; padding: 14px 22px; border-radius: 12px; font-weight: 800; }
+  </style>
+</head>
+<body>
+
+<div class="topbar"><img src="/images/logo.png" alt="Fit on Time" /></div>
+
+<div class="wrap">
+  <div id="view" style="display:none">
+
+    <div class="head fade">
+      <div class="eyebrow" id="eyebrow">Dein Ergebnis</div>
+      <h1 id="h1">Dein Datum steht.</h1>
+      <p class="corridor" id="corridor"></p>
+    </div>
+
+    <div class="chart-box fade" style="animation-delay:0.12s">
+      <div class="cb-h">Dein Verlauf bis zum Ziel</div>
+      <svg id="chart" viewBox="0 0 340 200" role="img" aria-label="Prognostizierter Gewichtsverlauf">
+        <defs>
+          <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#1d73d3" stop-opacity="0.20"/>
+            <stop offset="100%" stop-color="#1d73d3" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+        <g id="grid"></g>
+        <path id="areaP" class="area" d=""/>
+        <path id="curveP" class="curve" d=""/>
+        <g id="anlassG" class="anlassLine"></g>
+        <g id="endG" class="endDot"></g>
+        <g id="axisG"></g>
+      </svg>
+    </div>
+
+    <div class="gap fade" id="gapBox" style="animation-delay:0.2s; display:none"></div>
+
+    <div class="cmp fade" style="animation-delay:0.28s">
+      <div class="cb-h">Zieh den Regler</div>
+      <div class="cmp-stage" id="stage">
+        <div class="cmp-layer before">
+          <svg viewBox="0 0 120 268"><circle id="cbH" cx="60" cy="22" r="15" fill="#94a3b8"/><rect x="55" y="34" width="10" height="12" fill="#94a3b8"/><path id="cbB" fill="#94a3b8" d=""/></svg>
+        </div>
+        <div class="cmp-layer after" id="afterLayer">
+          <svg viewBox="0 0 120 268"><circle id="caH" cx="60" cy="22" r="14" fill="#1d73d3"/><rect x="55" y="34" width="10" height="12" fill="#1d73d3"/><path id="caB" fill="#1d73d3" d=""/></svg>
+        </div>
+        <div class="cmp-tag l" id="tagL">Heute</div>
+        <div class="cmp-tag r" id="tagR">Ziel</div>
+        <div class="cmp-handle" id="handle"></div>
+        <div class="cmp-knob" id="knob">⇆</div>
+      </div>
+      <p class="hint">Links dein Startwert, rechts dein Zielwert. Schematische Darstellung.</p>
+    </div>
+
+    <h2 class="sec">Was dein Datum verschiebt</h2>
+    <div class="facts" id="facts"></div>
+
+    <div class="booking">
+      <h3>Hol dir den Plan zu deinem Datum</h3>
+      <p>45 Minuten. Kostenlos. Unverbindlich.</p>
+      <ul class="bl">
+        <li>Wir prüfen, ob dein Datum realistisch ist oder ob wir es verschieben müssen.</li>
+        <li>Die eine Bremse, die bei dir zuerst weg muss.</li>
+        <li>Die ersten drei Schritte für deine nächsten 14 Tage, zum Mitnehmen.</li>
+        <li>Ehrliche Einschätzung: allein oder mit Begleitung.</li>
+      </ul>
+      <div class="ycbm" id="ycbm">
+        <div style="padding:40px 20px;text-align:center;color:#94a3b8;font-size:13px">Kalender lädt…</div>
+      </div>
+    </div>
+
+    <p class="trust">Über <b>4.000 Schweizer Frauen</b> begleitet seit 2016.<br>Keine Wunder. Ein System, das zu deinem Alltag passt.</p>
+    <p class="disc">Dein Zieldatum ist eine Einschätzung auf Basis deiner Angaben und typischer Verläufe. Es ist kein garantiertes Ergebnis und ersetzt keine ärztliche Beratung. Jeder Körper reagiert anders.</p>
+  </div>
+
+  <div id="empty" class="empty" style="display:none">
+    <h2 style="font-size:22px;font-weight:900">Kein Ergebnis gefunden</h2>
+    <p style="color:#475569;margin-top:8px">Dein Datum wurde nicht übertragen. Bitte berechne es kurz neu.</p>
+    <a href="/zieldatum/">Zum Zieldatum-Rechner</a>
+  </div>
+
+  <footer>
+    <a href={impressumUrl} target="_blank" rel="noopener">Impressum</a> ·
+    <a href={datenschutzUrl} target="_blank" rel="noopener">Datenschutz</a>
+  </footer>
+</div>
+
+<script is:inline>
+  var R = null;
+  try { R = JSON.parse(sessionStorage.getItem('fot_zieldatum') || 'null'); } catch (e) {}
+
+  function tk(e, d) {
+    var t = 0;
+    (function f() {
+      if (window.__lp) window.__lp.track(e, Object.assign({ page: 'zieldatum-ergebnis' }, d || {}), 'fot', 'Zieldatum Ergebnis');
+      else if (t++ < 40) setTimeout(f, 50);
+    })();
+  }
+
+  if (!R || !R.zielText) {
+    document.getElementById('empty').style.display = 'block';
+    tk('result_empty');
+  } else {
+    document.getElementById('view').style.display = 'block';
+    tk('result_view', { detail: R.kg + ' kg bis ' + R.zielText });
+    build(R);
+  }
+
+  // Silhouetten-Pfad, identisch zur Rechner-Seite
+  function bodyPath(f) {
+    f = Math.max(0, Math.min(1, f));
+    var sw = 25 + 9 * f, bw = 24 + 12 * f, ww = 17 + 19 * f, hw = 27 + 16 * f, tw = 13 + 8 * f, c = 60;
+    var r = function (n) { return Math.round(n * 10) / 10; };
+    return ['M', r(c-sw),46,'C', r(c-sw-2),60, r(c-bw),64, r(c-bw),76,
+      'C', r(c-bw),90, r(c-ww),94, r(c-ww),104,
+      'C', r(c-ww),116, r(c-hw),118, r(c-hw),132,
+      'C', r(c-hw),148, r(c-tw-4),154, r(c-tw),164,
+      'L', r(c-tw+3),204,'L', r(c-9),254,'L', r(c-2.5),254,'L', r(c-3.5),204,'L', r(c-1.5),160,
+      'L', r(c+1.5),160,'L', r(c+3.5),204,'L', r(c+2.5),254,'L', r(c+9),254,'L', r(c+tw-3),204,
+      'L', r(c+tw),164,
+      'C', r(c+tw+4),154, r(c+hw),148, r(c+hw),132,
+      'C', r(c+hw),118, r(c+ww),116, r(c+ww),104,
+      'C', r(c+ww),94, r(c+bw),90, r(c+bw),76,
+      'C', r(c+bw),64, r(c+sw+2),60, r(c+sw),46,'Z'].join(' ');
+  }
+  function fill(kg) { return Math.max(0, Math.min(1, (kg - 55) / 75)); }
+
+  var MON = ['Jan','Feb','Mär','Apr','Mai','Jun','Jul','Aug','Sep','Okt','Nov','Dez'];
+
+  function build(r) {
+    // --- Headline ---
+    var name = r.name ? r.name + ', d' : 'D';
+    document.getElementById('eyebrow').textContent = 'Zieldatum berechnet';
+    document.getElementById('h1').innerHTML = name + 'u bist am <span class="date">' + r.zielText + '</span> bei ' + r.wGoal + ' kg.';
+    document.getElementById('corridor').innerHTML =
+      'Das sind <b>' + r.kg + ' kg in rund ' + r.weeks + ' Wochen</b>, bei einem Tempo von etwa ' + String(r.rate).replace('.', ',') + ' kg pro Woche. ' +
+      'Realistischer Korridor: <b>' + r.fastText + '</b> bis <b>' + r.slowText + '</b>.';
+
+    drawChart(r);
+    drawGap(r);
+    setupCompare(r);
+    drawFacts(r);
+    setupYCBM(r);
+  }
+
+  // ===== Prognose-Kurve =====
+  function drawChart(r) {
+    var W = 340, H = 200, padL = 34, padR = 14, padT = 14, padB = 26;
+    var x0 = padL, x1 = W - padR, y0 = padT, y1 = H - padB;
+    var top = r.wNow + 1.5, bot = r.wGoal - 1.5;
+    var yFor = function (kg) { return y0 + (top - kg) / (top - bot) * (y1 - y0); };
+    var weeks = Math.max(4, r.weeks);
+    var xFor = function (w) { return x0 + (w / weeks) * (x1 - x0); };
+
+    // Verlauf leicht degressiv: am Anfang schneller, später flacher
+    var pts = [];
+    for (var i = 0; i <= 24; i++) {
+      var t = i / 24;
+      var eased = 1 - Math.pow(1 - t, 1.65);
+      pts.push([xFor(t * weeks), yFor(r.wNow - (r.wNow - r.wGoal) * eased)]);
+    }
+    var d = pts.map(function (p, i) { return (i ? 'L' : 'M') + p[0].toFixed(1) + ' ' + p[1].toFixed(1); }).join(' ');
+    document.getElementById('curveP').setAttribute('d', d);
+    document.getElementById('areaP').setAttribute('d', d + ' L' + x1.toFixed(1) + ' ' + y1 + ' L' + x0 + ' ' + y1 + ' Z');
+
+    // Gitter + kg-Achse
+    var grid = '';
+    [r.wNow, (r.wNow + r.wGoal) / 2, r.wGoal].forEach(function (kg) {
+      var y = yFor(kg).toFixed(1);
+      grid += '<line x1="' + x0 + '" y1="' + y + '" x2="' + x1 + '" y2="' + y + '" stroke="#e8e4da" stroke-width="1" stroke-dasharray="3 4"/>';
+      grid += '<text class="lbl-kg" x="4" y="' + (parseFloat(y) + 4).toFixed(1) + '">' + Math.round(kg) + '</text>';
+    });
+    document.getElementById('grid').innerHTML = grid;
+
+    // Monats-Achse
+    var start = new Date();
+    var ax = '';
+    var stepW = weeks / 4;
+    for (var k = 0; k <= 4; k++) {
+      var dd = new Date(start.getTime());
+      dd.setDate(dd.getDate() + Math.round(stepW * k * 7));
+      ax += '<text class="axis" x="' + xFor(stepW * k).toFixed(1) + '" y="' + (H - 8) + '" text-anchor="' + (k === 0 ? 'start' : (k === 4 ? 'end' : 'middle')) + '">' + MON[dd.getMonth()] + '</text>';
+    }
+    document.getElementById('axisG').innerHTML = ax;
+
+    // Endpunkt
+    var ex = xFor(weeks), ey = yFor(r.wGoal);
+    document.getElementById('endG').innerHTML =
+      '<circle cx="' + ex.toFixed(1) + '" cy="' + ey.toFixed(1) + '" r="6.5" fill="#1d73d3"/>' +
+      '<circle cx="' + ex.toFixed(1) + '" cy="' + ey.toFixed(1) + '" r="11" fill="#1d73d3" opacity="0.18"/>';
+
+    // Anlass-Marker
+    if (r.anlassISO) {
+      var ad = new Date(r.anlassISO);
+      var wOffset = (ad - start) / (7 * 24 * 3600 * 1000);
+      if (wOffset > 0 && wOffset < weeks * 1.35) {
+        var ax2 = Math.min(x1 - 2, xFor(wOffset));
+        document.getElementById('anlassG').innerHTML =
+          '<line x1="' + ax2.toFixed(1) + '" y1="' + y0 + '" x2="' + ax2.toFixed(1) + '" y2="' + y1 + '" stroke="#f59e0b" stroke-width="2" stroke-dasharray="5 4"/>' +
+          '<text class="axis" x="' + (ax2 - 4).toFixed(1) + '" y="' + (y0 + 10) + '" text-anchor="end" fill="#b45309" font-weight="800">dein Anlass</text>';
+      }
+    }
+  }
+
+  // ===== Anlass-Abgleich (der emotionale Kern) =====
+  function drawGap(r) {
+    if (r.gapWeeks == null || !r.anlassMonat) return;
+    var box = document.getElementById('gapBox');
+    var g = r.gapWeeks;
+    var anlass = (r.anlassLabel || 'dein Termin');
+    var cls, titel, text;
+    if (g >= 4) {
+      cls = 'good';
+      titel = 'Du bist rechtzeitig dort. Mit ' + g + ' Wochen Puffer.';
+      text = anlass + ' ist im ' + r.anlassMonat + '. Dein Datum liegt davor. Dieser Puffer existiert allerdings nur, wenn du in den nächsten 14 Tagen anfängst. Jede Woche, die du wartest, frisst ihn auf.';
+    } else if (g >= 0) {
+      cls = 'tight';
+      titel = 'Es wird knapp. ' + (g === 0 ? 'Punktlandung.' : g + ' Wochen Puffer.');
+      text = anlass + ' ist im ' + r.anlassMonat + '. Du kommst gerade so hin, aber ohne Spielraum für Ferien, Krankheit oder eine schwache Woche. Wenn du erst nächsten Monat startest, verpasst du es.';
+    } else {
+      cls = 'miss';
+      var fehl = Math.abs(g);
+      cls = 'miss';
+      titel = 'So reicht die Zeit nicht. Dir fehlen ' + fehl + ' Wochen.';
+      text = anlass + ' ist im ' + r.anlassMonat + '. Bei deinem aktuellen Tempo bist du dann noch nicht bei ' + r.wGoal + ' kg. Zwei Wege: du startest sofort statt in vier Wochen, oder wir setzen ein Zwischenziel, das bis dahin sichtbar ist.';
+    }
+    box.className = 'gap fade ' + cls;
+    box.style.display = 'block';
+    box.innerHTML = '<div class="g-t">' + titel + '</div><p>' + text + '</p>';
+    tk('gap_shown', { detail: cls + ' · ' + g + ' Wochen' });
+  }
+
+  // ===== Vorher/Nachher-Drag =====
+  function setupCompare(r) {
+    document.getElementById('cbB').setAttribute('d', bodyPath(fill(r.wNow)));
+    document.getElementById('caB').setAttribute('d', bodyPath(fill(r.wGoal)));
+    document.getElementById('cbH').setAttribute('r', String(13 + 2.5 * fill(r.wNow)));
+    document.getElementById('caH').setAttribute('r', String(13 + 2.5 * fill(r.wGoal)));
+    document.getElementById('tagL').textContent = r.wNow + ' kg heute';
+    document.getElementById('tagR').textContent = r.wGoal + ' kg';
+
+    var stage = document.getElementById('stage');
+    var after = document.getElementById('afterLayer');
+    var handle = document.getElementById('handle');
+    var knob = document.getElementById('knob');
+    var dragged = false;
+
+    function setP(p) {
+      p = Math.max(4, Math.min(96, p));
+      after.style.clipPath = 'inset(0 0 0 ' + p + '%)';
+      handle.style.left = p + '%';
+      knob.style.left = p + '%';
+    }
+    function fromEvent(ev) {
+      var rect = stage.getBoundingClientRect();
+      var cx = (ev.touches ? ev.touches[0].clientX : ev.clientX);
+      setP((cx - rect.left) / rect.width * 100);
+      if (!dragged) { dragged = true; tk('compare_drag'); }
+    }
+    var active = false;
+    stage.addEventListener('pointerdown', function (e) { active = true; stage.setPointerCapture(e.pointerId); fromEvent(e); });
+    stage.addEventListener('pointermove', function (e) { if (active) fromEvent(e); });
+    stage.addEventListener('pointerup', function () { active = false; });
+    stage.addEventListener('pointercancel', function () { active = false; });
+
+    // Kleiner Auto-Hinweis, damit klar wird dass man ziehen kann
+    setTimeout(function () { setP(62); }, 900);
+    setTimeout(function () { setP(38); }, 1500);
+    setTimeout(function () { setP(50); }, 2100);
+  }
+
+  // ===== Faktoren-Karten aus ihren Antworten =====
+  function drawFacts(r) {
+    var out = [];
+    var B = {
+      abend: { i: '🌙', h: 'Heisshunger am Abend', p: 'Der Abend entscheidet über deine Woche. Solange die Bremse dort sitzt, verschiebt sich dein Datum bei jedem harten Tag nach hinten. Das ist kein Willensproblem, sondern ein Timing- und Sättigungsproblem.' },
+      zeit: { i: '⏳', h: 'Keine Zeit im Alltag', p: 'Dein Plan muss in deinen echten Tag passen, nicht in einen idealen. Sonst hältst du drei Wochen durch und dein Datum wandert um Monate.' },
+      durchhalten: { i: '📉', h: 'Guter Start, dann Abbruch', p: 'Der Abbruch kommt fast immer an derselben Stelle, meist zwischen Woche 3 und 5. Wenn du weisst wo, kannst du dort gegensteuern statt neu anzufangen.' },
+      hormone: { i: '🌡️', h: 'Hormone und Wechseljahre', p: 'Deine Rate ist deshalb bereits nach unten korrigiert. Das Datum ist trotzdem erreichbar, aber der Weg sieht anders aus als der aus jedem Standard-Plan.' },
+      stress: { i: '😮‍💨', h: 'Stress und schlechter Schlaf', p: 'Zu wenig Schlaf verschiebt Hunger und Sättigung am nächsten Tag messbar. Das ist der Hebel, der bei dir vor jedem Ernährungsdetail kommt.' }
+    };
+    if (B[r.blocker]) out.push(B[r.blocker]);
+
+    if (r.alter >= 45) out.push({ i: '📆', h: 'Dein Alter ist eingerechnet', p: 'Ab Mitte 40 läuft der Grundumsatz anders. Wir haben dein Tempo deshalb bewusst konservativ angesetzt statt dir eine schöne Zahl zu zeigen.' });
+    else out.push({ i: '📆', h: 'Dein Alter spielt dir zu', p: 'Dein Ausgangstempo ist gut. Der Faktor, der jetzt zählt, ist nicht Biologie sondern Konstanz.' });
+
+    out.push({ i: '⚡', h: 'Der Startzeitpunkt', p: 'Jede Woche, die du wartest, verschiebt dein Datum um genau eine Woche. Das ist die einzige Variable in dieser Rechnung, die du heute steuerst.' });
+
+    document.getElementById('facts').innerHTML = out.map(function (f) {
+      return '<div class="fact"><span class="fi">' + f.i + '</span><div><h3>' + f.h + '</h3><p>' + f.p + '</p></div></div>';
+    }).join('');
+  }
+
+  // ===== Booking =====
+  function setupYCBM(r) {
+    var c = document.getElementById('ycbm');
+    if (!c) return;
+    var p = new URLSearchParams();
+    p.set('embed', 'true');
+    if (r.name) p.set('FIRSTNAME', r.name);
+    if (r.phone) p.set('PHONE', r.phone);
+    if (r.zielText) p.set('ZIELDATUM', r.zielText);
+    if (r.kg != null) p.set('KILO', String(r.kg));
+    var f = document.createElement('iframe');
+    f.src = 'https://fitontime-msm-analyse.youcanbook.me/?' + p.toString();
+    f.style.cssText = 'width:100%;min-height:520px;border:0;display:block;';
+    f.setAttribute('frameborder', '0');
+    c.innerHTML = '';
+    c.appendChild(f);
+    tk('booking_embed_loaded');
+  }
+</script>
+
+<script is:inline src="https://t.hyros.com/v1/lst/universal-script?ph=689a71ca1ab3be1cb1caddbe6b7902a4ad2c51a228f4ec9ea7fef3123a705f63"></script>
+
+<CookieBanner
+  metaPixelId="1349136525891811"
+  consentKey="fot_zieldatum_consent"
+  impressumUrl={impressumUrl}
+  datenschutzUrl={datenschutzUrl}
+/>
+</body>
+</html>
