@@ -7,7 +7,9 @@
     { "source": "/longevity", "has": [{ "type": "host", "value": "start.fitontime.ch" }], "destination": "https://longevity.fit-on-time.ch/", "permanent": false },
     { "source": "/longevity/:path*", "has": [{ "type": "host", "value": "start.fitontime.ch" }], "destination": "https://longevity.fit-on-time.ch/longevity/:path*", "permanent": false },
     { "source": "/zieldatum", "has": [{ "type": "host", "value": "start.fitontime.ch" }], "destination": "https://go.abnehmen-ohne-stress.ch/zieldatum", "permanent": false },
-    { "source": "/zieldatum/:path*", "has": [{ "type": "host", "value": "start.fitontime.ch" }], "destination": "https://go.abnehmen-ohne-stress.ch/zieldatum/:path*", "permanent": false }
+    { "source": "/zieldatum/", "has": [{ "type": "host", "value": "start.fitontime.ch" }], "destination": "https://go.abnehmen-ohne-stress.ch/zieldatum", "permanent": false },
+    { "source": "/zieldatum/:path*", "has": [{ "type": "host", "value": "start.fitontime.ch" }], "destination": "https://go.abnehmen-ohne-stress.ch/zieldatum/:path*", "permanent": false },
+    { "source": "/zieldatum/:path*/", "has": [{ "type": "host", "value": "start.fitontime.ch" }], "destination": "https://go.abnehmen-ohne-stress.ch/zieldatum/:path*/", "permanent": false }
   ],
   "crons": [
     { "path": "/api/cron/funnel-health", "schedule": "0 */3 * * *" }
