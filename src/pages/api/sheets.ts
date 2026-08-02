@@ -385,7 +385,13 @@ export const POST: APIRoute = async ({ request }) => {
         event_source_url: sourceOrigin,
         // Longevity hat einen eigenen, isolierten Pixel (nicht den geteilten Health-Pixel).
         // Browser-Pixel auf /longevity/* feuert auf dieselbe ID -> Dedup via event_id bleibt intakt.
-        pixel_id_override: lpSlug === 'longevity' ? '1214902253584066' : undefined,
+        // Zieldatum läuft auf der Clean-Domain go.abnehmen-ohne-stress.ch und feuert im
+        // Browser auf 1316450223953563. Ohne Override ginge die CAPI an PUBLIC_META_PIXEL_ID
+        // (= der gesperrte Health-Pixel), damit wäre die Dedup über event_id kaputt.
+        pixel_id_override:
+          lpSlug === 'longevity' ? '1214902253584066'
+            : lpSlug === 'zieldatum' ? '1316450223953563'
+              : undefined,
         // Nur Longevity: geschaetzter Lead-Wert (reine Zahl, KEINE Gesundheitsdaten) behebt Meta-Diagnose "gueltige Preisinfo".
         // value/currency muessen mit dem Browser-Pixel (longevity/index.astro) uebereinstimmen. Platzhalter 50 CHF.
         custom_data: lpSlug === 'longevity'
