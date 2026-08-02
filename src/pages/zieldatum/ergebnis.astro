@@ -205,31 +205,37 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
     })();
   }
 
-  if (!R || !R.zielText) {
-    document.getElementById('empty').style.display = 'block';
-    tk('result_empty');
-  } else {
-    document.getElementById('view').style.display = 'block';
-    tk('result_view', { detail: R.kg + ' kg bis ' + R.zielText });
-    build(R);
-  }
-
   // Silhouetten-Pfad, identisch zur Rechner-Seite
   function bodyPath(f) {
     f = Math.max(0, Math.min(1, f));
-    var sw = 25 + 9 * f, bw = 24 + 12 * f, ww = 17 + 19 * f, hw = 27 + 16 * f, tw = 13 + 8 * f, c = 60;
+    var sw = 25 + 9 * f, bw = 24 + 12 * f, ww = 17 + 19 * f, hw = 27 + 16 * f, tw = 14 + 8 * f;
+    var aw = 6 + 3 * f, fw = 10 + 2 * f, c = 60;
     var r = function (n) { return Math.round(n * 10) / 10; };
-    return ['M', r(c-sw),46,'C', r(c-sw-2),60, r(c-bw),64, r(c-bw),76,
+    var torso = [
+      'M', r(c-sw),46,
+      'C', r(c-sw-2),60, r(c-bw),64, r(c-bw),76,
       'C', r(c-bw),90, r(c-ww),94, r(c-ww),104,
       'C', r(c-ww),116, r(c-hw),118, r(c-hw),132,
-      'C', r(c-hw),148, r(c-tw-4),154, r(c-tw),164,
-      'L', r(c-tw+3),204,'L', r(c-9),254,'L', r(c-2.5),254,'L', r(c-3.5),204,'L', r(c-1.5),160,
-      'L', r(c+1.5),160,'L', r(c+3.5),204,'L', r(c+2.5),254,'L', r(c+9),254,'L', r(c+tw-3),204,
-      'L', r(c+tw),164,
-      'C', r(c+tw+4),154, r(c+hw),148, r(c+hw),132,
+      'C', r(c-hw),150, r(c-tw-4),156, r(c-tw),166,
+      'L', r(c-tw+2),206, 'L', r(c-fw),254, 'L', r(c-2.5),254, 'L', r(c-3.5),206, 'L', r(c-1.5),162,
+      'L', r(c+1.5),162, 'L', r(c+3.5),206, 'L', r(c+2.5),254, 'L', r(c+fw),254, 'L', r(c+tw-2),206,
+      'L', r(c+tw),166,
+      'C', r(c+tw+4),156, r(c+hw),150, r(c+hw),132,
       'C', r(c+hw),118, r(c+ww),116, r(c+ww),104,
       'C', r(c+ww),94, r(c+bw),90, r(c+bw),76,
-      'C', r(c+bw),64, r(c+sw+2),60, r(c+sw),46,'Z'].join(' ');
+      'C', r(c+bw),64, r(c+sw+2),60, r(c+sw),46, 'Z'
+    ].join(' ');
+    // Arme, aussen an der Schulter angesetzt bis knapp unter die Hueften
+    function arm(o) {
+      return [
+        'M', r(c + o*(sw-3)),50,
+        'C', r(c + o*(bw+aw)),74, r(c + o*(hw+aw-1)),108, r(c + o*(hw+aw-2)),148,
+        'L', r(c + o*(hw-2)),148,
+        'C', r(c + o*(hw-1)),110, r(c + o*(bw-1)),78, r(c + o*(sw-9)),56,
+        'Z'
+      ].join(' ');
+    }
+    return torso + ' ' + arm(1) + ' ' + arm(-1);
   }
   function fill(kg) { return Math.max(0, Math.min(1, (kg - 55) / 75)); }
 
@@ -416,6 +422,16 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
     c.innerHTML = '';
     c.appendChild(f);
     tk('booking_embed_loaded');
+  }
+
+  // Start erst hier, damit alle var-Deklarationen oben (z.B. MON) gesetzt sind
+  if (!R || !R.zielText) {
+    document.getElementById('empty').style.display = 'block';
+    tk('result_empty');
+  } else {
+    document.getElementById('view').style.display = 'block';
+    tk('result_view', { detail: R.kg + ' kg bis ' + R.zielText });
+    build(R);
   }
 </script>
 
