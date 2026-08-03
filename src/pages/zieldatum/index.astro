@@ -202,7 +202,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
     <div class="hero">
       <span class="badge">Kostenlos · 90 Sekunden · Nur für Frauen</span>
       <h1>An welchem Tag stehst du wieder bei <em>deinem Wunschgewicht</em>?</h1>
-      <p class="sub">Zieh die beiden Regler. Den Rest rechnen wir aus.</p>
+      <p class="sub">Zieh die beiden Regler. Wir berechnen dein Datum und den Weg dorthin.</p>
 
       <!-- Regler-Widget: Interaktion beginnt vor dem ersten Klick -->
       <div class="rig">
@@ -243,9 +243,9 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
         <div class="tease">
           <div class="t-lbl">Dein Zieldatum</div>
           <div class="t-date" id="teaseDate">14. März 2027</div>
-          <div class="t-note">Das Datum hängt von 6 Faktoren ab, die dein Tempo bestimmen. Beantworte sie und du siehst deinen echten Termin.</div>
+          <div class="t-note">Wir gleichen deine Angaben mit den Verläufen von über 4.000 Frauen ab, die wir seit 2016 begleitet haben. Daraus berechnen wir exakt, welcher Weg bei dir funktioniert und an welchem Tag du ankommst.</div>
           <button class="cta-btn" onclick="startQuiz()">Mein Zieldatum freischalten</button>
-          <div class="micro">Keine Kosten. Kein Abo. Ergebnis sofort auf dem Bildschirm.</div>
+          <div class="micro">Keine Kosten. Kein Abo. Dein Datum sofort auf dem Bildschirm.</div>
         </div>
       </div>
 
@@ -272,6 +272,28 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
           <span class="n">3</span>
           <h3>Du siehst sofort, ob dein Anlass noch drin ist</h3>
           <p>Hochzeit, Ferien, Klassentreffen: Wir legen deinen Termin neben dein Datum. Dann weisst du, ob es reicht oder wie viel Zeit dir fehlt.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="reveal">
+      <h2 class="h2">Woher wir wissen, welcher Weg bei dir funktioniert</h2>
+      <p class="h2-sub">Wir raten nicht. Wir rechnen mit zwei Datensätzen.</p>
+      <div class="cards">
+        <div class="card">
+          <span class="n">1</span>
+          <h3>Deine Angaben</h3>
+          <p>Startgewicht, Zielgewicht, Alter, Körperform, dein Alltag und die eine Bremse, die dich bisher gestoppt hat. Sechs Werte, die dein Tempo bestimmen.</p>
+        </div>
+        <div class="card">
+          <span class="n">2</span>
+          <h3>Über 4.000 Frauen seit 2016</h3>
+          <p>Wir haben seit 2016 über 4.000 Schweizer Frauen begleitet. Wir wissen deshalb, wie schnell es bei deinem Profil wirklich geht, wo es typischerweise stockt und was an dieser Stelle funktioniert.</p>
+        </div>
+        <div class="card">
+          <span class="n">3</span>
+          <h3>Daraus wird dein Weg</h3>
+          <p>Nicht ein Standardplan, sondern die Abfolge, die bei Frauen mit deinem Profil zum Ziel geführt hat. Dein Datum siehst du sofort. Den ausgearbeiteten Weg dorthin bekommst du im kostenlosen Gespräch.</p>
         </div>
       </div>
     </section>
@@ -312,11 +334,11 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
 
   <div id="calc">
     <div class="spin"></div>
-    <h2 class="qh" style="text-align:center">Wir legen deinen Kalender an</h2>
-    <div class="chk-line" id="c1"><i>✓</i>Startwert und Zielwert geprüft</div>
-    <div class="chk-line" id="c2"><i>✓</i>Tempo nach Alter und Hormonlage angepasst</div>
-    <div class="chk-line" id="c3"><i>✓</i>Alltags-Bremsen eingerechnet</div>
-    <div class="chk-line" id="c4"><i>✓</i>Zieldatum und Korridor stehen</div>
+    <h2 class="qh" style="text-align:center">Wir berechnen deinen Weg</h2>
+    <div class="chk-line" id="c1"><i>✓</i>Deine sechs Werte erfasst</div>
+    <div class="chk-line" id="c2"><i>✓</i>Mit über 4.000 Verläufen seit 2016 abgeglichen</div>
+    <div class="chk-line" id="c3"><i>✓</i>Tempo nach Alter, Hormonlage und Alltag korrigiert</div>
+    <div class="chk-line" id="c4"><i>✓</i>Dein Zieldatum und dein Weg stehen</div>
   </div>
 </div>
 
@@ -669,8 +691,8 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
   // 9 - Lead-Gate
   TPL.gate = function () {
     var d = fmt(dateInWeeks(weeksNeeded()));
-    return '<h2 class="qh">Dein Datum ist berechnet.</h2>' +
-      '<p class="qhint">Sag uns, wohin wir es schicken. Danach siehst du es sofort auf dem Bildschirm.</p>' +
+    return '<h2 class="qh">Dein Datum und dein Weg stehen.</h2>' +
+      '<p class="qhint">Sag uns, wohin wir es schicken. Dein Datum siehst du sofort auf dem Bildschirm, den ausgearbeiteten Plan dazu bekommst du im kostenlosen Gespräch.</p>' +
       '<div class="gate-box"><div class="gb-lbl">Dein Zieldatum</div><div class="gb-date">' + d + '</div></div>' +
       '<div class="field"><label for="fName">Dein Vorname</label><input type="text" id="fName" autocomplete="given-name" placeholder="Sandra" /></div>' +
       '<div class="field"><label for="fMail">Deine E-Mail</label><input type="email" id="fMail" autocomplete="email" inputmode="email" placeholder="sandra@beispiel.ch" /></div>' +

@@ -164,13 +164,14 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
     <div class="facts" id="facts"></div>
 
     <div class="booking">
-      <h3>Hol dir den Plan zu deinem Datum</h3>
+      <h3>Deinen Plan bekommst du im Gespräch</h3>
       <p>45 Minuten. Kostenlos. Unverbindlich.</p>
+      <p style="font-size:14.5px;color:var(--text-2);margin-top:10px">Das Datum kennst du jetzt. Im Gespräch gehen wir den Weg dorthin durch, ausgearbeitet auf dein Datum und dein Profil, nicht als Standardplan.</p>
       <ul class="bl">
-        <li>Wir prüfen, ob dein Datum realistisch ist oder ob wir es verschieben müssen.</li>
-        <li>Die eine Bremse, die bei dir zuerst weg muss.</li>
-        <li>Die ersten drei Schritte für deine nächsten 14 Tage, zum Mitnehmen.</li>
-        <li>Ehrliche Einschätzung: allein oder mit Begleitung.</li>
+        <li>Dein Plan bis zum Zieldatum, in Etappen, mit Zwischenzielen die du prüfen kannst.</li>
+        <li>Was in deinen ersten 14 Tagen passiert und was bewusst noch nicht.</li>
+        <li>Die eine Bremse, die bei dir zuerst weg muss, und wie das bei Frauen mit deinem Profil gelöst wurde.</li>
+        <li>Ehrliche Einschätzung, ob dein Datum hält oder ob wir es verschieben müssen.</li>
       </ul>
       <div class="ycbm" id="ycbm">
         <div style="padding:40px 20px;text-align:center;color:#94a3b8;font-size:13px">Kalender lädt…</div>
@@ -248,7 +249,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
     document.getElementById('h1').innerHTML = name + 'u bist am <span class="date">' + r.zielText + '</span> bei ' + r.wGoal + ' kg.';
     document.getElementById('corridor').innerHTML =
       'Das sind <b>' + r.kg + ' kg in rund ' + r.weeks + ' Wochen</b>, bei einem Tempo von etwa ' + String(r.rate).replace('.', ',') + ' kg pro Woche. ' +
-      'Realistischer Korridor: <b>' + r.fastText + '</b> bis <b>' + r.slowText + '</b>.';
+      'Realistischer Korridor: <b>' + r.fastText + '</b> bis <b>' + r.slowText + '</b>. Berechnet aus deinen Angaben und den Verläufen von über 4.000 Frauen, die wir seit 2016 begleitet haben.';
 
     drawChart(r);
     drawGap(r);
@@ -398,6 +399,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
     if (r.alter >= 45) out.push({ i: '📆', h: 'Dein Alter ist eingerechnet', p: 'Ab Mitte 40 läuft der Grundumsatz anders. Wir haben dein Tempo deshalb bewusst konservativ angesetzt statt dir eine schöne Zahl zu zeigen.' });
     else out.push({ i: '📆', h: 'Dein Alter spielt dir zu', p: 'Dein Ausgangstempo ist gut. Der Faktor, der jetzt zählt, ist nicht Biologie sondern Konstanz.' });
 
+    out.push({ i: '🗺️', h: 'Dein Weg ist berechnet, nicht dein Plan', p: 'Aus deinen Werten und über 4.000 Verläufen wissen wir, welche Abfolge bei deinem Profil funktioniert. Diese Abfolge gehen wir im kostenlosen Gespräch durch, Etappe für Etappe bis zu deinem Datum.' });
     out.push({ i: '⚡', h: 'Der Startzeitpunkt', p: 'Jede Woche, die du wartest, verschiebt dein Datum um genau eine Woche. Das ist die einzige Variable in dieser Rechnung, die du heute steuerst.' });
 
     document.getElementById('facts').innerHTML = out.map(function (f) {
