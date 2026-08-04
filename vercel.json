@@ -9,7 +9,11 @@
     { "source": "/zieldatum", "has": [{ "type": "host", "value": "start.fitontime.ch" }], "destination": "https://go.abnehmen-ohne-stress.ch/zieldatum", "permanent": false },
     { "source": "/zieldatum/", "has": [{ "type": "host", "value": "start.fitontime.ch" }], "destination": "https://go.abnehmen-ohne-stress.ch/zieldatum", "permanent": false },
     { "source": "/zieldatum/:path*", "has": [{ "type": "host", "value": "start.fitontime.ch" }], "destination": "https://go.abnehmen-ohne-stress.ch/zieldatum/:path*", "permanent": false },
-    { "source": "/zieldatum/:path*/", "has": [{ "type": "host", "value": "start.fitontime.ch" }], "destination": "https://go.abnehmen-ohne-stress.ch/zieldatum/:path*/", "permanent": false }
+    { "source": "/zieldatum/:path*/", "has": [{ "type": "host", "value": "start.fitontime.ch" }], "destination": "https://go.abnehmen-ohne-stress.ch/zieldatum/:path*/", "permanent": false },
+    { "source": "/", "has": [{ "type": "host", "value": "start.fitontime.ch" }], "destination": "https://go.abnehmen-ohne-stress.ch/", "permanent": false },
+    { "source": "/:slug(quiz|stoffwechsel-report|stoffwechsel-test|schilddruesen-report|koerpertyp-test|figur-check|koerper-report|ab-40|abnehmpotential|ayurveda-quiz|msm|entzuendungen|danke-entzuendungen|energie-check)", "has": [{ "type": "host", "value": "start.fitontime.ch" }], "destination": "https://go.abnehmen-ohne-stress.ch/:slug", "permanent": false },
+    { "source": "/:slug(quiz|stoffwechsel-report|stoffwechsel-test|schilddruesen-report|koerpertyp-test|figur-check|koerper-report|ab-40|abnehmpotential|ayurveda-quiz|msm|entzuendungen|danke-entzuendungen|energie-check)/", "has": [{ "type": "host", "value": "start.fitontime.ch" }], "destination": "https://go.abnehmen-ohne-stress.ch/:slug/", "permanent": false },
+    { "source": "/:slug(quiz|stoffwechsel-report|stoffwechsel-test|schilddruesen-report|koerpertyp-test|figur-check|koerper-report|ab-40|abnehmpotential|ayurveda-quiz|msm|entzuendungen|danke-entzuendungen|energie-check)/:path*", "has": [{ "type": "host", "value": "start.fitontime.ch" }], "destination": "https://go.abnehmen-ohne-stress.ch/:slug/:path*", "permanent": false }
   ],
   "crons": [
     { "path": "/api/cron/funnel-health", "schedule": "0 */3 * * *" }
