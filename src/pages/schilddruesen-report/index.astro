@@ -802,14 +802,29 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
         try { txt = (typeof raw === 'string') ? raw : JSON.stringify(raw); } catch (e) { return; }
         txt = txt.toLowerCase();
 
-        // Buchung-bestaetigt-Signal: 'book' + abgeschlossen-Marker
+        // Buchung-bestaetigt-Signal: 'book' + abgeschlossen-Marker, kein Storno
         if (txt.indexOf('book') === -1) return;
         if (!/confirm|complete|created|success|made|finished/.test(txt)) return;
+        if (txt.indexOf('cancel') !== -1) return;
 
         // Pro Session nur einmal zaehlen (Doppel-Messages / Re-Render absichern)
         try {
           if (sessionStorage.getItem('fot_booking_fired') === '1') return;
           sessionStorage.setItem('fot_booking_fired', '1');
+        } catch (e) {}
+
+        // Selbst-Buchung an den WhatsApp-Bot melden: wer hier bucht, soll den
+        // 30-Minuten-Opener NICHT mehr bekommen. Endpoint ist idempotent.
+        try {
+          var lead = JSON.parse(sessionStorage.getItem('fot_sd_lead') || '{}');
+          if (lead.email || lead.phone) {
+            fetch('/api/booked', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              keepalive: true,
+              body: JSON.stringify({ email: lead.email || '', phone: lead.phone || '' })
+            }).catch(function(){});
+          }
         } catch (e) {}
 
         // Zugewiesene Variante (in fot_ab_thx persistiert beim Split)
@@ -950,6 +965,9 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
         })
       }).then(function(res){
         if (!res.ok) throw new Error('insert-failed');
+        // Kontakt merken: braucht der Booking-Detektor unten, um eine
+        // Selbst-Buchung an den WhatsApp-Bot zu melden (Opener unterdrücken).
+        try { sessionStorage.setItem('fot_sd_lead', JSON.stringify({ email: em, phone: ph })); } catch (e) {}
         // Insert erfolgreich, jetzt erst tracken
         tk('lead_submit', { detail: fn });
         document.querySelector('.step[data-s="form"]').classList.remove('on');
