@@ -74,6 +74,19 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
       try { already = sessionStorage.getItem('fot_booking_fired') === '1'; } catch (e) {}
       if (!already) {
         try { sessionStorage.setItem('fot_booking_fired', '1'); } catch (e) {}
+        // Selbst-Buchung an den WhatsApp-Bot melden: wer hier bucht, soll den
+        // 30-Minuten-Opener NICHT mehr bekommen. Endpoint ist idempotent.
+        try {
+          var lead = JSON.parse(sessionStorage.getItem('fot_sd_lead') || '{}');
+          if (lead.email || lead.phone) {
+            fetch('/api/booked', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              keepalive: true,
+              body: JSON.stringify({ email: lead.email || '', phone: lead.phone || '' })
+            }).catch(function(){});
+          }
+        } catch (e) {}
         var v = 'B';
         try { v = sessionStorage.getItem('fot_ab_fe') || 'B'; } catch (e) {}
         tk('booking_confirmed', { variant: v, detail: v });
