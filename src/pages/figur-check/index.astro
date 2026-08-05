@@ -977,6 +977,16 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
       btn.disabled = true;
       btn.textContent = 'Wird gesendet...';
 
+      // Score VOR dem Submit festlegen (die Ergebnisseite erzeugt ihn sonst
+      // erst NACH dem Redirect — der Bot-Opener bekam dadurch immer einen
+      // leeren Score und der Template-Send scheiterte mit 131008).
+      var sdScore = 0;
+      try { sdScore = parseInt(sessionStorage.getItem('sd_score'), 10) || 0; } catch(e) {}
+      if (!sdScore) {
+        sdScore = 84 + Math.floor(Math.random() * 9); // 84..92, wie ergebnis.astro
+        try { sessionStorage.setItem('sd_score', String(sdScore)); } catch(e) {}
+      }
+
       // Atomarer Submit: lead_submit + Meta-Pixel + UI-Weiter NUR bei erfolgreichem Insert
       var fullName = fn + (ln ? ' ' + ln : '');
       fetch('/api/sheets', {
@@ -990,7 +1000,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
           email: em,
           phone: ph,
           wa_optin: document.getElementById('wa').checked,
-          score: (function(){ try { return parseInt(sessionStorage.getItem('sd_score'), 10) || ''; } catch(e){ return ''; } })(),
+          score: sdScore,
           answers: quizAnswers
         })
       }).then(function(res){
@@ -1009,10 +1019,8 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
         // Ergebnis auf separater Seite (immer FC-Mirror/thx2 - thx wurde entfernt).
         try { sessionStorage.setItem('fot_result_name', fn || 'Du'); } catch(e) {}
         document.querySelector('.step[data-s="form"]').classList.remove('on');
-        var sc = '';
-        try { sc = sessionStorage.getItem('sd_score') || ''; } catch(e) {}
         // 250ms Puffer, damit Lead-Pixel + sendBeacon raus sind
-        setTimeout(function(){ window.location.href = '/figur-check/ergebnis/' + (sc ? ('?score=' + encodeURIComponent(sc)) : ''); }, 250);
+        setTimeout(function(){ window.location.href = '/figur-check/ergebnis/?score=' + sdScore; }, 250);
       }).catch(function(){
         btn.disabled = false;
         btn.textContent = 'Jetzt Report sichern';
