@@ -13,12 +13,17 @@ type SheetConfig = {
 };
 
 const SHEETS: Record<string, SheetConfig> = {
+  // Schilddruesen-Check (figur-check): Datum | Name | E-Mail | Telefon | Geschlecht
+  // | Abnehmen schwer | Frieren | Erschoepfung | Wassereinlagerungen | Alter
+  // | Gewicht | schon probiert.
+  // ACHTUNG: Spaltenbelegung ab dem Quiz-Umbau (7 statt 9 Fragen) neu — aeltere
+  // Zeilen im selben Blatt folgen noch der alten q1..q9-Reihenfolge.
   'schilddruesen-report': {
     id: '1pKSK2fB3tjL9sxHMbM95a3NGdHZyeW0g29sIYnzh4js',
-    range: 'Tabellenblatt1!A:M',
+    range: 'Tabellenblatt1!A:L',
     buildRow: (datum, d) => {
       const a = d.answers || {};
-      return [datum, d.name, d.email, d.phone || '', a.q1||'', a.q2||'', a.q3||'', a.q4||'', a.q5||'', a.q6||'', a.q7||'', a.q8||'', a.q9||''];
+      return [datum, d.name, d.email, d.phone || '', a.gender || '', a.q1||'', a.q2||'', a.q3||'', a.q4||'', a.q5||'', a.q6||'', a.q7||''];
     },
   },
   // Ab-40 VSL-Funnel: Datum | Name | E-Mail | Telefon (Opt-in vor dem VSL, Qualifier-Antworten laufen als Events ins Dashboard)

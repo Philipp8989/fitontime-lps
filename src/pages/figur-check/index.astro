@@ -79,6 +79,13 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
     .g-card .g-icon { font-size: 48px; line-height: 1; }
     .g-card .g-label { font-size: 15px; font-weight: 600; }
 
+    /* Tipp-Karte unter den Quiz-Optionen: liefert waehrend des Quiz Wert,
+       haelt im Flow und senkt den Abbruch (Muster aus koerper-report). */
+    .tipp { background: var(--surface); border: 1px solid var(--surface-2); border-left: 3px solid var(--accent); border-radius: 10px; padding: 12px 14px; margin-top: 20px; display: flex; align-items: flex-start; gap: 10px; }
+    .tipp .tipp-icon { font-size: 16px; flex-shrink: 0; line-height: 1.4; }
+    .tipp .tipp-text { font-size: 12px; color: var(--text-2); line-height: 1.5; }
+    .tipp .tipp-text strong { color: var(--accent); font-weight: 700; }
+
     /* === PROOF BAR === */
     .proof-bar {
       display: flex;
@@ -203,6 +210,20 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
     .intro-cta { width: 100%; padding: 18px 24px; background: var(--accent); color: #fff; border: none; border-radius: var(--r); font-family: var(--font); font-size: 18px; font-weight: 700; cursor: pointer; transition: transform .15s ease; box-shadow: 0 8px 24px rgba(196,105,122,0.35); }
     .intro-cta:active { transform: scale(0.98); }
     .intro-sub { font-size: 14px; color: var(--text-2); margin-top: 16px; }
+    .intro-lead { font-size: 15px; color: var(--text-2); line-height: 1.5; margin: 12px auto 18px; max-width: 420px; }
+    .intro-lead strong { color: var(--text); font-weight: 700; }
+    .intro-proof { margin-bottom: 18px; display: flex; flex-direction: column; align-items: center; gap: 5px; }
+    /* Im Intro flacher als in der Text-LP, damit die Auswahl trotz Cookie-Banner
+       auf dem Handy ueber dem Fold bleibt. */
+    #intro .g-card { padding: 16px 14px 13px; gap: 5px; }
+    #intro .g-card .g-icon { font-size: 34px; }
+    #intro .gender-q { margin-bottom: 10px; }
+    .intro-proof .proof-avatars { display: flex; }
+    .intro-proof .proof-avatars img { width: 34px; height: 34px; border-radius: 50%; object-fit: cover; border: 2px solid var(--bg); margin-left: -9px; }
+    .intro-proof .proof-avatars img:first-child { margin-left: 0; }
+    .intro-stars { color: #f5b942; font-size: 13px; letter-spacing: 1px; }
+    .intro-proof-text { font-size: 13px; color: var(--text-2); }
+    .intro-proof-text strong { color: var(--text); font-weight: 700; }
     .intro-legal { margin-top: 40px; font-size: 12px; }
     .intro-legal a { color: var(--text-3); text-decoration: none; }
     @media (min-width: 600px) { .intro-inner h1 { font-size: 36px; } }
@@ -563,7 +584,35 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
     <div class="intro-inner">
       <div class="intro-logo"><img src="/images/logo.png" alt="Fit on Time" /></div>
       <h1>Was blockiert dich <em>wirklich beim Abnehmen?</em></h1>
-      <button class="intro-cta" onclick="startQuiz()">Jetzt Test starten</button>
+      <p class="intro-lead">Beantworte <strong>7 Fragen</strong> und erfahre, ob deine Schilddrüse
+        deinen Stoffwechsel ausbremst, mit persönlicher Auswertung von unseren Ernährungs-Coaches.
+        Kostenlos.</p>
+      <!-- Proof: Absender und Sozialbeleg. Bis 17.06. nur in der Text-LP (Variante A)
+           vorhanden, die als Ganzes gegen das nackte Quiz verloren hat. Hier bewusst
+           auf die Elemente reduziert, die der Report-Funnel ueber dem Fold hat, und
+           VOR das Gender-Gate gesetzt: unter dem Cookie-Banner waere er unsichtbar. -->
+      <div class="intro-proof">
+        <div class="proof-avatars">
+          <img src="https://images.unsplash.com/photo-1594744803329-e58b31de8bf5?w=56&h=56&fit=crop&crop=face&q=80" alt="" />
+          <img src="https://images.unsplash.com/photo-1628869503963-6ce8de674c58?w=56&h=56&fit=crop&crop=face&q=80" alt="" />
+          <img src="https://images.unsplash.com/photo-1607962837359-5e7e89f86776?w=56&h=56&fit=crop&crop=face&q=80" alt="" />
+          <img src="https://images.unsplash.com/photo-1519834785169-98be25ec3f84?w=56&h=56&fit=crop&crop=face&q=80" alt="" />
+        </div>
+        <div class="intro-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <div class="intro-proof-text"><strong>3.357+</strong> Frauen haben ihren Check schon gemacht</div>
+      </div>
+
+      <div class="gender-q">Ich bin:</div>
+      <div class="gender-row">
+        <div class="g-card" onclick="startQuiz('frau')">
+          <span class="g-icon">&#9792;</span>
+          <span class="g-label">Frau</span>
+        </div>
+        <div class="g-card" onclick="startQuiz('mann')">
+          <span class="g-icon">&#9794;</span>
+          <span class="g-label">Mann</span>
+        </div>
+      </div>
       <div class="intro-sub">90 Sekunden &middot; 100% kostenlos</div>
       <div class="intro-legal">
         <a href="https://fitontime.ch/impressum-datenschutz" target="_blank" rel="noopener">Impressum</a> &middot;
@@ -575,88 +624,98 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
   <!-- ===== QUIZ ===== -->
   <div id="quiz">
     <div class="q-head"><img src="/images/logo.png" alt="Fit on Time" /></div>
-    <div class="q-progress"><div class="q-bar"><div class="q-fill" id="qf"></div></div><div class="q-num" id="qn">1 / 9</div></div>
+    <div class="q-progress"><div class="q-bar"><div class="q-fill" id="qf"></div></div><div class="q-num" id="qn">1 / 7</div></div>
     <div class="q-body">
 
       <div class="step on" data-s="1">
         <h2>Wie schwer fällt dir Abnehmen, obwohl du auf deine Ernährung achtest?</h2>
         <div class="opts">
-          <button class="opt" onclick="nxt(1,this)">Extrem schwer</button>
-          <button class="opt" onclick="nxt(1,this)">Es geht so</button>
-          <button class="opt" onclick="nxt(1,this)">Gar nicht schwer</button>
-          <button class="opt" onclick="nxt(1,this)">Weiss ich nicht</button>
+          <button class="opt" onclick="nxt(1,this,'extrem')">Extrem schwer</button>
+          <button class="opt" onclick="nxt(1,this,'mittel')">Es geht so</button>
+          <button class="opt" onclick="nxt(1,this,'leicht')">Gar nicht schwer</button>
+          <button class="opt" onclick="nxt(1,this,'unklar')">Weiss ich nicht</button>
+        </div>
+        <div class="tipp">
+          <span class="tipp-icon">&#128161;</span>
+          <div class="tipp-text"><strong>Tipp:</strong> Eiweiss zuerst essen. Wer die Mahlzeit mit Eiweiss beginnt, hat danach spürbar weniger Heisshunger.</div>
         </div>
       </div>
       <div class="step" data-s="2">
         <h2>Frierst du oft, z.B. kalte Hände oder Füsse?</h2>
         <div class="opts">
-          <button class="opt" onclick="nxt(2,this)">Ja, ständig</button>
-          <button class="opt" onclick="nxt(2,this)">Mir ist eher warm</button>
-          <button class="opt" onclick="nxt(2,this)">Oft kalte Füsse</button>
-          <button class="opt" onclick="nxt(2,this)">Nur im Winter</button>
+          <button class="opt" onclick="nxt(2,this,'staendig')">Ja, ständig</button>
+          <button class="opt" onclick="nxt(2,this,'warm')">Mir ist eher warm</button>
+          <button class="opt" onclick="nxt(2,this,'fuesse')">Oft kalte Füsse</button>
+          <button class="opt" onclick="nxt(2,this,'winter')">Nur im Winter</button>
+        </div>
+        <div class="tipp">
+          <span class="tipp-icon">&#128161;</span>
+          <div class="tipp-text"><strong>Tipp:</strong> Ständiges Frieren ist eines der häufigsten Anzeichen dafür, dass der Grundumsatz zu niedrig läuft.</div>
         </div>
       </div>
       <div class="step" data-s="3">
         <h2>Wie oft fühlst du dich tagsüber erschöpft?</h2>
         <div class="opts">
-          <button class="opt" onclick="nxt(3,this)">Fast immer</button>
-          <button class="opt" onclick="nxt(3,this)">Oft nachmittags</button>
-          <button class="opt" onclick="nxt(3,this)">Nur nach Stress</button>
-          <button class="opt" onclick="nxt(3,this)">Selten</button>
+          <button class="opt" onclick="nxt(3,this,'fastimmer')">Fast immer</button>
+          <button class="opt" onclick="nxt(3,this,'nachmittags')">Oft nachmittags</button>
+          <button class="opt" onclick="nxt(3,this,'stress')">Nur nach Stress</button>
+          <button class="opt" onclick="nxt(3,this,'selten')">Selten</button>
+        </div>
+        <div class="tipp">
+          <span class="tipp-icon">&#128161;</span>
+          <div class="tipp-text"><strong>Tipp:</strong> 10 Minuten Spaziergang nach dem Essen stabilisieren den Blutzucker und nehmen dem Nachmittagstief die Spitze.</div>
         </div>
       </div>
       <div class="step" data-s="4">
         <h2>Hast du Wassereinlagerungen, z.B. geschwollenes Gesicht?</h2>
         <div class="opts">
-          <button class="opt" onclick="nxt(4,this)">Ja, sehr oft</button>
-          <button class="opt" onclick="nxt(4,this)">Gelegentlich</button>
-          <button class="opt" onclick="nxt(4,this)">Eigentlich nie</button>
-          <button class="opt" onclick="nxt(4,this)">Nur bei Hitze</button>
+          <button class="opt" onclick="nxt(4,this,'sehroft')">Ja, sehr oft</button>
+          <button class="opt" onclick="nxt(4,this,'gelegentlich')">Gelegentlich</button>
+          <button class="opt" onclick="nxt(4,this,'nie')">Eigentlich nie</button>
+          <button class="opt" onclick="nxt(4,this,'hitze')">Nur bei Hitze</button>
+        </div>
+        <div class="tipp">
+          <span class="tipp-icon">&#128161;</span>
+          <div class="tipp-text"><strong>Tipp:</strong> Mehr trinken schwemmt Wasser aus, nicht weniger. Der Körper hält Wasser zurück, wenn er zu wenig bekommt.</div>
         </div>
       </div>
       <div class="step" data-s="5">
-        <h2>Wie sind deine Haare & Nägel?</h2>
+        <h2>Wie alt bist du?</h2>
         <div class="opts">
-          <button class="opt" onclick="nxt(5,this)">Trocken / dünn</button>
-          <button class="opt" onclick="nxt(5,this)">Ganz normal</button>
-          <button class="opt" onclick="nxt(5,this)">Brüchig / Haarausfall</button>
-          <button class="opt" onclick="nxt(5,this)">Wachsen gut</button>
+          <button class="opt" onclick="nxt(5,this,'18-29')">18 bis 29 Jahre</button>
+          <button class="opt" onclick="nxt(5,this,'30-39')">30 bis 39 Jahre</button>
+          <button class="opt" onclick="nxt(5,this,'40-49')">40 bis 49 Jahre</button>
+          <button class="opt" onclick="nxt(5,this,'50plus')">50+ Jahre</button>
+        </div>
+        <div class="tipp">
+          <span class="tipp-icon">&#128161;</span>
+          <div class="tipp-text"><strong>Tipp:</strong> Ab 40 verändert sich der Hormonhaushalt. Was mit 30 funktioniert hat, muss danach angepasst werden.</div>
         </div>
       </div>
       <div class="step" data-s="6">
-        <h2>Hast du oft Brain Fog oder Konzentrationsprobleme?</h2>
+        <h2>Wieviel wiegst du momentan?</h2>
         <div class="opts">
-          <button class="opt" onclick="nxt(6,this)">Ja, regelmässig</button>
-          <button class="opt" onclick="nxt(6,this)">Ab und zu</button>
-          <button class="opt" onclick="nxt(6,this)">Nur bei wenig Schlaf</button>
-          <button class="opt" onclick="nxt(6,this)">Nein, bin fokussiert</button>
+          <button class="opt" onclick="nxt(6,this,'u60')">Weniger als 60 kg</button>
+          <button class="opt" onclick="nxt(6,this,'60-68')">Zwischen 60 und 68 kg</button>
+          <button class="opt" onclick="nxt(6,this,'69-77')">Zwischen 69 und 77 kg</button>
+          <button class="opt" onclick="nxt(6,this,'ue78')">Über 78 kg</button>
+        </div>
+        <div class="tipp">
+          <span class="tipp-icon">&#128161;</span>
+          <div class="tipp-text"><strong>Tipp:</strong> 7 bis 8 Stunden Schlaf sind der grösste Stoffwechsel-Booster, den es gibt, und kosten nichts.</div>
         </div>
       </div>
       <div class="step" data-s="7">
-        <h2>Wie ist deine Verdauung?</h2>
+        <h2>Was hast du schon probiert?</h2>
         <div class="opts">
-          <button class="opt" onclick="nxt(7,this)">Eher träge</button>
-          <button class="opt" onclick="nxt(7,this)">Wechselhaft</button>
-          <button class="opt" onclick="nxt(7,this)">Ganz normal</button>
-          <button class="opt" onclick="nxt(7,this)">Weiss nicht</button>
+          <button class="opt" onclick="nxt(7,this,'diaeten')">Diäten</button>
+          <button class="opt" onclick="nxt(7,this,'sport')">Sport-Programme</button>
+          <button class="opt" onclick="nxt(7,this,'nem')">Nahrungsergänzung</button>
+          <button class="opt" onclick="nxt(7,this,'nichts')">Noch nichts davon</button>
         </div>
-      </div>
-      <div class="step" data-s="8">
-        <h2>Wie ernährst du dich?</h2>
-        <div class="opts">
-          <button class="opt" onclick="nxt(8,this)">Gesund & ausgewogen</button>
-          <button class="opt" onclick="nxt(8,this)">Achte auf Kalorien</button>
-          <button class="opt" onclick="nxt(8,this)">Achte nicht gross drauf</button>
-          <button class="opt" onclick="nxt(8,this)">Unsicher was mir gut tut</button>
-        </div>
-      </div>
-      <div class="step" data-s="9">
-        <h2>Was ist dein Ziel in den nächsten 3 Monaten?</h2>
-        <div class="opts">
-          <button class="opt" onclick="nxt(9,this)">Gewicht verlieren</button>
-          <button class="opt" onclick="nxt(9,this)">Mehr Energie</button>
-          <button class="opt" onclick="nxt(9,this)">Energie zurück</button>
-          <button class="opt" onclick="nxt(9,this)">Wieder wohlfühlen</button>
+        <div class="tipp">
+          <span class="tipp-icon">&#128161;</span>
+          <div class="tipp-text"><strong>Tipp:</strong> Wenn Diäten nicht halten, liegt es selten an der Disziplin. Meist fehlt der Plan, der zum eigenen Körper passt.</div>
         </div>
       </div>
 
@@ -808,11 +867,15 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
     // Front-End-Variante kommt aus dem <head>-Skript (window.__fe): A=Text-LP, B=nackt Quiz.
     // Fuer B haben head-CSS (html.fe-quiz) bereits Landing aus / Quiz an geschaltet.
     var quizStarted = false;
+    // Anzahl Quizfragen: 4 Symptom- + 3 Qualifizierungsfragen (Alter, Gewicht, Vorerfahrung).
+    var TOTAL = 7;
     var feVariant = (window.__fe === 'A' || window.__fe === 'B') ? window.__fe : 'A';
     // Variante B: Intro-Screen ist via head-CSS (html.fe-quiz) schon sichtbar.
-    // Button "Jetzt Test starten" -> startQuiz(): Intro aus, Quiz an, quiz_start.
-    function startQuiz() {
-      if (!quizStarted) { quizStarted = true; tk('quiz_start', { detail: 'intro-cta' }); }
+    // Geschlechts-Auswahl im Intro -> startQuiz(): Intro aus, Quiz an, quiz_start.
+    // Das Geschlecht wird mitgespeichert, damit der Closer Maenner vorab erkennt.
+    function startQuiz(g) {
+      quizAnswers['gender'] = g || 'frau';
+      if (!quizStarted) { quizStarted = true; tk('quiz_start', { detail: 'gender_' + quizAnswers.gender }); }
       // head-CSS setzt #intro mit !important -> hier ebenfalls !important zum Ausblenden.
       var intro = document.getElementById('intro');
       if (intro) intro.style.setProperty('display', 'none', 'important');
@@ -911,23 +974,27 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
     })();
 
     function go(g) {
+      quizAnswers['gender'] = g || 'frau';
       if (!quizStarted) { quizStarted = true; tk('quiz_start', { detail: g }); }
       document.getElementById('lp').style.display = 'none';
       document.getElementById('quiz').classList.add('on');
     }
 
-    function nxt(s, el) {
+    function nxt(s, el, val) {
       // Variante B (nackt Quiz): quiz_start feuert bei der ersten Antwort
       if (!quizStarted) { quizStarted = true; tk('quiz_start', { detail: 'quiz-direkt' }); }
-      // Antworttext speichern
+      // Antworttext speichern, dazu den maschinenlesbaren Wert fuer Sheet und CRM
       quizAnswers['q' + s] = el ? el.textContent.trim() : '';
-      tk('quiz_answer', { detail: 'q' + s });
+      if (val) quizAnswers['q' + s + '_val'] = val;
+      tk('quiz_answer', { detail: 'q' + s + (val ? '_' + val : '') });
       document.querySelector('.step[data-s="' + s + '"]').classList.remove('on');
-      if (s < 9) {
+      if (s < TOTAL) {
         document.querySelector('.step[data-s="' + (s + 1) + '"]').classList.add('on');
-        var p = Math.round(((s + 1) / 9) * 100);
+        var p = Math.round(((s + 1) / TOTAL) * 100);
         document.getElementById('qf').style.width = p + '%';
-        document.getElementById('qn').textContent = (s + 1) + ' / 9';
+        document.getElementById('qn').textContent = (s + 1) + ' / ' + TOTAL;
+        var body = document.querySelector('.q-body');
+        if (body) body.scrollTop = 0;
       } else {
         tk('quiz_complete');
         load();

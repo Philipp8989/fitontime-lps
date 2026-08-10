@@ -829,6 +829,16 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
         try { v = sessionStorage.getItem('fot_ab_fe') || 'unknown'; } catch (e) {}
 
         tk('booking_confirmed', { variant: v, detail: v });
+
+        // Weiter auf die Bestaetigungsseite. Erst dadurch entsteht ein Pageview auf
+        // /figur-check/gebucht — die einzige Buchungszahl, die dauerhaft in der DB
+        // landet (analog koerper-report, wo YCBM selbst dorthin leitet). Der
+        // fot_booking_fired-Guard ist oben schon gesetzt, gebucht.astro zaehlt also
+        // nicht doppelt. Delay, damit sendBeacon, Meta-Pixel und /api/booked
+        // vorher rausgehen.
+        setTimeout(function () {
+          window.location.href = '/figur-check/gebucht/';
+        }, 900);
       }, false);
     })();
 
