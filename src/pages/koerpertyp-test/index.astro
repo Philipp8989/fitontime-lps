@@ -83,6 +83,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
     .type-card img { width: 100%; height: 96px; object-fit: contain; mix-blend-mode: multiply; }
     .type-card span { display: block; margin-top: 6px; font-size: 13px; font-weight: 800; color: var(--text); }
     .type-teaser-hint { font-size: 12px; color: var(--text-3); margin-top: 10px; font-weight: 600; }
+    .type-teaser-q { font-size: 15px; font-weight: 700; color: var(--text); text-align: center; margin: 18px 0 10px; }
 
     /* Proof unter Hero */
     .proof-bar { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 16px 0 6px; }
@@ -286,19 +287,21 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
 
       <section class="hero">
           <div class="badge">60-Sekunden-Test &middot; 45'000+ Teilnehmerinnen</div>
-          <h1>Welcher der 3 <em>Körper-Typen</em> bist du?</h1>
-          <p class="sub">Finde in <strong>60 Sekunden</strong> heraus, warum bisher keine Diät bei dir funktioniert hat und was für deinen Typ wirklich wirkt. <b>Ohne Verzicht. Ohne Jojo.</b></p>
+          <h1>Welcher der 3 <em>Körper-Typen</em> bist du? Erfahre in 60 Sekunden, warum dein Körper blockiert und was du in 4 Wochen änderst</h1>
+          <p class="sub">Beantworte diese <strong>7 Fragen</strong> und erhalte deine individuelle Auswertung von unseren <strong>Ernährungs- und Fitness-Coaches</strong>, kostenfrei. <b>Ohne Verzicht. Ohne Jojo.</b></p>
 
+        <!-- Selbsteinschaetzung ersetzt den ersten CTA-Klick: echtes Commitment statt Deko -->
+        <p class="type-teaser-q">Was kommt deinem Körper heute am nächsten?</p>
         <div class="type-teaser" role="group" aria-label="Die 3 Körper-Typen">
-          <button class="type-card" onclick="startQuiz()">
+          <button class="type-card" onclick="startQuiz('zierlich')">
             <img src="/images/bodytypes/zierlich.png" alt="Silhouette Typ Zierlich" />
             <span>Zierlich</span>
           </button>
-          <button class="type-card" onclick="startQuiz()">
+          <button class="type-card" onclick="startQuiz('soft')">
             <img src="/images/bodytypes/soft.png" alt="Silhouette Typ Soft" />
             <span>Soft</span>
           </button>
-          <button class="type-card" onclick="startQuiz()">
+          <button class="type-card" onclick="startQuiz('staemmig')">
             <img src="/images/bodytypes/staemmig.png" alt="Silhouette Typ Stämmig" />
             <span>Stämmig</span>
           </button>
@@ -319,7 +322,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
         </div>
 
         <div class="cta-wrap">
-          <button class="cta-btn" onclick="startQuiz()">Jetzt meinen Typ herausfinden &rarr;</button>
+          <button class="cta-btn" onclick="startQuiz('unsicher')">Ich bin mir nicht sicher, zeig mir meinen Typ &rarr;</button>
           <p class="cta-sub"><b>&#128274; 100% kostenlos</b> <span class="dot">&middot;</span> <b>Nur 60 Sekunden</b> <span class="dot">&middot;</span> <b>Ergebnis sofort</b></p>
         </div>
 
@@ -333,7 +336,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
 
       <!-- Sticky Mobile CTA -->
       <div class="sticky-cta" id="stickyCta">
-        <button class="cta-btn" onclick="startQuiz()" style="font-size:15px;padding:14px;">Quiz starten &rarr;</button>
+        <button class="cta-btn" onclick="startQuiz('unsicher')" style="font-size:15px;padding:14px;">Quiz starten &rarr;</button>
       </div>
 
       <div class="trans">
@@ -351,7 +354,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
 
       <!-- Zweite CTA nach Social Proof -->
       <div class="cta-wrap" style="margin-bottom:20px;">
-        <button class="cta-btn" onclick="startQuiz()">Jetzt meinen Typ finden &rarr;</button>
+        <button class="cta-btn" onclick="startQuiz('unsicher')">Jetzt meinen Typ finden &rarr;</button>
         <p class="cta-sub"><b>Kostenlos &middot; 60 Sek. &middot; Sofortiges Ergebnis</b></p>
       </div>
 
@@ -578,8 +581,10 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
     }
     tk('page_view');
 
-    function startQuiz() {
-      tk('quiz_start');
+    function startQuiz(selbstbild) {
+      // Selbsteinschaetzung wandert in die Quiz-Antworten und damit ins Bot-Briefing
+      quizAnswers['selbstbild'] = selbstbild || 'unsicher';
+      tk('quiz_start', { detail: 'selbstbild_' + quizAnswers['selbstbild'] });
       document.getElementById('lp').style.display = 'none';
       document.getElementById('quiz').classList.add('on');
       window.scrollTo(0, 0);

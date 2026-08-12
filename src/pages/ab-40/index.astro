@@ -57,7 +57,21 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
     .hero .sub { font-size: 16px; color: var(--text-2); margin-bottom: 6px; line-height: 1.5; }
     .hero .sub strong { color: var(--text); font-weight: 700; }
 
-    .optin-card { background: #fff; border: 1px solid #e8e4da; border-radius: var(--r); padding: 24px 20px; margin: 18px 0 10px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
+    /* Mikro-Gate: 3 Qualifizierungsfragen vor dem Formular (Muster koerper-report) */
+    .gate { background: #fff; border: 1px solid #e8e4da; border-radius: var(--r); padding: 22px 20px; margin: 18px 0 10px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
+    .gate-prog { font-size: 11px; color: var(--text-3); text-align: center; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700; margin-bottom: 12px; }
+    .gate-q { font-size: 17px; font-weight: 800; text-align: center; margin-bottom: 4px; line-height: 1.3; }
+    .gate-hint { font-size: 12.5px; color: var(--text-3); text-align: center; margin-bottom: 16px; }
+    .gate-step { display: none; }
+    .gate-step.on { display: block; }
+    .gate-opts { display: flex; flex-direction: column; gap: 9px; }
+    .gate-opt { background: #fff; border: 2px solid #e8e4da; border-radius: 12px; padding: 15px 16px; font: inherit; font-size: 15.5px; font-weight: 600; color: var(--text); text-align: left; cursor: pointer; transition: all 0.15s; -webkit-tap-highlight-color: transparent; }
+    .gate-opt:hover { border-color: var(--accent); transform: translateY(-1px); }
+    .gate-opt.selected { border-color: var(--accent); background: #f0f6ff; }
+    .gate-back { display: block; margin: 14px auto 0; background: none; border: none; font: inherit; font-size: 13px; color: var(--text-3); cursor: pointer; }
+
+    .optin-card { display: none; background: #fff; border: 1px solid #e8e4da; border-radius: var(--r); padding: 24px 20px; margin: 18px 0 10px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
+    .optin-card.on { display: block; }
     .optin-card h2 { font-size: 17px; font-weight: 800; text-align: center; margin-bottom: 4px; }
     .optin-card .oc-sub { font-size: 13px; color: var(--text-3); text-align: center; margin-bottom: 16px; }
     form.optin { display: flex; flex-direction: column; gap: 12px; }
@@ -117,7 +131,7 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
 
     <section class="hero">
       <h1>Warum dein Körper auf <em>„Speichern"</em> geschaltet hat, obwohl du alles richtig machst. Und wie über 4.000 Frauen den Schalter wieder umgelegt haben</h1>
-      <p class="sub">Das kostenlose Video zeigt dir, was Diäten, Sport und Kalorienzählen ab 40 <strong>nicht mehr</strong> für dich tun können, und was stattdessen funktioniert. <strong>Ohne Diät, ohne Spritze, ohne Verzicht.</strong></p>
+      <p class="sub">Beantworte diese <strong>3 Fragen</strong> und du siehst direkt das Video von unseren <strong>Ernährungs- und Fitness-Coaches</strong>, kostenfrei. <strong>Ohne Diät, ohne Spritze, ohne Verzicht.</strong></p>
     </section>
 
     <div class="proof-bar">
@@ -127,9 +141,47 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
       <div class="proof-info"><span class="proof-stars">★★★★★</span><br /><b>4.000+ Frauen</b> in der Schweiz</div>
     </div>
 
-    <div class="optin-card">
-      <h2>Sieh dir das Video jetzt kostenlos an</h2>
-      <p class="oc-sub">Trag dich ein und du wirst direkt zum Video weitergeleitet.</p>
+    <div class="gate" id="gate">
+      <p class="gate-prog" id="gateProg">Frage 1 von 3</p>
+
+      <div class="gate-step on" data-g="1">
+        <p class="gate-q">Wie alt bist du?</p>
+        <p class="gate-hint">Der Speicher-Schalter verhält sich in jedem Jahrzehnt anders.</p>
+        <div class="gate-opts">
+          <button class="gate-opt" onclick="gnxt(1,this,'40-45')">40 bis 45</button>
+          <button class="gate-opt" onclick="gnxt(1,this,'46-52')">46 bis 52</button>
+          <button class="gate-opt" onclick="gnxt(1,this,'53-60')">53 bis 60</button>
+          <button class="gate-opt" onclick="gnxt(1,this,'60plus')">Über 60</button>
+        </div>
+      </div>
+
+      <div class="gate-step" data-g="2">
+        <p class="gate-q">Was hast du bisher schon probiert?</p>
+        <p class="gate-hint">Damit wir dir nicht erzählen, was du längst hinter dir hast.</p>
+        <div class="gate-opts">
+          <button class="gate-opt" onclick="gnxt(2,this,'diaeten')">Diäten und Kalorienzählen</button>
+          <button class="gate-opt" onclick="gnxt(2,this,'sport')">Sport und mehr Bewegung</button>
+          <button class="gate-opt" onclick="gnxt(2,this,'spritze')">Abnehmspritze</button>
+          <button class="gate-opt" onclick="gnxt(2,this,'alles')">Ehrlich gesagt alles davon</button>
+        </div>
+        <button class="gate-back" onclick="gback(1)">&larr; Zurück</button>
+      </div>
+
+      <div class="gate-step" data-g="3">
+        <p class="gate-q">Wie schnell willst du etwas ändern?</p>
+        <p class="gate-hint">Letzte Frage, danach startet dein Video.</p>
+        <div class="gate-opts">
+          <button class="gate-opt" onclick="gnxt(3,this,'sofort')">Sofort, ich habe genug gewartet</button>
+          <button class="gate-opt" onclick="gnxt(3,this,'wochen')">In den nächsten Wochen</button>
+          <button class="gate-opt" onclick="gnxt(3,this,'info')">Ich will mich erst informieren</button>
+        </div>
+        <button class="gate-back" onclick="gback(2)">&larr; Zurück</button>
+      </div>
+    </div>
+
+    <div class="optin-card" id="optinCard">
+      <h2>Dein Video ist bereit</h2>
+      <p class="oc-sub">Wohin dürfen wir es schicken? Du wirst direkt weitergeleitet.</p>
       <form class="optin" id="optinForm" novalidate>
         <input type="text" name="fname" placeholder="Dein Vorname" autocomplete="given-name" required />
         <input type="email" name="email" placeholder="Deine E-Mail-Adresse" autocomplete="email" required />
@@ -163,7 +215,7 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
       <div class="stat"><div class="stat-num">77%</div><div class="stat-label">halten es nach 12 Mo.</div></div>
     </div>
 
-    <div class="cta-repeat"><a href="#optinForm">Jetzt kostenloses Video ansehen →</a></div>
+    <div class="cta-repeat"><a href="#gate">Jetzt kostenloses Video ansehen →</a></div>
   </main>
 
   <footer>
@@ -201,6 +253,45 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
 
     track('page_view', { page: 'optin' });
 
+    // ===== Mikro-Gate: 3 Qualifizierungsfragen vor dem Formular =====
+    const GATE_TOTAL = 3;
+    const gateAnswers = {};
+
+    function gshow(s) {
+      document.querySelectorAll('.gate-step').forEach((el) => el.classList.remove('on'));
+      const t = document.querySelector('.gate-step[data-g="' + s + '"]');
+      if (t) t.classList.add('on');
+      document.getElementById('gateProg').textContent = 'Frage ' + s + ' von ' + GATE_TOTAL;
+    }
+
+    function gback(s) {
+      gshow(s);
+      document.getElementById('gate').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    function gnxt(s, el, val) {
+      gateAnswers['g' + s] = val;
+      if (el) el.classList.add('selected');
+      track('gate_answer', { step: s, detail: val });
+
+      setTimeout(() => {
+        if (s < GATE_TOTAL) {
+          gshow(s + 1);
+          document.getElementById('gate').scrollIntoView({ behavior: 'smooth', block: 'center' });
+          return;
+        }
+        // Gate durch: Formular freischalten
+        document.getElementById('gate').style.display = 'none';
+        document.getElementById('optinCard').classList.add('on');
+        track('gate_complete');
+        if (window.__lp) window.__lp.meta('ViewContent', { content_name: 'FoT Quiz Complete', currency: 'CHF' });
+        document.getElementById('optinCard').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 180);
+    }
+
+    window.gnxt = gnxt;
+    window.gback = gback;
+
     // Feld-Fortschritt ohne PII: welche Felder ausgefüllt wurden, nicht deren Inhalt
     // (bewusst KEIN Partial-Lead-Capture mit Klardaten vor dem Absenden, DSGVO)
     document.querySelectorAll('#optinForm input').forEach((el) => {
@@ -230,7 +321,7 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
         const res = await fetch('/api/sheets', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, email, phone, lp_slug: LP_SLUG, lp_name: LP_NAME, session, answers: {} }),
+          body: JSON.stringify({ name, email, phone, lp_slug: LP_SLUG, lp_name: LP_NAME, session, answers: gateAnswers }),
         });
         if (!res.ok) {
           const j = await res.json().catch(() => ({}));
