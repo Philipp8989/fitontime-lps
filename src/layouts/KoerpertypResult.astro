@@ -19,6 +19,8 @@ export interface Props {
 const { typ, label, title, summary, food, move, time, mistake, videoId } = Astro.props;
 const impressumUrl = 'https://fitontime.ch/impressum-datenschutz';
 const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
+// Google Tag (wie /ab-40): laedt Consent-Mode-v2-Tag, Conversions feuern nur bei Google-Klick
+const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').trim();
 
 const imageSrc = `/images/bodytypes/${typ}.png`;
 ---
@@ -321,6 +323,7 @@ const imageSrc = `/images/bodytypes/${typ}.png`;
 
   <CookieBanner
     metaPixelId="1316450223953563"
+    googleAdsId={GOOGLE_ADS_ID}
     consentKey="fot_stoffwechsel_consent"
     impressumUrl={impressumUrl}
     datenschutzUrl={datenschutzUrl}

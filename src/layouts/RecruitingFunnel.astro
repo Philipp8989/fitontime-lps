@@ -64,6 +64,8 @@ const { slug, funnelName, pageTitle, steps, extraSection, locationBadge } = Astr
 
 const PIXEL_ID = (import.meta.env.PUBLIC_META_PIXEL_ID || '').trim();
 const HYROS_ID = (import.meta.env.PUBLIC_HYROS_ID || '').trim();
+// Google Tag (wie /ab-40): laedt Consent-Mode-v2-Tag, Conversions feuern nur bei Google-Klick
+const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').trim();
 const IMPRESSUM_URL = 'https://fitontime.ch/impressum-datenschutz';
 const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
 ---
@@ -518,6 +520,7 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
     <CookieBanner
       metaPixelId={PIXEL_ID}
       hyrosPh={HYROS_ID}
+      googleAdsId={GOOGLE_ADS_ID}
       impressumUrl={IMPRESSUM_URL}
       datenschutzUrl={DATENSCHUTZ_URL}
       consentKey="fot_consent"

@@ -5,6 +5,8 @@
 import CookieBanner from '../../components/CookieBanner.astro';
 const impressumUrl = 'https://fitontime.ch/impressum-datenschutz';
 const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
+// Google Tag (wie /ab-40): laedt Consent-Mode-v2-Tag, Conversions feuern nur bei Google-Klick
+const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').trim();
 ---
 <html lang="de">
 <head>
@@ -779,6 +781,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
 
   <CookieBanner
     metaPixelId=""
+    googleAdsId={GOOGLE_ADS_ID}
     consentKey="fot_stoffwechsel_report_consent"
     impressumUrl={impressumUrl}
     datenschutzUrl={datenschutzUrl}
