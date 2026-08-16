@@ -79,6 +79,7 @@ const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').t
           if (window.__lp) {
             window.__lp.track(e, Object.assign({ page: funnel }, d || {}), 'fot', funnelName);
             if (e === 'booking_confirmed') window.__lp.meta('Schedule', { content_name: 'FoT Termin gebucht', currency: 'CHF' });
+            if (e === 'booking_confirmed') window.__lp.google('book_appointment', 'yDiXCIK7zeIcEOfryccD');
           } else if (tries++ < 40) { setTimeout(fire, 50); }
         })();
       };

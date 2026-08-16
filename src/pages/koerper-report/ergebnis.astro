@@ -640,7 +640,9 @@ const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').t
           if (e === 'quiz_start') window.__lp.meta('ViewContent', { content_name: 'FoT Quiz Start', currency: 'CHF' });
           if (e === 'quiz_complete') window.__lp.meta('CompleteRegistration', { content_name: 'FoT Quiz Complete', currency: 'CHF' });
           if (e === 'lead_submit') window.__lp.meta('Lead', { content_name: 'FoT Lead', currency: 'CHF' });
+          if (e === 'lead_submit') window.__lp.google('generate_lead', 'TnugCP-6zeIcEOfryccD');
           if (e === 'booking_confirmed') window.__lp.meta('Schedule', { content_name: 'FoT Termin gebucht', currency: 'CHF' });
+          if (e === 'booking_confirmed') window.__lp.google('book_appointment', 'yDiXCIK7zeIcEOfryccD');
         } else if (tries++ < 40) {
           setTimeout(fire, 50);
         }
