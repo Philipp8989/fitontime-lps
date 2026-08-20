@@ -42,6 +42,17 @@ const SHEETS: Record<string, SheetConfig> = {
       return [datum, d.name, d.email, d.phone || '', 'Bewerbung', a.situation || '', a.ziel || '', a.invest || '', a.entscheidung || ''];
     },
   },
+  // Schilddrüsen-Analyse VSL-Funnel (Trust-Funnel, neu 2026-08-20): schreibt ins
+  // Ab-40-Sheet (gleiches Angebot, gleicher Call), Marker unterscheidet die Quelle.
+  // Spalten: Datum | Name | E-Mail | Telefon | Funnel-Marker | Gate 1 | Gate 2 | Gate 3
+  'schilddruesen-analyse': {
+    id: '1VGtODlUlyWDftRYYf96JL_GhHTJxnPLwDBAqp_Dgbkc',
+    range: 'Tabellenblatt1!A:I',
+    buildRow: (datum, d) => {
+      const a = d.answers || {};
+      return [datum, d.name, d.email, d.phone || '', 'SD-Analyse', a.g1 || '', a.g2 || '', a.g3 || ''];
+    },
+  },
   // Zieldatum-Rechner (neu 2026-08)
   // Sheet-ID kommt aus der Vercel-Env ZIELDATUM_SHEET_ID. Ist sie nicht gesetzt, läuft
   // der Lead trotzdem ins Dashboard-CRM und in die Meta-CAPI, nur ohne Sheet-Zeile.
