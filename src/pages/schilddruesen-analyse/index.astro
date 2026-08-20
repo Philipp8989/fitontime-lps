@@ -253,6 +253,72 @@ const TF_IMAGES = [...Array.from({ length: 12 }, (_, i) => `/images/sd-proof/tf-
       .vid-card { width: 82vw; max-width: 340px; }
       .tf-card { width: 62vw; max-width: 265px; }
     }
+
+    /* ===== Motion-Layer (20.08.): 3D-Tilt, Orbs, Reveals, Schalter ===== */
+    .hero { overflow: hidden; }
+    .orbs { position: absolute; inset: 0; pointer-events: none; }
+    .orb { position: absolute; border-radius: 50%; filter: blur(70px); opacity: 0.5; will-change: transform; }
+    .orb.o1 { width: 560px; height: 560px; background: radial-gradient(circle, rgba(69,132,238,0.55), transparent 65%); top: -180px; left: -140px; animation: drift1 14s ease-in-out infinite alternate; }
+    .orb.o2 { width: 460px; height: 460px; background: radial-gradient(circle, rgba(245,195,183,0.32), transparent 65%); bottom: -160px; right: 60px; animation: drift2 18s ease-in-out infinite alternate; }
+    .orb.o3 { width: 320px; height: 320px; background: radial-gradient(circle, rgba(138,181,255,0.35), transparent 65%); top: 30%; right: 34%; animation: drift1 22s ease-in-out infinite alternate-reverse; }
+    @keyframes drift1 { from { transform: translate3d(0,0,0) scale(1); } to { transform: translate3d(60px,40px,0) scale(1.12); } }
+    @keyframes drift2 { from { transform: translate3d(0,0,0) scale(1.08); } to { transform: translate3d(-70px,-30px,0) scale(1); } }
+    .hero-grid { position: relative; z-index: 1; }
+
+    /* Gate-Card 3D-Tilt + Glare */
+    .tilt-zone { perspective: 1200px; }
+    .gate-card { transform-style: preserve-3d; will-change: transform; transition: transform 0.35s cubic-bezier(.22,.61,.36,1), box-shadow 0.35s; position: relative; overflow: hidden; }
+    .gate-card.tilting { transition: box-shadow 0.35s; }
+    .gate-card::after { content: ''; position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity 0.3s; background: radial-gradient(600px circle at var(--gx,50%) var(--gy,50%), rgba(255,255,255,0.35), transparent 42%); }
+    .gate-card.tilting::after { opacity: 1; }
+
+    /* Scroll-Reveal */
+    .rv { opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease, transform 0.7s cubic-bezier(.22,.61,.36,1); transition-delay: var(--d, 0s); will-change: transform; }
+    .rv.in { opacity: 1; transform: none; }
+
+    /* Card-Hover-Lift */
+    .named-card, .step-card, .stat, .tf-card { transition: transform 0.3s cubic-bezier(.22,.61,.36,1), box-shadow 0.3s; }
+    .named-card:hover, .step-card:hover { transform: translateY(-6px) scale(1.015); box-shadow: 0 22px 50px rgba(11,34,68,0.16); }
+    .tf-card:hover { transform: translateY(-5px) rotate(-0.6deg) scale(1.02); }
+    .stat:hover { transform: translateY(-4px); }
+
+    /* Button Shine + Magnet */
+    .btn { position: relative; overflow: hidden; will-change: transform; }
+    .btn::before { content: ''; position: absolute; top: 0; left: -80%; width: 55%; height: 100%; background: linear-gradient(105deg, transparent, rgba(255,255,255,0.35), transparent); transform: skewX(-20deg); transition: left 0.6s ease; pointer-events: none; }
+    .btn:hover::before { left: 130%; }
+
+    /* 3D-Schalter-Sektion */
+    .sw-sec { background: linear-gradient(160deg, var(--navy) 0%, var(--navy-2) 70%, #1a3f74 100%); padding: 64px 0 70px; position: relative; overflow: hidden; }
+    .sw-sec .sec-title { color: #fff; }
+    .sw-sec .sec-kicker { color: #8ab5ff; }
+    .sw-sec .sec-sub { color: #c7d6ee; }
+    .sw-stage { perspective: 900px; display: flex; flex-direction: column; align-items: center; gap: 26px; position: relative; z-index: 1; }
+    .sw3d { transform-style: preserve-3d; will-change: transform; transition: transform 0.4s cubic-bezier(.22,.61,.36,1); cursor: pointer; -webkit-tap-highlight-color: transparent; }
+    .sw-plate { background: linear-gradient(145deg, #16365f, #0d2549); border: 1px solid rgba(138,181,255,0.25); border-radius: 28px; padding: 34px 44px; display: flex; align-items: center; gap: 26px; box-shadow: 0 30px 70px rgba(2,8,20,0.6), inset 0 1px 0 rgba(255,255,255,0.08); transform: translateZ(0); }
+    .sw-word { font-size: 22px; font-weight: 900; letter-spacing: 1.5px; transition: color 0.4s, text-shadow 0.4s; }
+    .sw-word.burn { color: #3a5578; }
+    .sw-word.store { color: var(--red); text-shadow: 0 0 24px rgba(239,68,68,0.5); }
+    .sw-track { position: relative; width: 150px; height: 74px; border-radius: 999px; background: var(--red); transition: background 0.45s; box-shadow: inset 0 4px 14px rgba(0,0,0,0.45); flex-shrink: 0; }
+    .sw-knob { position: absolute; top: 7px; left: 7px; width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(145deg, #ffffff, #dfe7f2); display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 6px 16px rgba(0,0,0,0.45), 0 14px 30px rgba(0,0,0,0.25); transition: transform 0.45s cubic-bezier(.34,1.56,.64,1); transform: translateZ(26px); }
+    .sw3d.on .sw-track { background: var(--green); }
+    .sw3d.on .sw-knob { transform: translateX(76px) translateZ(26px); }
+    .sw3d.on ~ * .sw-word.store, .sw3d.on .sw-word.store { color: #3a5578; text-shadow: none; }
+    .sw3d.on .sw-word.burn { color: var(--green); text-shadow: 0 0 24px rgba(34,197,94,0.5); }
+    .sw-msg { font-size: 16px; color: #c7d6ee; text-align: center; min-height: 52px; transition: opacity 0.3s; padding: 0 20px; }
+    .sw-msg b.rot { color: var(--red); }
+    .sw-msg b.grn { color: var(--green); }
+    .sw-msg a { color: #8ab5ff; font-weight: 800; text-decoration: underline; }
+    .sw-hint-pulse { animation: swpulse 1.6s ease-in-out infinite; display: inline-block; }
+    @keyframes swpulse { 0%,100% { transform: translateX(0); } 50% { transform: translateX(6px); } }
+
+    @media (hover: none), (prefers-reduced-motion: reduce) {
+      .orb { animation: none; }
+      .gate-card, .sw3d { transition: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .rv { opacity: 1; transform: none; transition: none; }
+      .btn::before { display: none; }
+    }
   </style>
 </head>
 <body>
@@ -265,6 +331,7 @@ const TF_IMAGES = [...Array.from({ length: 12 }, (_, i) => `/images/sd-proof/tf-
 
   <!-- ===== Hero mit Gate-Card ===== -->
   <header class="hero">
+    <div class="orbs" aria-hidden="true"><span class="orb o1"></span><span class="orb o2"></span><span class="orb o3"></span></div>
     <div class="wrap">
       <div class="hero-grid">
         <div>
@@ -283,7 +350,7 @@ const TF_IMAGES = [...Array.from({ length: 12 }, (_, i) => `/images/sd-proof/tf-
           </div>
         </div>
 
-        <div class="gate-card" id="gate">
+        <div class="tilt-zone"><div class="gate-card" id="gate">
           <p class="gc-kicker">Kostenloses Video</p>
           <p class="gc-title">Der Ablauf hinter über 4.000 Transformationen</p>
           <p class="gc-why"><strong>Warum 3 Fragen?</strong> Deine Antworten gehen an unser Coaching-Team. So wissen wir, wo du stehst, bevor du das Video siehst, und können dir danach eine ehrliche Einschätzung geben statt einer Standard-Antwort.</p>
@@ -347,7 +414,7 @@ const TF_IMAGES = [...Array.from({ length: 12 }, (_, i) => `/images/sd-proof/tf-
             <div class="gc-point"><span class="ic">✓</span><span><strong>Welche körperlichen und alltäglichen Faktoren</strong> dich beeinflussen: Stoffwechsel, Hormone, Stress, Schlaf, Routinen</span></div>
             <div class="gc-point"><span class="ic">✓</span><span><strong>Wie Veränderung endlich nachhaltig wird,</strong> mit einem persönlichen Plan und echter Begleitung statt der nächsten Diät</span></div>
           </div>
-        </div>
+        </div></div>
       </div>
     </div>
   </header>
@@ -364,6 +431,25 @@ const TF_IMAGES = [...Array.from({ length: 12 }, (_, i) => `/images/sd-proof/tf-
       </div>
     </div>
   </div>
+
+  <!-- ===== 3D-Schalter (interaktiv) ===== -->
+  <section class="sw-sec">
+    <div class="wrap">
+      <p class="sec-kicker">Der Mechanismus</p>
+      <h2 class="sec-title">Dein Körper hat einen Schalter</h2>
+      <p class="sec-sub">Solange er auf Speichern steht, arbeitet jede Diät gegen dich. Probier es aus.</p>
+      <div class="sw-stage">
+        <div class="sw3d" id="sw3d" role="button" tabindex="0" aria-label="Schalter von Speichern auf Verbrennen umlegen">
+          <div class="sw-plate">
+            <span class="sw-word burn">VERBRENNEN</span>
+            <div class="sw-track"><div class="sw-knob" id="swKnob">🔒</div></div>
+            <span class="sw-word store">SPEICHERN</span>
+          </div>
+        </div>
+        <p class="sw-msg" id="swMsg">Dein Schalter steht auf <b class="rot">Speichern</b>. Leg ihn um <span class="sw-hint-pulse">→</span></p>
+      </div>
+    </div>
+  </section>
 
   <!-- ===== Video-Testimonials (Swipe) ===== -->
   <section class="block">
@@ -664,6 +750,131 @@ const TF_IMAGES = [...Array.from({ length: 12 }, (_, i) => `/images/sd-proof/tf-
         card.appendChild(f);
       });
     });
+
+    // ===== Motion-Layer: Tilt, Parallax, Reveals, Count-up, 3D-Schalter =====
+    const fineHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    // Gate-Card 3D-Tilt mit Glare (nur Maus-Geraete)
+    if (fineHover && !reduced) {
+      const card = document.querySelector('.gate-card');
+      const zone = document.querySelector('.tilt-zone');
+      let raf = null;
+      zone.addEventListener('mousemove', (e) => {
+        if (raf) return;
+        raf = requestAnimationFrame(() => {
+          const r = card.getBoundingClientRect();
+          const px = (e.clientX - r.left) / r.width;
+          const py = (e.clientY - r.top) / r.height;
+          card.classList.add('tilting');
+          card.style.transform = 'rotateY(' + ((px - 0.5) * 7).toFixed(2) + 'deg) rotateX(' + ((0.5 - py) * 6).toFixed(2) + 'deg) translateZ(6px)';
+          card.style.setProperty('--gx', (px * 100).toFixed(1) + '%');
+          card.style.setProperty('--gy', (py * 100).toFixed(1) + '%');
+          raf = null;
+        });
+      });
+      zone.addEventListener('mouseleave', () => {
+        card.classList.remove('tilting');
+        card.style.transform = '';
+      });
+
+      // Hero-Orbs Parallax
+      const orbs = document.querySelectorAll('.orb');
+      const hero = document.querySelector('.hero');
+      let oraf = null;
+      hero.addEventListener('mousemove', (e) => {
+        if (oraf) return;
+        oraf = requestAnimationFrame(() => {
+          const cx = (e.clientX / window.innerWidth - 0.5);
+          const cy = (e.clientY / window.innerHeight - 0.5);
+          orbs.forEach((o, i) => {
+            const f = (i + 1) * 14;
+            o.style.transform = 'translate3d(' + (cx * f) + 'px,' + (cy * f) + 'px,0)';
+          });
+          oraf = null;
+        });
+      });
+
+      // Magnetic Buttons (dezent)
+      document.querySelectorAll('.btn').forEach((b) => {
+        b.addEventListener('mousemove', (e) => {
+          const r = b.getBoundingClientRect();
+          b.style.transform = 'translate(' + ((e.clientX - r.left - r.width / 2) * 0.08).toFixed(1) + 'px,' + ((e.clientY - r.top - r.height / 2) * 0.18).toFixed(1) + 'px) translateY(-1px)';
+        });
+        b.addEventListener('mouseleave', () => { b.style.transform = ''; });
+      });
+    }
+
+    // Scroll-Reveal + Count-up
+    if (!reduced && 'IntersectionObserver' in window) {
+      const rvEls = [];
+      document.querySelectorAll('.sec-kicker, .sec-title, .sec-sub, .named-card, .step-card, .teaser, .no-pressure, .faq details, .sw-stage').forEach((el) => { el.classList.add('rv'); rvEls.push(el); });
+      document.querySelectorAll('.stats-card .stat').forEach((el, i) => { el.classList.add('rv'); el.style.setProperty('--d', (i * 0.08) + 's'); rvEls.push(el); });
+      document.querySelectorAll('.named-grid .named-card').forEach((el, i) => el.style.setProperty('--d', (i * 0.1) + 's'));
+      document.querySelectorAll('.steps-grid .step-card').forEach((el, i) => el.style.setProperty('--d', (i * 0.1) + 's'));
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((en) => { if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); } });
+      }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+      rvEls.forEach((el) => io.observe(el));
+
+      // Count-up der Stat-Zahlen
+      const cio = new IntersectionObserver((entries) => {
+        entries.forEach((en) => {
+          if (!en.isIntersecting) return;
+          cio.unobserve(en.target);
+          en.target.querySelectorAll('.stat-num').forEach((el) => {
+            const m = el.textContent.match(/^([0-9.']+)(\+?)$/);
+            if (!m) return;
+            const target = parseInt(m[1].replace(/[.']/g, ''), 10);
+            if (!target || target < 10) return;
+            const suffix = m[2];
+            const fmt = (n) => n.toLocaleString('de-CH').replace(/’/g, "'").replace(/,/g, '.');
+            const t0 = performance.now();
+            const dur = 1400;
+            const step = (t) => {
+              const pr = Math.min((t - t0) / dur, 1);
+              const eased = 1 - Math.pow(1 - pr, 3);
+              el.textContent = fmt(Math.round(target * eased)) + suffix;
+              if (pr < 1) requestAnimationFrame(step);
+            };
+            requestAnimationFrame(step);
+          });
+        });
+      }, { threshold: 0.4 });
+      const sc = document.querySelector('.stats-card');
+      if (sc) cio.observe(sc);
+    }
+
+    // 3D-Schalter
+    const sw = document.getElementById('sw3d');
+    if (sw) {
+      const msg = document.getElementById('swMsg');
+      const knob = document.getElementById('swKnob');
+      const flip = () => {
+        if (sw.classList.contains('on')) return;
+        sw.classList.add('on');
+        knob.textContent = '🔥';
+        msg.innerHTML = 'Dein Schalter steht auf <b class="grn">Verbrennen</b>. Genau dahin bringen wir deinen Körper. <a href="#gate">Schau dir im Video an, wie &rarr;</a>';
+        track('schalter_umgelegt');
+        if (navigator.vibrate) navigator.vibrate(40);
+      };
+      sw.addEventListener('click', flip);
+      sw.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); flip(); } });
+      if (fineHover && !reduced) {
+        let sraf = null;
+        sw.addEventListener('mousemove', (e) => {
+          if (sraf) return;
+          sraf = requestAnimationFrame(() => {
+            const r = sw.getBoundingClientRect();
+            const px = (e.clientX - r.left) / r.width;
+            const py = (e.clientY - r.top) / r.height;
+            sw.style.transform = 'rotateY(' + ((px - 0.5) * 14).toFixed(2) + 'deg) rotateX(' + ((0.5 - py) * 12).toFixed(2) + 'deg)';
+            sraf = null;
+          });
+        });
+        sw.addEventListener('mouseleave', () => { sw.style.transform = ''; });
+      }
+    }
   </script>
 </body>
 </html>
