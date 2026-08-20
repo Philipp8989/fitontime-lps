@@ -1,6 +1,7 @@
 ---
 // VSL-Call-Funnel "Schilddrüsen-Analyse", Schritt 2: Danke-Seite mit VSL + Terminbuchung
-// VSL oben, Qualifier-Checkbox schaltet den Termin-Block frei, YCBM-Kalender lädt inline.
+// Redesign 20.08.2026: gleiches Designsystem wie die Opt-in-Seite (Inter, FoT-Blau, Navy-Hero).
+// Im Video wird der Ablauf bei Fit on Time erklärt (Loom-VSL, Doc liegt in 02_Ad-Scripts).
 // VSL-Env: PUBLIC_FOT_SDA_VSL_URL, Fallback auf das Ab-40-VSL bis das eigene Video steht.
 // Hinweis: YCBM leitet nach der Buchung auf /ab-40/bestaetigt weiter (Account-seitig
 // konfiguriert), call_booked feuert dort unter dem ab-40-Slug.
@@ -17,129 +18,167 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
 
 // Loom: https://www.loom.com/embed/<id> · Vimeo: https://player.vimeo.com/video/<id>
 const VSL_EMBED = (import.meta.env.PUBLIC_FOT_SDA_VSL_URL || import.meta.env.PUBLIC_FOT_AB40_VSL_URL || '').trim();
+
+const VIDEO_IDS = ['WNswBZ1uLAg','ylw-p5gOiYs','BMcN-2Ic3AY','V_ysJXCMA8s','UQD6KPnVgvE','Ro-nrECseYk'];
+const TF_IMAGES = Array.from({ length: 8 }, (_, i) => `/images/sd-proof/tf-${String(i + 1).padStart(2, '0')}.jpg`);
 ---
 <html lang="de">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="robots" content="noindex, nofollow" />
-  <title>Dein Video: Warum dein Körper das Fett festhält | Fit on Time</title>
+  <title>Dein Video: Der Ablauf bei Fit on Time | Fit on Time</title>
   <link rel="icon" type="image/png" href="/images/logo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <script is:inline src="https://t.hyros.com/v1/lst/universal-script?ph=689a71ca1ab3be1cb1caddbe6b7902a4ad2c51a228f4ec9ea7fef3123a705f63"></script>
 
   <style is:global>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
     :root {
-      --bg: #fafaf8;
-      --accent: #2b7de9;
-      --accent-dark: #1a5bb8;
+      --navy: #0b2244;
+      --navy-2: #123059;
+      --blue: #4584ee;
+      --blue-dark: #2f6ad0;
+      --lightblue: #eef7ff;
+      --blush: #fff1ee;
       --green: #22c55e;
       --amber: #f59e0b;
       --red: #ef4444;
-      --text: #1a1a1a;
-      --text-2: #4a4a4a;
-      --text-3: #888;
+      --text: #10203a;
+      --text-2: #44546e;
+      --text-3: #8a97a8;
+      --line: #e3eaf4;
       --r: 14px;
-      --font: 'DM Sans', system-ui, -apple-system, sans-serif;
+      --font: 'Inter', system-ui, -apple-system, sans-serif;
+      --shadow: 0 10px 34px rgba(11,34,68,0.10);
     }
     html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
-    body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.5; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
-    .wrap { max-width: 680px; margin: 0 auto; padding: 0 20px; }
+    body { font-family: var(--font); background: #fff; color: var(--text); line-height: 1.5; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    img { max-width: 100%; display: block; }
+    .wrap { max-width: 1120px; margin: 0 auto; padding: 0 20px; }
+    .narrow { max-width: 840px; margin: 0 auto; padding: 0 20px; }
 
-    .logo { text-align: center; padding: 16px 0 8px; }
-    .logo img { height: 40px; }
+    .topbar { background: #fff; border-bottom: 1px solid var(--line); }
+    .topbar-in { max-width: 1120px; margin: 0 auto; padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .topbar img { height: 34px; }
+    .topbar .kk { font-size: 12px; font-weight: 700; color: var(--text-2); display: inline-flex; align-items: center; gap: 7px; }
+    .topbar .kk .dot { color: var(--green); }
 
-    .hero { text-align: center; padding: 4px 0 10px; }
-    .hero .greet { font-size: 14px; color: var(--text-3); margin-bottom: 6px; font-weight: 600; }
-    .hero h1 { font-size: 24px; font-weight: 800; line-height: 1.25; letter-spacing: -0.4px; margin-bottom: 8px; }
-    .hero h1 em { font-style: normal; color: var(--accent); }
-    .hero .sub { font-size: 14.5px; color: var(--text-2); }
-
-    .play-hint { display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 13px; font-weight: 700; color: var(--red); text-transform: uppercase; letter-spacing: 0.5px; margin: 10px 0 8px; }
+    .vsl-hero { background: linear-gradient(160deg, var(--navy) 0%, var(--navy-2) 58%, #1a3f74 100%); color: #fff; padding: 34px 0 60px; }
+    .vsl-hero .greet { font-size: 13.5px; color: #8ab5ff; margin-bottom: 8px; font-weight: 700; text-align: center; }
+    .vsl-hero h1 { font-size: 32px; font-weight: 900; line-height: 1.18; letter-spacing: -0.7px; text-align: center; margin-bottom: 8px; }
+    .vsl-hero h1 em { font-style: normal; color: #8ab5ff; }
+    .vsl-hero .sub { font-size: 15px; color: #c7d6ee; text-align: center; max-width: 620px; margin: 0 auto 16px; }
+    .play-hint { display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 12.5px; font-weight: 800; color: var(--amber); text-transform: uppercase; letter-spacing: 0.6px; margin: 4px 0 12px; }
     .play-hint .arrow { animation: bounce 1.2s infinite; display: inline-block; }
     @keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(4px); } }
-
-    .video-shell { position: relative; border-radius: var(--r); overflow: hidden; background: #111; aspect-ratio: 16 / 9; box-shadow: 0 10px 34px rgba(0,0,0,0.18); margin-bottom: 14px; }
+    .video-shell { position: relative; border-radius: 18px; overflow: hidden; background: #050e1e; aspect-ratio: 16 / 9; box-shadow: 0 26px 70px rgba(2,8,20,0.55); }
     .video-shell iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
     .video-placeholder { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; color: #fff; text-align: center; padding: 20px; }
-    .video-placeholder .pp { width: 68px; height: 68px; border-radius: 50%; background: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 26px; color: #fff; box-shadow: 0 6px 22px rgba(43,125,233,0.5); }
-    .video-placeholder p { font-size: 14px; color: #ddd; max-width: 380px; }
+    .video-placeholder .pp { width: 68px; height: 68px; border-radius: 50%; background: var(--blue); display: flex; align-items: center; justify-content: center; font-size: 26px; color: #fff; box-shadow: 0 6px 22px rgba(69,132,238,0.5); }
+    .video-placeholder p { font-size: 14px; color: #c7d6ee; max-width: 380px; }
 
-    .cta-card { background: #fff; border: 1px solid #e8e4da; border-radius: var(--r); padding: 22px 20px; margin: 18px 0; box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
-    .cta-card h2 { font-size: 18px; font-weight: 800; text-align: center; margin-bottom: 6px; }
-    .cta-card .cc-sub { font-size: 13.5px; color: var(--text-2); text-align: center; margin-bottom: 14px; line-height: 1.5; }
-    .qualifier { display: flex; gap: 10px; align-items: flex-start; background: #fffbeb; border: 1px solid #fde68a; border-radius: 10px; padding: 12px 14px; margin-bottom: 14px; cursor: pointer; }
-    .qualifier input { width: 20px; height: 20px; margin-top: 2px; accent-color: var(--accent); flex-shrink: 0; cursor: pointer; }
+    .cta-card { background: #fff; border: 1px solid var(--line); border-radius: 18px; padding: 26px 24px; margin: -34px auto 18px; position: relative; z-index: 2; box-shadow: var(--shadow); max-width: 720px; }
+    .cta-card h2 { font-size: 20px; font-weight: 900; text-align: center; letter-spacing: -0.3px; margin-bottom: 6px; }
+    .cta-card .cc-sub { font-size: 13.5px; color: var(--text-2); text-align: center; margin-bottom: 14px; line-height: 1.55; }
+    .qualifier { display: flex; gap: 10px; align-items: flex-start; background: #fffbeb; border: 1px solid #fde68a; border-radius: 12px; padding: 12px 14px; margin-bottom: 14px; cursor: pointer; }
+    .qualifier input { width: 20px; height: 20px; margin-top: 2px; accent-color: var(--blue); flex-shrink: 0; cursor: pointer; }
     .qualifier span { font-size: 13.5px; color: var(--text-2); line-height: 1.5; }
     .qualifier strong { color: var(--text); }
-    .btn { display: block; width: 100%; background: var(--accent); color: #fff; border: none; border-radius: 999px; padding: 17px 28px; font: inherit; font-size: 17px; font-weight: 700; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 14px rgba(43,125,233,0.3); text-align: center; text-decoration: none; -webkit-tap-highlight-color: transparent; }
-    .btn:hover { background: var(--accent-dark); transform: translateY(-1px); }
+    .btn { display: block; width: 100%; background: var(--blue); color: #fff; border: none; border-radius: 999px; padding: 16px 26px; font: inherit; font-size: 16.5px; font-weight: 800; cursor: pointer; transition: all 0.2s; box-shadow: 0 8px 22px rgba(69,132,238,0.38); text-align: center; text-decoration: none; -webkit-tap-highlight-color: transparent; }
+    .btn:hover { background: var(--blue-dark); transform: translateY(-1px); }
     .btn.locked { background: #b9c6d8; box-shadow: none; cursor: not-allowed; transform: none; }
     .slots { font-size: 12px; color: var(--text-3); text-align: center; margin-top: 10px; }
     .slots b { color: var(--amber); }
+    .no-pressure { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 13px 15px; font-size: 13px; color: var(--text-2); line-height: 1.55; margin-top: 12px; }
+    .no-pressure strong { color: var(--text); }
 
-    .cal-sec { display: none; margin: 18px 0; }
+    .cal-sec { display: none; margin: 10px auto 20px; max-width: 840px; padding: 0 20px; }
     .cal-sec.on { display: block; animation: fadeUp 0.45s ease; }
     @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
     .cal-head { text-align: center; margin: 6px 0 10px; }
-    .cal-head h2 { font-size: 19px; font-weight: 800; margin-bottom: 4px; }
+    .cal-head h2 { font-size: 20px; font-weight: 900; margin-bottom: 4px; }
     .cal-head p { font-size: 13px; color: var(--text-2); }
     .cal-note { font-size: 12px; color: var(--text-3); text-align: center; margin-top: 4px; }
     #ycbmEmbed { min-height: 760px; }
 
-    .no-pressure { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 14px 16px; font-size: 13.5px; color: var(--text-2); line-height: 1.55; margin: 10px 0; }
-    .no-pressure strong { color: var(--text); }
+    .stats-card { background: #fff; border: 1px solid var(--line); border-radius: 18px; box-shadow: var(--shadow); display: grid; grid-template-columns: repeat(3, 1fr); overflow: hidden; max-width: 720px; margin: 0 auto 8px; }
+    .stat { padding: 18px 8px; text-align: center; border-left: 1px solid var(--line); }
+    .stat:first-child { border-left: 0; }
+    .stat-num { font-size: 25px; font-weight: 900; color: var(--blue); letter-spacing: -0.6px; line-height: 1; }
+    .stat-label { font-size: 10.5px; color: var(--text-3); margin-top: 6px; font-weight: 600; }
 
-    .stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin: 20px 0; }
-    .stat { background: #fff; border: 1px solid #e8e4da; border-radius: 12px; padding: 14px 6px; text-align: center; }
-    .stat .stat-num { font-size: 24px; font-weight: 800; color: var(--accent); letter-spacing: -0.5px; line-height: 1; }
-    .stat .stat-label { font-size: 10px; color: var(--text-3); margin-top: 5px; text-transform: uppercase; letter-spacing: 0.3px; font-weight: 600; }
+    section.block { padding: 40px 0 18px; }
+    .sec-kicker { font-size: 12px; font-weight: 800; letter-spacing: 0.8px; text-transform: uppercase; color: var(--blue); text-align: center; margin-bottom: 8px; }
+    .sec-title { font-size: 27px; font-weight: 900; text-align: center; letter-spacing: -0.6px; line-height: 1.18; margin-bottom: 8px; }
+    .sec-sub { font-size: 14px; color: var(--text-2); text-align: center; margin-bottom: 22px; max-width: 620px; margin-left: auto; margin-right: auto; }
 
-    .sec-title { font-size: 20px; font-weight: 800; text-align: center; margin: 26px 0 4px; letter-spacing: -0.3px; }
-    .sec-sub { font-size: 13px; color: var(--text-3); text-align: center; margin-bottom: 14px; }
-    .trans-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
-    .trans-grid img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 10px; background: #fff; }
+    .car-shell { position: relative; }
+    .carousel { display: flex; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 4px 20px 18px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+    .carousel::-webkit-scrollbar { display: none; }
+    .car-item { scroll-snap-align: start; flex-shrink: 0; }
+    .car-nav { position: absolute; top: 50%; transform: translateY(-60%); width: 44px; height: 44px; border-radius: 50%; background: #fff; border: 1px solid var(--line); box-shadow: var(--shadow); color: var(--text); font-size: 18px; font-weight: 800; cursor: pointer; z-index: 3; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
+    .car-nav:hover { background: var(--blue); color: #fff; border-color: var(--blue); }
+    .car-nav.prev { left: 6px; }
+    .car-nav.next { right: 6px; }
+    .swipe-hint { display: none; text-align: center; font-size: 12px; color: var(--text-3); margin-top: 2px; }
 
-    .testis { display: flex; flex-direction: column; gap: 10px; margin: 16px 0; }
-    .testi { background: #fff; border: 1px solid #e8e4da; border-radius: 12px; padding: 14px; }
-    .testi-stars { color: var(--amber); font-size: 11px; letter-spacing: 1px; margin-bottom: 4px; }
-    .testi-quote { font-size: 13.5px; color: var(--text-2); line-height: 1.55; margin-bottom: 6px; }
-    .testi-quote strong { color: var(--text); font-weight: 700; }
-    .testi-name { font-size: 11px; color: var(--text-3); font-weight: 600; }
+    .vid-card { width: 320px; border-radius: 16px; overflow: hidden; background: var(--navy); position: relative; aspect-ratio: 16 / 9; cursor: pointer; box-shadow: var(--shadow); }
+    .vid-card img.thumb { width: 100%; height: 100%; object-fit: cover; opacity: 0.92; transition: transform 0.3s; }
+    .vid-card:hover img.thumb { transform: scale(1.04); }
+    .vid-card .play { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+    .vid-card .play span { width: 54px; height: 54px; border-radius: 50%; background: rgba(255,255,255,0.94); color: var(--blue); display: flex; align-items: center; justify-content: center; font-size: 20px; padding-left: 4px; box-shadow: 0 8px 24px rgba(0,0,0,0.35); }
+    .vid-card iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+    .tf-card { width: 235px; border-radius: 16px; overflow: hidden; box-shadow: var(--shadow); }
+    .tf-card img { width: 100%; aspect-ratio: 1; object-fit: cover; }
 
-    footer { padding: 26px 16px 22px; text-align: center; color: var(--text-3); font-size: 11.5px; line-height: 1.6; }
+    .backtop { text-align: center; padding: 8px 0 40px; }
+    .backtop .btn { max-width: 380px; margin: 0 auto; }
+
+    footer { padding: 30px 16px 26px; text-align: center; color: var(--text-3); font-size: 11.5px; line-height: 1.6; background: #fff; border-top: 1px solid var(--line); }
     footer a { color: var(--text-3); }
-    .disclaimer { max-width: 640px; margin: 0 auto 10px; font-size: 10.5px; color: #aaa; }
+    .disclaimer { max-width: 680px; margin: 0 auto 10px; font-size: 10.5px; color: #aab6c4; }
 
-    @media (max-width: 480px) { .hero h1 { font-size: 21px; } }
+    @media (max-width: 900px) {
+      .vsl-hero h1 { font-size: 24px; }
+      .car-nav { display: none; }
+      .swipe-hint { display: block; }
+      .vid-card { width: 82vw; max-width: 320px; }
+      .tf-card { width: 60vw; max-width: 235px; }
+      .sec-title { font-size: 22px; }
+    }
   </style>
 </head>
 <body>
-  <div class="logo"><img src="/images/logo.png" alt="Fit on Time" /></div>
-
-  <main class="wrap">
-    <section class="hero">
-      <p class="greet" id="greet">Dein Video ist bereit</p>
-      <h1>Warum dein Körper das Fett festhält, <em>obwohl deine Werte in Ordnung sind</em></h1>
-      <p class="sub">Nimm dir kurz Zeit und schau das Video in Ruhe an. Es erklärt dir mehr über deinen Körper als die letzten 10 Diäten zusammen.</p>
-    </section>
-
-    <p class="play-hint"><span>Drück einfach auf Play</span> <span class="arrow">▼</span></p>
-
-    <div class="video-shell" id="videoShell">
-      {VSL_EMBED ? (
-        <iframe src={VSL_EMBED} allow="autoplay; fullscreen" allowfullscreen title="Warum dein Körper das Fett festhält"></iframe>
-      ) : (
-        <div class="video-placeholder">
-          <div class="pp">▶</div>
-          <p><strong>Video wird gerade produziert.</strong><br />Hier erscheint das Video „Warum dein Körper das Fett festhält".</p>
-        </div>
-      )}
+  <div class="topbar">
+    <div class="topbar-in">
+      <img src="/images/logo.png" alt="Fit on Time" />
+      <span class="kk"><span class="dot">●</span> Krankenkassen-anerkanntes Coaching</span>
     </div>
+  </div>
 
+  <header class="vsl-hero">
+    <div class="narrow">
+      <p class="greet" id="greet">Dein Video ist freigeschaltet</p>
+      <h1>Der Ablauf bei Fit on Time: <em>warum es wirkt, wenn nichts mehr gewirkt hat</em></h1>
+      <p class="sub">Nimm dir kurz Zeit und schau das Video in Ruhe an. Es erklärt dir mehr über deinen Körper als die letzten 10 Diäten zusammen.</p>
+      <p class="play-hint"><span>Drück einfach auf Play</span> <span class="arrow">▼</span></p>
+      <div class="video-shell" id="videoShell">
+        {VSL_EMBED ? (
+          <iframe src={VSL_EMBED} allow="autoplay; fullscreen" allowfullscreen title="Der Ablauf bei Fit on Time"></iframe>
+        ) : (
+          <div class="video-placeholder">
+            <div class="pp">▶</div>
+            <p><strong>Video wird gerade produziert.</strong><br />Hier erscheint das Video „Der Ablauf bei Fit on Time".</p>
+          </div>
+        )}
+      </div>
+    </div>
+  </header>
+
+  <div class="narrow">
     <div class="cta-card" id="cta">
       <h2>Bereit für deine kostenlose Stoffwechsel-Analyse?</h2>
       <p class="cc-sub">Im Gespräch (ca. 30 Minuten, Telefon oder Zoom) schaut eine Coachin aus unserem Team gemeinsam mit dir auf deine Situation: Was hält dein Gewicht fest, und wie sieht dein Weg raus aus? Kein Callcenter, kein Skript.</p>
@@ -151,49 +190,63 @@ const VSL_EMBED = (import.meta.env.PUBLIC_FOT_SDA_VSL_URL || import.meta.env.PUB
       <p class="slots">Unser Team führt nur <b>eine begrenzte Zahl an Gesprächen pro Woche</b>.</p>
       <div class="no-pressure"><strong>Unser Versprechen:</strong> Im Gespräch wird dir nichts angedreht. Wenn wir dir helfen können, sagen wir dir wie. Wenn nicht, sagen wir dir das genauso ehrlich.</div>
     </div>
+  </div>
 
-    <div class="cal-sec" id="calSec">
-      <div class="cal-head">
-        <h2>Such dir jetzt deinen Wunschtermin aus</h2>
-        <p>Das Gespräch dauert ca. 30 Minuten und findet per Telefon oder Zoom statt.</p>
-      </div>
-      <div id="ycbmEmbed"></div>
-      <p class="cal-note">Der Kalender kann einen Moment zum Laden brauchen.</p>
+  <div class="cal-sec" id="calSec">
+    <div class="cal-head">
+      <h2>Such dir jetzt deinen Wunschtermin aus</h2>
+      <p>Das Gespräch dauert ca. 30 Minuten und findet per Telefon oder Zoom statt.</p>
     </div>
+    <div id="ycbmEmbed"></div>
+    <p class="cal-note">Der Kalender kann einen Moment zum Laden brauchen.</p>
+  </div>
 
-    <div class="stats">
+  <section class="block">
+    <div class="stats-card">
       <div class="stat"><div class="stat-num">4.000+</div><div class="stat-label">Frauen begleitet</div></div>
-      <div class="stat"><div class="stat-num">83%</div><div class="stat-label">erreichen ihr finales Ziel</div></div>
-      <div class="stat"><div class="stat-num">77%</div><div class="stat-label">halten es nach 12 Mo.</div></div>
+      <div class="stat"><div class="stat-num">97%</div><div class="stat-label">erreichen ihr Ziel</div></div>
+      <div class="stat"><div class="stat-num">94%</div><div class="stat-label">halten es nach 12 Mo.</div></div>
     </div>
+  </section>
 
-    <p class="sec-title">Sie alle dachten: „Bei mir funktioniert nichts mehr"</p>
-    <p class="sec-sub">Bis sie verstanden haben, was ihr Körper wirklich braucht</p>
-    <div class="trans-grid">
-      <img src="/images/transformations/schalter-1.jpg" alt="Transformation" loading="lazy" />
-      <img src="/images/transformations/schalter-2.jpg" alt="Transformation" loading="lazy" />
-      <img src="/images/transformations/schalter-3.jpg" alt="Transformation" loading="lazy" />
-    </div>
-
-    <div class="testis">
-      <div class="testi">
-        <div class="testi-stars">★★★★★</div>
-        <p class="testi-quote">„Ich dachte jahrelang, ich sei einfach undiszipliniert. Dabei war mein Körper im Schutzmodus. <strong>Minus 21 Kilo in 16 Monaten.</strong>"</p>
-        <p class="testi-name">Coco, Teilnehmerin aus dem Fit on Time Coaching</p>
+  <section class="block">
+    <p class="sec-kicker">Echte Stimmen</p>
+    <h2 class="sec-title">Sie alle standen, wo du gerade stehst</h2>
+    <p class="sec-sub">Teilnehmerinnen erzählen vor der Kamera, was sich verändert hat.</p>
+    <div class="car-shell">
+      <button class="car-nav prev" data-car="vidCar" data-dir="-1" aria-label="Zurück">←</button>
+      <div class="carousel" id="vidCar">
+        {VIDEO_IDS.map((id, i) => (
+          <div class="car-item vid-card" data-vid={id}>
+            <img class="thumb" src={`https://i.ytimg.com/vi/${id}/hqdefault.jpg`} alt={`Erfolgsgeschichte ${i + 1}`} loading="lazy" />
+            <div class="play"><span>▶</span></div>
+          </div>
+        ))}
       </div>
-      <div class="testi">
-        <div class="testi-stars">★★★★★</div>
-        <p class="testi-quote">„Keine Verbote, keine Punkte zählen, keine Spritze. Zum ersten Mal fühlt sich abnehmen <strong>nicht wie Kampf</strong> an."</p>
-        <p class="testi-name">Teilnehmerin aus dem Fit on Time Coaching</p>
-      </div>
+      <button class="car-nav next" data-car="vidCar" data-dir="1" aria-label="Weiter">→</button>
     </div>
+    <p class="swipe-hint">← Wischen für mehr →</p>
+  </section>
 
-    <div class="cta-card">
-      <h2>Dein nächster Schritt</h2>
-      <p class="cc-sub">Sichere dir jetzt deine kostenlose Stoffwechsel-Analyse, bevor die Termine der Woche vergeben sind.</p>
-      <a class="btn" href="#cta">Nach oben zur Terminbuchung ↑</a>
+  <section class="block">
+    <p class="sec-kicker">Vorher / Nachher</p>
+    <h2 class="sec-title">Echte Frauen. Echte Ergebnisse.</h2>
+    <p class="sec-sub">Individuelle Ergebnisse. Resultate hängen von persönlichen Voraussetzungen ab.</p>
+    <div class="car-shell">
+      <button class="car-nav prev" data-car="tfCar" data-dir="-1" aria-label="Zurück">←</button>
+      <div class="carousel" id="tfCar">
+        {TF_IMAGES.map((src) => (
+          <div class="car-item tf-card"><img src={src} alt="Vorher-Nachher-Transformation" loading="lazy" /></div>
+        ))}
+      </div>
+      <button class="car-nav next" data-car="tfCar" data-dir="1" aria-label="Weiter">→</button>
     </div>
-  </main>
+    <p class="swipe-hint">← Wischen für mehr →</p>
+  </section>
+
+  <div class="backtop">
+    <a class="btn" href="#cta">Nach oben zur Terminbuchung ↑</a>
+  </div>
 
   <footer>
     <p class="disclaimer">Die gezeigten Ergebnisse sind individuelle Erfahrungen und keine Erfolgsgarantie. Ergebnisse hängen von persönlichen Voraussetzungen, Ausgangslage und Mitarbeit ab. Kein Ersatz für ärztliche Beratung.</p>
@@ -229,7 +282,7 @@ const VSL_EMBED = (import.meta.env.PUBLIC_FOT_SDA_VSL_URL || import.meta.env.PUB
     // Persönliche Begrüssung, wenn Opt-in-Daten vorhanden
     try {
       const lead = JSON.parse(sessionStorage.getItem('fot_sda_lead') || 'null');
-      if (lead && lead.name) document.getElementById('greet').textContent = lead.name + ', dein Video ist bereit';
+      if (lead && lead.name) document.getElementById('greet').textContent = lead.name + ', dein Video ist freigeschaltet';
     } catch (e) {}
 
     // Qualifier-Checkbox schaltet den Termin-Button frei
@@ -266,6 +319,33 @@ const VSL_EMBED = (import.meta.env.PUBLIC_FOT_SDA_VSL_URL || import.meta.env.PUB
       calSec.classList.add('on');
       loadYcbm();
       setTimeout(() => { calSec.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 150);
+    });
+
+    // Carousels: Pfeile (Desktop) + Swipe (nativ per scroll-snap)
+    document.querySelectorAll('.car-nav').forEach((b) => {
+      b.addEventListener('click', () => {
+        const car = document.getElementById(b.dataset.car);
+        const item = car.querySelector('.car-item');
+        const w = item ? item.getBoundingClientRect().width + 14 : 320;
+        car.scrollBy({ left: Number(b.dataset.dir) * w * 2, behavior: 'smooth' });
+      });
+    });
+
+    // Video-Testimonials: Click-to-play
+    document.querySelectorAll('.vid-card').forEach((card) => {
+      card.addEventListener('click', () => {
+        if (card.dataset.played) return;
+        card.dataset.played = '1';
+        const id = card.dataset.vid;
+        track('testimonial_video_play', { detail: id });
+        const f = document.createElement('iframe');
+        f.src = 'https://www.youtube-nocookie.com/embed/' + id + '?autoplay=1&rel=0&modestbranding=1';
+        f.allow = 'autoplay; encrypted-media; fullscreen';
+        f.allowFullscreen = true;
+        f.title = 'Erfolgsgeschichte';
+        card.innerHTML = '';
+        card.appendChild(f);
+      });
     });
   </script>
 </body>

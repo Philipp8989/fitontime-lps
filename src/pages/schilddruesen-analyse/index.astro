@@ -1,7 +1,9 @@
 ---
-// VSL-Call-Funnel "Schilddrüsen-Analyse", Schritt 1: Opt-in mit maximalem Trust-Stack
-// Anlass: Filip 20.08.2026, Vertrauenskomponente fehlt im Funnel. Diese LP stapelt
-// alle verifizierten Trust-Anker: Zahlen-Story, Vorher-Nachher, Zitate, Ablauf-Transparenz.
+// VSL-Call-Funnel "Schilddrüsen-Analyse", Schritt 1: Opt-in mit maximalem Proof
+// Redesign 20.08.2026 (Philipp): eigenes Design in FoT-CI (Inter, #4584EE, Navy-Hero),
+// Desktop-first mit 2-Spalten-Hero, voll responsive, swipebare Video- und Bild-Testimonials.
+// Proof-Quellen: 24 YouTube-Erfolgsgeschichten (fitontime.ch), Vorher-Nachher-Collagen,
+// Beweis-Stack aus voice.md (4.000+ / 97% / 94% / 9 kg / 14 kg / Krankenkassen-anerkannt).
 // Flow: Opt-in (3 Fragen + Formular) → /schilddruesen-analyse/danke (VSL + Termin)
 import CookieBanner from '../../components/CookieBanner.astro';
 
@@ -12,6 +14,12 @@ const HYROS_ID = (import.meta.env.PUBLIC_HYROS_ID || '').trim();
 const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').trim();
 const IMPRESSUM_URL = 'https://fitontime.ch/impressum-datenschutz';
 const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
+
+// Video-Erfolgsgeschichten (YouTube, gleiche Quellen wie fitontime.ch Erfolgsgeschichten-Seite)
+const VIDEO_IDS = ['WNswBZ1uLAg','ylw-p5gOiYs','BMcN-2Ic3AY','V_ysJXCMA8s','UQD6KPnVgvE','Ro-nrECseYk','IwFxPM0saBY','UM5acAVXx4E','14ishTYBYjU'];
+
+// Vorher-Nachher-Collagen (öffentlich gepostetes Material, gebrandet)
+const TF_IMAGES = Array.from({ length: 12 }, (_, i) => `/images/sd-proof/tf-${String(i + 1).padStart(2, '0')}.jpg`);
 ---
 <html lang="de">
 <head>
@@ -22,7 +30,7 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
   <link rel="icon" type="image/png" href="/images/logo.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
 
   <!-- Hyros First-Party-Attribution, lädt ohne Consent (analog zu allen FOT-Funnels) -->
   <script is:inline src="https://t.hyros.com/v1/lst/universal-script?ph=689a71ca1ab3be1cb1caddbe6b7902a4ad2c51a228f4ec9ea7fef3123a705f63"></script>
@@ -30,284 +38,455 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
   <style is:global>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
     :root {
-      --bg: #fafaf8;
-      --surface: #f0ebe0;
-      --accent: #2b7de9;
-      --accent-dark: #1a5bb8;
+      --navy: #0b2244;
+      --navy-2: #123059;
+      --blue: #4584ee;
+      --blue-dark: #2f6ad0;
+      --lightblue: #eef7ff;
+      --blush: #fff1ee;
+      --peach: #f5c3b7;
       --green: #22c55e;
       --amber: #f59e0b;
       --red: #ef4444;
-      --text: #1a1a1a;
-      --text-2: #4a4a4a;
-      --text-3: #888;
+      --text: #10203a;
+      --text-2: #44546e;
+      --text-3: #8a97a8;
+      --line: #e3eaf4;
       --r: 14px;
-      --font: 'DM Sans', system-ui, -apple-system, sans-serif;
+      --font: 'Inter', system-ui, -apple-system, sans-serif;
+      --shadow: 0 10px 34px rgba(11,34,68,0.10);
     }
     html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
-    body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.5; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
-    .wrap { max-width: 680px; margin: 0 auto; padding: 0 20px; }
+    body { font-family: var(--font); background: #fff; color: var(--text); line-height: 1.5; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+    img { max-width: 100%; display: block; }
+    .wrap { max-width: 1120px; margin: 0 auto; padding: 0 20px; }
 
-    .logo { text-align: center; padding: 16px 0 8px; }
-    .logo img { height: 40px; }
+    /* ===== Topbar ===== */
+    .topbar { background: #fff; border-bottom: 1px solid var(--line); }
+    .topbar-in { max-width: 1120px; margin: 0 auto; padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .topbar img { height: 34px; }
+    .topbar .kk { font-size: 12px; font-weight: 700; color: var(--text-2); display: inline-flex; align-items: center; gap: 7px; }
+    .topbar .kk .dot { color: var(--green); }
 
-    .eyebrow { font-size: 13px; text-transform: uppercase; letter-spacing: 1px; color: var(--red); font-weight: 700; text-align: center; margin: 10px 0 10px; }
+    /* ===== Hero (Navy) ===== */
+    .hero { background: linear-gradient(160deg, var(--navy) 0%, var(--navy-2) 58%, #1a3f74 100%); color: #fff; padding: 44px 0 84px; position: relative; }
+    .hero-grid { display: grid; grid-template-columns: 1.08fr 0.92fr; gap: 44px; align-items: start; }
+    .eyebrow { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.10); border: 1px solid rgba(255,255,255,0.18); border-radius: 999px; padding: 7px 14px; font-size: 12.5px; font-weight: 700; letter-spacing: 0.4px; text-transform: uppercase; color: var(--peach); margin-bottom: 18px; }
+    .hero h1 { font-size: 42px; font-weight: 900; line-height: 1.12; letter-spacing: -1px; margin-bottom: 16px; }
+    .hero h1 em { font-style: normal; color: #8ab5ff; }
+    .hero .sub { font-size: 17px; color: #c7d6ee; line-height: 1.6; margin-bottom: 22px; max-width: 560px; }
+    .hero .sub strong { color: #fff; font-weight: 700; }
 
-    .hero { text-align: center; padding: 4px 0 8px; }
-    .hero h1 { font-size: 27px; font-weight: 800; line-height: 1.22; letter-spacing: -0.5px; margin-bottom: 14px; }
-    .hero h1 em { font-style: normal; color: var(--accent); }
-    .hero .sub { font-size: 16px; color: var(--text-2); margin-bottom: 6px; line-height: 1.5; }
-    .hero .sub strong { color: var(--text); font-weight: 700; }
-
-    .proof-bar { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 12px 0 4px; flex-wrap: wrap; }
+    .proof-bar { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 18px; }
     .proof-avatars { display: flex; }
-    .proof-avatars img { width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--bg); margin-left: -10px; object-fit: cover; object-position: center 30%; }
+    .proof-avatars img { width: 38px; height: 38px; border-radius: 50%; border: 2px solid var(--navy); margin-left: -11px; object-fit: cover; object-position: center 28%; }
     .proof-avatars img:first-child { margin-left: 0; }
-    .proof-info { font-size: 12px; color: var(--text-3); line-height: 1.3; text-align: left; }
-    .proof-info b { color: var(--text); }
-    .proof-stars { color: var(--amber); font-size: 12px; letter-spacing: 1px; }
+    .proof-info { font-size: 13px; color: #c7d6ee; line-height: 1.35; }
+    .proof-info b { color: #fff; }
+    .proof-stars { color: var(--amber); font-size: 13px; letter-spacing: 1.5px; }
 
-    /* Trust-Badges direkt unter dem Hero */
-    .badges { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; margin: 10px 0 4px; }
-    .badge { background: #fff; border: 1px solid #e8e4da; border-radius: 999px; padding: 7px 13px; font-size: 11.5px; font-weight: 700; color: var(--text-2); display: inline-flex; align-items: center; gap: 6px; }
-    .badge .dot { color: var(--green); }
+    .hero-badges { display: flex; gap: 8px; flex-wrap: wrap; }
+    .hbadge { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.16); border-radius: 999px; padding: 8px 14px; font-size: 12.5px; font-weight: 600; color: #dfe9f8; }
 
-    /* Mikro-Gate: 3 Qualifizierungsfragen vor dem Formular (Muster ab-40) */
-    .gate { background: #fff; border: 1px solid #e8e4da; border-radius: var(--r); padding: 22px 20px; margin: 18px 0 10px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
-    .gate-prog { font-size: 11px; color: var(--text-3); text-align: center; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700; margin-bottom: 12px; }
-    .gate-q { font-size: 17px; font-weight: 800; text-align: center; margin-bottom: 4px; line-height: 1.3; }
-    .gate-hint { font-size: 12.5px; color: var(--text-3); text-align: center; margin-bottom: 16px; }
+    .hero-cta-mobile { display: none; }
+
+    /* ===== Gate-Card (im Hero rechts, mobil darunter) ===== */
+    .gate-card { background: #fff; color: var(--text); border-radius: 18px; box-shadow: 0 24px 70px rgba(4,12,28,0.45); padding: 26px 24px; }
+    .gc-kicker { font-size: 11.5px; font-weight: 800; letter-spacing: 0.8px; text-transform: uppercase; color: var(--blue); margin-bottom: 6px; }
+    .gc-title { font-size: 21px; font-weight: 800; line-height: 1.25; letter-spacing: -0.3px; margin-bottom: 8px; }
+    .gc-why { background: var(--lightblue); border-radius: 10px; padding: 11px 13px; font-size: 13px; color: var(--text-2); line-height: 1.5; margin-bottom: 16px; }
+    .gc-why strong { color: var(--text); }
+
+    .gate-prog { font-size: 11px; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+    .gate-prog .bar { flex: 1; height: 5px; background: var(--line); border-radius: 999px; overflow: hidden; }
+    .gate-prog .fill { height: 100%; width: 33%; background: var(--blue); border-radius: 999px; transition: width 0.25s; }
+    .gate-q { font-size: 16.5px; font-weight: 800; margin-bottom: 3px; line-height: 1.3; }
+    .gate-hint { font-size: 12.5px; color: var(--text-3); margin-bottom: 13px; }
     .gate-step { display: none; }
     .gate-step.on { display: block; }
-    .gate-opts { display: flex; flex-direction: column; gap: 9px; }
-    .gate-opt { background: #fff; border: 2px solid #e8e4da; border-radius: 12px; padding: 15px 16px; font: inherit; font-size: 15.5px; font-weight: 600; color: var(--text); text-align: left; cursor: pointer; transition: all 0.15s; -webkit-tap-highlight-color: transparent; }
-    .gate-opt:hover { border-color: var(--accent); transform: translateY(-1px); }
-    .gate-opt.selected { border-color: var(--accent); background: #f0f6ff; }
-    .gate-back { display: block; margin: 14px auto 0; background: none; border: none; font: inherit; font-size: 13px; color: var(--text-3); cursor: pointer; }
+    .gate-opts { display: flex; flex-direction: column; gap: 8px; }
+    .gate-opt { background: #fff; border: 2px solid var(--line); border-radius: 12px; padding: 13px 15px; font: inherit; font-size: 14.5px; font-weight: 600; color: var(--text); text-align: left; cursor: pointer; transition: all 0.15s; -webkit-tap-highlight-color: transparent; }
+    .gate-opt:hover { border-color: var(--blue); transform: translateY(-1px); }
+    .gate-opt.selected { border-color: var(--blue); background: var(--lightblue); }
+    .gate-back { display: block; margin: 12px auto 0; background: none; border: none; font: inherit; font-size: 12.5px; color: var(--text-3); cursor: pointer; }
 
-    .optin-card { display: none; background: #fff; border: 1px solid #e8e4da; border-radius: var(--r); padding: 24px 20px; margin: 18px 0 10px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
-    .optin-card.on { display: block; }
-    .optin-card h2 { font-size: 17px; font-weight: 800; text-align: center; margin-bottom: 4px; }
-    .optin-card .oc-sub { font-size: 13px; color: var(--text-3); text-align: center; margin-bottom: 16px; }
-    form.optin { display: flex; flex-direction: column; gap: 12px; }
-    form.optin input[type=text], form.optin input[type=email], form.optin input[type=tel] { width: 100%; padding: 15px 18px; font: inherit; font-size: 16px; border: 2px solid #e8e4da; border-radius: 12px; background: #fff; color: var(--text); }
-    form.optin input:focus { outline: none; border-color: var(--accent); }
-    .btn { display: block; width: 100%; background: var(--accent); color: #fff; border: none; border-radius: 999px; padding: 17px 28px; font: inherit; font-size: 17px; font-weight: 700; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 14px rgba(43,125,233,0.3); -webkit-tap-highlight-color: transparent; }
-    .btn:hover { background: var(--accent-dark); transform: translateY(-1px); }
+    .optin-part { display: none; }
+    .optin-part.on { display: block; }
+    .optin-part h2 { font-size: 17px; font-weight: 800; margin-bottom: 4px; }
+    .optin-part .oc-sub { font-size: 12.5px; color: var(--text-3); margin-bottom: 13px; }
+    form.optin { display: flex; flex-direction: column; gap: 10px; }
+    form.optin input { width: 100%; padding: 14px 16px; font: inherit; font-size: 16px; border: 2px solid var(--line); border-radius: 12px; background: #fff; color: var(--text); }
+    form.optin input:focus { outline: none; border-color: var(--blue); }
+    .btn { display: block; width: 100%; background: var(--blue); color: #fff; border: none; border-radius: 999px; padding: 16px 26px; font: inherit; font-size: 16.5px; font-weight: 800; cursor: pointer; transition: all 0.2s; box-shadow: 0 8px 22px rgba(69,132,238,0.38); text-align: center; text-decoration: none; -webkit-tap-highlight-color: transparent; }
+    .btn:hover { background: var(--blue-dark); transform: translateY(-1px); }
     .btn:active { transform: scale(0.98); }
     .btn[disabled] { opacity: 0.6; cursor: wait; transform: none; }
-    .privacy-note { font-size: 11px; color: var(--text-3); text-align: center; line-height: 1.45; }
+    .privacy-note { font-size: 10.5px; color: var(--text-3); text-align: center; line-height: 1.45; }
     .privacy-note a { color: var(--text-3); }
     .err { display: none; font-size: 13px; color: var(--red); text-align: center; font-weight: 600; }
     .err.show { display: block; }
+    .gc-video-points { margin-top: 14px; border-top: 1px solid var(--line); padding-top: 13px; display: flex; flex-direction: column; gap: 8px; }
+    .gc-point { display: flex; gap: 9px; font-size: 12.5px; color: var(--text-2); line-height: 1.45; }
+    .gc-point .ic { color: var(--green); font-weight: 800; flex-shrink: 0; }
+    .gc-point strong { color: var(--text); }
 
-    .bullets { margin: 22px 0 6px; display: flex; flex-direction: column; gap: 10px; }
-    .bullet { background: #fff; border: 1px solid #e8e4da; border-radius: 12px; padding: 14px 16px; display: flex; gap: 10px; align-items: flex-start; font-size: 14.5px; color: var(--text-2); line-height: 1.5; }
-    .bullet .ic { color: var(--green); font-weight: 800; flex-shrink: 0; }
-    .bullet strong { color: var(--text); font-weight: 700; }
+    /* ===== Stats-Band ===== */
+    .stats-band { background: #fff; margin-top: -46px; position: relative; z-index: 2; }
+    .stats-in { max-width: 1120px; margin: 0 auto; padding: 0 20px; }
+    .stats-card { background: #fff; border: 1px solid var(--line); border-radius: 18px; box-shadow: var(--shadow); display: grid; grid-template-columns: repeat(5, 1fr); overflow: hidden; }
+    .stat { padding: 20px 10px; text-align: center; border-left: 1px solid var(--line); }
+    .stat:first-child { border-left: 0; }
+    .stat-num { font-size: 27px; font-weight: 900; color: var(--blue); letter-spacing: -0.7px; line-height: 1; }
+    .stat-label { font-size: 11px; color: var(--text-3); margin-top: 6px; font-weight: 600; line-height: 1.3; }
 
-    .sec-title { font-size: 20px; font-weight: 800; text-align: center; margin: 28px 0 4px; letter-spacing: -0.3px; }
-    .sec-sub { font-size: 13px; color: var(--text-3); text-align: center; margin-bottom: 14px; }
+    /* ===== Sections ===== */
+    section.block { padding: 56px 0 30px; }
+    .sec-kicker { font-size: 12px; font-weight: 800; letter-spacing: 0.8px; text-transform: uppercase; color: var(--blue); text-align: center; margin-bottom: 8px; }
+    .sec-title { font-size: 32px; font-weight: 900; text-align: center; letter-spacing: -0.7px; line-height: 1.15; margin-bottom: 8px; }
+    .sec-sub { font-size: 15px; color: var(--text-2); text-align: center; margin-bottom: 26px; max-width: 620px; margin-left: auto; margin-right: auto; }
 
-    .trans-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
-    .trans-grid img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 10px; background: #fff; }
-    .trans-cap { font-size: 11px; color: var(--text-3); text-align: center; margin-top: 8px; }
+    /* ===== Carousel (Swipe) ===== */
+    .car-shell { position: relative; }
+    .carousel { display: flex; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 4px 20px 18px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+    .carousel::-webkit-scrollbar { display: none; }
+    .car-item { scroll-snap-align: start; flex-shrink: 0; }
+    .car-nav { position: absolute; top: 50%; transform: translateY(-60%); width: 44px; height: 44px; border-radius: 50%; background: #fff; border: 1px solid var(--line); box-shadow: var(--shadow); color: var(--text); font-size: 18px; font-weight: 800; cursor: pointer; z-index: 3; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
+    .car-nav:hover { background: var(--blue); color: #fff; border-color: var(--blue); }
+    .car-nav.prev { left: 6px; }
+    .car-nav.next { right: 6px; }
+    .swipe-hint { display: none; text-align: center; font-size: 12px; color: var(--text-3); margin-top: 2px; }
 
-    /* Erfolgsgeschichte (Coco, aus dem freigegebenen VSL-Deck) */
-    .story { background: #fff; border: 1px solid #e8e4da; border-radius: var(--r); padding: 20px; margin: 16px 0; box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
-    .story .story-kicker { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.6px; color: var(--accent); margin-bottom: 6px; }
-    .story .story-quote { font-size: 15px; color: var(--text); line-height: 1.55; font-weight: 500; margin-bottom: 8px; }
-    .story .story-meta { font-size: 12px; color: var(--text-3); }
+    /* Video-Cards */
+    .vid-card { width: 340px; border-radius: 16px; overflow: hidden; background: var(--navy); position: relative; aspect-ratio: 16 / 9; cursor: pointer; box-shadow: var(--shadow); }
+    .vid-card img.thumb { width: 100%; height: 100%; object-fit: cover; opacity: 0.92; transition: transform 0.3s, opacity 0.2s; }
+    .vid-card:hover img.thumb { transform: scale(1.04); opacity: 1; }
+    .vid-card .play { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+    .vid-card .play span { width: 58px; height: 58px; border-radius: 50%; background: rgba(255,255,255,0.94); color: var(--blue); display: flex; align-items: center; justify-content: center; font-size: 21px; padding-left: 4px; box-shadow: 0 8px 24px rgba(0,0,0,0.35); transition: transform 0.15s; }
+    .vid-card:hover .play span { transform: scale(1.08); }
+    .vid-card iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+    .vid-card .tag { position: absolute; left: 10px; bottom: 10px; background: rgba(11,34,68,0.82); color: #fff; font-size: 11px; font-weight: 700; border-radius: 999px; padding: 5px 11px; }
 
-    .testis { display: flex; flex-direction: column; gap: 10px; margin: 14px 0; }
-    .testi { background: #fff; border: 1px solid #e8e4da; border-radius: 12px; padding: 14px; }
-    .testi-stars { color: var(--amber); font-size: 11px; letter-spacing: 1px; margin-bottom: 4px; }
-    .testi-quote { font-size: 13.5px; color: var(--text-2); line-height: 1.55; margin-bottom: 6px; }
-    .testi-quote strong { color: var(--text); font-weight: 700; }
-    .testi-name { font-size: 11px; color: var(--text-3); font-weight: 600; }
+    /* Vorher/Nachher-Cards */
+    .tf-card { width: 265px; border-radius: 16px; overflow: hidden; box-shadow: var(--shadow); }
+    .tf-card img { width: 100%; aspect-ratio: 1; object-fit: cover; }
 
-    .stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin: 18px 0; }
-    .stat { background: #fff; border: 1px solid #e8e4da; border-radius: 12px; padding: 14px 6px; text-align: center; }
-    .stat .stat-num { font-size: 24px; font-weight: 800; color: var(--accent); letter-spacing: -0.5px; line-height: 1; }
-    .stat .stat-label { font-size: 10px; color: var(--text-3); margin-top: 5px; text-transform: uppercase; letter-spacing: 0.3px; font-weight: 600; }
+    /* ===== Named Testimonials ===== */
+    .named { background: var(--lightblue); }
+    .named-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; padding-bottom: 26px; }
+    .named-card { background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 18px; box-shadow: var(--shadow); }
+    .named-card img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 12px; margin-bottom: 12px; }
+    .named-stars { color: var(--amber); font-size: 12px; letter-spacing: 1.5px; margin-bottom: 6px; }
+    .named-quote { font-size: 14.5px; color: var(--text); font-weight: 600; line-height: 1.5; margin-bottom: 8px; }
+    .named-meta { font-size: 12px; color: var(--text-3); font-weight: 600; }
 
-    /* Ablauf-Transparenz: nimmt die Angst vor dem "Verkaufsgespräch" */
-    .steps { display: flex; flex-direction: column; gap: 10px; margin: 14px 0; }
-    .step-card { background: #fff; border: 1px solid #e8e4da; border-radius: 12px; padding: 14px 16px; display: flex; gap: 12px; align-items: flex-start; }
-    .step-num { width: 26px; height: 26px; border-radius: 50%; background: var(--accent); color: #fff; font-size: 13px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
-    .step-card p { font-size: 14px; color: var(--text-2); line-height: 1.5; }
-    .step-card strong { color: var(--text); }
-    .no-pressure { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 14px 16px; font-size: 13.5px; color: var(--text-2); line-height: 1.55; margin: 10px 0; }
+    /* ===== Video-Teaser (Was dich im Video erwartet) ===== */
+    .teaser { background: var(--navy); color: #fff; border-radius: 22px; padding: 40px 36px; display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 34px; align-items: center; }
+    .teaser h2 { font-size: 27px; font-weight: 900; letter-spacing: -0.5px; line-height: 1.2; margin-bottom: 12px; }
+    .teaser h2 em { font-style: normal; color: #8ab5ff; }
+    .teaser p.tz { font-size: 14.5px; color: #c7d6ee; line-height: 1.6; margin-bottom: 18px; }
+    .teaser .btn { max-width: 340px; }
+    .teaser-list { display: flex; flex-direction: column; gap: 12px; }
+    .tl-item { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.14); border-radius: 12px; padding: 13px 15px; display: flex; gap: 11px; font-size: 14px; color: #dfe9f8; line-height: 1.5; }
+    .tl-item .num { width: 24px; height: 24px; border-radius: 50%; background: var(--blue); color: #fff; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+    .tl-item strong { color: #fff; }
+
+    /* ===== Ablauf + Versprechen ===== */
+    .steps-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 14px; }
+    .step-card { background: #fff; border: 1px solid var(--line); border-radius: 16px; padding: 20px; box-shadow: var(--shadow); }
+    .step-num { width: 30px; height: 30px; border-radius: 50%; background: var(--blue); color: #fff; font-size: 14px; font-weight: 800; display: flex; align-items: center; justify-content: center; margin-bottom: 10px; }
+    .step-card h3 { font-size: 15.5px; font-weight: 800; margin-bottom: 6px; }
+    .step-card p { font-size: 13.5px; color: var(--text-2); line-height: 1.55; }
+    .no-pressure { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 14px; padding: 16px 18px; font-size: 14px; color: var(--text-2); line-height: 1.6; max-width: 760px; margin: 0 auto; }
     .no-pressure strong { color: var(--text); }
 
-    /* FAQ */
-    .faq { margin: 14px 0 6px; display: flex; flex-direction: column; gap: 8px; }
-    .faq details { background: #fff; border: 1px solid #e8e4da; border-radius: 12px; padding: 0; }
-    .faq summary { list-style: none; cursor: pointer; padding: 14px 16px; font-size: 14px; font-weight: 700; display: flex; justify-content: space-between; align-items: center; -webkit-tap-highlight-color: transparent; }
-    .faq summary::after { content: '+'; font-size: 18px; color: var(--text-3); font-weight: 400; }
+    /* ===== FAQ ===== */
+    .faq { max-width: 720px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px; }
+    .faq details { background: #fff; border: 1px solid var(--line); border-radius: 12px; }
+    .faq summary { list-style: none; cursor: pointer; padding: 15px 17px; font-size: 14.5px; font-weight: 700; display: flex; justify-content: space-between; align-items: center; gap: 10px; -webkit-tap-highlight-color: transparent; }
+    .faq summary::after { content: '+'; font-size: 19px; color: var(--text-3); font-weight: 400; }
     .faq details[open] summary::after { content: '-'; }
-    .faq .faq-a { padding: 0 16px 14px; font-size: 13.5px; color: var(--text-2); line-height: 1.55; }
+    .faq .faq-a { padding: 0 17px 15px; font-size: 13.5px; color: var(--text-2); line-height: 1.6; }
 
-    .cta-repeat { text-align: center; margin: 12px 0 26px; }
-    .cta-repeat a { display: inline-block; background: var(--accent); color: #fff; text-decoration: none; border-radius: 999px; padding: 16px 34px; font-size: 16px; font-weight: 700; box-shadow: 0 4px 14px rgba(43,125,233,0.3); }
+    /* ===== Final CTA ===== */
+    .final { background: var(--blush); }
+    .final-in { text-align: center; padding-bottom: 40px; }
+    .final .btn { max-width: 380px; margin: 0 auto; }
+    .final-note { font-size: 12.5px; color: var(--text-3); margin-top: 12px; }
 
-    footer { padding: 26px 16px 22px; text-align: center; color: var(--text-3); font-size: 11.5px; line-height: 1.6; }
+    footer { padding: 30px 16px 26px; text-align: center; color: var(--text-3); font-size: 11.5px; line-height: 1.6; background: #fff; border-top: 1px solid var(--line); }
     footer a { color: var(--text-3); }
-    .disclaimer { max-width: 640px; margin: 0 auto 10px; font-size: 10.5px; color: #aaa; }
+    .disclaimer { max-width: 680px; margin: 0 auto 10px; font-size: 10.5px; color: #aab6c4; }
 
-    @media (max-width: 480px) {
-      .hero h1 { font-size: 23px; }
+    /* ===== Responsive ===== */
+    @media (max-width: 900px) {
+      .hero { padding: 30px 0 76px; }
+      .hero-grid { grid-template-columns: 1fr; gap: 26px; }
+      .hero h1 { font-size: 30px; }
+      .stats-card { grid-template-columns: repeat(3, 1fr); }
+      .stat { border-left: 0; border-top: 1px solid var(--line); }
+      .stat:nth-child(-n+3) { border-top: 0; }
+      .stat:nth-child(3n+2), .stat:nth-child(3n) { border-left: 1px solid var(--line); }
+      .named-grid { grid-template-columns: 1fr; }
+      .teaser { grid-template-columns: 1fr; padding: 28px 22px; }
+      .steps-grid { grid-template-columns: 1fr; }
+      .sec-title { font-size: 25px; }
+      .car-nav { display: none; }
+      .swipe-hint { display: block; }
+      .vid-card { width: 82vw; max-width: 340px; }
+      .tf-card { width: 62vw; max-width: 265px; }
     }
   </style>
 </head>
 <body>
-  <div class="logo"><img src="/images/logo.png" alt="Fit on Time" /></div>
-
-  <main class="wrap">
-    <p class="eyebrow">Für Frauen, die alles für andere tun, nur nichts für sich</p>
-
-    <section class="hero">
-      <h1>Deine Werte sind in Ordnung, aber dein Gewicht nicht? Schau dir an, wie <em>über 4.000 Frauen</em> in der Schweiz wieder abgenommen haben. Ohne noch eine Diät.</h1>
-      <p class="sub">Beantworte <strong>3 kurze Fragen</strong> und du siehst direkt das kostenlose Video von unseren <strong>Ernährungs- und Fitness-Coaches</strong>. Darin erfährst du, warum dein Körper das Fett festhält, und was bei Frauen wie dir wirklich funktioniert hat.</p>
-    </section>
-
-    <div class="proof-bar">
-      <div class="proof-avatars">
-        <img src="/images/transformations/t1.jpg" alt="" /><img src="/images/transformations/t2.jpg" alt="" /><img src="/images/transformations/t3.jpg" alt="" /><img src="/images/transformations/t4.jpg" alt="" />
-      </div>
-      <div class="proof-info"><span class="proof-stars">★★★★★</span><br /><b>4.000+ Frauen</b> in der Schweiz begleitet</div>
+  <div class="topbar">
+    <div class="topbar-in">
+      <img src="/images/logo.png" alt="Fit on Time" />
+      <span class="kk"><span class="dot">●</span> Krankenkassen-anerkanntes Coaching</span>
     </div>
+  </div>
 
-    <div class="badges">
-      <span class="badge"><span class="dot">●</span> Krankenkassen-anerkanntes Coaching</span>
-      <span class="badge"><span class="dot">●</span> 45'000+ Analysen ausgewertet</span>
-      <span class="badge"><span class="dot">●</span> Echte Coaches, kein Programm</span>
-    </div>
+  <!-- ===== Hero mit Gate-Card ===== -->
+  <header class="hero">
+    <div class="wrap">
+      <div class="hero-grid">
+        <div>
+          <span class="eyebrow">Für Frauen, die alles für andere tun, nur nichts für sich</span>
+          <h1>Deine Werte sind in Ordnung, aber dein Gewicht nicht? <em>Über 4.000 Frauen</em> kennen das. Heute nicht mehr.</h1>
+          <p class="sub">Im kostenlosen Video zeigen wir dir <strong>den genauen Ablauf bei Fit on Time</strong>: warum dein Körper das Fett festhält, und warum unsere Methode bei Frauen funktioniert, bei denen vorher <strong>nichts mehr funktioniert</strong> hat.</p>
+          <div class="proof-bar">
+            <div class="proof-avatars">
+              <img src="/images/transformations/t1.jpg" alt="" /><img src="/images/transformations/t2.jpg" alt="" /><img src="/images/transformations/t3.jpg" alt="" /><img src="/images/transformations/t4.jpg" alt="" />
+            </div>
+            <div class="proof-info"><span class="proof-stars">★★★★★</span><br /><b>4.000+ Frauen</b> in der Schweiz begleitet</div>
+          </div>
+          <div class="hero-badges">
+            <span class="hbadge">Ø 9 kg nach 6 Monaten</span>
+            <span class="hbadge">97% erreichen ihr Ziel</span>
+            <span class="hbadge">94% halten es nach 12 Monaten</span>
+          </div>
+        </div>
 
-    <div class="gate" id="gate">
-      <p class="gate-prog" id="gateProg">Frage 1 von 3</p>
+        <div class="gate-card" id="gate">
+          <p class="gc-kicker">Kostenloses Video</p>
+          <p class="gc-title">Der Ablauf hinter über 4.000 Transformationen</p>
+          <p class="gc-why"><strong>Warum 3 Fragen?</strong> Deine Antworten gehen an unser Coaching-Team. So wissen wir, wo du stehst, bevor du das Video siehst, und können dir danach eine ehrliche Einschätzung geben statt einer Standard-Antwort.</p>
 
-      <div class="gate-step on" data-g="1">
-        <p class="gate-q">Kommt dir das bekannt vor?</p>
-        <p class="gate-hint">Wähl aus, was am ehesten auf dich zutrifft.</p>
-        <div class="gate-opts">
-          <button class="gate-opt" onclick="gnxt(1,this,'werte-ok')">Beim Arzt heisst es, alles in Ordnung. Aber ich nehme trotzdem nicht ab</button>
-          <button class="gate-opt" onclick="gnxt(1,this,'muede-kalt')">Ich bin ständig müde und mir ist oft kalt</button>
-          <button class="gate-opt" onclick="gnxt(1,this,'wenig-essen')">Ich esse wenig und die Waage bewegt sich trotzdem nicht</button>
-          <button class="gate-opt" onclick="gnxt(1,this,'alles')">Ehrlich gesagt alles davon</button>
+          <div id="gateSteps">
+            <p class="gate-prog"><span id="gateProgTxt">Frage 1 von 3</span><span class="bar"><span class="fill" id="gateFill"></span></span></p>
+
+            <div class="gate-step on" data-g="1">
+              <p class="gate-q">Kommt dir das bekannt vor?</p>
+              <p class="gate-hint">Wähl aus, was am ehesten auf dich zutrifft.</p>
+              <div class="gate-opts">
+                <button class="gate-opt" onclick="gnxt(1,this,'werte-ok')">Beim Arzt heisst es, alles in Ordnung. Aber ich nehme trotzdem nicht ab</button>
+                <button class="gate-opt" onclick="gnxt(1,this,'muede-kalt')">Ich bin ständig müde und mir ist oft kalt</button>
+                <button class="gate-opt" onclick="gnxt(1,this,'wenig-essen')">Ich esse wenig und die Waage bewegt sich trotzdem nicht</button>
+                <button class="gate-opt" onclick="gnxt(1,this,'alles')">Ehrlich gesagt alles davon</button>
+              </div>
+            </div>
+
+            <div class="gate-step" data-g="2">
+              <p class="gate-q">Was hast du bisher schon probiert?</p>
+              <p class="gate-hint">Damit wir dir nicht erzählen, was du längst hinter dir hast.</p>
+              <div class="gate-opts">
+                <button class="gate-opt" onclick="gnxt(2,this,'diaeten')">Diäten und Kalorienzählen</button>
+                <button class="gate-opt" onclick="gnxt(2,this,'sport')">Sport und mehr Bewegung</button>
+                <button class="gate-opt" onclick="gnxt(2,this,'arzt')">Ich war deswegen schon beim Arzt</button>
+                <button class="gate-opt" onclick="gnxt(2,this,'alles')">Ehrlich gesagt alles davon</button>
+              </div>
+              <button class="gate-back" onclick="gback(1)">&larr; Zurück</button>
+            </div>
+
+            <div class="gate-step" data-g="3">
+              <p class="gate-q">Wie schnell willst du etwas ändern?</p>
+              <p class="gate-hint">Letzte Frage, danach schalten wir dein Video frei.</p>
+              <div class="gate-opts">
+                <button class="gate-opt" onclick="gnxt(3,this,'sofort')">Sofort, ich habe genug gewartet</button>
+                <button class="gate-opt" onclick="gnxt(3,this,'wochen')">In den nächsten Wochen</button>
+                <button class="gate-opt" onclick="gnxt(3,this,'info')">Ich will mich erst informieren</button>
+              </div>
+              <button class="gate-back" onclick="gback(2)">&larr; Zurück</button>
+            </div>
+          </div>
+
+          <div class="optin-part" id="optinCard">
+            <h2>Dein Video ist freigeschaltet</h2>
+            <p class="oc-sub">Sag uns noch, wer du bist. Du wirst direkt weitergeleitet.</p>
+            <form class="optin" id="optinForm" novalidate>
+              <input type="text" name="fname" placeholder="Dein Vorname" autocomplete="given-name" required />
+              <input type="email" name="email" placeholder="Deine E-Mail-Adresse" autocomplete="email" required />
+              <input type="tel" name="phone" placeholder="Deine Handynummer" autocomplete="tel" required />
+              <button class="btn" id="submitBtn" type="submit">Ja, zeig mir das Video →</button>
+              <p class="err" id="formErr">Bitte Vorname, eine gültige E-Mail-Adresse und deine Handynummer eintragen.</p>
+              <p class="privacy-note">100% kostenlos. Kein Spam. Mit dem Absenden akzeptierst du die <a href={DATENSCHUTZ_URL} target="_blank" rel="noopener">Datenschutzerklärung</a>.</p>
+            </form>
+          </div>
+
+          <div class="gc-video-points">
+            <div class="gc-point"><span class="ic">✓</span><span><strong>Der genaue Ablauf bei Fit on Time,</strong> Schritt für Schritt erklärt</span></div>
+            <div class="gc-point"><span class="ic">✓</span><span><strong>Warum es so stark wirkt,</strong> auch wenn bei dir bisher nichts funktioniert hat</span></div>
+            <div class="gc-point"><span class="ic">✓</span><span><strong>Woran du erkennst,</strong> ob dein Körper im Sparmodus steckt</span></div>
+          </div>
         </div>
       </div>
+    </div>
+  </header>
 
-      <div class="gate-step" data-g="2">
-        <p class="gate-q">Was hast du bisher schon probiert?</p>
-        <p class="gate-hint">Damit wir dir nicht erzählen, was du längst hinter dir hast.</p>
-        <div class="gate-opts">
-          <button class="gate-opt" onclick="gnxt(2,this,'diaeten')">Diäten und Kalorienzählen</button>
-          <button class="gate-opt" onclick="gnxt(2,this,'sport')">Sport und mehr Bewegung</button>
-          <button class="gate-opt" onclick="gnxt(2,this,'arzt')">Ich war deswegen schon beim Arzt</button>
-          <button class="gate-opt" onclick="gnxt(2,this,'alles')">Ehrlich gesagt alles davon</button>
+  <!-- ===== Stats-Band ===== -->
+  <div class="stats-band">
+    <div class="stats-in">
+      <div class="stats-card">
+        <div class="stat"><div class="stat-num">4.000+</div><div class="stat-label">Frauen begleitet</div></div>
+        <div class="stat"><div class="stat-num">97%</div><div class="stat-label">erreichen ihr Ziel</div></div>
+        <div class="stat"><div class="stat-num">94%</div><div class="stat-label">halten es nach 12 Monaten</div></div>
+        <div class="stat"><div class="stat-num">Ø 14 kg</div><div class="stat-label">nach 12 Monaten</div></div>
+        <div class="stat"><div class="stat-num">45'000+</div><div class="stat-label">Analysen ausgewertet</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== Video-Testimonials (Swipe) ===== -->
+  <section class="block">
+    <p class="sec-kicker">Echte Stimmen</p>
+    <h2 class="sec-title">Hör es nicht von uns. Hör es von ihnen.</h2>
+    <p class="sec-sub">Teilnehmerinnen erzählen vor der Kamera, wo sie standen und was sich verändert hat. Ungeschnitten ehrlich.</p>
+    <div class="car-shell">
+      <button class="car-nav prev" data-car="vidCar" data-dir="-1" aria-label="Zurück">←</button>
+      <div class="carousel" id="vidCar">
+        {VIDEO_IDS.map((id, i) => (
+          <div class="car-item vid-card" data-vid={id}>
+            <img class="thumb" src={`https://i.ytimg.com/vi/${id}/hqdefault.jpg`} alt={`Erfolgsgeschichte ${i + 1}`} loading="lazy" />
+            <div class="play"><span>▶</span></div>
+            <span class="tag">Erfolgsgeschichte</span>
+          </div>
+        ))}
+      </div>
+      <button class="car-nav next" data-car="vidCar" data-dir="1" aria-label="Weiter">→</button>
+    </div>
+    <p class="swipe-hint">← Wischen für mehr →</p>
+  </section>
+
+  <!-- ===== Vorher/Nachher (Swipe) ===== -->
+  <section class="block">
+    <p class="sec-kicker">Vorher / Nachher</p>
+    <h2 class="sec-title">Echte Frauen. Echte Ergebnisse.</h2>
+    <p class="sec-sub">Ein kleiner Ausschnitt aus über 100 dokumentierten Transformationen.</p>
+    <div class="car-shell">
+      <button class="car-nav prev" data-car="tfCar" data-dir="-1" aria-label="Zurück">←</button>
+      <div class="carousel" id="tfCar">
+        {TF_IMAGES.map((src) => (
+          <div class="car-item tf-card"><img src={src} alt="Vorher-Nachher-Transformation" loading="lazy" /></div>
+        ))}
+      </div>
+      <button class="car-nav next" data-car="tfCar" data-dir="1" aria-label="Weiter">→</button>
+    </div>
+    <p class="swipe-hint">← Wischen für mehr →</p>
+    <p class="sec-sub" style="margin-top:10px; font-size:11.5px;">Individuelle Ergebnisse. Resultate hängen von persönlichen Voraussetzungen ab.</p>
+  </section>
+
+  <!-- ===== Named Testimonials ===== -->
+  <section class="block named">
+    <div class="wrap">
+      <p class="sec-kicker">Aus dem Coaching</p>
+      <h2 class="sec-title">Sie dachten alle: „Bei mir funktioniert nichts mehr"</h2>
+      <p class="sec-sub">Drei Frauen, drei Ausgangslagen, ein Ablauf.</p>
+      <div class="named-grid">
+        <div class="named-card">
+          <img src="/images/sd-proof/testimonial-coco.png" alt="Coco" loading="lazy" />
+          <div class="named-stars">★★★★★</div>
+          <p class="named-quote">„Ich hätte nie gedacht, dass ich mal so begeistert sein werde. Zum ersten Mal seit Jahren verstehe ich meinen Körper."</p>
+          <p class="named-meta">Coco, Floristin · minus 21 kg in 16 Monaten</p>
         </div>
-        <button class="gate-back" onclick="gback(1)">&larr; Zurück</button>
-      </div>
-
-      <div class="gate-step" data-g="3">
-        <p class="gate-q">Wie schnell willst du etwas ändern?</p>
-        <p class="gate-hint">Letzte Frage, danach startet dein Video.</p>
-        <div class="gate-opts">
-          <button class="gate-opt" onclick="gnxt(3,this,'sofort')">Sofort, ich habe genug gewartet</button>
-          <button class="gate-opt" onclick="gnxt(3,this,'wochen')">In den nächsten Wochen</button>
-          <button class="gate-opt" onclick="gnxt(3,this,'info')">Ich will mich erst informieren</button>
+        <div class="named-card">
+          <img src="/images/sd-proof/testimonial-sandra.jpg" alt="Sandra Schuler" loading="lazy" />
+          <div class="named-stars">★★★★★</div>
+          <p class="named-quote">„Endlich frei vom Jojo-Effekt. Keine Verbote, keine Punkte zählen, keine Spritze."</p>
+          <p class="named-meta">Sandra Schuler, Büroangestellte</p>
         </div>
-        <button class="gate-back" onclick="gback(2)">&larr; Zurück</button>
+        <div class="named-card">
+          <img src="/images/sd-proof/testimonial-claudia.jpg" alt="Claudia Schneuwly" loading="lazy" />
+          <div class="named-stars">★★★★★</div>
+          <p class="named-quote">„Ich bin einfach ein komplett neuer Mensch. Und das ohne eine einzige Diät."</p>
+          <p class="named-meta">Claudia Schneuwly, Modeberaterin</p>
+        </div>
       </div>
     </div>
+  </section>
 
-    <div class="optin-card" id="optinCard">
-      <h2>Dein Video ist bereit</h2>
-      <p class="oc-sub">Wohin dürfen wir es schicken? Du wirst direkt weitergeleitet.</p>
-      <form class="optin" id="optinForm" novalidate>
-        <input type="text" name="fname" placeholder="Dein Vorname" autocomplete="given-name" required />
-        <input type="email" name="email" placeholder="Deine E-Mail-Adresse" autocomplete="email" required />
-        <input type="tel" name="phone" placeholder="Deine Handynummer" autocomplete="tel" required />
-        <button class="btn" id="submitBtn" type="submit">Ja, zeig mir das Video →</button>
-        <p class="err" id="formErr">Bitte Vorname, eine gültige E-Mail-Adresse und deine Handynummer eintragen.</p>
-        <p class="privacy-note">100% kostenlos. Kein Spam. Mit dem Absenden akzeptierst du die <a href={DATENSCHUTZ_URL} target="_blank" rel="noopener">Datenschutzerklärung</a>.</p>
-      </form>
-    </div>
-
-    <div class="bullets">
-      <div class="bullet"><span class="ic">✓</span><span><strong>Warum die Waage stillsteht,</strong> obwohl du wenig isst: was in deinem Körper wirklich passiert, in einfachen Worten erklärt.</span></div>
-      <div class="bullet"><span class="ic">✓</span><span><strong>Was deine Schilddrüse damit zu tun hat,</strong> auch wenn deine Blutwerte im Normbereich sind.</span></div>
-      <div class="bullet"><span class="ic">✓</span><span><strong>Wie über 4.000 Frauen es geschafft haben:</strong> echte Geschichten, echte Zahlen, kein Wundermittel und keine Spritze.</span></div>
-    </div>
-
-    <p class="sec-title">Echte Frauen. Echte Ergebnisse.</p>
-    <p class="sec-sub">Ein kleiner Ausschnitt aus über 4.000 Erfolgsgeschichten</p>
-    <div class="trans-grid">
-      <img src="/images/transformations/schalter-1.jpg" alt="Transformation" loading="lazy" />
-      <img src="/images/transformations/schalter-2.jpg" alt="Transformation" loading="lazy" />
-      <img src="/images/transformations/schalter-3.jpg" alt="Transformation" loading="lazy" />
-      <img src="/images/transformations/t5.jpg" alt="Transformation" loading="lazy" />
-      <img src="/images/transformations/t6.jpg" alt="Transformation" loading="lazy" />
-      <img src="/images/transformations/t7.jpg" alt="Transformation" loading="lazy" />
-    </div>
-    <p class="trans-cap">Individuelle Ergebnisse. Resultate hängen von persönlichen Voraussetzungen ab.</p>
-
-    <div class="story">
-      <p class="story-kicker">Erfolgsgeschichte</p>
-      <p class="story-quote">„Ich dachte jahrelang, ich sei einfach undiszipliniert. Dabei war mein Körper im Schutzmodus. Als ich das verstanden habe, hat sich alles verändert."</p>
-      <p class="story-meta">Coco, minus 21 Kilo in 16 Monaten mit dem Fit on Time Coaching</p>
-    </div>
-
-    <div class="testis">
-      <div class="testi">
-        <div class="testi-stars">★★★★★</div>
-        <p class="testi-quote">„Ich habe seit den Wechseljahren <strong>alles</strong> probiert. Erst hier habe ich verstanden, warum nichts funktioniert hat. <strong>Minus 9 Kilo</strong>, und ich esse mehr als vorher."</p>
-        <p class="testi-name">Teilnehmerin aus dem Fit on Time Coaching</p>
-      </div>
-      <div class="testi">
-        <div class="testi-stars">★★★★★</div>
-        <p class="testi-quote">„Keine Verbote, keine Punkte zählen, keine Spritze. Zum ersten Mal fühlt sich abnehmen <strong>nicht wie Kampf</strong> an."</p>
-        <p class="testi-name">Teilnehmerin aus dem Fit on Time Coaching</p>
+  <!-- ===== Video-Teaser ===== -->
+  <section class="block">
+    <div class="wrap">
+      <div class="teaser">
+        <div>
+          <h2>Wie kommen solche Ergebnisse zustande? <em>Genau das zeigt dir das Video.</em></h2>
+          <p class="tz">Kein Motivations-Blabla, sondern der konkrete Ablauf: was in deinem Körper passiert, wie die Analyse bei Fit on Time funktioniert und warum die Methode auch dann greift, wenn Diäten, Sport und Arztbesuche nichts gebracht haben.</p>
+          <a class="btn" href="#gate" onclick="window.__scrollGate&&window.__scrollGate()">Video freischalten: 3 Fragen beantworten →</a>
+        </div>
+        <div class="teaser-list">
+          <div class="tl-item"><span class="num">1</span><span><strong>Der Sparmodus:</strong> warum dein Körper das Fett festhält, obwohl deine Werte in Ordnung sind.</span></div>
+          <div class="tl-item"><span class="num">2</span><span><strong>Der Fit on Time Ablauf:</strong> Analyse, persönlicher Plan, 1:1-Begleitung durch echte Coaches.</span></div>
+          <div class="tl-item"><span class="num">3</span><span><strong>Warum es hält:</strong> was die 94% anders machen, die ihr Gewicht nach 12 Monaten noch halten.</span></div>
+        </div>
       </div>
     </div>
+  </section>
 
-    <div class="stats">
-      <div class="stat"><div class="stat-num">4.000+</div><div class="stat-label">Frauen begleitet</div></div>
-      <div class="stat"><div class="stat-num">83%</div><div class="stat-label">erreichen ihr finales Ziel</div></div>
-      <div class="stat"><div class="stat-num">77%</div><div class="stat-label">halten es nach 12 Mo.</div></div>
+  <!-- ===== Ablauf + Versprechen ===== -->
+  <section class="block">
+    <div class="wrap">
+      <p class="sec-kicker">Transparenz</p>
+      <h2 class="sec-title">So läuft es ab</h2>
+      <p class="sec-sub">Kein Kleingedrucktes, keine Überraschungen.</p>
+      <div class="steps-grid">
+        <div class="step-card"><div class="step-num">1</div><h3>Du schaust das Video</h3><p>Unsere Coaches erklären dir den Ablauf und warum dein Körper das Fett festhält. Kostenlos, ohne Verpflichtung.</p></div>
+        <div class="step-card"><div class="step-num">2</div><h3>Kostenloses Gespräch</h3><p>Wenn es dich anspricht, buchst du danach ein Gespräch: 30 Minuten, Telefon oder Zoom, mit einer Coachin aus unserem Team. Kein Callcenter.</p></div>
+        <div class="step-card"><div class="step-num">3</div><h3>Du entscheidest</h3><p>Wenn wir dir helfen können, sagen wir dir wie. Wenn nicht, sagen wir dir das genauso ehrlich.</p></div>
+      </div>
+      <div class="no-pressure"><strong>Unser Versprechen:</strong> Im Gespräch wird dir nichts angedreht. Unsere Ergebnisse kommen nur zustande, weil wir ausschliesslich mit Frauen arbeiten, bei denen es wirklich passt.</div>
     </div>
+  </section>
 
-    <p class="sec-title">So läuft es ab</p>
-    <p class="sec-sub">Kein Kleingedrucktes, keine Überraschungen</p>
-    <div class="steps">
-      <div class="step-card"><span class="step-num">1</span><p><strong>Du schaust das Video.</strong> Darin erklären dir unsere Coaches, warum dein Körper das Fett festhält und was dagegen hilft. Kostenlos, ohne Anmeldung zu irgendwas.</p></div>
-      <div class="step-card"><span class="step-num">2</span><p><strong>Wenn es dich anspricht,</strong> kannst du danach ein kostenloses Gespräch buchen. 30 Minuten, per Telefon oder Zoom, mit einer Coachin aus unserem Team. Kein Callcenter.</p></div>
-      <div class="step-card"><span class="step-num">3</span><p><strong>Du entscheidest.</strong> Im Gespräch schauen wir gemeinsam auf deine Situation. Wenn wir dir helfen können, sagen wir dir wie. Wenn nicht, sagen wir dir das genauso ehrlich.</p></div>
+  <!-- ===== FAQ ===== -->
+  <section class="block">
+    <div class="wrap">
+      <p class="sec-kicker">Häufige Fragen</p>
+      <h2 class="sec-title">Was du wissen willst</h2>
+      <p class="sec-sub"></p>
+      <div class="faq">
+        <details>
+          <summary>Kostet mich das etwas?</summary>
+          <p class="faq-a">Nein. Das Video und das Gespräch sind kostenlos und verpflichten dich zu nichts. Erst wenn du dich danach für eine Begleitung entscheidest, reden wir über Details.</p>
+        </details>
+        <details>
+          <summary>Warum muss ich 3 Fragen beantworten?</summary>
+          <p class="faq-a">Weil deine Antworten an unser Coaching-Team gehen. So bekommst du nach dem Video eine Einschätzung, die zu deiner Situation passt, statt einer Standard-Antwort für alle.</p>
+        </details>
+        <details>
+          <summary>Muss ich schon wissen, ob meine Schilddrüse betroffen ist?</summary>
+          <p class="faq-a">Nein. Genau darum geht es im Video: Du verstehst, welche Rolle die Schilddrüse spielen kann, auch wenn deine Blutwerte im Normbereich sind. Das Video ersetzt keinen Arztbesuch, es hilft dir aber, deinen Körper zu verstehen.</p>
+        </details>
+        <details>
+          <summary>Wer ruft mich an, wenn ich ein Gespräch buche?</summary>
+          <p class="faq-a">Eine Coachin aus dem Fit on Time Team in der Schweiz. Kein Callcenter, kein Skript. Sie schaut mit dir gemeinsam auf deine Situation.</p>
+        </details>
+        <details>
+          <summary>Ist das wieder so ein Diät-Programm?</summary>
+          <p class="faq-a">Nein. Diäten sind meistens genau der Grund, warum der Stoffwechsel auf Sparen umstellt. Unser Coaching setzt am Gegenteil an: Dein Körper soll wieder verbrennen statt speichern. Deshalb ist das Coaching auch von Schweizer Krankenkassen anerkannt.</p>
+        </details>
+      </div>
     </div>
-    <div class="no-pressure"><strong>Unser Versprechen:</strong> Im Gespräch wird dir nichts angedreht. Über 4.000 Frauen haben diesen Weg vor dir gemacht, und er hat nur funktioniert, weil wir nur mit Frauen arbeiten, bei denen es wirklich passt.</div>
+  </section>
 
-    <p class="sec-title">Häufige Fragen</p>
-    <div class="faq">
-      <details>
-        <summary>Kostet mich das etwas?</summary>
-        <p class="faq-a">Nein. Das Video und das Gespräch sind kostenlos und verpflichten dich zu nichts. Erst wenn du dich danach für eine Begleitung entscheidest, reden wir über Details.</p>
-      </details>
-      <details>
-        <summary>Muss ich schon wissen, ob meine Schilddrüse betroffen ist?</summary>
-        <p class="faq-a">Nein. Genau darum geht es im Video: Du verstehst, welche Rolle die Schilddrüse spielen kann, auch wenn deine Blutwerte im Normbereich sind. Das Video ersetzt keinen Arztbesuch, es hilft dir aber, deinen Körper zu verstehen.</p>
-      </details>
-      <details>
-        <summary>Wer ruft mich an, wenn ich ein Gespräch buche?</summary>
-        <p class="faq-a">Eine Coachin aus dem Fit on Time Team in der Schweiz. Kein Callcenter, kein Skript. Sie schaut mit dir gemeinsam auf deine Situation.</p>
-      </details>
-      <details>
-        <summary>Ist das wieder so ein Diät-Programm?</summary>
-        <p class="faq-a">Nein. Diäten sind meistens genau der Grund, warum der Stoffwechsel auf Sparen umstellt. Unser Coaching setzt am Gegenteil an: Dein Körper soll wieder verbrennen statt speichern. Deshalb ist das Coaching auch von Schweizer Krankenkassen anerkannt.</p>
-      </details>
+  <!-- ===== Final CTA ===== -->
+  <section class="block final">
+    <div class="wrap final-in">
+      <p class="sec-kicker">Dein nächster Schritt</p>
+      <h2 class="sec-title">Über 4.000 Frauen haben angefangen, wo du gerade stehst.</h2>
+      <p class="sec-sub">Beantworte die 3 Fragen und schau dir das Video an. Es kostet dich nichts ausser ein paar Minuten.</p>
+      <a class="btn" href="#gate" onclick="window.__scrollGate&&window.__scrollGate()">Jetzt Video freischalten →</a>
+      <p class="final-note">Kostenlos · Kein Spam · Krankenkassen-anerkanntes Coaching</p>
     </div>
-
-    <div class="cta-repeat"><a href="#gate">Jetzt kostenloses Video ansehen →</a></div>
-  </main>
+  </section>
 
   <footer>
     <p class="disclaimer">Dieses Angebot richtet sich an gesunde Erwachsene. Die gezeigten Ergebnisse sind individuelle Erfahrungen und keine Erfolgsgarantie. Kein Ersatz für ärztliche Beratung oder Diagnose.</p>
@@ -344,6 +523,10 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
 
     track('page_view', { page: 'optin' });
 
+    window.__scrollGate = function () {
+      document.getElementById('gate').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    };
+
     // ===== Mikro-Gate: 3 Qualifizierungsfragen vor dem Formular =====
     const GATE_TOTAL = 3;
     const gateAnswers = {};
@@ -352,12 +535,13 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
       document.querySelectorAll('.gate-step').forEach((el) => el.classList.remove('on'));
       const t = document.querySelector('.gate-step[data-g="' + s + '"]');
       if (t) t.classList.add('on');
-      document.getElementById('gateProg').textContent = 'Frage ' + s + ' von ' + GATE_TOTAL;
+      document.getElementById('gateProgTxt').textContent = 'Frage ' + s + ' von ' + GATE_TOTAL;
+      document.getElementById('gateFill').style.width = Math.round((s / GATE_TOTAL) * 100) + '%';
     }
 
     function gback(s) {
       gshow(s);
-      document.getElementById('gate').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      window.__scrollGate();
     }
 
     function gnxt(s, el, val) {
@@ -368,15 +552,15 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
       setTimeout(() => {
         if (s < GATE_TOTAL) {
           gshow(s + 1);
-          document.getElementById('gate').scrollIntoView({ behavior: 'smooth', block: 'center' });
+          window.__scrollGate();
           return;
         }
         // Gate durch: Formular freischalten
-        document.getElementById('gate').style.display = 'none';
+        document.getElementById('gateSteps').style.display = 'none';
         document.getElementById('optinCard').classList.add('on');
         track('gate_complete');
         if (window.__lp) window.__lp.meta('ViewContent', { content_name: 'FoT SD-Analyse Gate Complete', currency: 'CHF' });
-        document.getElementById('optinCard').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        window.__scrollGate();
       }, 180);
     }
 
@@ -420,7 +604,6 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
         track('lead_submit');
         if (window.__lp) window.__lp.meta('Lead', { content_name: 'FoT SD-Analyse Lead', currency: 'CHF' });
         if (window.__lp) window.__lp.google('generate_lead', 'j12JCMr5-9UcEOfryccD');
-        // Name für die VSL-Seite merken
         sessionStorage.setItem('fot_sda_lead', JSON.stringify({ name: name.split(' ')[0], email }));
         window.location.href = '/schilddruesen-analyse/danke';
       } catch (ex) {
@@ -429,6 +612,33 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
         err.textContent = 'Das hat leider nicht geklappt. Bitte versuch es nochmal.';
         err.classList.add('show');
       }
+    });
+
+    // ===== Carousels: Pfeile (Desktop) + Swipe (nativ per scroll-snap) =====
+    document.querySelectorAll('.car-nav').forEach((b) => {
+      b.addEventListener('click', () => {
+        const car = document.getElementById(b.dataset.car);
+        const item = car.querySelector('.car-item');
+        const w = item ? item.getBoundingClientRect().width + 14 : 320;
+        car.scrollBy({ left: Number(b.dataset.dir) * w * 2, behavior: 'smooth' });
+      });
+    });
+
+    // ===== Video-Testimonials: Click-to-play (YouTube nocookie, lädt erst beim Klick) =====
+    document.querySelectorAll('.vid-card').forEach((card) => {
+      card.addEventListener('click', () => {
+        if (card.dataset.played) return;
+        card.dataset.played = '1';
+        const id = card.dataset.vid;
+        track('testimonial_video_play', { detail: id });
+        const f = document.createElement('iframe');
+        f.src = 'https://www.youtube-nocookie.com/embed/' + id + '?autoplay=1&rel=0&modestbranding=1';
+        f.allow = 'autoplay; encrypted-media; fullscreen';
+        f.allowFullscreen = true;
+        f.title = 'Erfolgsgeschichte';
+        card.innerHTML = '';
+        card.appendChild(f);
+      });
     });
   </script>
 </body>
