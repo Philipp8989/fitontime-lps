@@ -3,7 +3,8 @@
 // Redesign 20.08.2026 (Philipp): eigenes Design in FoT-CI (Inter, #4584EE, Navy-Hero),
 // Desktop-first mit 2-Spalten-Hero, voll responsive, swipebare Video- und Bild-Testimonials.
 // Proof-Quellen: 24 YouTube-Erfolgsgeschichten (fitontime.ch), Vorher-Nachher-Collagen,
-// Beweis-Stack aus voice.md (4.000+ / 97% / 94% / 9 kg / 14 kg). Kein Krankenkassen-Claim (Philipp 20.08.).
+// Wording nach Funnel-Sprachanalyse (Filip, 10 Call-Skripte, 20.08.): Kundinnen-Sprache statt
+// Sparmodus-Frame. Keine unbelegten Prozent-/kg-Claims, kein Krankenkassen-Claim (Philipp 20.08.).
 // Flow: Opt-in (3 Fragen + Formular) → /schilddruesen-analyse/danke (VSL + Termin)
 import CookieBanner from '../../components/CookieBanner.astro';
 
@@ -267,19 +268,18 @@ const TF_IMAGES = [...Array.from({ length: 12 }, (_, i) => `/images/sd-proof/tf-
     <div class="wrap">
       <div class="hero-grid">
         <div>
-          <span class="eyebrow">Für Frauen, die alles für andere tun, nur nichts für sich</span>
-          <h1>Deine Werte sind in Ordnung, aber du nimmst trotzdem nicht ab? Genau da haben <em>über 4.000 Frauen</em> bei uns angefangen.</h1>
-          <p class="sub">Im kostenlosen Video zeigen wir dir <strong>den genauen Ablauf bei Fit on Time</strong>: warum dein Körper das Fett festhält, und warum unsere Methode bei Frauen funktioniert, bei denen vorher <strong>nichts mehr funktioniert</strong> hat.</p>
+          <span class="eyebrow">Für Frauen, die viel für andere tragen und sich selbst dabei aus den Augen verlieren</span>
+          <h1>Du gibst dir Mühe, aber dein Gewicht <em>bewegt sich trotzdem nicht?</em></h1>
+          <p class="sub">Finde heraus, warum du trotz weniger Essen, mehr Bewegung oder scheinbar unauffälliger Werte feststeckst. Im kostenlosen Video erfährst du, <strong>warum es nicht an deiner Disziplin liegt</strong>, und wie du wieder zu der Frau wirst, die sich in ihrem Körper <strong>wohl und sicher fühlt</strong>.</p>
           <div class="proof-bar">
             <div class="proof-avatars">
               <img src="/images/transformations/t1.jpg" alt="" /><img src="/images/transformations/t2.jpg" alt="" /><img src="/images/transformations/t3.jpg" alt="" /><img src="/images/transformations/t4.jpg" alt="" />
             </div>
-            <div class="proof-info"><span class="proof-stars">★★★★★</span><br /><b>4.000+ Frauen</b> in der Schweiz begleitet</div>
+            <div class="proof-info"><span class="proof-stars">★★★★★</span><br />Genau an diesem Punkt haben<br /><b>über 4.000 Frauen</b> bei uns angefangen</div>
           </div>
           <div class="hero-badges">
-            <span class="hbadge">Ø 9 kg nach 6 Monaten</span>
-            <span class="hbadge">97% erreichen ihr Ziel</span>
-            <span class="hbadge">94% halten es nach 12 Monaten</span>
+            <span class="hbadge">Über 100 dokumentierte Transformationen</span>
+            <span class="hbadge">Echte Coaches statt Standardprogramm</span>
           </div>
         </div>
 
@@ -295,32 +295,35 @@ const TF_IMAGES = [...Array.from({ length: 12 }, (_, i) => `/images/sd-proof/tf-
               <p class="gate-q">Kommt dir das bekannt vor?</p>
               <p class="gate-hint">Wähl aus, was am ehesten auf dich zutrifft.</p>
               <div class="gate-opts">
-                <button class="gate-opt" onclick="gnxt(1,this,'werte-ok')">Beim Arzt heisst es, alles in Ordnung. Aber ich nehme trotzdem nicht ab</button>
-                <button class="gate-opt" onclick="gnxt(1,this,'muede-kalt')">Ich bin ständig müde und mir ist oft kalt</button>
-                <button class="gate-opt" onclick="gnxt(1,this,'wenig-essen')">Ich esse wenig und die Waage bewegt sich trotzdem nicht</button>
-                <button class="gate-opt" onclick="gnxt(1,this,'alles')">Ehrlich gesagt alles davon</button>
+                <button class="gate-opt" onclick="gnxt(1,this,'werte-ok')">Beim Arzt heisst es, alles sei in Ordnung, aber mein Gewicht steigt trotzdem</button>
+                <button class="gate-opt" onclick="gnxt(1,this,'wenig-essen')">Ich esse bereits weniger, aber die Waage bewegt sich kaum</button>
+                <button class="gate-opt" onclick="gnxt(1,this,'energie')">Mir fehlen Energie, Motivation und die Leichtigkeit von früher</button>
+                <button class="gate-opt" onclick="gnxt(1,this,'spiegel')">Ich erkenne mich in meinem Körper nicht mehr richtig wieder</button>
+                <button class="gate-opt" onclick="gnxt(1,this,'mehreres')">Ehrlich gesagt trifft mehreres davon auf mich zu</button>
               </div>
             </div>
 
             <div class="gate-step" data-g="2">
-              <p class="gate-q">Was hast du bisher schon probiert?</p>
+              <p class="gate-q">Was hast du bisher versucht, um dein Gewicht in den Griff zu bekommen?</p>
               <p class="gate-hint">Damit wir dir nicht erzählen, was du längst hinter dir hast.</p>
               <div class="gate-opts">
-                <button class="gate-opt" onclick="gnxt(2,this,'diaeten')">Diäten und Kalorienzählen</button>
-                <button class="gate-opt" onclick="gnxt(2,this,'sport')">Sport und mehr Bewegung</button>
-                <button class="gate-opt" onclick="gnxt(2,this,'arzt')">Ich war deswegen schon beim Arzt</button>
-                <button class="gate-opt" onclick="gnxt(2,this,'alles')">Ehrlich gesagt alles davon</button>
+                <button class="gate-opt" onclick="gnxt(2,this,'diaeten')">Diäten, Intervallfasten oder Kalorienzählen</button>
+                <button class="gate-opt" onclick="gnxt(2,this,'sport')">Mehr Sport und Bewegung</button>
+                <button class="gate-opt" onclick="gnxt(2,this,'arzt')">Arztbesuche, Blutwerte oder Schilddrüsenkontrollen</button>
+                <button class="gate-opt" onclick="gnxt(2,this,'alleine')">Ich habe immer wieder alleine angefangen und bin aus der Routine gefallen</button>
+                <button class="gate-opt" onclick="gnxt(2,this,'alles')">Eigentlich schon fast alles davon</button>
               </div>
               <button class="gate-back" onclick="gback(1)">&larr; Zurück</button>
             </div>
 
             <div class="gate-step" data-g="3">
-              <p class="gate-q">Wie schnell willst du etwas ändern?</p>
+              <p class="gate-q">Was wünschst du dir diesmal anders?</p>
               <p class="gate-hint">Letzte Frage, danach schalten wir dein Video frei.</p>
               <div class="gate-opts">
-                <button class="gate-opt" onclick="gnxt(3,this,'sofort')">Sofort, ich habe genug gewartet</button>
-                <button class="gate-opt" onclick="gnxt(3,this,'wochen')">In den nächsten Wochen</button>
-                <button class="gate-opt" onclick="gnxt(3,this,'info')">Ich will mich erst informieren</button>
+                <button class="gate-opt" onclick="gnxt(3,this,'verstehen')">Ich möchte endlich verstehen, warum ich feststecke</button>
+                <button class="gate-opt" onclick="gnxt(3,this,'plan')">Ich brauche einen klaren Plan, der wirklich zu meinem Alltag passt</button>
+                <button class="gate-opt" onclick="gnxt(3,this,'begleitung')">Ich brauche jemanden, der mich verbindlich begleitet und auch mal zieht</button>
+                <button class="gate-opt" onclick="gnxt(3,this,'nachhaltig')">Ich möchte es nachhaltig schaffen, ohne wieder von vorne anzufangen</button>
               </div>
               <button class="gate-back" onclick="gback(2)">&larr; Zurück</button>
             </div>
@@ -340,9 +343,9 @@ const TF_IMAGES = [...Array.from({ length: 12 }, (_, i) => `/images/sd-proof/tf-
           </div>
 
           <div class="gc-video-points">
-            <div class="gc-point"><span class="ic">✓</span><span><strong>Der genaue Ablauf bei Fit on Time,</strong> Schritt für Schritt erklärt</span></div>
-            <div class="gc-point"><span class="ic">✓</span><span><strong>Warum es so stark wirkt,</strong> auch wenn bei dir bisher nichts funktioniert hat</span></div>
-            <div class="gc-point"><span class="ic">✓</span><span><strong>Woran du erkennst,</strong> ob dein Körper im Sparmodus steckt</span></div>
+            <div class="gc-point"><span class="ic">✓</span><span><strong>Warum du trotz deiner Bemühungen feststeckst,</strong> und weshalb es nicht an deinem Willen liegt</span></div>
+            <div class="gc-point"><span class="ic">✓</span><span><strong>Welche körperlichen und alltäglichen Faktoren</strong> dich beeinflussen: Stoffwechsel, Hormone, Stress, Schlaf, Routinen</span></div>
+            <div class="gc-point"><span class="ic">✓</span><span><strong>Wie Veränderung endlich nachhaltig wird,</strong> mit einem persönlichen Plan und echter Begleitung statt der nächsten Diät</span></div>
           </div>
         </div>
       </div>
@@ -354,10 +357,10 @@ const TF_IMAGES = [...Array.from({ length: 12 }, (_, i) => `/images/sd-proof/tf-
     <div class="stats-in">
       <div class="stats-card">
         <div class="stat"><div class="stat-num">4.000+</div><div class="stat-label">Frauen begleitet</div></div>
-        <div class="stat"><div class="stat-num">97%</div><div class="stat-label">erreichen ihr Ziel</div></div>
-        <div class="stat"><div class="stat-num">94%</div><div class="stat-label">halten es nach 12 Monaten</div></div>
-        <div class="stat"><div class="stat-num">Ø 14 kg</div><div class="stat-label">nach 12 Monaten</div></div>
-        <div class="stat"><div class="stat-num">45'000+</div><div class="stat-label">Analysen ausgewertet</div></div>
+        <div class="stat"><div class="stat-num">100+</div><div class="stat-label">dokumentierte Transformationen</div></div>
+        <div class="stat"><div class="stat-num">24</div><div class="stat-label">Video-Erfolgsgeschichten</div></div>
+        <div class="stat"><div class="stat-num">1:1</div><div class="stat-label">Begleitung durch echte Coaches</div></div>
+        <div class="stat"><div class="stat-num">0</div><div class="stat-label">Pläne von der Stange</div></div>
       </div>
     </div>
   </div>
@@ -409,8 +412,8 @@ const TF_IMAGES = [...Array.from({ length: 12 }, (_, i) => `/images/sd-proof/tf-
   <section class="block named">
     <div class="wrap">
       <p class="sec-kicker">Aus dem Coaching</p>
-      <h2 class="sec-title">Sie dachten alle: „Bei mir funktioniert nichts mehr"</h2>
-      <p class="sec-sub">Drei Frauen, drei Ausgangslagen, ein Ablauf.</p>
+      <h2 class="sec-title">Sie dachten alle: „Bei mir funktioniert einfach nichts mehr."</h2>
+      <p class="sec-sub">Sie hatten Diäten ausprobiert, mehr Bewegung eingeplant oder waren beim Arzt. Was ihnen fehlte, war nicht noch mehr Wissen, sondern Klarheit, ein alltagstauglicher Weg und jemand, der dafür sorgt, dass sie sich nicht wieder aus den Augen verlieren.</p>
       <div class="named-grid">
         <div class="named-card">
           <img src="/images/sd-proof/testimonial-coco.png" alt="Coco" loading="lazy" />
@@ -439,14 +442,14 @@ const TF_IMAGES = [...Array.from({ length: 12 }, (_, i) => `/images/sd-proof/tf-
     <div class="wrap">
       <div class="teaser">
         <div>
-          <h2>Wie kommen solche Ergebnisse zustande? <em>Genau das zeigt dir das Video.</em></h2>
-          <p class="tz">Kein Motivations-Blabla, sondern der konkrete Ablauf: was in deinem Körper passiert, wie die Analyse bei Fit on Time funktioniert und warum die Methode auch dann greift, wenn Diäten, Sport und Arztbesuche nichts gebracht haben.</p>
+          <h2>Du brauchst keine weitere Liste mit Dingen, die du längst weisst. <em>Du brauchst Klarheit.</em></h2>
+          <p class="tz">Im Video zeigen wir dir, warum Wissen allein nicht ausreicht, und wie körperliche Klarheit, ein alltagstauglicher Plan und persönliche Begleitung zusammenspielen, damit du dauerhaft etwas veränderst.</p>
           <a class="btn" href="#gate" onclick="window.__scrollGate&&window.__scrollGate()">Video freischalten: 3 Fragen beantworten →</a>
         </div>
         <div class="teaser-list">
-          <div class="tl-item"><span class="num">1</span><span><strong>Der Sparmodus:</strong> warum dein Körper das Fett festhält, obwohl deine Werte in Ordnung sind.</span></div>
-          <div class="tl-item"><span class="num">2</span><span><strong>Der Fit on Time Ablauf:</strong> Analyse, persönlicher Plan, 1:1-Begleitung durch echte Coaches.</span></div>
-          <div class="tl-item"><span class="num">3</span><span><strong>Warum es hält:</strong> was die 94% anders machen, die ihr Gewicht nach 12 Monaten noch halten.</span></div>
+          <div class="tl-item"><span class="num">1</span><span><strong>Klarheit statt Rätselraten:</strong> Wir schauen auf die Zusammenhänge zwischen Stoffwechsel, Hormonen, Stress, Schlaf und deinem bisherigen Essverhalten.</span></div>
+          <div class="tl-item"><span class="num">2</span><span><strong>Ein Plan, der zu deinem Leben passt:</strong> Keine starre Diät und kein Trainingsplan, den du nach wenigen Wochen wieder abbrichst.</span></div>
+          <div class="tl-item"><span class="num">3</span><span><strong>Begleitung, die dich dranbleiben lässt:</strong> Klare Ziele, regelmässige Standortbestimmungen und jemand, der dich auffängt und bei Bedarf auch einmal zieht.</span></div>
         </div>
       </div>
     </div>
@@ -460,8 +463,8 @@ const TF_IMAGES = [...Array.from({ length: 12 }, (_, i) => `/images/sd-proof/tf-
       <p class="sec-sub">Kein Kleingedrucktes, keine Überraschungen.</p>
       <div class="steps-grid">
         <div class="step-card"><div class="step-num">1</div><h3>Du schaust das Video</h3><p>Unsere Coaches erklären dir den Ablauf und warum dein Körper das Fett festhält. Kostenlos, ohne Verpflichtung.</p></div>
-        <div class="step-card"><div class="step-num">2</div><h3>Kostenloses Gespräch</h3><p>Wenn es dich anspricht, buchst du danach ein Gespräch: 30 Minuten, Telefon oder Zoom, mit einer Coachin aus unserem Team. Kein Callcenter.</p></div>
-        <div class="step-card"><div class="step-num">3</div><h3>Du entscheidest</h3><p>Wenn wir dir helfen können, sagen wir dir wie. Wenn nicht, sagen wir dir das genauso ehrlich.</p></div>
+        <div class="step-card"><div class="step-num">2</div><h3>Kostenloses Gespräch</h3><p>Wenn dich das Video anspricht, buchst du ein Gespräch mit unserer Strategieberatung: 30 bis 45 Minuten, Telefon oder Zoom. Wir schauen nicht nur auf dein Gewicht, sondern auf deine Situation, deinen Alltag und darauf, was dir bisher gefehlt hat, um dranzubleiben.</p></div>
+        <div class="step-card"><div class="step-num">3</div><h3>Du entscheidest in Ruhe</h3><p>Danach entscheidest du, ob sich der Weg für dich richtig anfühlt. Wenn wir dir helfen können, zeigen wir dir konkret, wie. Wenn nicht, sagen wir dir das genauso ehrlich.</p></div>
       </div>
       <div class="no-pressure"><strong>Unser Versprechen:</strong> Im Gespräch wird dir nichts angedreht. Unsere Ergebnisse kommen nur zustande, weil wir ausschliesslich mit Frauen arbeiten, bei denen es wirklich passt.</div>
     </div>
@@ -488,7 +491,7 @@ const TF_IMAGES = [...Array.from({ length: 12 }, (_, i) => `/images/sd-proof/tf-
         </details>
         <details>
           <summary>Wer ruft mich an, wenn ich ein Gespräch buche?</summary>
-          <p class="faq-a">Eine Coachin aus dem Fit on Time Team in der Schweiz. Kein Callcenter, kein Skript. Sie schaut mit dir gemeinsam auf deine Situation.</p>
+          <p class="faq-a">Jemand aus unserer Strategieberatung bei Fit on Time in der Schweiz. Kein Callcenter, kein Skript. Das Gespräch dauert 30 bis 45 Minuten, und wir schauen gemeinsam auf deine Situation, deinen Alltag und was dir bisher gefehlt hat.</p>
         </details>
         <details>
           <summary>Ist das wieder so ein Diät-Programm?</summary>
@@ -502,9 +505,9 @@ const TF_IMAGES = [...Array.from({ length: 12 }, (_, i) => `/images/sd-proof/tf-
   <section class="block final">
     <div class="wrap final-in">
       <p class="sec-kicker">Dein nächster Schritt</p>
-      <h2 class="sec-title">Über 4.000 Frauen haben angefangen, wo du gerade stehst.</h2>
-      <p class="sec-sub">Beantworte die 3 Fragen und schau dir das Video an. Es kostet dich nichts ausser ein paar Minuten.</p>
-      <a class="btn" href="#gate" onclick="window.__scrollGate&&window.__scrollGate()">Jetzt Video freischalten →</a>
+      <h2 class="sec-title">Du musst nicht länger alleine herausfinden, warum es bei dir nicht funktioniert.</h2>
+      <p class="sec-sub">Du musst auch nicht wissen, ob es an deiner Schilddrüse, deinem Stoffwechsel oder deinen Gewohnheiten liegt. Der erste Schritt ist zu verstehen, warum du trotz deiner Bemühungen feststeckst.</p>
+      <a class="btn" href="#gate" onclick="window.__scrollGate&&window.__scrollGate()">3 Fragen beantworten und Video freischalten →</a>
       <p class="final-note">Kostenlos · Kein Spam · Über 4.000 Frauen begleitet</p>
     </div>
   </section>
