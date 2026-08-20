@@ -311,6 +311,14 @@ const TF_IMAGES = [...Array.from({ length: 12 }, (_, i) => `/images/sd-proof/tf-
     .sw-hint-pulse { animation: swpulse 1.6s ease-in-out infinite; display: inline-block; }
     @keyframes swpulse { 0%,100% { transform: translateX(0); } 50% { transform: translateX(6px); } }
 
+    @media (max-width: 640px) {
+      .sw-plate { flex-direction: column; gap: 18px; padding: 26px 30px; width: min(86vw, 340px); }
+      .sw-word { font-size: 18px; }
+      .sw-plate .sw-word.burn { order: 3; }
+      .sw-plate .sw-track { order: 2; }
+      .sw-plate .sw-word.store { order: 1; }
+      .sw-msg { font-size: 14.5px; }
+    }
     @media (hover: none), (prefers-reduced-motion: reduce) {
       .orb { animation: none; }
       .gate-card, .sw3d { transition: none; }
