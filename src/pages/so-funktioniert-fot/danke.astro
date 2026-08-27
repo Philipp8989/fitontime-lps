@@ -1,5 +1,5 @@
 ---
-// VSL-Call-Funnel "Schilddrüsen-Analyse", Schritt 2: Danke-Seite mit VSL + Terminbuchung
+// VSL-Call-Funnel "So funktioniert FOT" (bis 27.08.2026: schilddruesen-analyse), Schritt 2: Danke-Seite mit VSL + Terminbuchung
 // Redesign 20.08.2026: gleiches Designsystem wie die Opt-in-Seite (Inter, FoT-Blau, Navy-Hero).
 // Im Video wird der Ablauf bei Fit on Time erklärt (Loom-VSL, Doc liegt in 02_Ad-Scripts).
 // VSL-Env: PUBLIC_FOT_SDA_VSL_URL, Fallback auf das Ab-40-VSL bis das eigene Video steht.
@@ -7,8 +7,8 @@
 // konfiguriert), call_booked feuert dort unter dem ab-40-Slug.
 import CookieBanner from '../../components/CookieBanner.astro';
 
-const LP_SLUG = 'schilddruesen-analyse';
-const LP_NAME = 'Schilddrüsen-Analyse VSL Funnel';
+const LP_SLUG = 'so-funktioniert-fot';
+const LP_NAME = 'So funktioniert FOT (VSL-Funnel)';
 const PIXEL_ID = (import.meta.env.PUBLIC_META_PIXEL_ID || '').trim();
 const HYROS_ID = (import.meta.env.PUBLIC_HYROS_ID || '').trim();
 const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').trim();
@@ -16,8 +16,9 @@ const YCBM_DOMAIN = (import.meta.env.PUBLIC_FOT_YCBM_DOMAIN || 'fitontime-analys
 const IMPRESSUM_URL = 'https://fitontime.ch/impressum-datenschutz';
 const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
 
-// Loom: https://www.loom.com/embed/<id> · Vimeo: https://player.vimeo.com/video/<id>
-const VSL_EMBED = (import.meta.env.PUBLIC_FOT_SDA_VSL_URL || import.meta.env.PUBLIC_FOT_AB40_VSL_URL || '').trim();
+// Loom-VSL "So funktioniert Fit on Time" (Fabian, final 27.08.2026).
+// Env PUBLIC_FOT_SOFU_VSL_URL kann die URL ueberschreiben, sonst gilt der Default.
+const VSL_EMBED = (import.meta.env.PUBLIC_FOT_SOFU_VSL_URL || 'https://www.loom.com/embed/ec0400eb6b194892a275e5092e407e87?hide_owner=true&hide_share=true&hide_title=true&hideEmbedTopBar=true').trim();
 
 const VIDEOS = [
   { id: 'vDO6zqFmKtw', label: 'Abnehmen trotz Schilddrüsen-Unterfunktion' },
@@ -135,19 +136,19 @@ const TF_IMAGES = Array.from({ length: 12 }, (_, i) => `/images/sd-proof/tf-${St
     .swipe-hint { display: none; text-align: center; font-size: 12px; color: var(--text-3); margin-top: 2px; }
 
     .vid-card { width: 320px; border-radius: 16px; overflow: hidden; background: var(--navy); position: relative; aspect-ratio: 16 / 9; cursor: pointer; box-shadow: var(--shadow); }
-    .vid-card img.thumb { width: 100%; height: 100%; object-fit: cover; opacity: 0.92; transition: transform 0.3s; }
-    .vid-card:hover img.thumb { transform: scale(1.04); }
+    .vid-card img.thumb { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 1; transition: transform 0.35s ease; }
+    .vid-card:hover img.thumb { transform: scale(1.045); }
+    .vid-card .vp { position: absolute; inset: 0; padding: 10px 12px; display: flex; flex-direction: column; justify-content: flex-end; background: linear-gradient(180deg, rgba(11,34,68,0.06) 0%, rgba(11,34,68,0) 30%, rgba(11,34,68,0) 68%, rgba(11,34,68,0.82) 100%); }
+    .vid-card .vp-center { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+    .vid-card .vp-center .pp { width: 56px; height: 56px; border-radius: 50%; background: rgba(255,255,255,0.95); color: var(--blue); display: flex; align-items: center; justify-content: center; font-size: 19px; padding-left: 4px; box-shadow: 0 10px 28px rgba(0,0,0,0.4); transition: transform 0.15s; }
+    .vid-card:hover .vp-center .pp { transform: scale(1.1); }
+    .vid-card .vp-bar { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .vp-bar .pt { color: #fff; font-size: 12.5px; font-weight: 700; text-shadow: 0 1px 6px rgba(0,0,0,0.5); }
+    .vp-stars { color: var(--amber); font-size: 12px; letter-spacing: 1.5px; text-shadow: 0 1px 6px rgba(0,0,0,0.5); }
     .vid-card .play { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
     .vid-card .play span { width: 54px; height: 54px; border-radius: 50%; background: rgba(255,255,255,0.94); color: var(--blue); display: flex; align-items: center; justify-content: center; font-size: 20px; padding-left: 4px; box-shadow: 0 8px 24px rgba(0,0,0,0.35); }
     .vid-card iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
     .vid-card { background: linear-gradient(150deg, #123059 0%, #0b2244 70%); }
-    .vid-card .vp { position: absolute; inset: 0; padding: 18px; display: flex; flex-direction: column; justify-content: space-between; }
-    .vp-stars { color: var(--amber); font-size: 13px; letter-spacing: 2px; margin-bottom: 7px; }
-    .vp-label { color: #fff; font-size: 17px; font-weight: 800; line-height: 1.3; letter-spacing: -0.2px; }
-    .vp-play { display: flex; align-items: center; gap: 10px; }
-    .vp-play .pp { width: 44px; height: 44px; border-radius: 50%; background: rgba(255,255,255,0.95); color: var(--blue); display: flex; align-items: center; justify-content: center; font-size: 16px; padding-left: 3px; box-shadow: 0 8px 24px rgba(0,0,0,0.35); transition: transform 0.15s; }
-    .vp-play .pt { color: #c7d6ee; font-size: 12.5px; font-weight: 700; }
-    .vid-card:hover .vp-play .pp { transform: scale(1.1); }
     .tf-card { width: 235px; border-radius: 16px; overflow: hidden; box-shadow: var(--shadow); }
     .tf-card img { width: 100%; aspect-ratio: 1; object-fit: cover; }
 
@@ -235,12 +236,13 @@ const TF_IMAGES = Array.from({ length: 12 }, (_, i) => `/images/sd-proof/tf-${St
       <div class="carousel" id="vidCar">
         {VIDEOS.map((v) => (
           <div class="car-item vid-card" data-vid={v.id}>
+            <img class="thumb" src={`/images/sd-videos/${v.id}.webp`} alt={v.label} width="720" height="405" loading="lazy" decoding="async" />
             <div class="vp">
-              <div>
-                <div class="vp-stars">★★★★★</div>
-                <p class="vp-label">{v.label}</p>
+              <div class="vp-center"><span class="pp">▶</span></div>
+              <div class="vp-bar">
+                <span class="pt">Video abspielen</span>
+                <span class="vp-stars">★★★★★</span>
               </div>
-              <div class="vp-play"><span class="pp">▶</span><span class="pt">Video abspielen</span></div>
             </div>
           </div>
         ))}
@@ -318,6 +320,10 @@ const TF_IMAGES = Array.from({ length: 12 }, (_, i) => `/images/sd-proof/tf-${St
       // data-domain nimmt nur die Subdomain, KEIN Prefill-Query (das würde die URL brechen).
       if (ycbmLoaded) return;
       ycbmLoaded = true;
+      // Der Kalender ist mit dem Ab-40-Funnel geteilt und leitet nach der Buchung immer
+      // auf /ab-40/bestaetigt. Herkunft merken, damit call_booked dort unter diesem
+      // Funnel zaehlt und nicht unter ab-40.
+      try { sessionStorage.setItem('fot_booking_lp', JSON.stringify({ slug: LP_SLUG, name: LP_NAME })); } catch (e) {}
       const s = document.createElement('script');
       s.src = 'https://embed.ycb.me';
       s.async = true;

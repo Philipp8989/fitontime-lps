@@ -42,15 +42,24 @@ const SHEETS: Record<string, SheetConfig> = {
       return [datum, d.name, d.email, d.phone || '', 'Bewerbung', a.situation || '', a.ziel || '', a.invest || '', a.entscheidung || ''];
     },
   },
-  // Schilddrüsen-Analyse VSL-Funnel (Trust-Funnel, neu 2026-08-20): schreibt ins
-  // Ab-40-Sheet (gleiches Angebot, gleicher Call), Marker unterscheidet die Quelle.
+  // VSL-Trust-Funnel "So funktioniert FOT" (frueher schilddruesen-analyse, umbenannt 27.08.2026):
+  // schreibt ins Ab-40-Sheet (gleiches Angebot, gleicher Call), Marker unterscheidet die Quelle.
   // Spalten: Datum | Name | E-Mail | Telefon | Funnel-Marker | Gate 1 | Gate 2 | Gate 3
+  'so-funktioniert-fot': {
+    id: '1VGtODlUlyWDftRYYf96JL_GhHTJxnPLwDBAqp_Dgbkc',
+    range: 'Tabellenblatt1!A:I',
+    buildRow: (datum, d) => {
+      const a = d.answers || {};
+      return [datum, d.name, d.email, d.phone || '', 'So-funktioniert-FOT', a.g1 || '', a.g2 || '', a.g3 || ''];
+    },
+  },
+  // Alias: alte Slug-Version, solange noch Tabs mit der alten URL offen sein koennen
   'schilddruesen-analyse': {
     id: '1VGtODlUlyWDftRYYf96JL_GhHTJxnPLwDBAqp_Dgbkc',
     range: 'Tabellenblatt1!A:I',
     buildRow: (datum, d) => {
       const a = d.answers || {};
-      return [datum, d.name, d.email, d.phone || '', 'SD-Analyse', a.g1 || '', a.g2 || '', a.g3 || ''];
+      return [datum, d.name, d.email, d.phone || '', 'So-funktioniert-FOT', a.g1 || '', a.g2 || '', a.g3 || ''];
     },
   },
   // Zieldatum-Rechner (neu 2026-08)

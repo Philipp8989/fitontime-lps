@@ -177,8 +177,16 @@ const PRECALL_EMBED = (import.meta.env.PUBLIC_FOT_AB40_PRECALL_URL || '').trim()
       session = (crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2) + Date.now());
       sessionStorage.setItem(SESSION_KEY, session);
     }
+    // Der YCBM-Kalender wird von mehreren Funnels genutzt und leitet nach jeder Buchung
+    // hierher. Steht in der Session ein Herkunfts-Funnel, laufen die Events unter dessen
+    // Slug (sonst zaehlt jede Buchung faelschlich als Ab-40-Buchung).
+    let SRC = null;
+    try { SRC = JSON.parse(sessionStorage.getItem('fot_booking_lp') || 'null'); } catch (e) {}
+    const EV_SLUG = (SRC && SRC.slug) || LP_SLUG;
+    const EV_NAME = (SRC && SRC.name) || LP_NAME;
+
     function send(obj) {
-      const payload = JSON.stringify(Object.assign({ lp: LP_SLUG, lp_name: LP_NAME, session }, obj));
+      const payload = JSON.stringify(Object.assign({ lp: EV_SLUG, lp_name: EV_NAME, session }, obj));
       try {
         if (navigator.sendBeacon) { navigator.sendBeacon('/api/track', new Blob([payload], { type: 'application/json' })); return; }
       } catch (e) {}
@@ -189,12 +197,12 @@ const PRECALL_EMBED = (import.meta.env.PUBLIC_FOT_AB40_PRECALL_URL || '').trim()
 
     // YCBM leitet nach der Buchung hierher weiter. call_booked genau einmal feuern
     // (Reload der Bestaetigungsseite darf das Event nicht doppeln).
-    if (!sessionStorage.getItem('fot_ab40_booked')) {
-      sessionStorage.setItem('fot_ab40_booked', '1');
+    if (!sessionStorage.getItem('fot_booked_' + EV_SLUG)) {
+      sessionStorage.setItem('fot_booked_' + EV_SLUG, '1');
       let answers = {};
       try { answers = JSON.parse(sessionStorage.getItem('fot_ab40_answers') || '{}'); } catch (e) {}
       send(Object.assign({ event: 'call_booked' }, answers));
-      if (window.__lp) window.__lp.meta('Schedule', { content_name: 'FoT Ab-40 Call' });
+      if (window.__lp) window.__lp.meta('Schedule', { content_name: 'FoT Call ' + EV_SLUG });
       if (window.__lp) window.__lp.google('book_appointment', 'xeKFCM35-9UcEOfryccD');
     }
   </script>

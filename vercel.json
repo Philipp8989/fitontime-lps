@@ -1,6 +1,9 @@
 {
   "framework": "astro",
   "redirects": [
+    { "source": "/schilddruesen-analyse", "destination": "/so-funktioniert-fot", "permanent": true },
+    { "source": "/schilddruesen-analyse/", "destination": "/so-funktioniert-fot/", "permanent": true },
+    { "source": "/schilddruesen-analyse/:path*", "destination": "/so-funktioniert-fot/:path*", "permanent": true },
     { "source": "/blockaden-report", "destination": "/ayurveda-quiz", "permanent": true },
     { "source": "/blockaden-report/", "destination": "/ayurveda-quiz/", "permanent": true },
     { "source": "/blockaden-report/:path*", "destination": "/ayurveda-quiz/:path*", "permanent": true },

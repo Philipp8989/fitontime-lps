@@ -1,15 +1,15 @@
 ---
-// VSL-Call-Funnel "Schilddrüsen-Analyse", Schritt 1: Opt-in mit maximalem Proof
+// VSL-Call-Funnel "So funktioniert FOT" (bis 27.08.2026: schilddruesen-analyse), Schritt 1: Opt-in mit maximalem Proof
 // Redesign 20.08.2026 (Philipp): eigenes Design in FoT-CI (Inter, #4584EE, Navy-Hero),
 // Desktop-first mit 2-Spalten-Hero, voll responsive, swipebare Video- und Bild-Testimonials.
 // Proof-Quellen: 24 YouTube-Erfolgsgeschichten (fitontime.ch), Vorher-Nachher-Collagen,
 // Wording nach Funnel-Sprachanalyse (Filip, 10 Call-Skripte, 20.08.): Kundinnen-Sprache statt
 // Sparmodus-Frame. Keine unbelegten Prozent-/kg-Claims, kein Krankenkassen-Claim (Philipp 20.08.).
-// Flow: Opt-in (3 Fragen + Formular) → /schilddruesen-analyse/danke (VSL + Termin)
+// Flow: Opt-in (3 Fragen + Formular) → /so-funktioniert-fot/danke (VSL + Termin)
 import CookieBanner from '../../components/CookieBanner.astro';
 
-const LP_SLUG = 'schilddruesen-analyse';
-const LP_NAME = 'Schilddrüsen-Analyse VSL Funnel';
+const LP_SLUG = 'so-funktioniert-fot';
+const LP_NAME = 'So funktioniert FOT (VSL-Funnel)';
 const PIXEL_ID = (import.meta.env.PUBLIC_META_PIXEL_ID || '').trim();
 const HYROS_ID = (import.meta.env.PUBLIC_HYROS_ID || '').trim();
 const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').trim();
@@ -168,21 +168,21 @@ const TF_IMAGES = [...Array.from({ length: 12 }, (_, i) => `/images/sd-proof/tf-
 
     /* Video-Cards */
     .vid-card { width: 340px; border-radius: 16px; overflow: hidden; background: var(--navy); position: relative; aspect-ratio: 16 / 9; cursor: pointer; box-shadow: var(--shadow); }
-    .vid-card img.thumb { width: 100%; height: 100%; object-fit: cover; opacity: 0.92; transition: transform 0.3s, opacity 0.2s; }
-    .vid-card:hover img.thumb { transform: scale(1.04); opacity: 1; }
+    .vid-card img.thumb { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 1; transition: transform 0.35s ease; }
+    .vid-card:hover img.thumb { transform: scale(1.045); }
+    .vid-card .vp { position: absolute; inset: 0; padding: 10px 12px; display: flex; flex-direction: column; justify-content: flex-end; background: linear-gradient(180deg, rgba(11,34,68,0.06) 0%, rgba(11,34,68,0) 30%, rgba(11,34,68,0) 68%, rgba(11,34,68,0.82) 100%); }
+    .vid-card .vp-center { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+    .vid-card .vp-center .pp { width: 56px; height: 56px; border-radius: 50%; background: rgba(255,255,255,0.95); color: var(--blue); display: flex; align-items: center; justify-content: center; font-size: 19px; padding-left: 4px; box-shadow: 0 10px 28px rgba(0,0,0,0.4); transition: transform 0.15s; }
+    .vid-card:hover .vp-center .pp { transform: scale(1.1); }
+    .vid-card .vp-bar { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .vp-bar .pt { color: #fff; font-size: 12.5px; font-weight: 700; text-shadow: 0 1px 6px rgba(0,0,0,0.5); }
+    .vp-stars { color: var(--amber); font-size: 12px; letter-spacing: 1.5px; text-shadow: 0 1px 6px rgba(0,0,0,0.5); }
     .vid-card .play { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
     .vid-card .play span { width: 58px; height: 58px; border-radius: 50%; background: rgba(255,255,255,0.94); color: var(--blue); display: flex; align-items: center; justify-content: center; font-size: 21px; padding-left: 4px; box-shadow: 0 8px 24px rgba(0,0,0,0.35); transition: transform 0.15s; }
     .vid-card:hover .play span { transform: scale(1.08); }
     .vid-card iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
     .vid-card .tag { position: absolute; left: 10px; bottom: 10px; background: rgba(11,34,68,0.82); color: #fff; font-size: 11px; font-weight: 700; border-radius: 999px; padding: 5px 11px; }
     .vid-card { background: linear-gradient(150deg, #123059 0%, #0b2244 70%); }
-    .vid-card .vp { position: absolute; inset: 0; padding: 18px; display: flex; flex-direction: column; justify-content: space-between; }
-    .vp-stars { color: var(--amber); font-size: 13px; letter-spacing: 2px; margin-bottom: 7px; }
-    .vp-label { color: #fff; font-size: 17px; font-weight: 800; line-height: 1.3; letter-spacing: -0.2px; }
-    .vp-play { display: flex; align-items: center; gap: 10px; }
-    .vp-play .pp { width: 44px; height: 44px; border-radius: 50%; background: rgba(255,255,255,0.95); color: var(--blue); display: flex; align-items: center; justify-content: center; font-size: 16px; padding-left: 3px; box-shadow: 0 8px 24px rgba(0,0,0,0.35); transition: transform 0.15s; }
-    .vp-play .pt { color: #c7d6ee; font-size: 12.5px; font-weight: 700; }
-    .vid-card:hover .vp-play .pp { transform: scale(1.1); }
 
     /* Vorher/Nachher-Cards */
     .tf-card { width: 265px; border-radius: 16px; overflow: hidden; box-shadow: var(--shadow); }
@@ -469,12 +469,13 @@ const TF_IMAGES = [...Array.from({ length: 12 }, (_, i) => `/images/sd-proof/tf-
       <div class="carousel" id="vidCar">
         {VIDEOS.map((v) => (
           <div class="car-item vid-card" data-vid={v.id}>
+            <img class="thumb" src={`/images/sd-videos/${v.id}.webp`} alt={v.label} width="720" height="405" loading="lazy" decoding="async" />
             <div class="vp">
-              <div>
-                <div class="vp-stars">★★★★★</div>
-                <p class="vp-label">{v.label}</p>
+              <div class="vp-center"><span class="pp">▶</span></div>
+              <div class="vp-bar">
+                <span class="pt">Video abspielen</span>
+                <span class="vp-stars">★★★★★</span>
               </div>
-              <div class="vp-play"><span class="pp">▶</span><span class="pt">Video abspielen</span></div>
             </div>
           </div>
         ))}
@@ -677,7 +678,7 @@ const TF_IMAGES = [...Array.from({ length: 12 }, (_, i) => `/images/sd-proof/tf-
         document.getElementById('gateSteps').style.display = 'none';
         document.getElementById('optinCard').classList.add('on');
         track('gate_complete');
-        if (window.__lp) window.__lp.meta('ViewContent', { content_name: 'FoT SD-Analyse Gate Complete', currency: 'CHF' });
+        if (window.__lp) window.__lp.meta('ViewContent', { content_name: 'FoT So-funktioniert-FOT Gate Complete', currency: 'CHF' });
         window.__scrollGate();
       }, 180);
     }
@@ -720,10 +721,10 @@ const TF_IMAGES = [...Array.from({ length: 12 }, (_, i) => `/images/sd-proof/tf-
           throw new Error(j.error || 'Fehler beim Senden');
         }
         track('lead_submit');
-        if (window.__lp) window.__lp.meta('Lead', { content_name: 'FoT SD-Analyse Lead', currency: 'CHF' });
+        if (window.__lp) window.__lp.meta('Lead', { content_name: 'FoT So-funktioniert-FOT Lead', currency: 'CHF' });
         if (window.__lp) window.__lp.google('generate_lead', 'j12JCMr5-9UcEOfryccD');
         sessionStorage.setItem('fot_sda_lead', JSON.stringify({ name: name.split(' ')[0], email }));
-        window.location.href = '/schilddruesen-analyse/danke';
+        window.location.href = '/so-funktioniert-fot/danke';
       } catch (ex) {
         btn.disabled = false;
         btn.textContent = 'Ja, zeig mir das Video →';
