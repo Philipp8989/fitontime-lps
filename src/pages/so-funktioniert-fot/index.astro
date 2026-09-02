@@ -7,6 +7,7 @@
 // Sparmodus-Frame. Keine unbelegten Prozent-/kg-Claims, kein Krankenkassen-Claim (Philipp 20.08.).
 // Flow: Opt-in (3 Fragen + Formular) → /so-funktioniert-fot/danke (VSL + Termin)
 import CookieBanner from '../../components/CookieBanner.astro';
+import ScaleeeCredit from '../../components/ScaleeeCredit.astro';
 
 const LP_SLUG = 'so-funktioniert-fot';
 const LP_NAME = 'So funktioniert FOT (VSL-Funnel)';
@@ -610,6 +611,7 @@ const TF_IMAGES = [...Array.from({ length: 12 }, (_, i) => `/images/sd-proof/tf-
   <footer>
     <p class="disclaimer">Dieses Angebot richtet sich an gesunde Erwachsene. Die gezeigten Ergebnisse sind individuelle Erfahrungen und keine Erfolgsgarantie. Kein Ersatz für ärztliche Beratung oder Diagnose.</p>
     <a href={IMPRESSUM_URL} target="_blank" rel="noopener">Impressum</a> · <a href={DATENSCHUTZ_URL} target="_blank" rel="noopener">Datenschutz</a>
+  <div style="margin-top:10px;text-align:center;"><ScaleeeCredit /></div>
   </footer>
 
   <CookieBanner

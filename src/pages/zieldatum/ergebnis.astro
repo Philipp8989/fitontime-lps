@@ -2,6 +2,7 @@
 // Zieldatum-Ergebnis  -  animierte Prognose-Kurve + Vorher/Nachher-Drag + Anlass-Abgleich
 // Liest alles aus sessionStorage (gesetzt in /zieldatum/index.astro)
 import CookieBanner from '../../components/CookieBanner.astro';
+import ScaleeeCredit from '../../components/ScaleeeCredit.astro';
 const impressumUrl = 'https://fitontime.ch/impressum-datenschutz';
 const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
 ---
@@ -191,6 +192,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
   <footer>
     <a href={impressumUrl} target="_blank" rel="noopener">Impressum</a> ·
     <a href={datenschutzUrl} target="_blank" rel="noopener">Datenschutz</a>
+  <div style="margin-top:10px;text-align:center;"><ScaleeeCredit /></div>
   </footer>
 </div>
 

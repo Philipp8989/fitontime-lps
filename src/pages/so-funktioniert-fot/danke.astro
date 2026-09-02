@@ -6,6 +6,7 @@
 // Hinweis: YCBM leitet nach der Buchung auf /ab-40/bestaetigt weiter (Account-seitig
 // konfiguriert), call_booked feuert dort unter dem ab-40-Slug.
 import CookieBanner from '../../components/CookieBanner.astro';
+import ScaleeeCredit from '../../components/ScaleeeCredit.astro';
 
 const LP_SLUG = 'so-funktioniert-fot';
 const LP_NAME = 'So funktioniert FOT (VSL-Funnel)';
@@ -275,6 +276,7 @@ const TF_IMAGES = Array.from({ length: 12 }, (_, i) => `/images/sd-proof/tf-${St
   <footer>
     <p class="disclaimer">Die gezeigten Ergebnisse sind individuelle Erfahrungen und keine Erfolgsgarantie. Ergebnisse hängen von persönlichen Voraussetzungen, Ausgangslage und Mitarbeit ab. Kein Ersatz für ärztliche Beratung.</p>
     <a href={IMPRESSUM_URL} target="_blank" rel="noopener">Impressum</a> · <a href={DATENSCHUTZ_URL} target="_blank" rel="noopener">Datenschutz</a>
+  <div style="margin-top:10px;text-align:center;"><ScaleeeCredit /></div>
   </footer>
 
   <CookieBanner

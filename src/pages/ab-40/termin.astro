@@ -4,6 +4,7 @@
 // Antworten gehen als Event ins Tracking. YCBM sendet kein Buchungs-Event (nur Hoehe),
 // daher leitet YCBM nach der Buchung auf /ab-40/bestaetigt weiter, wo call_booked feuert.
 import CookieBanner from '../../components/CookieBanner.astro';
+import ScaleeeCredit from '../../components/ScaleeeCredit.astro';
 
 const LP_SLUG = 'ab-40';
 const LP_NAME = 'Ab-40 VSL Funnel';
@@ -170,6 +171,7 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
 
   <footer>
     <a href={IMPRESSUM_URL} target="_blank" rel="noopener">Impressum</a> · <a href={DATENSCHUTZ_URL} target="_blank" rel="noopener">Datenschutz</a>
+  <div style="margin-top:10px;text-align:center;"><ScaleeeCredit /></div>
   </footer>
 
   <CookieBanner

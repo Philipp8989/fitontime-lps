@@ -1,0 +1,38 @@
+---
+// Scaleee-Wortmarke in der Fusszeile, gleiche Optik wie auf strobel-dach.de.
+// BEWUSST OHNE LINK: LPs laufen auf bezahltem Traffic, ein ausgehender Link
+// waere ein Ausstieg aus dem Funnel. Nur Branding.
+// Schrift: 2 KB Subset von ClashDisplay (nur die Zeichen von "Scaleee").
+// Gehoert in jede LP-Fusszeile, siehe lp-machine SKILL.md.
+---
+
+<span class="scaleee-credit-lead">
+  Created by
+  <span class="scaleee-credit">Scal<span class="scaleee-credit-accent">eee</span></span>
+</span>
+
+<style>
+  @font-face {
+    font-family: 'ClashDisplay Credit';
+    src: url('/fonts/ClashDisplay-credit.woff2') format('woff2');
+    font-weight: 400 700;
+    font-display: swap;
+  }
+  .scaleee-credit-lead {
+    display: inline-block;
+    font-size: 11px;
+    line-height: 1.4;
+    color: #64748b;
+    white-space: nowrap;
+  }
+  .scaleee-credit {
+    font-family: 'ClashDisplay Credit', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: -0.01em;
+    color: #64748b;
+  }
+  .scaleee-credit-accent {
+    color: #b45309;
+  }
+</style>

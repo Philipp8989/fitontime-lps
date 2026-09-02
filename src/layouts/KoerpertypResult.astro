@@ -2,6 +2,7 @@
 // Gemeinsames Layout für die 3 Stoffwechsel-Ergebnis-Pages (staemmig, soft, zierlich).
 // Identische Struktur und Styling, nur Inhalt kommt aus Props.
 import CookieBanner from '../components/CookieBanner.astro';
+import ScaleeeCredit from '../components/ScaleeeCredit.astro';
 
 export interface Props {
   typ: 'staemmig' | 'soft' | 'zierlich';
@@ -216,6 +217,7 @@ const imageSrc = `/images/bodytypes/${typ}.png`;
     <footer>
       <a href={impressumUrl} target="_blank" rel="noopener">Impressum</a> &middot;
       <a href={datenschutzUrl} target="_blank" rel="noopener">Datenschutzerklärung</a>
+    <div style="margin-top:10px;text-align:center;"><ScaleeeCredit /></div>
     </footer>
 
   </main>

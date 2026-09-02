@@ -3,6 +3,7 @@
 // Kern: Interaktion ab Sekunde 0 (Doppel-Slider im Hero) + geblurrter Datums-Teaser
 // Danach: 8 Tap/Slide-Schritte, Lead-Gate, Prognose-Korridor auf /zieldatum/ergebnis/
 import CookieBanner from '../../components/CookieBanner.astro';
+import ScaleeeCredit from '../../components/ScaleeeCredit.astro';
 const impressumUrl = 'https://fitontime.ch/impressum-datenschutz';
 const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
 ---
@@ -314,6 +315,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
     <footer>
       <p class="disc">Der Zieldatum-Rechner liefert eine Einschätzung auf Basis deiner Angaben und typischer Verläufe, keine medizinische Prognose und kein garantiertes Ergebnis. Jeder Körper reagiert anders. Bei Erkrankungen, Medikamenten oder in der Schwangerschaft sprich bitte vorher mit deiner Ärztin oder deinem Arzt.</p>
       <p style="margin-top:14px"><a href={impressumUrl}>Impressum</a> · <a href={datenschutzUrl}>Datenschutz</a></p>
+    <div style="margin-top:10px;text-align:center;"><ScaleeeCredit /></div>
     </footer>
   </div>
 </div>

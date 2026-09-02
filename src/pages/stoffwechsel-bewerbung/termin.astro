@@ -2,6 +2,7 @@
 // Bewerbungs-Funnel, Schritt 2: Terminwahl (Calendly)
 // Die Qualifizierung ist schon in der Bewerbung passiert, hier nur noch Kalender.
 import CookieBanner from '../../components/CookieBanner.astro';
+import ScaleeeCredit from '../../components/ScaleeeCredit.astro';
 
 const LP_SLUG = 'stoffwechsel-bewerbung';
 const LP_NAME = 'Stoffwechsel Bewerbungs-Funnel';
@@ -73,6 +74,7 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
 
   <footer>
     <a href={IMPRESSUM_URL} target="_blank" rel="noopener">Impressum</a> · <a href={DATENSCHUTZ_URL} target="_blank" rel="noopener">Datenschutz</a>
+  <div style="margin-top:10px;text-align:center;"><ScaleeeCredit /></div>
   </footer>
 
   <CookieBanner

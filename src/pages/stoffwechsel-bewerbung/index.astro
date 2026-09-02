@@ -4,6 +4,7 @@
 // übersetzt auf FoT: Qualifier-Callout, System-Name "Speicher-Schalter", echte Proof-Zahlen,
 // Bewerbungs-Framing statt "Termin buchen" (Status-Umkehr: sie bewirbt sich bei uns).
 import CookieBanner from '../../components/CookieBanner.astro';
+import ScaleeeCredit from '../../components/ScaleeeCredit.astro';
 
 const LP_SLUG = 'stoffwechsel-bewerbung';
 const LP_NAME = 'Stoffwechsel Bewerbungs-Funnel';
@@ -280,6 +281,7 @@ const SPOTS = 10;
   <footer>
     <p class="disclaimer">Dieses Angebot richtet sich an gesunde Erwachsene. Die gezeigten Ergebnisse sind individuelle Erfahrungen und keine Erfolgsgarantie. Kein Ersatz für ärztliche Beratung. Diese Website ist kein Teil der Facebook-Website oder von Meta Platforms Inc. und wird in keiner Weise von Meta unterstützt.</p>
     <a href={IMPRESSUM_URL} target="_blank" rel="noopener">Impressum</a> · <a href={DATENSCHUTZ_URL} target="_blank" rel="noopener">Datenschutz</a>
+  <div style="margin-top:10px;text-align:center;"><ScaleeeCredit /></div>
   </footer>
 
   <CookieBanner

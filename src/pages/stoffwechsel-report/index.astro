@@ -3,6 +3,7 @@
 // Struktur 1:1 an Live-Winner fit-on-time.ch/blockaden-loesen/ orientiert
 // UI/UX-Upgrade: echte Vorher-Nachher-Bilder, cleaneres Typo-System, bessere Mobile-UX
 import CookieBanner from '../../components/CookieBanner.astro';
+import ScaleeeCredit from '../../components/ScaleeeCredit.astro';
 const impressumUrl = 'https://fitontime.ch/impressum-datenschutz';
 const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
 ---
@@ -441,6 +442,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
       <footer>
         <a href={impressumUrl} target="_blank" rel="noopener">Impressum</a> &middot;
         <a href={datenschutzUrl} target="_blank" rel="noopener">Datenschutzerklärung</a>
+      <div style="margin-top:10px;text-align:center;"><ScaleeeCredit /></div>
       </footer>
     </div>
   </div>

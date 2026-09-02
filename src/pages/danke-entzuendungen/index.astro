@@ -1,4 +1,5 @@
 ---
+import ScaleeeCredit from '../../components/ScaleeeCredit.astro';
 // Danke-Seite nach Anmeldung "Entzuendungen Webinar"
 // Bestaetigung, Datum, Workshop-Link zum Speichern, anonymous-Hinweis, Kalender-Add
 const LP_SLUG = 'entzuendungen';
@@ -211,6 +212,7 @@ const ICS_LINK = '/api/ics-entzuendungen';
     <div class="copy">© Fit on Time {new Date().getFullYear()}</div>
     <a href={IMPRESSUM_URL} target="_blank" rel="noopener">Impressum</a>·
     <a href={IMPRESSUM_URL} target="_blank" rel="noopener">Datenschutzerklärung</a>
+  <div style="margin-top:10px;text-align:center;"><ScaleeeCredit /></div>
   </footer>
 
   <script is:inline define:vars={{ LP_SLUG, LP_NAME, WORKSHOP_LINK, PIXEL_ID }}>

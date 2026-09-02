@@ -3,6 +3,7 @@
 // Gleiches Pattern wie ab-40/bestaetigt: 3-Schritte-Framing + Pre-Call-Video + Testimonials,
 // senkt No-Shows und bringt die Frau vorbereitet ins Gespräch.
 import CookieBanner from '../../components/CookieBanner.astro';
+import ScaleeeCredit from '../../components/ScaleeeCredit.astro';
 
 const LP_SLUG = 'stoffwechsel-bewerbung';
 const LP_NAME = 'Stoffwechsel Bewerbungs-Funnel';
@@ -158,6 +159,7 @@ const PRECALL_EMBED = (import.meta.env.PUBLIC_FOT_AB40_PRECALL_URL || '').trim()
 
   <footer>
     <a href={IMPRESSUM_URL} target="_blank" rel="noopener">Impressum</a> · <a href={DATENSCHUTZ_URL} target="_blank" rel="noopener">Datenschutz</a>
+  <div style="margin-top:10px;text-align:center;"><ScaleeeCredit /></div>
   </footer>
 
   <CookieBanner

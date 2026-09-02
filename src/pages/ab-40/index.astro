@@ -3,6 +3,7 @@
 // Blueprint: Hyperscale-Analyse 07/2026 (Opt-in → VSL → Qualifier → Booking → Bestätigt)
 // Headline-Formel: Callout + Ergebnis + ohne-Einwände, Mechanismus = "Speicher-Schalter"
 import CookieBanner from '../../components/CookieBanner.astro';
+import ScaleeeCredit from '../../components/ScaleeeCredit.astro';
 
 const LP_SLUG = 'ab-40';
 const LP_NAME = 'Ab-40 VSL Funnel';
@@ -221,6 +222,7 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
   <footer>
     <p class="disclaimer">Dieses Angebot richtet sich an gesunde Erwachsene. Die gezeigten Ergebnisse sind individuelle Erfahrungen und keine Erfolgsgarantie. Kein Ersatz für ärztliche Beratung.</p>
     <a href={IMPRESSUM_URL} target="_blank" rel="noopener">Impressum</a> · <a href={DATENSCHUTZ_URL} target="_blank" rel="noopener">Datenschutz</a>
+  <div style="margin-top:10px;text-align:center;"><ScaleeeCredit /></div>
   </footer>
 
   <CookieBanner

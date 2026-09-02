@@ -2,6 +2,7 @@
 // MSM-Ergebnis-Seite · zeigt Score-Teaser · primärer CTA = Termin selbst buchen (YCBM)
 // Liest Ergebnis aus sessionStorage (vom Quiz gesetzt)
 import CookieBanner from '../../components/CookieBanner.astro';
+import ScaleeeCredit from '../../components/ScaleeeCredit.astro';
 const impressumUrl = 'https://fitontime.ch/impressum-datenschutz';
 const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
 ---
@@ -269,6 +270,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
     <footer>
       <a href={impressumUrl} target="_blank" rel="noopener">Impressum</a> ·
       <a href={datenschutzUrl} target="_blank" rel="noopener">Datenschutzerklärung</a>
+    <div style="margin-top:10px;text-align:center;"><ScaleeeCredit /></div>
     </footer>
   </div>
 

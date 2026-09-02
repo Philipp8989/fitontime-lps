@@ -3,6 +3,7 @@
 // 9-Frage Stoffwechsel-Quiz, Single-Page, kein separates Result-Page
 // Quelle dokumentiert in _funnel-source.md
 import CookieBanner from '../../components/CookieBanner.astro';
+import ScaleeeCredit from '../../components/ScaleeeCredit.astro';
 
 const LP_SLUG = 'quiz';
 const LP_NAME = '60-Sekunden Stoffwechsel-Quiz';
@@ -327,6 +328,7 @@ const QUESTIONS = [
     <!-- Footer-Legal mini -->
     <div class="footer-legal" style="margin-top: 30px;">
       <a href={IMPRESSUM_URL} target="_blank" rel="noopener">Impressum</a> | <a href={DATENSCHUTZ_URL} target="_blank" rel="noopener">Datenschutz</a>
+      <div style="margin-top:10px;text-align:center;"><ScaleeeCredit /></div>
     </div>
   </main>
 

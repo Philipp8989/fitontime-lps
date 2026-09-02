@@ -2,6 +2,7 @@
 // Recruiting-Funnel-Layout: Multi-Step-SPA.
 // Steps client-side via JS, ein Astro-File pro Job-Funnel rendert via diesem Layout.
 import CookieBanner from '../components/CookieBanner.astro';
+import ScaleeeCredit from '../components/ScaleeeCredit.astro';
 
 export interface QuizQuestion {
   id: 'q1' | 'q2' | 'q3';
@@ -515,6 +516,7 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
     <footer>
       <a href="https://fitontime.ch/impressum-datenschutz" target="_blank" rel="noopener">Impressum</a>·
       <a href="https://fitontime.ch/impressum-datenschutz" target="_blank" rel="noopener">Datenschutz</a>
+    <div style="margin-top:10px;text-align:center;"><ScaleeeCredit /></div>
     </footer>
 
     <CookieBanner

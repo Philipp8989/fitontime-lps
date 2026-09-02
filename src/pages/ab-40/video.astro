@@ -3,6 +3,7 @@
 // Video oben, Qualifier-Checkbox vor dem Termin-CTA (Hyperscale-Pattern "If NO, do NOT book")
 // VSL_EMBED: Loom/Vimeo-Embed-URL eintragen, sobald Fabian das Video aufgenommen hat.
 import CookieBanner from '../../components/CookieBanner.astro';
+import ScaleeeCredit from '../../components/ScaleeeCredit.astro';
 
 const LP_SLUG = 'ab-40';
 const LP_NAME = 'Ab-40 VSL Funnel';
@@ -214,6 +215,7 @@ const VSL_EMBED = (import.meta.env.PUBLIC_FOT_AB40_VSL_URL || '').trim();
   <footer>
     <p class="disclaimer">Die gezeigten Ergebnisse sind individuelle Erfahrungen und keine Erfolgsgarantie. Ergebnisse hängen von persönlichen Voraussetzungen, Ausgangslage und Mitarbeit ab. Kein Ersatz für ärztliche Beratung.</p>
     <a href={IMPRESSUM_URL} target="_blank" rel="noopener">Impressum</a> · <a href={DATENSCHUTZ_URL} target="_blank" rel="noopener">Datenschutz</a>
+  <div style="margin-top:10px;text-align:center;"><ScaleeeCredit /></div>
   </footer>
 
   <CookieBanner

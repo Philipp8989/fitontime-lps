@@ -1,6 +1,7 @@
 ---
 // Webinar-Opt-in "Entzuendungen", v3 image-led und tight
 import CookieBanner from '../../components/CookieBanner.astro';
+import ScaleeeCredit from '../../components/ScaleeeCredit.astro';
 
 const LP_SLUG = 'entzuendungen';
 const LP_NAME = 'Entzündungen Webinar';
@@ -409,6 +410,7 @@ const LIVE_DATE_ISO = '2026-05-12T18:00:00+02:00';
     <div class="copy">© Fit on Time {new Date().getFullYear()}</div>
     <a href={IMPRESSUM_URL} target="_blank" rel="noopener">Impressum</a>·
     <a href={DATENSCHUTZ_URL} target="_blank" rel="noopener">Datenschutzerklärung</a>
+  <div style="margin-top:10px;text-align:center;"><ScaleeeCredit /></div>
   </footer>
 
   <!-- Opt-in Modal -->
