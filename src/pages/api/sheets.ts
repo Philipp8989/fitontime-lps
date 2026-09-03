@@ -4,6 +4,7 @@ import { waitUntil } from '@vercel/functions';
 import { sendCapiEvent, clientMeta } from '../../lib/capi';
 import { normalizePhone } from '../../lib/phone';
 import { buildAttribution } from '../../lib/attribution';
+import { sendOpenAiAdsEvent } from '../../lib/openaiAds';
 
 // Pro LP: Sheet-ID + Spalten-Schema. Fehlt der Eintrag, wird kein Sheet-Write gemacht.
 type SheetConfig = {
@@ -308,12 +309,14 @@ export const POST: APIRoute = async ({ request }) => {
     // laeuft via waitUntil mit Retry: Funktion bleibt bis Insert+Mail durch sind, aber
     // der Client kriegt sofort 200, sobald das Sheet steht. Verhindert User-Resubmits
     // bei transienten DB-/Quota-Fehlern (siehe Neon-402-Incident).
+    // Herkunft einmal zentral bestimmen: ohne gclid kein Offline-Conversion-Upload zu
+    // Google Ads, ohne UTMs keine Kanal-Auswertung pro Lead im CRM — und die
+    // OpenAI-Conversion weiter unten braucht dieselbe Quelle (oppref).
+    const attribution = buildAttribution(data, request);
+
     const dashUrl = import.meta.env.DASHBOARD_LEADS_URL;
     const dashKey = import.meta.env.DASHBOARD_LEADS_KEY;
     if (dashUrl && dashKey) {
-      // Herkunft mitschreiben: ohne gclid kein Offline-Conversion-Upload zu Google Ads,
-      // ohne UTMs keine Kanal-Auswertung pro Lead im CRM.
-      const attribution = buildAttribution(data, request);
       const payload = JSON.stringify({
         name: data.name,
         email: data.email,
@@ -433,6 +436,40 @@ export const POST: APIRoute = async ({ request }) => {
           client_user_agent,
         },
       }).catch((e: any) => console.error('[CAPI Lead] Fehler:', e?.message || e));
+    }
+
+    // OpenAI Ads Conversions API (ChatGPT Ads), Conversion-Ereignis "Koerpertyp-Test Lead"
+    // (Basisereignis lead_created).
+    //
+    // Zwei Gates, beide noetig:
+    //   1. Nur der koerpertyp-test-Funnel. Im Ads Manager haengt genau ein
+    //      Conversion-Ereignis an dieser LP, andere Funnels wuerden es verwaessern.
+    //   2. Nur nachweisbare ChatGPT-Klicks (oppref oder utm_source=openai/chatgpt).
+    //      Auf derselben LP laufen parallel Meta- und Google-Ads. Ohne dieses Gate
+    //      meldet die Seite jeden fremden Lead als OpenAI-Conversion und der CPL
+    //      im Ads Manager waere frei erfunden.
+    // Consent-Gate wie bei Meta: gehashte Personendaten gehen nur mit Marketing-Consent raus.
+    const oaiUtms = attribution.utms || {};
+    const oaiSrc = (oaiUtms.utm_source || '').toLowerCase();
+    const fromOpenAi = !!oaiUtms.oppref || oaiSrc === 'openai' || oaiSrc === 'chatgpt';
+    if (lpSlug === 'koerpertyp-test' && fromOpenAi && meta.consent === true) {
+      const oaiName = String(data.name || '').trim();
+      const { client_ip, client_user_agent } = clientMeta(request);
+      sendOpenAiAdsEvent({
+        id: meta.event_id || `oai_lead_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`,
+        type: 'lead_created',
+        sourceUrl: 'https://go.abnehmen-ohne-stress.ch/koerpertyp-test/',
+        user: {
+          email: data.email || '',
+          phone: data.phone || '',
+          firstName: oaiName.split(/\s+/)[0] || '',
+          lastName: oaiName.split(/\s+/).slice(1).join(' '),
+          oppref: oaiUtms.oppref || '',
+          ip: client_ip,
+          userAgent: client_user_agent,
+          country: 'CH',
+        },
+      }).catch((e: any) => console.error('[OAI-ADS Lead] Fehler:', e?.message || e));
     }
 
     return new Response(JSON.stringify({ ok: true }), {

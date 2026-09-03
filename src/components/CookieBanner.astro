@@ -228,7 +228,8 @@ const {
     // Rohwerte, die mit dem Lead in die CRM-Datenbank wandern. Ohne sie steht im
     // CRM zwar der Lead, aber nicht der Kanal — und Google-Ads-Offline-Conversions
     // lassen sich ohne gclid gar nicht zurueckspielen.
-    var CLICK_IDS = ['gclid', 'gbraid', 'wbraid', 'fbclid', 'ttclid', 'msclkid'];
+    // 'oppref' ist die Klick-Kennung von ChatGPT Ads (OpenAI Ads Manager).
+    var CLICK_IDS = ['gclid', 'gbraid', 'wbraid', 'fbclid', 'ttclid', 'msclkid', 'oppref'];
     var UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'utm_id'];
 
     function readClick() {
@@ -254,7 +255,7 @@ const {
     }
 
     function detectClick() {
-      var qs, g = '', fb = '', src = '', params = {};
+      var qs, g = '', fb = '', op = '', src = '', params = {};
       try {
         qs = new URLSearchParams(location.search);
         var all = CLICK_IDS.concat(UTM_KEYS);
@@ -264,10 +265,11 @@ const {
         }
         g = qs.get('gclid') || qs.get('gbraid') || qs.get('wbraid') || '';
         fb = qs.get('fbclid') || '';
+        op = qs.get('oppref') || '';
         src = (qs.get('utm_source') || '').toLowerCase();
       } catch (e) {}
       // Ohne eigenen Klick-Parameter bleibt der zuvor gespeicherte Kanal stehen.
-      if (!g && !fb && !src) {
+      if (!g && !fb && !op && !src) {
         var prev = readClick();
         if (prev) {
           // Referrer nachtragen, solange kein echter Klick gespeichert ist: Wer zuerst
@@ -283,12 +285,13 @@ const {
         // Erster Besuch ohne Klick-Parameter: nur den Referrer festhalten (z.B.
         // youtube.com bei nicht getaggten Ads). google/meta bleiben bewusst false,
         // damit die Conversion-Gates unveraendert nur auf echte Klick-IDs reagieren.
-        return storeClick({ google: false, meta: false, src: '', params: {}, ref: extRef(), landing: location.pathname, ts: Date.now() });
+        return storeClick({ google: false, meta: false, openai: false, src: '', params: {}, ref: extRef(), landing: location.pathname, ts: Date.now() });
       }
       return storeClick({
         google: !!g || src.indexOf('google') === 0 || src === 'youtube' || src === 'yt',
         meta: !!fb || src === 'meta' || src === 'facebook' || src === 'fb' || src === 'instagram' || src === 'ig',
-        src: src || (g ? 'google' : (fb ? 'meta' : '')),
+        openai: !!op || src === 'openai' || src === 'chatgpt',
+        src: src || (g ? 'google' : (fb ? 'meta' : (op ? 'openai' : ''))),
         params: params,
         ref: extRef(),
         landing: location.pathname,
@@ -309,6 +312,7 @@ const {
       var c = lpClick || readClick();
       if (c && c.google) return 'google';
       if (c && c.meta) return 'meta';
+      if (c && c.openai) return 'openai';
       // Wiederkehrer ohne Klick-Parameter: die Netzwerk-Cookies verraten die Herkunft.
       if (readCookie('_gcl_aw')) return 'google';
       if (readCookie('_fbc')) return 'meta';

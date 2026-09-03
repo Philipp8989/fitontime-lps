@@ -11,7 +11,8 @@
 // Ohne diese Daten steht im CRM zwar der Lead, aber nicht seine Herkunft — und
 // Google-Ads-Offline-Conversions lassen sich ohne gclid gar nicht hochladen.
 
-const CLICK_IDS = ['gclid', 'gbraid', 'wbraid', 'fbclid', 'ttclid', 'msclkid'] as const;
+// 'oppref' = Klick-Kennung von ChatGPT Ads, wird ungehasht an die OpenAI-CAPI zurueckgegeben.
+const CLICK_IDS = ['gclid', 'gbraid', 'wbraid', 'fbclid', 'ttclid', 'msclkid', 'oppref'] as const;
 const UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'utm_id'] as const;
 // Nur vom Client, nicht aus der URL: Kanal-Urteil + Einstiegskontext.
 const CONTEXT_KEYS = ['channel', 'landing_ref', 'landing_path', 'page'] as const;
