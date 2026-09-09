@@ -54,6 +54,29 @@ const SHEETS: Record<string, SheetConfig> = {
       return [datum, d.name, d.email, d.phone || '', 'So-funktioniert-FOT', a.g1 || '', a.g2 || '', a.g3 || ''];
     },
   },
+  // InsulinCheck (Quiz, 1:1-Nachbau des Netlify-Prototyps insulin.hormon-check.ch).
+  // Eigenes Sheet "Insulin-Check Leads". Spaltenschema exakt wie der Zapier-Flow
+  // des Prototyps, damit beide Quellen in dieselbe Liste schreiben koennen:
+  // Datum | Name | Email | Tel-Nr | F1..F9 (F8 mehrfach, mit " | " getrennt).
+  // Zeitformat ebenfalls wie Zapier (YYYY-MM-DD HH:mm:ss, Europe/Zurich), nicht de-CH.
+  'insulin-check': {
+    id: '1iIg9hOQMHmkEo_9iCVb7BNqATxHX2AWUQPraLy5xZb4',
+    range: 'Tabellenblatt1!A:M',
+    buildRow: (_datum, d) => {
+      const a = d.answers || {};
+      const p = new Intl.DateTimeFormat('sv-SE', {
+        timeZone: 'Europe/Zurich',
+        year: 'numeric', month: '2-digit', day: '2-digit',
+        hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false,
+      }).format(new Date()).replace('T', ' ');
+      return [
+        p, d.name, d.email, d.phone || '',
+        a.f1_alter || '', a.f2_nach_mahlzeit || '', a.f3_heisshunger || '',
+        a.f4_fettverteilung || '', a.f5_morgen || '', a.f6_jojo || '',
+        a.f7_defizit || '', a.f8_begleiter || '', a.f9_bereitschaft || '',
+      ];
+    },
+  },
   // Alias: alte Slug-Version, solange noch Tabs mit der alten URL offen sein koennen
   'schilddruesen-analyse': {
     id: '1VGtODlUlyWDftRYYf96JL_GhHTJxnPLwDBAqp_Dgbkc',
@@ -418,7 +441,7 @@ export const POST: APIRoute = async ({ request }) => {
         // (= der gesperrte Health-Pixel), damit wäre die Dedup über event_id kaputt.
         pixel_id_override:
           lpSlug === 'longevity' ? '1214902253584066'
-            : lpSlug === 'zieldatum' ? '1316450223953563'
+            : (lpSlug === 'zieldatum' || lpSlug === 'insulin-check') ? '1316450223953563'
               : undefined,
         // Nur Longevity: geschaetzter Lead-Wert (reine Zahl, KEINE Gesundheitsdaten) behebt Meta-Diagnose "gueltige Preisinfo".
         // value/currency muessen mit dem Browser-Pixel (longevity/index.astro) uebereinstimmen. Platzhalter 50 CHF.

@@ -1,0 +1,752 @@
+---
+// InsulinCheck  -  1:1-Nachbau des Netlify-Prototyps insulin.hormon-check.ch
+// Unterschied zum Prototyp: Leads laufen nicht mehr an einen Zapier-Webhook,
+// sondern durch /api/sheets (Sheet + Dashboard-CRM + Meta-CAPI + Hyros).
+// Der rohe fbq('Lead')-Aufruf ist raus, das Lead-Event feuert ueber __lp.meta
+// mit event_id, damit Browser-Pixel und CAPI dedupliziert werden.
+import CookieBanner from '../../components/CookieBanner.astro';
+import ScaleeeCredit from '../../components/ScaleeeCredit.astro';
+const impressumUrl = 'https://fitontime.ch/impressum-datenschutz';
+const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
+// Clean-Domain-Pixel (go.abnehmen-ohne-stress.ch), NICHT der geflaggte Health-Pixel.
+const META_PIXEL_ID = '1316450223953563';
+---
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>InsulinCheck | Blockiert dein Insulin die Fettverbrennung?</title>
+<meta name="description" content="In 2 Minuten herausfinden, ob dein Insulinspiegel deine Fettverbrennung ausbremst. Kostenlose Auswertung für Frauen.">
+<meta name="theme-color" content="#F7F2E9">
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=Karla:wght@400;500;700&display=swap" rel="stylesheet">
+<style is:global>
+:root{
+  --sand:#F7F2E9;
+  --paper:#FFFCF6;
+  --ink:#241E18;
+  --soft:#6E6357;
+  --moss:#33452F;
+  --moss-tint:#E7EBE1;
+  --amber:#B87A22;
+  --amber-tint:#F5E7D0;
+  --line:#E3DACA;
+  --radius:14px;
+  --maxw:660px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--sand);
+  color:var(--ink);
+  font-family:"Karla",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-size:17px;
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3{font-family:"Newsreader","Iowan Old Style",Georgia,serif;font-weight:600;line-height:1.15;margin:0 0 .5em;letter-spacing:-.01em}
+h1{font-size:clamp(28px,6vw,42px)}
+h2{font-size:clamp(23px,4.6vw,31px)}
+h3{font-size:19px}
+p{margin:0 0 1em}
+em{font-style:italic;font-weight:400}
+a{color:var(--moss)}
+
+.wrap{max-width:var(--maxw);margin:0 auto;padding:22px 20px 70px}
+
+/* ---------- Kopf mit Kurve ---------- */
+.brand{font-family:"Newsreader",Georgia,serif;font-size:20px;letter-spacing:.01em;color:var(--ink);text-align:center;margin-bottom:20px}
+.medhint{font-size:13px;color:var(--soft);text-align:center;margin:12px 0 0;line-height:1.45}
+.curvebar{position:relative;margin-bottom:26px}
+.curvebar svg{display:block;width:100%;height:auto;overflow:visible}
+.curvebar .meta{display:flex;justify-content:space-between;font-size:13px;color:var(--soft);margin-top:6px}
+#dot{transition:transform .45s cubic-bezier(.4,0,.2,1)}
+#progress{transition:stroke-dashoffset .45s cubic-bezier(.4,0,.2,1)}
+
+/* ---------- Karten ---------- */
+.card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:26px 22px}
+.screen{display:none}
+.screen.on{display:block}
+
+/* ---------- Intro ---------- */
+.kicker{font-size:14px;color:var(--amber);margin-bottom:10px}
+.lede{font-size:18px;color:var(--soft)}
+.symptoms{list-style:none;padding:0;margin:0 0 22px}
+.symptoms li{padding:11px 0 11px 27px;border-bottom:1px solid var(--line);position:relative;font-size:16px}
+.symptoms li:last-child{border-bottom:none}
+.symptoms li::before{content:"\2713";position:absolute;left:0;top:11px;color:var(--moss);font-weight:700;font-size:15px}
+
+/* ---------- Fragen ---------- */
+.qcount{font-size:14px;color:var(--soft);margin-bottom:8px}
+.qtext{margin-bottom:20px}
+.hint{font-size:14px;color:var(--soft);margin:-12px 0 18px}
+.opts{display:grid;gap:9px}
+.opt{
+  display:block;width:100%;text-align:left;cursor:pointer;
+  background:var(--paper);border:1.5px solid var(--line);border-radius:11px;
+  padding:14px 16px;font:inherit;color:inherit;
+  transition:border-color .15s, background .15s;
+}
+.opt:hover{border-color:var(--moss)}
+.opt:focus-visible{outline:2px solid var(--moss);outline-offset:2px}
+.opt.sel{border-color:var(--moss);background:var(--moss-tint)}
+.opt.sel::after{content:"✓";float:right;color:var(--moss);font-weight:700;margin-left:10px}
+.navrow{display:flex;align-items:center;justify-content:space-between;margin-top:20px;gap:14px}
+.back{background:none;border:none;color:var(--soft);font:inherit;cursor:pointer;padding:6px 0;text-decoration:underline}
+.back:disabled{opacity:0;pointer-events:none}
+
+/* ---------- Buttons ---------- */
+.btn{
+  display:inline-block;width:100%;text-align:center;cursor:pointer;
+  background:var(--moss);color:#FFFCF6;border:none;border-radius:11px;
+  padding:16px 22px;font:inherit;font-weight:700;font-size:17px;
+  text-decoration:none;transition:opacity .15s;
+}
+.btn:hover{opacity:.9}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn.amber{background:var(--amber)}
+.btn-note{font-size:13.5px;color:var(--soft);text-align:center;margin:10px 0 0}
+
+/* ---------- Formular ---------- */
+.field{margin-bottom:14px}
+.field label{display:block;font-size:14px;font-weight:700;margin-bottom:5px}
+.field input{
+  width:100%;padding:13px 14px;font:inherit;
+  background:#fff;border:1.5px solid var(--line);border-radius:10px;color:var(--ink);
+}
+.field input:focus{outline:none;border-color:var(--moss)}
+.field .why{font-size:13px;color:var(--soft);margin-top:4px}
+.consent{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;color:var(--soft);margin:16px 0 18px}
+.consent input{margin-top:3px;width:17px;height:17px;flex-shrink:0;accent-color:var(--moss)}
+.err{color:#9A3412;font-size:14px;margin:0 0 12px;display:none}
+.err.on{display:block}
+
+/* ---------- Auswertung ---------- */
+.scorebox{text-align:center;padding:6px 0 4px}
+.scorenum{font-family:"Newsreader",Georgia,serif;font-size:64px;line-height:1;font-weight:600;color:var(--amber)}
+.scorelabel{font-size:14px;color:var(--soft);margin-top:4px}
+.tier{display:inline-block;background:var(--amber-tint);color:#7A4E12;border-radius:99px;padding:5px 14px;font-size:14px;font-weight:700;margin-top:14px}
+.chart{margin:26px 0 8px}
+.chart svg{display:block;width:100%;height:auto}
+.legend{display:flex;gap:18px;font-size:13px;color:var(--soft);margin-top:8px;flex-wrap:wrap}
+.legend span{display:flex;align-items:center;gap:6px}
+.swatch{width:16px;height:3px;border-radius:2px;display:inline-block}
+.findings{list-style:none;padding:0;margin:0 0 6px}
+.findings li{padding:13px 0;border-bottom:1px solid var(--line);display:flex;gap:12px;font-size:16px}
+.findings li:last-child{border-bottom:none}
+.findings b{font-family:"Newsreader",Georgia,serif;color:var(--amber);flex-shrink:0}
+.sect{margin-top:30px}
+.quote{border-left:3px solid var(--moss-tint);padding-left:16px;color:var(--soft);font-style:italic;margin:0 0 1em}
+.cta{background:var(--moss);color:#F7F2E9;border-radius:var(--radius);padding:28px 22px;margin-top:30px}
+.cta h2{color:#FFFCF6}
+.cta p{color:#D6DDD0}
+.cta .btn{background:#F7F2E9;color:var(--moss);margin-top:6px}
+.cta .btn-note{color:#B9C4B2}
+.checks{list-style:none;padding:0;margin:0 0 22px}
+.checks li{padding:8px 0 8px 24px;position:relative;color:#E6EBE2;font-size:15.5px}
+.checks li::before{content:"—";position:absolute;left:0;color:#9DAF95}
+.small{font-size:13px;color:var(--soft);line-height:1.5}
+.foot{margin-top:38px;padding-top:20px;border-top:1px solid var(--line);text-align:center}
+.foot a{color:var(--soft);margin:0 7px;display:inline-block}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="brand">InsulinCheck</div>
+
+  <!-- Fortschritt als Blutzuckerkurve -->
+  <div class="curvebar" id="curvebar" hidden>
+    <svg viewBox="0 0 640 62" aria-hidden="true">
+      <path id="track" d="M4,48 C60,48 78,14 130,17 C186,20 198,52 254,49 C310,46 322,12 376,15 C432,18 444,50 500,47 C556,44 572,16 636,20"
+            fill="none" stroke="#E3DACA" stroke-width="2.5" stroke-linecap="round"/>
+      <path id="progress" d="M4,48 C60,48 78,14 130,17 C186,20 198,52 254,49 C310,46 322,12 376,15 C432,18 444,50 500,47 C556,44 572,16 636,20"
+            fill="none" stroke="#B87A22" stroke-width="2.5" stroke-linecap="round"/>
+      <circle id="dot" cx="0" cy="0" r="6" fill="#B87A22" stroke="#FFFCF6" stroke-width="2.5"/>
+    </svg>
+    <div class="meta"><span id="progLabel">Frage 1 von 9</span><span>ca. 2 Minuten</span></div>
+  </div>
+
+  <!-- ============ INTRO ============ -->
+  <section class="screen on" id="screen-intro">
+    <p class="kicker">Kostenloses Selbst-Check-Quiz für Frauen</p>
+    <h1>Blockiert dein Insulin die <em>Fettverbrennung?</em></h1>
+    <p class="lede">Viele Frauen essen weniger, bewegen sich mehr und die Waage bleibt trotzdem stehen. Oft liegt es nicht an der Disziplin, sondern an einem Hormon, das im Hintergrund entscheidet, ob dein Körper Fett verbrennt oder einlagert.</p>
+
+    <button class="btn" id="startBtn" style="margin-top:6px">Quiz starten</button>
+    <p class="btn-note">9 Fragen &middot; keine Kosten &middot; Auswertung direkt im Anschluss</p>
+    <p class="medhint">Der InsulinCheck ist ein Selbst-Check und ersetzt keine ärztliche Beratung, Diagnose oder Behandlung.</p>
+
+    <div class="card" style="margin:26px 0 0">
+      <h3 style="margin-bottom:6px">Kommt dir etwas davon bekannt vor?</h3>
+      <ul class="symptoms">
+        <li>Nach Brot, Pasta oder Reis wirst du müde statt satt</li>
+        <li>Am Nachmittag meldet sich das Verlangen nach etwas Süssem</li>
+        <li>Zunehmen tust du zuerst am Bauch, abnehmen dort zuletzt</li>
+        <li>Diäten funktionieren kurz, danach kommt alles zurück</li>
+      </ul>
+      <p style="margin:0;color:var(--soft);font-size:15.5px">Das sind typische Muster, wenn der Insulinspiegel dauerhaft zu hoch bleibt. Neun Fragen zeigen dir, wie stark dieses Muster bei dir ausgeprägt ist.</p>
+    </div>
+  </section>
+
+  <!-- ============ QUIZ ============ -->
+  <section class="screen" id="screen-quiz">
+    <p class="qcount" id="qcount"></p>
+    <h2 class="qtext" id="qtext"></h2>
+    <p class="hint" id="qhint"></p>
+    <div class="opts" id="opts"></div>
+    <div class="navrow">
+      <button class="back" id="backBtn">Zurück</button>
+      <button class="btn" id="nextBtn" style="width:auto;padding:14px 30px;display:none">Weiter</button>
+    </div>
+  </section>
+
+  <!-- ============ OPT-IN ============ -->
+  <section class="screen" id="screen-optin">
+    <p class="kicker">Auswertung fertig</p>
+    <h1>Deine Antworten ergeben ein <em>klares Muster.</em></h1>
+    <p class="lede">Wir haben deine 9 Antworten mit den typischen Anzeichen einer gestörten Insulinantwort abgeglichen. Sag uns kurz, an wen die Auswertung geht.</p>
+
+    <div class="card" style="margin-top:22px">
+      <p class="err" id="formErr"></p>
+      <div class="field">
+        <label for="f-name">Vorname</label>
+        <input id="f-name" type="text" autocomplete="given-name" placeholder="Sarah">
+      </div>
+      <div class="field">
+        <label for="f-mail">E-Mail</label>
+        <input id="f-mail" type="email" autocomplete="email" inputmode="email" placeholder="sarah@beispiel.ch">
+        <p class="why">Dorthin schicken wir dir die Auswertung als Kopie.</p>
+      </div>
+      <div class="field">
+        <label for="f-tel">Telefonnummer</label>
+        <input id="f-tel" type="tel" autocomplete="tel" inputmode="tel" value="+41 " placeholder="+41 79 123 45 67">
+        <p class="why">Nur für die Terminabstimmung deiner Analyse. Keine Werbeanrufe.</p>
+      </div>
+      <label class="consent">
+        <input type="checkbox" id="f-consent">
+        <span>Ich möchte meine Auswertung erhalten und bin damit einverstanden, dass Fit on Time mich dazu per E-Mail und Telefon kontaktiert. Es gilt die <a href="https://fitontime.ch/impressum-datenschutz" target="_blank" rel="noopener">Datenschutzerklärung</a>. Jederzeit widerrufbar.</span>
+      </label>
+      <button class="btn" id="submitBtn">Auswertung anzeigen</button>
+      <p class="btn-note">Deine Daten bleiben bei uns. Keine Weitergabe an Dritte.</p>
+      <p class="medhint">Die Auswertung ist eine Einschätzung auf Basis deiner Antworten, keine ärztliche Beratung.</p>
+    </div>
+  </section>
+
+  <!-- ============ ERGEBNIS ============ -->
+  <section class="screen" id="screen-result">
+    <p class="kicker" id="r-hello">Deine persönliche Auswertung</p>
+    <h1 id="r-head">Dein Insulin bremst deine <em>Fettverbrennung.</em></h1>
+
+    <div class="card">
+      <div class="scorebox">
+        <div class="scorenum" id="r-score">0</div>
+        <div class="scorelabel">von 100 möglichen Punkten im Insulin-Muster</div>
+        <div class="tier" id="r-tier"></div>
+      </div>
+
+      <div class="chart">
+        <svg viewBox="0 0 620 170" role="img" aria-label="Vergleich deiner geschätzten Blutzucker- und Insulinkurve mit einer regulierten Kurve">
+          <line x1="10" y1="140" x2="610" y2="140" stroke="#E3DACA" stroke-width="1.5"/>
+          <path id="r-flat" d="" fill="none" stroke="#33452F" stroke-width="2.5" stroke-dasharray="6 6" stroke-linecap="round"/>
+          <path id="r-spike" d="" fill="none" stroke="#B87A22" stroke-width="3" stroke-linecap="round"/>
+          <text x="10" y="162" font-family="Karla, sans-serif" font-size="12" fill="#6E6357">Morgen</text>
+          <text x="290" y="162" font-family="Karla, sans-serif" font-size="12" fill="#6E6357">Mittag</text>
+          <text x="545" y="162" font-family="Karla, sans-serif" font-size="12" fill="#6E6357">Abend</text>
+        </svg>
+        <div class="legend">
+          <span><i class="swatch" style="background:#B87A22"></i> Dein geschätzter Verlauf</span>
+          <span><i class="swatch" style="background:#33452F"></i> Regulierter Verlauf</span>
+        </div>
+      </div>
+      <p class="small">Schematische Darstellung auf Basis deiner Antworten, keine Messung.</p>
+      <p class="small" style="margin-top:10px;padding-top:12px;border-top:1px solid var(--line)"><b>Wichtig:</b> Diese Auswertung ist keine ärztliche Beratung und keine Diagnose. Sie zeigt, wie stark bei dir ein bekanntes Muster ausgeprägt ist. Ob tatsächlich eine Insulinresistenz vorliegt, kann nur eine ärztliche Untersuchung mit Blutwerten klären.</p>
+    </div>
+
+    <div class="sect">
+      <h2>Was deine Antworten zeigen</h2>
+      <ul class="findings" id="r-findings"></ul>
+    </div>
+
+    <div class="sect">
+      <h2>Warum das deine <em>Fettverbrennung</em> stoppt</h2>
+      <p>Insulin hat eine Hauptaufgabe: Zucker aus dem Blut in die Zellen bringen. Solange Insulin im Blut unterwegs ist, gibt dein Körper kein Fett aus den Fettzellen frei. Das ist keine Willenssache, sondern Biochemie.</p>
+      <p>Wenn deine Zellen über Jahre immer wieder Insulin abbekommen, reagieren sie träger. Dein Körper gleicht das aus, indem er noch mehr Insulin ausschüttet. Der Spiegel bleibt oben, die Fettverbrennung bleibt unten. Deshalb kann jemand mit diesem Muster weniger essen als eine Freundin und trotzdem zunehmen.</p>
+      <p class="quote">Nicht du hast versagt. Dein Körper hat unter diesen Bedingungen genau das getan, wozu er programmiert ist.</p>
+      <p id="r-diet"></p>
+    </div>
+
+    <div class="cta">
+      <h2>Der nächste Schritt: deine <em>ausführliche Analyse.</em></h2>
+      <p>Ein Quiz kann ein Muster erkennen. Es kann nicht sehen, was bei dir konkret dahintersteckt. Genau dafür gibt es bei Fit on Time das kostenlose Erstgespräch, ein ruhiges Gespräch mit unserem Team.</p>
+      <ul class="checks">
+        <li>Wir gehen deine Auswertung Punkt für Punkt durch</li>
+        <li>Wir schauen uns an, was deine bisherigen Versuche ausgebremst hat</li>
+        <li>Du bekommst eine klare Einschätzung, woran du zuerst ansetzen solltest</li>
+        <li>Du entscheidest danach in Ruhe, ob und wie es weitergeht</li>
+      </ul>
+      <a class="btn" id="r-book" href="#" target="_blank" rel="noopener">Kostenlose Analyse buchen</a>
+      <p class="btn-note">Ca. 30 Minuten &middot; vertraulich &middot; kostenlos und unverbindlich</p>
+    </div>
+
+    <div class="sect">
+      <p class="small">Über 1000 begleitete Frauen &middot; zertifiziertes Expertenteam &middot; Ergebnisse sind individuell und hängen von Ausgangslage und Mitarbeit ab. Wir versprechen keine Resultate.</p>
+    </div>
+
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="foot">
+    <p class="small">Der InsulinCheck ist ein Selbst-Check und ersetzt keine ärztliche Beratung, Diagnose oder Behandlung. Bei gesundheitlichen Beschwerden oder vor einer Ernährungsumstellung wende dich bitte an deine Ärztin oder deinen Arzt.</p>
+    <p class="small">
+      <a href="https://fitontime.ch/impressum-datenschutz" target="_blank" rel="noopener">Impressum &amp; Datenschutz</a>
+      <a href="https://fitontime.ch/agb" target="_blank" rel="noopener">AGB</a>
+      <a href="https://fitontime.ch/haftungsausschluss" target="_blank" rel="noopener">Haftungsausschluss</a>
+    </p>
+    <p class="small" style="margin-top:10px">&copy; 2026 InsulinCheck &middot; ein Angebot von Fit on Time, Schweiz</p>
+    <div style="margin-top:10px"><ScaleeeCredit /></div>
+  </footer>
+
+</div>
+
+<script is:inline>
+/* =========================================================
+   KONFIGURATION
+   ========================================================= */
+var CONFIG = {
+  BOOKING_URL: "https://fitontime-analyse.youcanbook.me/?source=insulincheck",
+  FUNNEL_NAME: "InsulinCheck"
+};
+
+/* =========================================================
+   FRAGEN
+   p = Punkte für das Insulin-Muster
+   note = erscheint als personalisierter Befund in der Auswertung
+   ========================================================= */
+var QUESTIONS = [
+  {
+    key: "alter",
+    q: "In welcher Lebensphase bist du gerade?",
+    hint: "Die Insulinempfindlichkeit verändert sich mit dem Hormonhaushalt.",
+    a: [
+      { t: "Unter 35", p: 4 },
+      { t: "35 bis 44", p: 7 },
+      { t: "45 bis 54", p: 10, note: "In dieser Phase sinkt der Östrogenspiegel. Deine Zellen reagieren dadurch schwächer auf Insulin, obwohl du nichts anders machst als früher." },
+      { t: "55 oder älter", p: 10, note: "Nach den Wechseljahren verschiebt sich die Fetteinlagerung Richtung Bauch, weil Insulin und Östrogen nicht mehr im gewohnten Verhältnis arbeiten." }
+    ]
+  },
+  {
+    key: "nach_mahlzeit",
+    q: "Wie fühlst du dich 30 bis 60 Minuten nach Brot, Pasta oder Reis?",
+    a: [
+      { t: "Müde, am liebsten würde ich mich hinlegen", p: 10, note: "Müdigkeit nach kohlenhydratreichen Mahlzeiten ist eines der deutlichsten Alltagszeichen für eine überschiessende Insulinantwort." },
+      { t: "Kurz satt, danach schnell wieder hungrig", p: 9, note: "Wenn Sättigung nur kurz hält, hat Insulin den Blutzucker zu schnell nach unten gezogen. Dein Körper fordert Nachschub an, obwohl du gegessen hast." },
+      { t: "Schwer und aufgebläht", p: 7 },
+      { t: "Ganz normal, ich habe danach Energie", p: 3 }
+    ]
+  },
+  {
+    key: "heisshunger",
+    q: "Kennst du das Nachmittagstief mit Verlangen nach etwas Süssem?",
+    a: [
+      { t: "Fast jeden Tag", p: 10, note: "Ein täglich wiederkehrendes Süssverlangen am Nachmittag ist selten Appetit. Es ist meist die Reaktion auf einen Blutzuckerabfall vom Mittagessen." },
+      { t: "Mehrmals pro Woche", p: 8 },
+      { t: "Selten", p: 4 },
+      { t: "Eigentlich nie", p: 2 }
+    ]
+  },
+  {
+    key: "fettverteilung",
+    q: "Wo legt dein Körper zuerst zu, wenn du zunimmst?",
+    a: [
+      { t: "Am Bauch und an der Taille", p: 10, note: "Fett an Bauch und Taille ist das Depot, das Insulin bevorzugt bedient. Genau dieses Depot gibt der Körper auch als letztes wieder her." },
+      { t: "Ziemlich gleichmässig überall", p: 6 },
+      { t: "An Hüfte und Oberschenkeln", p: 5 },
+      { t: "Das kann ich nicht sagen", p: 6 }
+    ]
+  },
+  {
+    key: "morgen",
+    q: "Wie startest du in den Morgen?",
+    a: [
+      { t: "Ohne Kaffee läuft gar nichts", p: 8 },
+      { t: "Ich brauche schnell etwas zu essen, sonst werde ich zittrig oder gereizt", p: 10, note: "Zittrigkeit oder Gereiztheit vor dem Frühstück deutet darauf hin, dass dein Blutzucker nachts stark abfällt, ein Hinweis auf zu viel Insulin am Vorabend." },
+      { t: "Morgens habe ich gar keinen Hunger", p: 6 },
+      { t: "Wach und ausgeruht", p: 3 }
+    ]
+  },
+  {
+    key: "jojo",
+    q: "Wie oft hast du schon abgenommen und wieder zugenommen?",
+    a: [
+      { t: "Mehr als drei Mal", p: 10, note: "Jede strenge Diät senkt kurzfristig den Insulinspiegel und lässt ihn danach höher zurückkommen. Nach mehreren Runden reagiert der Körper empfindlicher als vorher." },
+      { t: "Zwei bis drei Mal", p: 8 },
+      { t: "Ein Mal", p: 5 },
+      { t: "Ich habe es noch nie richtig versucht", p: 4 }
+    ]
+  },
+  {
+    key: "defizit",
+    q: "Du isst weniger und bewegst dich mehr. Was passiert auf der Waage?",
+    a: [
+      { t: "Nichts, sie steht still", p: 10, note: "Ein Stillstand trotz Defizit spricht dafür, dass die Fettfreisetzung blockiert ist. Bei hohem Insulin kommt der Körper schlicht nicht an seine Reserven." },
+      { t: "Erst geht etwas, dann Stillstand", p: 9, note: "Der schnelle Start ist meist Wasser. Sobald es an die Fettreserven gehen soll, bremst das Insulin, und der Fortschritt bricht ab." },
+      { t: "Es geht runter, aber langsamer als früher", p: 6 },
+      { t: "Es geht gut runter", p: 3 }
+    ]
+  },
+  {
+    key: "begleiter",
+    q: "Was trifft sonst noch auf dich zu?",
+    hint: "Mehrfachauswahl möglich.",
+    multi: true,
+    a: [
+      { t: "Wassereinlagerungen, besonders abends", p: 3 },
+      { t: "Unruhiger Schlaf oder nächtliches Aufwachen", p: 3 },
+      { t: "Unregelmässiger Zyklus oder PCOS", p: 4, note: "Ein unregelmässiger Zyklus und PCOS hängen eng mit der Insulinregulation zusammen. Sehr oft ist das Insulin die Ursache und nicht die Folge." },
+      { t: "Dunklere Hautstellen im Nacken oder in den Achseln", p: 4, note: "Dunklere, samtige Hautstellen an Nacken oder Achseln gelten als sichtbares Zeichen für einen dauerhaft erhöhten Insulinspiegel." },
+      { t: "Typ-2-Diabetes in der Familie", p: 4, note: "Typ-2-Diabetes in der Familie bedeutet nicht, dass du krank wirst. Es bedeutet, dass dein Körper auf Zucker empfindlicher reagiert als andere." },
+      { t: "Nichts davon", p: 0, exclusive: true }
+    ]
+  },
+  {
+    key: "bereitschaft",
+    q: "Angenommen, du weisst gleich, was deine Fettverbrennung blockiert. Was dann?",
+    a: [
+      { t: "Ich will es sofort angehen", p: 10 },
+      { t: "In den nächsten Wochen, ja", p: 8 },
+      { t: "Erstmal nur informieren", p: 5 }
+    ]
+  }
+];
+
+/* =========================================================
+   STATE
+   ========================================================= */
+var state = { i: 0, answers: {}, lead: {}, score: 0, tier: null, notes: [] };
+var TOTAL = QUESTIONS.length;
+
+function $(id){ return document.getElementById(id); }
+
+function show(name){
+  var all = document.querySelectorAll(".screen");
+  for (var k = 0; k < all.length; k++) all[k].classList.remove("on");
+  $("screen-" + name).classList.add("on");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+/* ---------- Tracking (LP-Machine-Pattern) ----------
+   __lp kommt aus dem CookieBanner. lead_submit feuert erst nach erfolgreichem
+   Insert, das Meta-Lead-Event traegt eine event_id und wird mit der CAPI
+   dedupliziert. Kein rohes fbq('track','Lead') mehr wie im Prototyp. */
+function tk(e, d) {
+  var tries = 0;
+  function fire() {
+    if (window.__lp) {
+      window.__lp.track(e, Object.assign({ page: 'insulin-check' }, d || {}), 'fot', 'InsulinCheck');
+      if (e === 'quiz_start') window.__lp.meta('ViewContent', { content_name: 'FoT Quiz Start', currency: 'EUR' });
+      if (e === 'quiz_complete') window.__lp.meta('CompleteRegistration', { content_name: 'FoT Quiz Complete', currency: 'EUR' });
+      if (e === 'lead_submit') window.__lp.meta('Lead', { content_name: 'FoT Lead', currency: 'EUR' });
+    } else if (tries++ < 40) {
+      setTimeout(fire, 50);
+    }
+  }
+  fire();
+}
+tk('page_view');
+
+/* ---------- Fortschrittskurve ---------- */
+var track = $("track"), prog = $("progress"), dot = $("dot"), LEN = 0;
+function initCurve(){
+  LEN = track.getTotalLength();
+  prog.style.strokeDasharray = LEN;
+  prog.style.strokeDashoffset = LEN;
+}
+function setCurve(step){
+  if (!LEN) initCurve();
+  var ratio = step / TOTAL;
+  prog.style.strokeDashoffset = LEN * (1 - ratio);
+  var pt = track.getPointAtLength(Math.max(LEN * ratio, 1));
+  dot.setAttribute("cx", pt.x);
+  dot.setAttribute("cy", pt.y);
+}
+
+/* ---------- Frage rendern ---------- */
+function renderQ(){
+  var q = QUESTIONS[state.i];
+  $("qcount").textContent = "Frage " + (state.i + 1) + " von " + TOTAL;
+  $("progLabel").textContent = "Frage " + (state.i + 1) + " von " + TOTAL;
+  $("qtext").textContent = q.q;
+  $("qhint").textContent = q.hint || "";
+  $("qhint").style.display = q.hint ? "block" : "none";
+  $("backBtn").disabled = state.i === 0;
+  $("nextBtn").style.display = q.multi ? "inline-block" : "none";
+
+  var box = $("opts");
+  box.innerHTML = "";
+  var chosen = state.answers[q.key];
+
+  for (var n = 0; n < q.a.length; n++) {
+    (function(idx){
+      var opt = q.a[idx];
+      var b = document.createElement("button");
+      b.type = "button";
+      b.className = "opt";
+      b.textContent = opt.t;
+      if (q.multi && chosen && chosen.idx.indexOf(idx) > -1) b.className += " sel";
+      if (!q.multi && chosen && chosen.idx === idx) b.className += " sel";
+      b.onclick = function(){ pick(idx); };
+      box.appendChild(b);
+    })(n);
+  }
+  setCurve(state.i);
+}
+
+function pick(idx){
+  var q = QUESTIONS[state.i];
+  if (q.multi) {
+    var cur = state.answers[q.key] ? state.answers[q.key].idx.slice() : [];
+    if (q.a[idx].exclusive) {
+      cur = [idx];
+    } else {
+      for (var e = cur.length - 1; e >= 0; e--) if (q.a[cur[e]].exclusive) cur.splice(e, 1);
+      var at = cur.indexOf(idx);
+      if (at > -1) cur.splice(at, 1); else cur.push(idx);
+    }
+    state.answers[q.key] = { idx: cur };
+    renderQ();
+  } else {
+    state.answers[q.key] = { idx: idx };
+    setTimeout(next, 180);
+  }
+}
+
+function next(){
+  if (state.i < TOTAL - 1) { state.i++; renderQ(); }
+  else { setCurve(TOTAL); tk('quiz_complete'); show("optin"); }
+}
+function back(){ if (state.i > 0) { state.i--; renderQ(); } }
+
+/* ---------- Auswertung berechnen ---------- */
+function evaluate(){
+  var got = 0, max = 0, notes = [];
+  for (var n = 0; n < QUESTIONS.length; n++) {
+    var q = QUESTIONS[n], ans = state.answers[q.key];
+    var best = 0;
+    if (q.multi) {
+      var sorted = q.a.slice().sort(function(a,b){ return b.p - a.p; });
+      best = (sorted[0].p || 0) + (sorted[1] ? sorted[1].p : 0) + (sorted[2] ? sorted[2].p : 0);
+    } else {
+      for (var m = 0; m < q.a.length; m++) if (q.a[m].p > best) best = q.a[m].p;
+    }
+    max += best;
+    if (!ans) continue;
+    var list = q.multi ? ans.idx : [ans.idx];
+    for (var j = 0; j < list.length; j++) {
+      var opt = q.a[list[j]];
+      got += opt.p;
+      if (opt.note) notes.push(opt.note);
+    }
+  }
+  var raw = Math.round((got / max) * 100);
+  state.score = Math.min(96, Math.max(41, raw));
+  state.notes = notes.slice(0, 4);
+  if (state.score >= 72) state.tier = "stark";
+  else if (state.score >= 55) state.tier = "deutlich";
+  else state.tier = "beginnend";
+}
+
+var TIERS = {
+  stark: {
+    badge: "Stark ausgeprägtes Insulin-Muster",
+    head: "Dein Insulin blockiert deine <em>Fettverbrennung.</em>",
+    diet: "Bei einem so deutlichen Muster ist die Reihenfolge entscheidend: Erst muss der Insulinspiegel wieder Täler bekommen, dann wird Abnehmen überhaupt erst möglich. Solange das nicht passiert, arbeitet jede weitere Diät gegen deinen Körper statt mit ihm."
+  },
+  deutlich: {
+    badge: "Deutliches Insulin-Muster",
+    head: "Dein Insulin bremst deine <em>Fettverbrennung.</em>",
+    diet: "Dein Körper reagiert noch, aber träger als er könnte. Das erklärt, warum bei dir funktioniert, was früher schnell ging, nur eben viel langsamer. Der Hebel liegt weniger in weniger essen, sondern darin, wann und womit du isst."
+  },
+  beginnend: {
+    badge: "Beginnendes Insulin-Muster",
+    head: "Dein Insulin arbeitet noch, aber es <em>kippt gerade.</em>",
+    diet: "Das ist die Phase, in der die meisten Frauen nichts unternehmen, weil noch nichts wirklich weh tut. Genau jetzt ist der Aufwand aber am kleinsten. Wer hier gegensteuert, muss später nicht gegen ein festgefahrenes Muster ankämpfen."
+  }
+};
+
+/* ---------- Kurve für die Auswertung ---------- */
+function curvePath(amp, base){
+  var pts = [[10,base],[70,base-amp*0.25],[110,base-amp],[170,base+amp*0.18],[210,base-amp*0.1],
+             [270,base-amp*0.95],[330,base+amp*0.2],[370,base-amp*0.08],[430,base-amp*1.05],
+             [500,base+amp*0.15],[560,base-amp*0.3],[610,base-amp*0.1]];
+  var d = "M" + pts[0][0] + "," + Math.round(pts[0][1]);
+  for (var n = 1; n < pts.length; n++) {
+    var pv = pts[n-1], cu = pts[n], mid = (pv[0] + cu[0]) / 2;
+    d += " C" + mid + "," + Math.round(pv[1]) + " " + mid + "," + Math.round(cu[1]) + " " + cu[0] + "," + Math.round(cu[1]);
+  }
+  return d;
+}
+
+function renderResult(){
+  var t = TIERS[state.tier];
+  $("r-score").textContent = state.score;
+  $("r-tier").textContent = t.badge;
+  $("r-head").innerHTML = t.head;
+  $("r-diet").textContent = t.diet;
+  $("r-hello").textContent = state.lead.name
+    ? state.lead.name + ", das ist deine Auswertung"
+    : "Deine persönliche Auswertung";
+
+  var amp = 30 + (state.score / 100) * 62;
+  $("r-spike").setAttribute("d", curvePath(amp, 118));
+  $("r-flat").setAttribute("d", curvePath(24, 118));
+
+  var ul = $("r-findings");
+  ul.innerHTML = "";
+  var list = state.notes.length ? state.notes : [
+    "Deine Antworten zeigen mehrere Alltagsmuster, die typisch sind, wenn der Insulinspiegel selten weit genug absinkt.",
+    "Auffällig ist vor allem, dass dein Körper auf Kohlenhydrate stärker reagiert, als es bei stabiler Insulinantwort der Fall wäre."
+  ];
+  for (var n = 0; n < list.length; n++) {
+    var li = document.createElement("li");
+    var b = document.createElement("b");
+    b.textContent = (n + 1) + ".";
+    var sp = document.createElement("span");
+    sp.textContent = list[n];
+    li.appendChild(b); li.appendChild(sp);
+    ul.appendChild(li);
+  }
+
+  var url = CONFIG.BOOKING_URL;
+  var sep = url.indexOf("?") > -1 ? "&" : "?";
+  if (state.lead.name) url += sep + "NAME=" + encodeURIComponent(state.lead.name);
+  if (state.lead.email) url += "&EMAIL=" + encodeURIComponent(state.lead.email);
+  $("r-book").setAttribute("href", url);
+
+  $("curvebar").hidden = true;
+  show("result");
+}
+
+/* ---------- Lead speichern ---------- */
+function answerText(q, ans){
+  if (!ans) return "";
+  if (q.multi) {
+    var out = [];
+    for (var n = 0; n < ans.idx.length; n++) out.push(q.a[ans.idx[n]].t);
+    return out.join(" | ");
+  }
+  return q.a[ans.idx].t;
+}
+
+/* Antworten fuer Sheet + Dashboard. Name/E-Mail/Telefon stehen im Lead-Body,
+   deshalb hier bewusst nicht noch einmal. */
+function buildAnswers(){
+  var p = {
+    funnel: CONFIG.FUNNEL_NAME,
+    score: state.score,
+    einstufung: TIERS[state.tier].badge
+  };
+  for (var n = 0; n < QUESTIONS.length; n++) {
+    var q = QUESTIONS[n];
+    p["f" + (n + 1) + "_" + q.key] = answerText(q, state.answers[q.key]);
+  }
+  return p;
+}
+
+function submitLead(){
+  var name = $("f-name").value.trim();
+  var mail = $("f-mail").value.trim();
+  var tel = $("f-tel").value.trim();
+  var ok = $("f-consent").checked;
+  var err = $("formErr");
+
+  if (name.length < 2) return fail(err, "Bitte trage deinen Vornamen ein.");
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(mail)) return fail(err, "Diese E-Mail-Adresse sieht nicht vollständig aus.");
+  if (tel.replace(/[^0-9]/g, "").length < 9) return fail(err, "Bitte trage deine Nummer inklusive Vorwahl ein, zum Beispiel +41 79 123 45 67.");
+  if (!ok) return fail(err, "Setze bitte den Haken, damit wir dir die Auswertung schicken dürfen.");
+
+  err.classList.remove("on");
+  state.lead = { name: name, email: mail, telefon: tel };
+  var btn = $("submitBtn");
+  btn.disabled = true;
+  btn.textContent = "Auswertung wird erstellt";
+
+  evaluate();
+
+  // Atomarer Submit: lead_submit + Meta-Lead + Ergebnis erst nach erfolgreichem Insert.
+  // Der fetch-Wrapper aus dem CookieBanner haengt meta{event_id,consent,fbp,fbc}
+  // und die Attribution an, /api/sheets feuert daraus die CAPI.
+  fetch('/api/sheets', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      name: name,
+      email: mail,
+      phone: tel,
+      first_name: name.split(' ')[0],
+      lp_slug: 'insulin-check',
+      lp_name: 'InsulinCheck',
+      answers: buildAnswers()
+    })
+  }).then(function(res){
+    if (!res.ok) throw new Error('insert-failed');
+    tk('lead_submit', { detail: state.tier + ' - ' + state.score });
+    setTimeout(renderResult, 700);
+  })["catch"](function(){
+    btn.disabled = false;
+    btn.textContent = "Auswertung anzeigen";
+    fail(err, "Da ist etwas schiefgelaufen. Bitte schick das Formular noch einmal ab.");
+  });
+}
+
+function fail(el, msg){ el.textContent = msg; el.classList.add("on"); return false; }
+
+/* ---------- Start ---------- */
+$("startBtn").onclick = function(){
+  $("curvebar").hidden = false;
+  tk('quiz_start');
+  show("quiz");
+  initCurve();
+  renderQ();
+};
+$("backBtn").onclick = back;
+$("nextBtn").onclick = function(){
+  var q = QUESTIONS[state.i];
+  var a = state.answers[q.key];
+  if (!a || !a.idx.length) return;
+  next();
+};
+$("submitBtn").onclick = submitLead;
+$("r-book").addEventListener("click", function(){ tk('book_click'); });
+
+/* Telefonfeld: Landesvorwahl bleibt stehen, laesst sich aber ueberschreiben */
+(function(){
+  var tel = $("f-tel");
+  tel.addEventListener("focus", function(){
+    if (!tel.value.trim()) tel.value = "+41 ";
+    if (tel.value === "+41 ") setTimeout(function(){ tel.setSelectionRange(4, 4); }, 0);
+  });
+  tel.addEventListener("blur", function(){
+    if (tel.value.trim() === "+41") tel.value = "";
+  });
+  tel.addEventListener("input", function(){
+    if (tel.value.length && tel.value.charAt(0) !== "+" && /^[0-9]/.test(tel.value)) {
+      tel.value = "+41 " + tel.value.replace(/^0+/, "");
+    }
+  });
+})();
+</script>
+
+<script is:inline src="https://t.hyros.com/v1/lst/universal-script?ph=689a71ca1ab3be1cb1caddbe6b7902a4ad2c51a228f4ec9ea7fef3123a705f63"></script>
+
+<CookieBanner
+  metaPixelId={META_PIXEL_ID}
+  consentKey="fot_insulin_consent"
+  impressumUrl={impressumUrl}
+  datenschutzUrl={datenschutzUrl}
+/>
+</body>
+</html>
