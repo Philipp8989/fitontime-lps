@@ -273,6 +273,29 @@ const SHEETS: Record<string, SheetConfig> = {
   },
 };
 
+// Bauchfett-Check: Sheet erst aktiv, wenn FOT_BAUCHFETT_SHEET_ID gesetzt ist (Sheet muss
+// Philipp anlegen und mit leads-writer@ teilen). Ohne Env landet der Lead nur im
+// Dashboard-CRM, statt mit einem leeren Sheet-Append den ganzen Insert zu 500en.
+// Header: Datum | Vorname | Nachname | E-Mail | Telefon | Bremsen-Typ | Wo | Bauchgefühl |
+// Schlaf | Nach dem Essen | Zyklus | Alter | Gewicht | Schon probiert | Cortisol % | Insulin % | Hormon %
+const BAUCHFETT_SHEET_ID = (import.meta.env.FOT_BAUCHFETT_SHEET_ID || '').trim();
+if (BAUCHFETT_SHEET_ID) {
+  SHEETS['bauchfett'] = {
+    id: BAUCHFETT_SHEET_ID,
+    range: 'Leads!A:Q',
+    buildRow: (datum, d) => {
+      const a = d.answers || {};
+      const parts = (d.name || '').trim().split(/\s+/);
+      const vorname = parts[0] || '';
+      const nachname = parts.slice(1).join(' ') || '';
+      return [datum, vorname, nachname, d.email, d.phone || '', a.bf_main_label || '',
+        a.q1_label || '', a.q2_label || '', a.q3_label || '', a.q4_label || '', a.q5_label || '',
+        a.q6_label || '', a.q7_label || '', a.q8_label || '',
+        a.bf_cortisol ?? '', a.bf_insulin ?? '', a.bf_hormon ?? ''];
+    },
+  };
+}
+
 export const POST: APIRoute = async ({ request }) => {
   try {
     const data = await request.json();
@@ -441,7 +464,7 @@ export const POST: APIRoute = async ({ request }) => {
         // (= der gesperrte Health-Pixel), damit wäre die Dedup über event_id kaputt.
         pixel_id_override:
           lpSlug === 'longevity' ? '1214902253584066'
-            : (lpSlug === 'zieldatum' || lpSlug === 'insulin-check') ? '1316450223953563'
+            : (lpSlug === 'zieldatum' || lpSlug === 'insulin-check' || lpSlug === 'bauchfett') ? '1316450223953563'
               : undefined,
         // Nur Longevity: geschaetzter Lead-Wert (reine Zahl, KEINE Gesundheitsdaten) behebt Meta-Diagnose "gueltige Preisinfo".
         // value/currency muessen mit dem Browser-Pixel (longevity/index.astro) uebereinstimmen. Platzhalter 50 CHF.

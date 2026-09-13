@@ -1,0 +1,559 @@
+---
+// Bauchfett-Funnel, Schritt 1: Landing + Bauchfett-Check (8 Fragen) + Opt-in.
+// Design: neue fitontime.ch (Cream, Ink, Gold, Fraunces). Struktur nach der
+// koerper-report-Formel: Ergebnis-Versprechen mit Zeitrahmen, Aufwand, Absender,
+// Proof über dem Fold, Geschlechts-Gate ersetzt durch das Bauchfett-Gate.
+import '../../styles/bauchfett.css';
+import CookieBanner from '../../components/CookieBanner.astro';
+import ScaleeeCredit from '../../components/ScaleeeCredit.astro';
+import FotWordmark from '../../components/FotWordmark.astro';
+const impressumUrl = 'https://fitontime.ch/impressum-datenschutz';
+const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
+// Google Tag (wie /koerper-report): Consent-Mode-v2, Conversions nur bei Google-Klick
+const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').trim();
+const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..500,0..100;1,9..144,300..500,0..100&family=Albert+Sans:wght@400;500;600&display=swap';
+---
+<html lang="de-CH">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Bauchfett-Check: Welche Bremse hält dein Bauchfett fest? | Fit on Time</title>
+  <link rel="icon" type="image/png" href="/images/logo.png" />
+  <link rel="preload" as="image" href="/images/bauchfett/vorne-2.webp" />
+  <link rel="preload" as="image" href="/images/bauchfett/seite-1.webp" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href={FONTS} rel="stylesheet" />
+</head>
+<body>
+
+  <!-- ===== LANDING ===== -->
+  <div id="lp">
+    <div class="wrap">
+      <div class="topbar">
+        <FotWordmark />
+        <span class="tag">Bauchfett-Check</span>
+      </div>
+    </div>
+
+    <section class="hero">
+      <div class="arc arc--hero"></div>
+      <div class="wrap wrap--wide hero-grid">
+        <div>
+          <p class="eyebrow">3 Minuten · 8 Fragen · kostenlos</p>
+          <h1>Der Bauch bleibt. Egal, was du <em>versuchst.</em></h1>
+          <p class="lead">Das liegt nicht an dir. Dein Bauchfett hat drei Bremsen. Solange auch nur eine zu ist, gibt dein Körper das Fett am Bauch nicht her. Der Bauchfett-Check zeigt dir in 3 Minuten, welche Bremse bei dir zu ist und wie du sie löst.</p>
+          <p class="lead" style="font-size:0.95rem;">Von den Coachinnen von Fit on Time. Über 4'000 Frauen in der Schweiz haben mit ihnen abgenommen.</p>
+        </div>
+
+        <div class="gate">
+          <div class="gate-q">Wo sitzt dein Bauchfett vor allem?</div>
+          <div class="gate-sub">Tipp auf das Bild, das dir am nächsten kommt. Damit startet der Check.</div>
+          <div class="gate-row">
+            <button class="gate-opt" onclick="startQuiz('vorne')">
+              <img src="/images/bauchfett/vorne-2.webp" alt="Bauchfett vorne am Bauch" width="900" height="900" />
+              <span>Vorne, am Bauch</span>
+            </button>
+            <button class="gate-opt" onclick="startQuiz('seiten')">
+              <img src="/images/bauchfett/seite-1.webp" alt="Bauchfett an den Seiten" width="900" height="900" />
+              <span>An den Seiten</span>
+            </button>
+          </div>
+          <button class="btn btn--outline btn--block gate-both" onclick="startQuiz('beides')">Beides</button>
+          <div class="gate-note"><span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span> <span>4'000+ Frauen · 97 % erreichen ihr Ziel · ohne Diät</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Wiedererkennen -->
+    <section class="section section--bright">
+      <div class="wrap wrap--wide">
+        <div class="section-head">
+          <p class="eyebrow">Erkennst du dich?</p>
+          <h2>Überall nimmst du ab. <em>Nur da nicht.</em></h2>
+        </div>
+        <div class="mirror">
+          <div class="mirror-card">
+            <img src="/images/bauchfett/vorne-1.webp" alt="Fett vorne am Bauch über dem Hosenbund" loading="lazy" width="900" height="900" />
+            <div class="mc-body">
+              <div class="mc-label">Vorne am Bauch</div>
+              <h3>Rund, oft hart. Abends wie ein Ballon.</h3>
+              <p>Morgens geht es noch. Ab dem Nachmittag drückt die Hose, der Knopf geht nur im Stehen zu. Du sitzt anders, du atmest anders. Und im Spiegel schaust du zuerst genau dahin.</p>
+            </div>
+          </div>
+          <div class="mirror-card">
+            <img src="/images/bauchfett/seite-2.webp" alt="Fett an den Seiten des Bauchs" loading="lazy" width="900" height="900" />
+            <div class="mc-body">
+              <div class="mc-label">An den Seiten</div>
+              <h3>Über dem Bund schiebt es sich raus.</h3>
+              <p>Im engen Shirt siehst du es zuerst. Du ziehst das Oberteil den ganzen Tag runter, kaufst weiter geschnittene Sachen, greifst beim Sitzen unbewusst hin. Weich, zum Anfassen. Und es geht nicht weg.</p>
+            </div>
+          </div>
+        </div>
+        <p class="mirror-all">Gesicht, Arme, Beine: alles wird schmaler, wenn du dich anstrengst. Die Mitte bleibt. Dafür gibt es einen Grund. Und er hat nichts mit Disziplin zu tun.</p>
+      </div>
+    </section>
+
+    <!-- Die drei Bremsen -->
+    <section class="section">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow">Die Biologie dahinter</p>
+          <h2>Dein Bauchfett hat drei <em>Bremsen.</em></h2>
+          <p class="lead">Fettzellen sind nicht überall gleich. Die am Bauch haben andere Andockstellen als die an Beinen oder Armen. Das ist keine Ausrede, das ist Biologie. Und genau deshalb bringen Sit-ups, Kalorienzählen und Joggen am Bauch fast nichts.</p>
+        </div>
+        <div class="brakes">
+          <div class="brake">
+            <div class="num">1</div>
+            <div>
+              <h3>Die Cortisol-Bremse</h3>
+              <span class="where">Fett vorne, tief im Bauch</span>
+              <p>Cortisol ist dein Stresshormon. Fettzellen am Bauch haben bis zu viermal mehr Andockstellen dafür als anderswo. Wenig Schlaf, Job, Kinder, Kopf nie leer: Cortisol sagt deinem Körper <strong>lagere ein, und zwar vorne</strong>. Das ist das harte, runde Fett, das sich nicht greifen lässt.</p>
+            </div>
+          </div>
+          <div class="brake">
+            <div class="num">2</div>
+            <div>
+              <h3>Die Insulin-Bremse</h3>
+              <span class="where">Fett vorne und seitlich</span>
+              <p>Insulin ist dein Speicherhormon. Nach jedem Brot, jeder Pasta, jedem Snack geht es hoch. <strong>Solange Insulin oben ist, ist Fettabbau gesperrt. Komplett.</strong> Bei vielen Frauen ist Insulin von morgens bis abends oben. Der Körper kommt nie zum Verbrennen. Und was er speichert, speichert er zuerst am Bauch.</p>
+            </div>
+          </div>
+          <div class="brake">
+            <div class="num">3</div>
+            <div>
+              <h3>Die Hormon-Bremse</h3>
+              <span class="where">Fett an den Seiten</span>
+              <p>Jede Fettzelle hat zwei Arten von Knöpfen: <strong>Abgeben</strong> und <strong>Halten</strong>. An Bauch und Seiten sitzen deutlich mehr Halten-Knöpfe. Ab etwa 40 sinkt dein Östrogen, und das Fett wandert von Po und Hüfte nach vorne und an die Seiten. Deshalb wird alles andere schmaler, nur die Mitte nicht.</p>
+            </div>
+          </div>
+        </div>
+        <p class="brake-close">Und jetzt der Punkt, den dir niemand sagt: Solange auch nur eine Bremse zu ist, bringt das beste Training nichts. Du kannst nicht abgeben, was dein Körper festhält.</p>
+      </div>
+    </section>
+
+    <!-- Versuche -->
+    <section class="section section--sand">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow">Deshalb hat es bisher nicht geklappt</p>
+          <h2>Du hast nicht versagt. Du hast gegen <em>drei Bremsen</em> trainiert.</h2>
+        </div>
+        <div class="tries">
+          <div class="try"><span class="x">&#10005;</span><div><b>Weniger essen, Kalorien zählen</b><p>Weniger Energie heisst für den Körper Gefahr. Cortisol geht hoch. Bremse 1 zieht sich fester zu. Der Bauch bleibt, die Laune geht.</p></div></div>
+          <div class="try"><span class="x">&#10005;</span><div><b>Sit-ups und Bauchtraining</b><p>Muskeln unter dem Fett werden stärker. Das Fett darüber interessiert das nicht. Die Halten-Knöpfe bleiben an. Bremse 3 bleibt zu.</p></div></div>
+          <div class="try"><span class="x">&#10005;</span><div><b>Kleine Mahlzeiten, gesunde Snacks</b><p>Sechs Mal am Tag essen heisst sechs Mal Insulin. Der Körper ist den ganzen Tag im Speichermodus. Bremse 2 geht nie auf.</p></div></div>
+          <div class="try"><span class="x">&#10005;</span><div><b>Mehr Sport, mehr Disziplin</b><p>Du gibst mehr, der Bauch gibt nichts. Irgendwann glaubst du, mit dir stimmt etwas nicht. Stimmt nicht. Es war nur nie die richtige Bremse.</p></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Methode -->
+    <section class="section section--ink">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow">Neu bei Fit on Time</p>
+          <h2>Die <em>3-Bremsen-Methode.</em></h2>
+        </div>
+        <p class="method-intro">Keine Diät. Kein Bauchtraining. Kein Pulver. Die Methode macht nur eines: Sie löst die Bremsen, in der richtigen Reihenfolge. Dann gibt dein Körper das Fett am Bauch von selbst her.</p>
+        <div class="steps">
+          <div class="step-row"><div class="sn">1</div><div><h3>Bremse finden</h3><p>Der Check zeigt, welche Bremse bei dir am stärksten zu ist. Zwei Frauen mit dem gleichen Bauch haben oft ganz verschiedene Bremsen. Deshalb funktioniert dieselbe Diät bei der einen und bei der anderen nicht.</p></div></div>
+          <div class="step-row"><div class="sn">2</div><div><h3>Bremse lösen</h3><p>Für jede Bremse gibt es zwei bis drei kleine Hebel im Alltag. Wann du isst statt wie viel. Wie du abends runterkommst. Welche Bewegung die Abgeben-Knöpfe anspricht. Nichts davon kostet dich mehr als 15 Minuten am Tag. Nichts davon musst du kaufen.</p></div></div>
+          <div class="step-row"><div class="sn">3</div><div><h3>Dranbleiben, mit Coachin</h3><p>Eine Coachin stellt die Hebel jede Woche neu auf dich ein. So bleibt es kein Versuch, sondern wird dein Alltag. Deshalb halten 94 % der Frauen ihr Gewicht auch nach 12 Monaten.</p></div></div>
+        </div>
+        <div class="stats">
+          <div class="stat"><div class="sv">4'000+</div><div class="sl">Frauen begleitet</div></div>
+          <div class="stat"><div class="sv">97 %</div><div class="sl">erreichen ihr Ziel</div></div>
+          <div class="stat"><div class="sv">94 %</div><div class="sl">halten es 12 Monate</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Warum Gespräch -->
+    <section class="section">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow">Ehrlich gesagt</p>
+          <h2>Warum das nicht als PDF <em>funktioniert.</em></h2>
+        </div>
+        <div class="why">
+          <p>Der Check zeigt dir, welche Bremse bei dir vorne liegt. Das ist der erste Schritt, und er ist wichtig.</p>
+          <p>Aber welche Hebel du zuerst ziehst, in welcher Reihenfolge, und was du ab morgen konkret anders machst: Das hängt von deinem Alltag ab. Von deinem Schlaf, deinem Zyklus, deinen Essenszeiten. Das kann keine Webseite für dich entscheiden.</p>
+          <p>Das macht eine Coachin im <strong>Bauchfett-Gespräch</strong> mit dir. 20 Minuten, telefonisch oder per Video. Kostenlos. Du gehst mit deinen zwei bis drei Hebeln raus, egal ob du danach mit uns weitermachst oder nicht.</p>
+          <p class="quote">Ohne das Gespräch würdest du wieder raten. Und raten hat dich hierher gebracht.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Proof -->
+    <section class="section section--bright">
+      <div class="wrap wrap--wide">
+        <div class="section-head">
+          <p class="eyebrow">Echte Frauen, echte Bäuche</p>
+          <h2>Wenn die Bremse gelöst ist, <em>sieht man es zuerst hier.</em></h2>
+        </div>
+        <div class="proof-grid">
+          <img src="/images/sd-proof/tf-04.jpg" alt="Vorher Nachher Bauch Fit on Time" loading="lazy" />
+          <img src="/images/sd-proof/tf-05.jpg" alt="Vorher Nachher Bauch Fit on Time" loading="lazy" />
+          <img src="/images/sd-proof/tf-02.jpg" alt="Vorher Nachher Fit on Time" loading="lazy" />
+          <img src="/images/sd-proof/tf-06.jpg" alt="Vorher Nachher Fit on Time" loading="lazy" />
+        </div>
+        <div class="quotes">
+          <div class="quote-card"><div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p>«Ich habe jahrelang Bauchübungen gemacht. Nichts. Nach dem Gespräch wusste ich zum ersten Mal, warum. Nach drei Wochen ging die Hose wieder zu.»</p><div class="who">Sandra K., 47, Aargau</div></div>
+          <div class="quote-card"><div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p>«Bei mir war es der Schlaf. Ich hätte nie gedacht, dass das mit dem Bauch zusammenhängt. Meine Coachin hat nur zwei Sachen geändert. Der Bauch ist abends nicht mehr aufgebläht.»</p><div class="who">Claudia R., 52, Zürich</div></div>
+          <div class="quote-card"><div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p>«Keine Diät, kein Verzicht. Ich esse anders getaktet, nicht weniger. 16 Kilo in einem Jahr. Und die Seiten sind weg.»</p><div class="who">Corinne M., 46, Bern</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="section">
+      <div class="wrap">
+        <div class="section-head" style="text-align:center;">
+          <p class="eyebrow eyebrow--center">Dein nächster Schritt</p>
+          <h2>Finde heraus, welche Bremse <em>dich</em> festhält.</h2>
+          <p class="lead">3 Minuten. 8 Fragen. Danach weisst du, warum dein Bauch bleibt und was du als Erstes lösen musst.</p>
+        </div>
+        <div class="gate">
+          <div class="gate-q">Wo sitzt dein Bauchfett vor allem?</div>
+          <div class="gate-row">
+            <button class="gate-opt" onclick="startQuiz('vorne')">
+              <img src="/images/bauchfett/vorne-3.webp" alt="Bauchfett vorne am Bauch" loading="lazy" width="900" height="900" />
+              <span>Vorne, am Bauch</span>
+            </button>
+            <button class="gate-opt" onclick="startQuiz('seiten')">
+              <img src="/images/bauchfett/seite-4.webp" alt="Bauchfett an den Seiten" loading="lazy" width="900" height="900" />
+              <span>An den Seiten</span>
+            </button>
+          </div>
+          <button class="btn btn--outline btn--block gate-both" onclick="startQuiz('beides')">Beides</button>
+          <div class="gate-note"><span>Kostenlos</span> · <span>Keine Diät</span> · <span>Keine Waage nötig</span></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="wrap">
+      <footer>
+        <a href={impressumUrl} target="_blank" rel="noopener">Impressum</a> &middot;
+        <a href={datenschutzUrl} target="_blank" rel="noopener">Datenschutzerklärung</a>
+        <p class="fine">Der Bauchfett-Check ist eine Einschätzung anhand deiner Antworten und ersetzt keine ärztliche Untersuchung. Ergebnisse sind individuell und hängen von deiner Mitarbeit ab.</p>
+        <div style="margin-top:10px;text-align:center;"><ScaleeeCredit /></div>
+      </footer>
+    </div>
+  </div>
+
+  <!-- ===== QUIZ ===== -->
+  <div id="quiz">
+    <div class="q-head"><FotWordmark /></div>
+    <div class="q-progress"><div class="q-bar"><div class="q-fill" id="qf"></div></div><div class="q-num" id="qn">Frage 1 von 8</div></div>
+    <div class="q-body">
+
+      <!-- Frage 2: Bauchgefühl (Frage 1 ist das Gate) -->
+      <div class="step on" data-s="2">
+        <h2>Wie fühlt sich dein Bauch an?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(2,'hart_rund')">Eher hart und rund<small>Lässt sich kaum greifen</small></button>
+          <button class="opt" onclick="nxt(2,'weich')">Weich, ich kann ihn greifen<small>Vor allem an den Seiten</small></button>
+          <button class="opt" onclick="nxt(2,'abends')">Morgens flach, abends aufgebläht<small>Wie ein Ballon ab dem Nachmittag</small></button>
+          <button class="opt" onclick="nxt(2,'beides')">Vorne rund, an den Seiten weich</button>
+        </div>
+        <div class="tipp"><strong>Gut zu wissen:</strong> Hartes, rundes Fett sitzt hinter der Bauchdecke. Weiches Fett sitzt darüber. Beide haben andere Bremsen.</div>
+      </div>
+
+      <!-- Frage 3: Schlaf -->
+      <div class="step" data-s="3">
+        <h2>Wie schläfst du?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(3,'durch')">Meistens durch</button>
+          <button class="opt" onclick="nxt(3,'wach')">Ich wache nachts auf<small>Oft zwischen 2 und 4 Uhr</small></button>
+          <button class="opt" onclick="nxt(3,'einschlafen')">Ich komme abends nicht runter<small>Kopf läuft weiter</small></button>
+          <button class="opt" onclick="nxt(3,'kurz')">Unter 6 Stunden</button>
+        </div>
+        <div class="tipp"><strong>Gut zu wissen:</strong> Aufwachen zwischen 2 und 4 Uhr ist ein typisches Cortisol-Zeichen. Das Stresshormon steigt nachts zu früh.</div>
+      </div>
+
+      <!-- Frage 4: Nach dem Essen -->
+      <div class="step" data-s="4">
+        <h2>Was passiert bei dir nach dem Essen?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(4,'muede')">Ich werde müde</button>
+          <button class="opt" onclick="nxt(4,'hunger')">Nach 2 Stunden habe ich wieder Hunger</button>
+          <button class="opt" onclick="nxt(4,'suess')">Abends kommt der Heisshunger auf Süsses</button>
+          <button class="opt" onclick="nxt(4,'nichts')">Nichts Besonderes</button>
+        </div>
+        <div class="tipp"><strong>Gut zu wissen:</strong> Müdigkeit nach dem Essen heisst meistens: Insulin ist hoch gegangen und dann abgestürzt. In der Zeit ist Fettabbau gesperrt.</div>
+      </div>
+
+      <!-- Frage 5: Zyklus -->
+      <div class="step" data-s="5">
+        <h2>Wie ist es mit deinem Zyklus?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(5,'regel')">Regelmässig</button>
+          <button class="opt" onclick="nxt(5,'unregel')">Unregelmässig geworden</button>
+          <button class="opt" onclick="nxt(5,'wechsel')">Ich bin in den Wechseljahren</button>
+          <button class="opt" onclick="nxt(5,'keine')">Keine Periode mehr</button>
+          <button class="opt" onclick="nxt(5,'pille')">Pille oder Hormonspirale</button>
+        </div>
+        <div class="tipp"><strong>Gut zu wissen:</strong> Wenn das Östrogen sinkt, wandert Fett von Hüfte und Po zur Mitte. Das passiert oft Jahre vor der letzten Periode.</div>
+      </div>
+
+      <!-- Frage 6: Alter -->
+      <div class="step" data-s="6">
+        <h2>Wie alt bist du?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(6,'u35')">Unter 35</button>
+          <button class="opt" onclick="nxt(6,'35-39')">35 bis 39</button>
+          <button class="opt" onclick="nxt(6,'40-44')">40 bis 44</button>
+          <button class="opt" onclick="nxt(6,'45-49')">45 bis 49</button>
+          <button class="opt" onclick="nxt(6,'50+')">50 oder älter</button>
+        </div>
+        <div class="tipp"><strong>Gut zu wissen:</strong> Ab 40 verliert der Körper pro Jahr Muskeln, wenn man nichts dagegen tut. Weniger Muskeln heisst weniger Abgeben-Signal für die Fettzellen.</div>
+      </div>
+
+      <!-- Frage 7: Gewicht -->
+      <div class="step" data-s="7">
+        <h2>Was wiegst du ungefähr?</h2>
+        <p class="q-sub">Nur damit deine Coachin die Hebel richtig einstellen kann.</p>
+        <div class="opts">
+          <button class="opt" onclick="nxt(7,'u65')">Unter 65 kg</button>
+          <button class="opt" onclick="nxt(7,'65-75')">65 bis 75 kg</button>
+          <button class="opt" onclick="nxt(7,'75-85')">75 bis 85 kg</button>
+          <button class="opt" onclick="nxt(7,'ue85')">Über 85 kg</button>
+        </div>
+        <div class="tipp"><strong>Gut zu wissen:</strong> Für den Bauch zählt nicht die Zahl auf der Waage, sondern wo der Körper speichert. Deshalb gibt es schlanke Frauen mit Bauch.</div>
+      </div>
+
+      <!-- Frage 8: Probiert -->
+      <div class="step" data-s="8">
+        <h2>Was hast du schon probiert?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(8,'kalorien')">Kalorien zählen, weniger essen</button>
+          <button class="opt" onclick="nxt(8,'bauchtraining')">Bauchtraining, Sport</button>
+          <button class="opt" onclick="nxt(8,'fasten')">Intervallfasten</button>
+          <button class="opt" onclick="nxt(8,'diaeten')">Shakes, Diäten, Apps</button>
+          <button class="opt" onclick="nxt(8,'alles')">Alles davon</button>
+        </div>
+        <div class="tipp"><strong>Gut zu wissen:</strong> Jeder dieser Versuche zieht mindestens eine Bremse fester zu. Das ist der Grund, warum es beim dritten Mal noch schwerer war als beim ersten.</div>
+      </div>
+
+      <!-- Loading -->
+      <div class="step ld" data-s="ld">
+        <div class="spinner"></div>
+        <h2>Dein Bremsen-Profil wird berechnet</h2>
+        <p>Das dauert nur ein paar Sekunden</p>
+        <div class="checks">
+          <div class="chk" id="c1"><i>&#10003;</i>Antworten ausgewertet</div>
+          <div class="chk" id="c2"><i>&#10003;</i>Bremsen-Profil berechnet</div>
+          <div class="chk" id="c3"><i>&#10003;</i>Freie Gesprächsplätze geprüft</div>
+        </div>
+      </div>
+
+      <!-- Formular -->
+      <div class="step form" data-s="form">
+        <div class="tag">Auswertung fertig</div>
+        <h2>Dein Bremsen-Profil <em>ist bereit.</em></h2>
+        <p class="sub">Trag dich ein. Du siehst dein Profil sofort und bekommst es zusätzlich per Mail.</p>
+        <div class="fields">
+          <div class="field"><input type="text" id="fn" placeholder="Dein Vor- und Nachname" autocomplete="name" required /></div>
+          <div class="field"><input type="email" id="em" placeholder="Deine E-Mail" autocomplete="email" required /></div>
+          <div class="field"><span class="pre">+41</span><input type="tel" id="ph" placeholder="Deine Telefonnummer" autocomplete="tel" required /></div>
+        </div>
+        <div class="cb-row">
+          <input type="checkbox" id="ds" />
+          <label for="ds">Ich akzeptiere die <a href={datenschutzUrl} target="_blank">Datenschutzbestimmungen</a> und bin einverstanden, dass mich Fit on Time zu meinem Profil kontaktiert.</label>
+        </div>
+        <button class="btn btn--primary btn--block" id="sbtn" disabled onclick="send()">Bremsen-Profil ansehen <span class="btn-arrow">&rarr;</span></button>
+        <div class="form-proof">Deine Daten sind sicher und werden nicht weitergegeben.<br/>Über 4'000 Frauen haben ihr Profil bereits erhalten.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <script is:inline>
+    var quizAnswers = {};
+    var TOTAL = 8;
+    // Bremsen-Punkte: c = Cortisol, i = Insulin, h = Hormon
+    var score = { c: 0, i: 0, h: 0 };
+    var POINTS = {
+      q1: { vorne: { c: 1, i: 1 }, seiten: { h: 2 }, beides: { c: 1, i: 1, h: 1 } },
+      q2: { hart_rund: { c: 2 }, weich: { h: 2 }, abends: { i: 2 }, beides: { c: 1, h: 1 } },
+      q3: { durch: {}, wach: { c: 2 }, einschlafen: { c: 2 }, kurz: { c: 1, i: 1 } },
+      q4: { muede: { i: 2 }, hunger: { i: 2 }, suess: { i: 1, c: 1 }, nichts: {} },
+      q5: { regel: {}, unregel: { h: 2 }, wechsel: { h: 2 }, keine: { h: 2 }, pille: { h: 1 } },
+      q6: { u35: {}, '35-39': {}, '40-44': { h: 1 }, '45-49': { h: 1 }, '50+': { h: 2 } },
+      q7: {},
+      q8: { kalorien: { c: 1 }, bauchtraining: { h: 1 }, fasten: { c: 1 }, diaeten: { i: 1 }, alles: { c: 1, i: 1, h: 1 } }
+    };
+    var LABELS = {
+      q1: { vorne: 'Vorne am Bauch', seiten: 'An den Seiten', beides: 'Beides' },
+      q2: { hart_rund: 'Hart und rund', weich: 'Weich, greifbar', abends: 'Morgens flach, abends aufgebläht', beides: 'Vorne rund, seitlich weich' },
+      q3: { durch: 'Schläft durch', wach: 'Wacht nachts auf (2 bis 4 Uhr)', einschlafen: 'Kommt abends nicht runter', kurz: 'Unter 6 Stunden' },
+      q4: { muede: 'Müde nach dem Essen', hunger: 'Nach 2 Stunden wieder Hunger', suess: 'Heisshunger abends', nichts: 'Nichts Besonderes' },
+      q5: { regel: 'Regelmässig', unregel: 'Unregelmässig', wechsel: 'Wechseljahre', keine: 'Keine Periode mehr', pille: 'Pille / Hormonspirale' },
+      q6: { u35: 'Unter 35', '35-39': '35 bis 39', '40-44': '40 bis 44', '45-49': '45 bis 49', '50+': '50+' },
+      q7: { u65: 'Unter 65 kg', '65-75': '65 bis 75 kg', '75-85': '75 bis 85 kg', ue85: 'Über 85 kg' },
+      q8: { kalorien: 'Kalorien zählen', bauchtraining: 'Bauchtraining / Sport', fasten: 'Intervallfasten', diaeten: 'Shakes / Diäten / Apps', alles: 'Alles davon' }
+    };
+
+    // Race-Schutz: __lp wird erst nach CookieBanner-Script gesetzt, retry bis verfügbar.
+    function tk(e, d) {
+      var tries = 0;
+      function fire() {
+        if (window.__lp) {
+          window.__lp.track(e, Object.assign({ page: 'bauchfett' }, d || {}), 'fot', 'Bauchfett-Check');
+          if (e === 'quiz_start') window.__lp.meta('ViewContent', { content_name: 'FoT Quiz Start', currency: 'CHF' });
+          if (e === 'quiz_complete') window.__lp.meta('CompleteRegistration', { content_name: 'FoT Quiz Complete', currency: 'CHF' });
+          if (e === 'lead_submit') window.__lp.meta('Lead', { content_name: 'FoT Lead', currency: 'CHF' });
+          if (e === 'lead_submit') window.__lp.google('generate_lead', 'TnugCP-6zeIcEOfryccD');
+        } else if (tries++ < 40) {
+          setTimeout(fire, 50);
+        }
+      }
+      fire();
+    }
+    tk('page_view');
+
+    function addPoints(q, val) {
+      var p = (POINTS[q] || {})[val] || {};
+      for (var k in p) score[k] += p[k];
+    }
+
+    function startQuiz(where) {
+      quizAnswers.q1 = where;
+      quizAnswers.q1_label = LABELS.q1[where] || where;
+      addPoints('q1', where);
+      tk('quiz_start', { detail: 'q1_' + where });
+      document.getElementById('lp').style.display = 'none';
+      document.getElementById('quiz').classList.add('on');
+      document.getElementById('qf').style.width = Math.round((1 / TOTAL) * 100) + '%';
+      document.getElementById('qn').textContent = 'Frage 2 von ' + TOTAL;
+      window.scrollTo(0, 0);
+    }
+
+    function nxt(s, val) {
+      quizAnswers['q' + s] = val;
+      quizAnswers['q' + s + '_label'] = (LABELS['q' + s] || {})[val] || val;
+      addPoints('q' + s, val);
+      tk('quiz_answer', { detail: 'q' + s + '_' + val });
+      document.querySelector('.step[data-s="' + s + '"]').classList.remove('on');
+      if (s < TOTAL) {
+        document.querySelector('.step[data-s="' + (s + 1) + '"]').classList.add('on');
+        document.getElementById('qf').style.width = Math.round((s / TOTAL) * 100) + '%';
+        document.getElementById('qn').textContent = 'Frage ' + (s + 1) + ' von ' + TOTAL;
+        var q = document.getElementById('quiz');
+        if (q) q.scrollTop = 0;
+        window.scrollTo(0, 0);
+      } else {
+        finishProfile();
+        tk('quiz_complete', { detail: quizAnswers.bf_main });
+        load();
+      }
+    }
+
+    // Profil: Prozent je Bremse, stärkste Bremse = Haupt-Bremse. Mindestens 20 %,
+    // damit die Balken auf der Ergebnisseite nie leer wirken.
+    function finishProfile() {
+      var MAX = { c: 7, i: 7, h: 9 };
+      var pct = {};
+      for (var k in score) pct[k] = Math.max(20, Math.min(96, Math.round((score[k] / MAX[k]) * 100)));
+      var main = 'c';
+      if (pct.i > pct[main]) main = 'i';
+      if (pct.h > pct[main]) main = 'h';
+      // Gleichstand: das Gate entscheidet (seitlich = Hormon, vorne = Cortisol)
+      if (pct.h === pct[main] && quizAnswers.q1 === 'seiten') main = 'h';
+      var NAMES = { c: 'Cortisol-Bremse', i: 'Insulin-Bremse', h: 'Hormon-Bremse' };
+      quizAnswers.bf_cortisol = pct.c;
+      quizAnswers.bf_insulin = pct.i;
+      quizAnswers.bf_hormon = pct.h;
+      quizAnswers.bf_main = main;
+      quizAnswers.bf_main_label = NAMES[main];
+    }
+
+    function load() {
+      var ld = document.querySelector('.step[data-s="ld"]');
+      ld.classList.add('on');
+      document.getElementById('qf').style.width = '100%';
+      document.getElementById('qn').textContent = 'Auswertung';
+      setTimeout(function(){ document.getElementById('c1').classList.add('show'); }, 600);
+      setTimeout(function(){ document.getElementById('c2').classList.add('show'); }, 1400);
+      setTimeout(function(){ document.getElementById('c3').classList.add('show'); }, 2200);
+      setTimeout(function(){
+        ld.classList.remove('on');
+        document.querySelector('.step[data-s="form"]').classList.add('on');
+        document.getElementById('qn').textContent = 'Fast fertig';
+      }, 3200);
+    }
+
+    document.getElementById('ds').addEventListener('change', function() {
+      document.getElementById('sbtn').disabled = !this.checked;
+    });
+
+    function normalizePhone(raw) {
+      var c = (raw || '').replace(/[^\d+]/g, '');
+      if (!c) return '';
+      if (c.charAt(0) === '+') return c;
+      if (c.charAt(0) === '0') return '+41' + c.slice(1);
+      return '+41' + c;
+    }
+
+    function send() {
+      var fnEl = document.getElementById('fn'), emEl = document.getElementById('em'), phEl = document.getElementById('ph');
+      var fn = fnEl.value.trim(), em = emEl.value.trim(), ph = normalizePhone(phEl.value);
+      [fnEl, emEl, phEl].forEach(function(el){ el.parentElement.classList.remove('err'); });
+      if (!fn || !em || !ph) {
+        if (!fn) fnEl.parentElement.classList.add('err');
+        if (!em) emEl.parentElement.classList.add('err');
+        if (!ph) phEl.parentElement.classList.add('err');
+        return;
+      }
+      var btn = document.getElementById('sbtn');
+      btn.disabled = true;
+      btn.textContent = 'Wird gespeichert';
+
+      // Atomarer Submit: lead_submit + Pixel + Weiterleitung NUR bei erfolgreichem Insert
+      fetch('/api/sheets', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          lp_slug: 'bauchfett',
+          lp_name: 'Bauchfett-Check',
+          name: fn,
+          email: em,
+          phone: ph,
+          answers: quizAnswers
+        })
+      }).then(function(res){
+        if (!res.ok) throw new Error('insert-failed');
+        tk('lead_submit', { detail: quizAnswers.bf_main });
+        var firstName = (fn.split(' ')[0] || '').trim();
+        try {
+          sessionStorage.setItem('fot_bf_profile', JSON.stringify({
+            name: firstName || 'Du', email: em, phone: ph,
+            main: quizAnswers.bf_main, c: quizAnswers.bf_cortisol, i: quizAnswers.bf_insulin, h: quizAnswers.bf_hormon,
+            where: quizAnswers.q1
+          }));
+        } catch(e) {}
+        btn.textContent = 'Weiter zu deinem Profil';
+        // Puffer, damit Pixel + sendBeacon raus sind, bevor navigiert wird
+        setTimeout(function(){ window.location.href = '/bauchfett/ergebnis/'; }, 250);
+      }).catch(function(){
+        btn.disabled = false;
+        btn.innerHTML = 'Bremsen-Profil ansehen <span class="btn-arrow">&rarr;</span>';
+        alert('Etwas ist schiefgelaufen. Bitte nochmal versuchen.');
+      });
+    }
+  </script>
+
+  {/* Hyros als First-Party-Attribution, lädt ohne Consent (wie alle FoT-LPs) */}
+  <script is:inline src="https://t.hyros.com/v1/lst/universal-script?ph=689a71ca1ab3be1cb1caddbe6b7902a4ad2c51a228f4ec9ea7fef3123a705f63"></script>
+
+  <CookieBanner
+    metaPixelId="1316450223953563"
+    googleAdsId={GOOGLE_ADS_ID}
+    consentKey="fot_bauchfett_consent"
+    impressumUrl={impressumUrl}
+    datenschutzUrl={datenschutzUrl}
+  />
+</body>
+</html>

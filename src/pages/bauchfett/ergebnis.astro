@@ -1,0 +1,235 @@
+---
+// Bauchfett-Funnel, Schritt 2: Bremsen-Profil + Terminbuchung (Bauchfett-Gespräch).
+// Profil kommt aus sessionStorage (fot_bf_profile, gesetzt auf /bauchfett/ nach dem Insert).
+// Ohne Profil (Direktaufruf) zeigt die Seite ein neutrales Profil und den Kalender trotzdem.
+import '../../styles/bauchfett.css';
+import CookieBanner from '../../components/CookieBanner.astro';
+import ScaleeeCredit from '../../components/ScaleeeCredit.astro';
+import FotWordmark from '../../components/FotWordmark.astro';
+const impressumUrl = 'https://fitontime.ch/impressum-datenschutz';
+const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
+const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').trim();
+// YouCanBook.me-Kalender. Default = der geteilte "Kostenlose Analyse"-Kalender (leitet
+// nach der Buchung auf /ab-40/bestaetigt, das per fot_booking_lp dem Funnel zuordnet).
+// Sobald ein eigener Kalender "fitontime-bauchfett" existiert: Env setzen, fertig.
+const YCBM_DOMAIN = (import.meta.env.PUBLIC_FOT_YCBM_BAUCHFETT || 'fitontime-analyse-fot-vsl').trim();
+const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..500,0..100;1,9..144,300..500,0..100&family=Albert+Sans:wght@400;500;600&display=swap';
+---
+<html lang="de-CH">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Dein Bremsen-Profil | Fit on Time</title>
+  <link rel="icon" type="image/png" href="/images/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href={FONTS} rel="stylesheet" />
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <FotWordmark />
+      <span class="tag">Dein Profil</span>
+    </div>
+  </div>
+
+  <!-- Profil -->
+  <section class="result-hero">
+    <div class="wrap">
+      <p class="eyebrow">Auswertung für <span id="r-name">dich</span></p>
+      <h1 style="margin:0.75rem 0 1.25rem;">Deine stärkste Bremse: <em id="r-main">wird geladen</em></h1>
+      <div class="profile">
+        <div class="p-label">Dein Bremsen-Profil</div>
+        <span class="p-where" id="r-where">Bauchfett</span>
+        <div class="bars">
+          <div class="bar-row" id="bar-c"><div class="bl"><b>Cortisol-Bremse</b><span id="pct-c">0 %</span></div><div class="bar"><i id="fill-c"></i></div></div>
+          <div class="bar-row" id="bar-i"><div class="bl"><b>Insulin-Bremse</b><span id="pct-i">0 %</span></div><div class="bar"><i id="fill-i"></i></div></div>
+          <div class="bar-row" id="bar-h"><div class="bl"><b>Hormon-Bremse</b><span id="pct-h">0 %</span></div><div class="bar"><i id="fill-h"></i></div></div>
+        </div>
+        <p class="p-text" id="r-text1"></p>
+        <p class="p-text" id="r-text2"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Der Haken -->
+  <section class="section" style="padding-top:1.5rem;">
+    <div class="wrap">
+      <div class="why">
+        <h3>Jetzt kommt der Teil, der den Bauch verändert.</h3>
+        <p>Du weisst jetzt, welche Bremse bei dir zu ist. Was du noch nicht weisst: welche zwei bis drei Hebel diese Bremse bei <strong>dir</strong> lösen. Die hängen von deinem Alltag ab, von deinem Schlaf, deinen Essenszeiten, deinem Zyklus. Bei jeder Frau anders.</p>
+        <p>Genau die legen wir im <strong>Bauchfett-Gespräch</strong> fest. 20 Minuten mit einer Coachin, telefonisch oder per Video. Kostenlos. Du gehst mit deinen Hebeln raus, ob du danach mit uns weitermachst oder nicht.</p>
+        <p class="quote">Wähle unten einen Termin. Das ist der Schritt, der bisher gefehlt hat.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Buchung -->
+  <section class="section section--sand" style="padding-top:2rem;" id="termin">
+    <div class="wrap">
+      <div class="booking">
+        <div class="b-title">Wann passt dir dein Bauchfett-Gespräch?</div>
+        <div class="b-sub">Kostenlos · 20 Minuten · telefonisch oder per Video</div>
+        <div id="ycbm-embed"></div>
+        <div class="b-fine">Nach der Buchung bekommst du sofort eine Bestätigung per Mail.</div>
+      </div>
+
+      <div style="margin-top:1.5rem;">
+        <p class="eyebrow" style="margin-bottom:0.75rem;">Was im Gespräch passiert</p>
+        <ul class="gets">
+          <li>Wir gehen dein Bremsen-Profil gemeinsam durch und prüfen, ob es stimmt</li>
+          <li>Du bekommst die <strong>zwei bis drei Hebel</strong>, die deine erste Bremse lösen</li>
+          <li>Ein klarer Plan für die nächsten 14 Tage, ohne Diät, ohne Bauchtraining</li>
+          <li>Eine ehrliche Einschätzung, ob die 3-Bremsen-Methode für dich passt</li>
+          <li>Kein Verkaufsgespräch. Wenn es nicht passt, sagen wir es dir</li>
+        </ul>
+      </div>
+
+      <div class="scarcity" style="margin-top:1.5rem;">
+        <div class="s-title">Wichtig</div>
+        <p>Unsere Coachinnen führen pro Woche nur eine <strong>begrenzte Zahl</strong> an Bauchfett-Gesprächen. Die freien Termine sind meist innerhalb von zwei Tagen weg.</p>
+        <p>Ohne Gespräch bekommst du dein Profil als Text per Mail. Aber ohne die Hebel. Und die Hebel sind der Teil, der den Bauch verändert.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Vertrauen -->
+  <section class="section section--bright">
+    <div class="wrap wrap--wide">
+      <div class="section-head">
+        <p class="eyebrow">Frauen, die den Schritt gemacht haben</p>
+        <h2>Zuerst das Gespräch. <em>Dann der Bauch.</em></h2>
+      </div>
+      <div class="proof-grid">
+        <img src="/images/sd-proof/tf-04.jpg" alt="Vorher Nachher Bauch Fit on Time" loading="lazy" />
+        <img src="/images/sd-proof/tf-05.jpg" alt="Vorher Nachher Bauch Fit on Time" loading="lazy" />
+        <img src="/images/sd-proof/tf-02.jpg" alt="Vorher Nachher Fit on Time" loading="lazy" />
+        <img src="/images/sd-proof/tf-06.jpg" alt="Vorher Nachher Fit on Time" loading="lazy" />
+      </div>
+      <div style="text-align:center; margin-top:1.75rem;">
+        <a href="#termin" class="btn btn--primary">Termin auswählen <span class="btn-arrow">&rarr;</span></a>
+      </div>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <footer>
+      <a href={impressumUrl} target="_blank" rel="noopener">Impressum</a> &middot;
+      <a href={datenschutzUrl} target="_blank" rel="noopener">Datenschutzerklärung</a>
+      <p class="fine">Das Bremsen-Profil ist eine Einschätzung anhand deiner Antworten und ersetzt keine ärztliche Untersuchung.</p>
+      <div style="margin-top:10px;text-align:center;"><ScaleeeCredit /></div>
+    </footer>
+  </div>
+
+  <script is:inline define:vars={{ YCBM_DOMAIN }}>
+    var LP_SLUG = 'bauchfett';
+    var LP_NAME = 'Bauchfett-Check';
+
+    function tk(e, d) {
+      var tries = 0;
+      (function fire() {
+        if (window.__lp) {
+          window.__lp.track(e, Object.assign({ page: LP_SLUG }, d || {}), 'fot', LP_NAME);
+          if (e === 'booking_confirmed') window.__lp.meta('Schedule', { content_name: 'FoT Termin gebucht', currency: 'CHF' });
+          if (e === 'booking_confirmed') window.__lp.google('book_appointment', 'yDiXCIK7zeIcEOfryccD');
+        } else if (tries++ < 40) { setTimeout(fire, 50); }
+      })();
+    }
+    tk('page_view');
+
+    // Funnel-Marker für den geteilten Kalender: /ab-40/bestaetigt liest fot_booking_lp
+    // und verbucht die Buchung unter diesem Slug statt unter ab-40.
+    try { sessionStorage.setItem('fot_booking_lp', JSON.stringify({ slug: LP_SLUG, name: LP_NAME })); } catch (e) {}
+
+    // Profil laden
+    var P = null;
+    try { P = JSON.parse(sessionStorage.getItem('fot_bf_profile') || 'null'); } catch (e) {}
+    if (!P) P = { name: 'dich', main: 'c', c: 62, i: 48, h: 41, where: 'vorne' };
+
+    var TEXT = {
+      c: {
+        name: 'die Cortisol-Bremse',
+        where: 'Fett vorne, tief im Bauch',
+        t1: 'Bei dir hält vor allem das Stresshormon Cortisol das Fett fest. Dein Körper ist im Alarm-Modus: zu wenig Schlaf, zu wenig Pausen, der Kopf nie leer. Dann bekommt er den Befehl, vorne am Bauch zu speichern und dort nichts abzugeben. Das ist das harte, runde Fett, das abends am schlimmsten ist.',
+        t2: 'Die gute Nachricht: Diese Bremse löst sich am schnellsten. Nicht mit weniger Essen, das macht sie fester. Sondern mit zwei, drei kleinen Hebeln am Abend und beim Frühstück. Welche das bei dir sind, klären wir im Gespräch.'
+      },
+      i: {
+        name: 'die Insulin-Bremse',
+        where: 'Fett vorne und seitlich',
+        t1: 'Bei dir ist das Speicherhormon Insulin fast den ganzen Tag oben. Müde nach dem Essen, nach zwei Stunden wieder Hunger, abends Heisshunger auf Süsses: Das sind die Zeichen. Solange Insulin oben ist, kann dein Körper kein Fett abgeben. Nicht am Bauch, nirgends.',
+        t2: 'Die gute Nachricht: Hier geht es nicht um weniger essen, sondern um wann und in welcher Reihenfolge. Die meisten Frauen spüren den Unterschied am Bauch nach 10 bis 14 Tagen. Welche Hebel bei dir zuerst kommen, klären wir im Gespräch.'
+      },
+      h: {
+        name: 'die Hormon-Bremse',
+        where: 'Fett an den Seiten',
+        t1: 'Bei dir hat sich die Verteilung verschoben. Das Östrogen sinkt, das Fett wandert von Hüfte und Po an die Seiten und nach vorne. Und die Fettzellen dort haben mehr Halten-Knöpfe als Abgeben-Knöpfe. Deshalb wird alles andere schmaler, nur die Mitte nicht. Bauchtraining kommt da nicht ran.',
+        t2: 'Die gute Nachricht: Die Abgeben-Knöpfe lassen sich gezielt ansprechen, mit der richtigen Bewegung zur richtigen Zeit und mit Eiweiss statt Verzicht. Das ist kein Kraftakt, das ist Timing. Wie das bei dir aussieht, klären wir im Gespräch.'
+      }
+    };
+    var WHERE = { vorne: 'Vorne am Bauch', seiten: 'An den Seiten', beides: 'Vorne und an den Seiten' };
+
+    var T = TEXT[P.main] || TEXT.c;
+    document.getElementById('r-name').textContent = P.name || 'dich';
+    document.getElementById('r-main').textContent = T.name;
+    document.getElementById('r-where').textContent = (WHERE[P.where] || 'Bauchfett') + ' · ' + T.where;
+    document.getElementById('r-text1').textContent = T.t1;
+    document.getElementById('r-text2').textContent = T.t2;
+    document.getElementById('bar-' + P.main).classList.add('main');
+    ['c', 'i', 'h'].forEach(function (k) {
+      var v = Math.max(0, Math.min(100, parseInt(P[k], 10) || 0));
+      document.getElementById('pct-' + k).textContent = v + ' %';
+      setTimeout(function () { document.getElementById('fill-' + k).style.width = v + '%'; }, 200);
+    });
+    tk('result_shown', { detail: P.main });
+
+    // YCBM-Embed
+    var s = document.createElement('script');
+    s.src = 'https://embed.ycb.me';
+    s.async = true;
+    s.setAttribute('data-domain', YCBM_DOMAIN);
+    s.setAttribute('data-displaymode', 'auto');
+    s.onload = function () { tk('booking_embed_loaded'); };
+    document.getElementById('ycbm-embed').appendChild(s);
+
+    // Buchung erkennen (YCBM postet ans Parent), einmal zählen, dann auf /bauchfett/gebucht.
+    // Guard-Key ist derselbe wie auf /ab-40/bestaetigt (fot_booked_<slug>), damit der
+    // geteilte Kalender die Buchung nicht doppelt meldet.
+    window.addEventListener('message', function (ev) {
+      var origin = String(ev.origin || '');
+      if (!/(^|\.)ycb\.me$/.test(origin) && origin.indexOf('youcanbook') === -1) return;
+      var txt = '';
+      try { txt = (typeof ev.data === 'string') ? ev.data : JSON.stringify(ev.data); } catch (e) { return; }
+      txt = txt.toLowerCase();
+      if (txt.indexOf('book') === -1) return;
+      if (!/confirm|complete|created|success|made|finished/.test(txt)) return;
+      if (txt.indexOf('cancel') !== -1) return;
+      var already = false;
+      try { already = sessionStorage.getItem('fot_booked_' + LP_SLUG) === '1'; } catch (e) {}
+      if (!already) {
+        try { sessionStorage.setItem('fot_booked_' + LP_SLUG, '1'); } catch (e) {}
+        tk('booking_confirmed', { detail: P.main });
+        // Eigenbuchung melden, damit der WhatsApp-Bot keinen Opener mehr schickt
+        try {
+          if (P.email || P.phone) {
+            fetch('/api/booked', { method: 'POST', headers: { 'Content-Type': 'application/json' }, keepalive: true,
+              body: JSON.stringify({ email: P.email || '', phone: P.phone || '' }) }).catch(function(){});
+          }
+        } catch (e) {}
+      }
+      // Delay, damit sendBeacon, Pixel und /api/booked vorher rausgehen
+      setTimeout(function () { window.location.href = '/bauchfett/gebucht/'; }, 900);
+    }, false);
+  </script>
+
+  <script is:inline src="https://t.hyros.com/v1/lst/universal-script?ph=689a71ca1ab3be1cb1caddbe6b7902a4ad2c51a228f4ec9ea7fef3123a705f63"></script>
+
+  <CookieBanner
+    metaPixelId="1316450223953563"
+    googleAdsId={GOOGLE_ADS_ID}
+    consentKey="fot_bauchfett_consent"
+    impressumUrl={impressumUrl}
+    datenschutzUrl={datenschutzUrl}
+  />
+</body>
+</html>
