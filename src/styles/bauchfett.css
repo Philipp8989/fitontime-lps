@@ -281,6 +281,9 @@ footer .fine { font-size: 0.72rem; max-width: 36rem; margin: 0.75rem auto 0; lin
 .cb-row input { accent-color: var(--ink); width: 1rem; height: 1rem; margin-top: 0.2rem; flex-shrink: 0; }
 .cb-row label { font-size: 0.78rem; color: var(--taupe); line-height: 1.4; }
 .cb-row label a { color: var(--ink-soft); }
+.cb-row.error { outline: 1px solid var(--rust); outline-offset: 6px; border-radius: 6px; }
+.cb-row.error label { color: var(--rust); }
+.form-hint { font-size: 0.85rem; color: var(--ink-soft); max-width: 28rem; margin: 0 auto 0.9rem; }
 .form .btn { max-width: 28rem; }
 .form-proof { margin: 1rem auto 0; max-width: 28rem; font-size: 0.78rem; color: var(--taupe); line-height: 1.6; }
 

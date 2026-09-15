@@ -273,28 +273,24 @@ const SHEETS: Record<string, SheetConfig> = {
   },
 };
 
-// Bauchfett-Check: Sheet erst aktiv, wenn FOT_BAUCHFETT_SHEET_ID gesetzt ist (Sheet muss
-// Philipp anlegen und mit leads-writer@ teilen). Ohne Env landet der Lead nur im
-// Dashboard-CRM, statt mit einem leeren Sheet-Append den ganzen Insert zu 500en.
-// Header: Datum | Vorname | Nachname | E-Mail | Telefon | Bremsen-Typ | Wo | Bauchgefühl |
-// Schlaf | Nach dem Essen | Zyklus | Alter | Gewicht | Schon probiert | Cortisol % | Insulin % | Hormon %
-const BAUCHFETT_SHEET_ID = (import.meta.env.FOT_BAUCHFETT_SHEET_ID || '').trim();
-if (BAUCHFETT_SHEET_ID) {
-  SHEETS['bauchfett'] = {
-    id: BAUCHFETT_SHEET_ID,
-    range: 'Leads!A:Q',
-    buildRow: (datum, d) => {
-      const a = d.answers || {};
-      const parts = (d.name || '').trim().split(/\s+/);
-      const vorname = parts[0] || '';
-      const nachname = parts.slice(1).join(' ') || '';
-      return [datum, vorname, nachname, d.email, d.phone || '', a.bf_main_label || '',
-        a.q1_label || '', a.q2_label || '', a.q3_label || '', a.q4_label || '', a.q5_label || '',
-        a.q6_label || '', a.q7_label || '', a.q8_label || '',
-        a.bf_cortisol ?? '', a.bf_insulin ?? '', a.bf_hormon ?? ''];
-    },
-  };
-}
+// Bauchfett-Check (3-Bremsen-Methode). Sheet "FitonTime Bauchfett Leads" (Owner Philipp,
+// mit leads-writer@ geteilt). Header: Datum | Vorname | Nachname | E-Mail | Telefon |
+// Bremsen-Typ | Wo | Bauchgefühl | Schlaf | Nach dem Essen | Zyklus | Alter | Gewicht |
+// Schon probiert | Cortisol % | Insulin % | Hormon % | WhatsApp Opt-in
+SHEETS['bauchfett'] = {
+  id: '1C2GqiZqtHCkWWVPo-DUOVCFCFIU6fqJD0F3olmAS1XA',
+  range: 'Leads!A:R',
+  buildRow: (datum, d) => {
+    const a = d.answers || {};
+    const parts = (d.name || '').trim().split(/\s+/);
+    const vorname = parts[0] || '';
+    const nachname = parts.slice(1).join(' ') || '';
+    return [datum, vorname, nachname, d.email, d.phone || '', a.bf_main_label || '',
+      a.q1_label || '', a.q2_label || '', a.q3_label || '', a.q4_label || '', a.q5_label || '',
+      a.q6_label || '', a.q7_label || '', a.q8_label || '',
+      a.bf_cortisol ?? '', a.bf_insulin ?? '', a.bf_hormon ?? '', d.wa_optin === true ? 'Ja' : 'Nein'];
+  },
+};
 
 export const POST: APIRoute = async ({ request }) => {
   try {

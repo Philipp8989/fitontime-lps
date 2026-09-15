@@ -49,7 +49,7 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
 
         <div class="gate">
           <div class="gate-q">Wo sitzt dein Bauchfett vor allem?</div>
-          <div class="gate-sub">Tipp auf das Bild, das dir am nächsten kommt. Damit startet der Check.</div>
+          <div class="gate-sub">Tipp auf das Bild, das am ehesten zu dir passt. Damit startet der Check.</div>
           <div class="gate-row">
             <button class="gate-opt" onclick="startQuiz('vorne')">
               <img src="/images/bauchfett/vorne-2.webp" alt="Bauchfett vorne am Bauch" width="900" height="900" />
@@ -79,15 +79,15 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
             <div class="mc-body">
               <div class="mc-label">Vorne am Bauch</div>
               <h3>Rund, oft hart. Abends wie ein Ballon.</h3>
-              <p>Morgens geht es noch. Ab dem Nachmittag drückt die Hose, der Knopf geht nur im Stehen zu. Du sitzt anders, du atmest anders. Und im Spiegel schaust du zuerst genau dahin.</p>
+              <p>Morgens geht es noch. Ab dem Nachmittag drückt die Hose, der Knopf geht nur im Stehen zu. Du setzt dich anders hin, du ziehst den Bauch ein. Und im Spiegel schaust du zuerst genau dahin.</p>
             </div>
           </div>
           <div class="mirror-card">
             <img src="/images/bauchfett/seite-2.webp" alt="Fett an den Seiten des Bauchs" loading="lazy" width="900" height="900" />
             <div class="mc-body">
               <div class="mc-label">An den Seiten</div>
-              <h3>Über dem Bund schiebt es sich raus.</h3>
-              <p>Im engen Shirt siehst du es zuerst. Du ziehst das Oberteil den ganzen Tag runter, kaufst weiter geschnittene Sachen, greifst beim Sitzen unbewusst hin. Weich, zum Anfassen. Und es geht nicht weg.</p>
+              <h3>Über dem Hosenbund quillt es raus.</h3>
+              <p>Im engen Shirt siehst du es zuerst. Du ziehst das Oberteil den ganzen Tag runter, kaufst nur noch weite Sachen, greifst beim Sitzen unbewusst hin. Weich, zum Anfassen. Und es geht nicht weg.</p>
             </div>
           </div>
         </div>
@@ -190,7 +190,7 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
     <section class="section section--bright">
       <div class="wrap wrap--wide">
         <div class="section-head">
-          <p class="eyebrow">Echte Frauen, echte Bäuche</p>
+          <p class="eyebrow">Echte Frauen, echte Ergebnisse</p>
           <h2>Wenn die Bremse gelöst ist, <em>sieht man es zuerst hier.</em></h2>
         </div>
         <div class="proof-grid">
@@ -223,7 +223,7 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
               <span>Vorne, am Bauch</span>
             </button>
             <button class="gate-opt" onclick="startQuiz('seiten')">
-              <img src="/images/bauchfett/seite-4.webp" alt="Bauchfett an den Seiten" loading="lazy" width="900" height="900" />
+              <img src="/images/bauchfett/seite-3.webp" alt="Bauchfett an den Seiten" loading="lazy" width="900" height="900" />
               <span>An den Seiten</span>
             </button>
           </div>
@@ -359,11 +359,16 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
           <div class="field"><input type="email" id="em" placeholder="Deine E-Mail" autocomplete="email" required /></div>
           <div class="field"><span class="pre">+41</span><input type="tel" id="ph" placeholder="Deine Telefonnummer" autocomplete="tel" required /></div>
         </div>
-        <div class="cb-row">
+        <p class="form-hint">Eine Coachin geht dein Profil kurz und kostenlos mit dir durch, damit du weisst, welche Hebel bei dir zuerst kommen.</p>
+        <div class="cb-row" id="dsRow">
           <input type="checkbox" id="ds" />
-          <label for="ds">Ich akzeptiere die <a href={datenschutzUrl} target="_blank">Datenschutzbestimmungen</a> und bin einverstanden, dass mich Fit on Time zu meinem Profil kontaktiert.</label>
+          <label for="ds">Ich akzeptiere die <a href={datenschutzUrl} target="_blank">Datenschutzbestimmungen</a> und erhalte mein Bremsen-Profil per E-Mail.</label>
         </div>
-        <button class="btn btn--primary btn--block" id="sbtn" disabled onclick="send()">Bremsen-Profil ansehen <span class="btn-arrow">&rarr;</span></button>
+        <div class="cb-row" id="waRow">
+          <input type="checkbox" id="wa" />
+          <label for="wa">Ja, meine Coachin darf mir per WhatsApp auf die angegebene Nummer schreiben und mein Profil mit mir durchgehen.</label>
+        </div>
+        <button class="btn btn--primary btn--block" id="sbtn" onclick="send()">Bremsen-Profil ansehen <span class="btn-arrow">&rarr;</span></button>
         <div class="form-proof">Deine Daten sind sicher und werden nicht weitergegeben.<br/>Über 4'000 Frauen haben ihr Profil bereits erhalten.</div>
       </div>
 
@@ -485,10 +490,6 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
       }, 3200);
     }
 
-    document.getElementById('ds').addEventListener('change', function() {
-      document.getElementById('sbtn').disabled = !this.checked;
-    });
-
     function normalizePhone(raw) {
       var c = (raw || '').replace(/[^\d+]/g, '');
       if (!c) return '';
@@ -507,6 +508,19 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
         if (!ph) phEl.parentElement.classList.add('err');
         return;
       }
+      // Checkboxen inline validieren statt Button tot zu schalten
+      ['dsRow', 'waRow'].forEach(function(id){ document.getElementById(id).classList.remove('error'); });
+      if (!document.getElementById('ds').checked) {
+        document.getElementById('dsRow').classList.add('error');
+        document.getElementById('dsRow').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
+      // WhatsApp-Opt-in ist Pflicht (wie koerpertyp-test): ohne ihn darf der Bot nicht anschreiben.
+      if (!document.getElementById('wa').checked) {
+        document.getElementById('waRow').classList.add('error');
+        document.getElementById('waRow').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
       var btn = document.getElementById('sbtn');
       btn.disabled = true;
       btn.textContent = 'Wird gespeichert';
@@ -521,6 +535,9 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
           name: fn,
           email: em,
           phone: ph,
+          first_name: fn.split(' ')[0],
+          // Pflicht-Opt-in: schaltet den WhatsApp-Bot-Intake in /api/sheets frei.
+          wa_optin: document.getElementById('wa').checked,
           answers: quizAnswers
         })
       }).then(function(res){
