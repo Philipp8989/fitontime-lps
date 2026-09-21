@@ -1,0 +1,100 @@
+/* Partner-LP (Studios als Empfehlungs-Partner). Tokens kommen aus bauchfett.css,
+   hier nur die Sections nach design-pool-Mustern: vollbreite-typo, fakten-zeile,
+   zeitleiste-tag, preisblatt, zwei-spalten-linien. */
+
+:root { --mono: ui-monospace, Menlo, monospace; }
+
+.kicker {
+  font-family: var(--mono); font-size: 0.74rem; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--gold); margin: 0 0 1rem;
+}
+
+/* Hero: Headline über die volle Breite, Subline und CTA rechts unten (hero/vollbreite-typo) */
+.p-hero { padding: clamp(2.5rem, 7vw, 5.5rem) 0 clamp(2.5rem, 6vw, 4.5rem); border-bottom: var(--hairline); }
+.p-hero h1 { font-size: clamp(2.4rem, 6.2vw, 5rem); line-height: 1; letter-spacing: -0.02em; max-width: 20ch; margin-bottom: clamp(1.75rem, 4vw, 3rem); }
+.p-hero-grid { display: grid; grid-template-columns: 5fr 7fr; gap: 3rem; align-items: end; }
+.p-hero-note { font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.04em; color: var(--taupe); line-height: 1.6; max-width: 34ch; }
+.p-hero-copy .lead { max-width: 52ch; margin-bottom: 1.6rem; }
+.p-hero-cta { display: flex; flex-wrap: wrap; gap: 1rem 1.5rem; align-items: center; }
+.p-hero-cta .fine { font-size: 0.85rem; color: var(--taupe); }
+@media (max-width: 800px) { .p-hero-grid { grid-template-columns: 1fr; gap: 1.25rem; } .p-hero-note { order: 2; } }
+
+/* Fakten-Zeile: Zahl in Serif, Beleg in Mono, Hairlines statt Kacheln (beweis/fakten-zeile) */
+.p-facts { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; border-bottom: var(--hairline); }
+.p-fact { padding: 1.75rem 1.5rem 1.75rem 0; margin-right: 1.5rem; border-right: var(--hairline); display: grid; gap: 0.35rem; align-content: start; }
+.p-fact:last-child { border-right: 0; margin-right: 0; }
+.p-fact strong { font-family: var(--font-display); font-weight: 340; font-size: 2.6rem; line-height: 1; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; color: var(--ink); }
+.p-fact span { font-size: 0.95rem; color: var(--ink); }
+.p-fact small { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.06em; color: var(--taupe); }
+@media (max-width: 800px) { .p-facts { grid-auto-flow: row; } .p-fact { border-right: 0; margin-right: 0; border-bottom: var(--hairline); padding: 1.1rem 0; } .p-fact:last-child { border-bottom: 0; } }
+
+/* Für wen: Liste mit Trennlinien, Studio-Typ in Serif links, Grund rechts */
+.p-list { list-style: none; border-top: var(--hairline); }
+.p-list li { display: grid; grid-template-columns: 4fr 8fr; gap: 2rem; padding: 1.2rem 0; border-bottom: var(--hairline); }
+.p-list dt, .p-list .t { font-family: var(--font-display); font-weight: 340; font-size: 1.3rem; line-height: 1.2; color: var(--ink); }
+.p-list p { max-width: 58ch; }
+@media (max-width: 800px) { .p-list li { grid-template-columns: 1fr; gap: 0.4rem; } }
+
+/* Zweispalter mit Versatz: Kopf links, Text rechts, keine Karte */
+.p-split { display: grid; grid-template-columns: 5fr 7fr; gap: 3rem; align-items: start; }
+.p-split h2 { margin-bottom: 0.75rem; }
+.p-split p + p { margin-top: 1rem; }
+.p-split .col p { max-width: 60ch; text-wrap: pretty; }
+.p-split .col p:first-of-type::first-line { font-family: var(--mono); font-size: 0.82rem; letter-spacing: 0.06em; text-transform: uppercase; }
+@media (max-width: 800px) { .p-split { grid-template-columns: 1fr; gap: 1.25rem; } }
+
+/* Ablauf als Achse mit Marken (ablauf/zeitleiste-tag, Schritte statt Uhrzeiten) */
+.p-axis { list-style: none; display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 1.5rem; border-top: 2px solid var(--ink); position: relative; margin-top: 2.5rem; }
+.p-axis li { position: relative; padding-top: 1.75rem; }
+.p-axis li::before { content: ""; position: absolute; top: -7px; left: 0; width: 12px; height: 12px; border-radius: 50%; background: var(--gold); }
+.p-axis time { display: block; font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.08em; color: var(--taupe); margin-bottom: 0.5rem; text-transform: uppercase; }
+.p-axis strong { display: block; font-weight: 600; font-size: 1.05rem; margin-bottom: 0.35rem; color: var(--ink); }
+.p-axis p { font-size: 0.94rem; line-height: 1.55; max-width: 30ch; }
+@media (max-width: 800px) { .p-axis { grid-auto-flow: row; border-top: 0; border-left: 2px solid var(--ink); padding-left: 1.5rem; gap: 1.75rem; } .p-axis li { padding-top: 0; } .p-axis li::before { top: 4px; left: -31px; } }
+
+/* Partner-Blatt: Positionen mit Punktlinie, Summe mit Doppellinie (preis/preisblatt) */
+.p-sheet { background: var(--cream-bright); border: 1px solid var(--sand-deep); padding: 2rem; }
+.p-sheet-title { display: flex; justify-content: space-between; gap: 1rem; font-family: var(--mono); font-size: 0.74rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--taupe); padding-bottom: 0.9rem; border-bottom: 1px solid var(--ink); margin-bottom: 0.5rem; }
+.p-sheet dl { margin: 0; }
+.p-sheet dl div { display: flex; align-items: baseline; gap: 0.5rem; padding: 0.7rem 0; font-size: 0.97rem; }
+.p-sheet dt { flex: 0 1 auto; color: var(--ink); }
+.p-sheet dl div::after { content: ""; flex: 1; border-bottom: 1px dotted var(--taupe); order: 2; transform: translateY(-4px); }
+.p-sheet dd { order: 3; margin: 0; font-family: var(--mono); font-size: 0.88rem; font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--ink); }
+.p-sheet-sum { display: flex; justify-content: space-between; align-items: baseline; margin-top: 0.75rem; padding-top: 1rem; border-top: 3px double var(--ink); }
+.p-sheet-sum span { font-weight: 600; color: var(--ink); }
+.p-sheet-sum strong { font-family: var(--font-display); font-weight: 340; font-size: 2.4rem; line-height: 1; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; color: var(--ink); }
+.p-sheet .fuss { font-size: 0.84rem; color: var(--ink-soft); margin: 1.1rem 0 1.4rem; line-height: 1.5; }
+@media (max-width: 800px) { .p-sheet { padding: 1.4rem; } }
+
+/* FAQ: Frage links in Serif, Antwort rechts, alles offen (faq/zwei-spalten-linien) */
+.p-faq { list-style: none; border-top: var(--hairline); }
+.p-faq li { display: grid; grid-template-columns: 4fr 8fr; gap: 2rem; padding: 1.4rem 0; border-bottom: var(--hairline); }
+.p-faq .q { font-family: var(--font-display); font-weight: 340; font-size: 1.25rem; line-height: 1.2; color: var(--ink); }
+.p-faq p { max-width: 62ch; }
+@media (max-width: 800px) { .p-faq li { grid-template-columns: 1fr; gap: 0.5rem; } }
+
+/* Formular: linksbündig im schmalen Container, Felder wie bauchfett */
+.p-form { max-width: 34rem; }
+.p-form h2 { margin-bottom: 0.5rem; }
+.p-form .sub { margin-bottom: 1.5rem; }
+.p-form .fields { max-width: none; margin: 0 0 1rem; }
+.p-form .field select { flex: 1; background: transparent; border: none; outline: none; color: var(--ink); font-family: var(--font-body); font-size: 1rem; padding: 0.95rem 0; min-width: 0; appearance: none; -webkit-appearance: none; cursor: pointer; }
+.p-form .field.sel::after { content: "\2193"; color: var(--taupe); font-size: 0.9rem; }
+.p-form .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.65rem; }
+@media (max-width: 560px) { .p-form .row2 { grid-template-columns: 1fr; } }
+.p-form .cb-row { display: flex; gap: 0.6rem; align-items: flex-start; font-size: 0.85rem; color: var(--ink-soft); margin: 0 0 1rem; }
+.p-form .cb-row.error { color: var(--rust); }
+.p-form .cb-row a { color: inherit; }
+.p-form .btn { width: 100%; }
+.p-form .after { margin-top: 0.9rem; font-size: 0.8rem; color: var(--taupe); line-height: 1.6; }
+.p-form .field.err { border-color: var(--rust); }
+
+/* Fusszeile */
+footer { padding: 2rem 0 2.5rem; text-align: center; font-size: 0.8rem; color: var(--taupe); }
+footer a { color: inherit; }
+footer .fine { margin-top: 0.75rem; font-size: 0.75rem; color: var(--taupe); }
+
+/* Danke-Seite */
+.p-thanks { padding: clamp(3rem, 9vw, 6rem) 0; }
+.p-thanks h1 { font-size: clamp(2.2rem, 5vw, 3.6rem); margin-bottom: 1rem; max-width: 18ch; }
+.p-thanks .lead { max-width: 50ch; }

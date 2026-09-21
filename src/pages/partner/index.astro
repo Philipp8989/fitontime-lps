@@ -1,0 +1,316 @@
+---
+// Partner-LP: Studios (Coiffeur, Nagel, Kosmetik, Massage) als Empfehlungs-Partner.
+// Konzept "Der Stuhl" (Philipp, 21.09.2026): Die Seite folgt dem 45-Minuten-Gespräch
+// im Salonstuhl. Bei Minute 25 fällt der Satz, bei Minute 40 kommt die Empfehlung,
+// die Provision ist der letzte Punkt auf der Achse. Aus JF 14.09.: Partner nicht per
+// Prospecting, sondern über Ads plus Funnel plus Info-Gespräch gewinnen.
+// Muster aus dem design-pool: vollbreite-typo, fakten-zeile, zeitleiste-tag, preisblatt,
+// zwei-spalten-linien. Kein scharfes s (Schweiz). Keine Männer im Bild, hier Typo-only.
+import '../../styles/bauchfett.css';
+import '../../styles/partner.css';
+import CookieBanner from '../../components/CookieBanner.astro';
+import ScaleeeCredit from '../../components/ScaleeeCredit.astro';
+import FotWordmark from '../../components/FotWordmark.astro';
+
+// ── ZAHLEN-SLOTS ─────────────────────────────────────────────────────────────
+// Provision pro gestarteter Kundin. Leer lassen, bis Fabian den Betrag bestätigt:
+// dann steht im Partner-Blatt "im Info-Gespräch" statt einer Zahl.
+const PROVISION_CHF = '';
+// ─────────────────────────────────────────────────────────────────────────────
+
+const impressumUrl = 'https://fitontime.ch/impressum-datenschutz';
+const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
+const PIXEL_ID = (import.meta.env.PUBLIC_META_PIXEL_ID || '').trim();
+const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..500,0..100;1,9..144,300..500,0..100&family=Albert+Sans:wght@400;500;600&display=swap';
+const provisionText = PROVISION_CHF ? `CHF ${PROVISION_CHF}` : 'im Info-Gespräch';
+---
+<html lang="de-CH">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Partner-Programm für Studios | Fit on Time</title>
+  <meta name="description" content="Coiffeur, Nagel-, Kosmetik- und Massagestudios empfehlen Fit on Time weiter und verdienen an jeder Kundin, die mit dem Coaching startet. Ohne Produkt, ohne Verkaufen." />
+  <link rel="icon" type="image/png" href="/images/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href={FONTS} rel="stylesheet" />
+</head>
+<body>
+
+  <div class="wrap wrap--wide">
+    <div class="topbar">
+      <FotWordmark />
+      <span class="tag">Partner-Programm</span>
+    </div>
+  </div>
+
+  <!-- Hero: Headline über die volle Breite, Subline und CTA rechts (hero/vollbreite-typo) -->
+  <section class="p-hero">
+    <div class="wrap wrap--wide">
+      <p class="kicker">Für Coiffeur-, Nagel-, Kosmetik- und Massagestudios in der Schweiz</p>
+      <h1>45 Minuten im Stuhl. Irgendwann fällt <em>der Satz.</em></h1>
+      <div class="p-hero-grid">
+        <p class="p-hero-note">Frauen zwischen 35 und 50 sitzen jede Woche bei dir. Sie reden über die Kinder, den Job, die Wechseljahre. Und über die Hose, die nicht mehr zugeht.</p>
+        <div class="p-hero-copy">
+          <p class="lead">Fit on Time hat über 4'000 Frauen in der Schweiz zur Wunschfigur gecoacht. Ohne Diät, ohne Spritze. Wenn du uns empfiehlst, verdienst du an jeder Kundin, die startet. Ohne Produkt im Regal, ohne Verkaufen, ohne Aufwand.</p>
+          <div class="p-hero-cta">
+            <a class="btn btn--primary" href="#anfrage" onclick="tk('cta_click', { pos: 'hero' })">Info-Gespräch anfragen <span class="btn-arrow">&rarr;</span></a>
+            <span class="fine">15 Minuten, online, unverbindlich</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Fakten-Zeile: Zahl, Aussage, Beleg (beweis/fakten-zeile) -->
+  <div class="wrap wrap--wide">
+    <div class="p-facts" aria-label="Zahlen zu Fit on Time">
+      <div class="p-fact"><strong>4'000+</strong><span>Frauen in der Schweiz gecoacht</span><small>Kundinnen-Daten Fit on Time</small></div>
+      <div class="p-fact"><strong>97 %</strong><span>erreichen ihr Ziel</span><small>Auswertung abgeschlossener Coachings</small></div>
+      <div class="p-fact"><strong>94 %</strong><span>halten es nach 12 Monaten</span><small>Nachbefragung 12 Monate</small></div>
+      <div class="p-fact"><strong>CHF 0</strong><span>Einsatz für dich</span><small>Keine Gebühr, keine Laufzeit</small></div>
+    </div>
+  </div>
+
+  <!-- Der Stuhl: das Gespräch als Zeitachse (ablauf/zeitleiste-tag) -->
+  <section class="section">
+    <div class="wrap wrap--wide">
+      <div class="section-head" style="max-width:40rem;">
+        <p class="kicker">Ein Termin, wie du ihn kennst</p>
+        <h2>Das Gespräch läuft sowieso. Du gibst ihm nur <em>eine Richtung.</em></h2>
+        <p class="lead">Du musst nichts verkaufen und nichts erklären. Deine Kundin vertraut dir. Ein Satz von dir öffnet die Tür, die keine Werbung öffnet.</p>
+      </div>
+      <ol class="p-axis">
+        <li><time>Minute 5</time><strong>Small Talk</strong><p>Wetter, Ferien, die Kinder. Du arbeitest, sie taut auf.</p></li>
+        <li><time>Minute 25</time><strong>Der Satz</strong><p>«Ich hab wieder zugenommen. Seit den Wechseljahren geht gar nichts mehr. Ich hab alles probiert.»</p></li>
+        <li><time>Minute 40</time><strong>Deine Empfehlung</strong><p>«Ich kenn da was. Coaching, keine Diät, keine Spritze. Das Erstgespräch kostet nichts.» Du gibst ihr die Karte mit deinem Code.</p></li>
+        <li><time>Danach</time><strong>Wir übernehmen</strong><p>Kostenloses Erstgespräch mit einer Coachin. Kein Druck, kein Pitch. Passt es, startet sie ins Coaching.</p></li>
+        <li><time>Monatsende</time><strong>Deine Provision</strong><p>Für jede Kundin mit deinem Code, die gestartet ist. Abrechnung per Mail, Geld auf dein Konto.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- Für wen: Liste mit Trennlinien -->
+  <section class="section section--bright">
+    <div class="wrap wrap--wide">
+      <div class="section-head">
+        <p class="kicker">Für wen das passt</p>
+        <h2>Studios, in denen Frauen <em>Zeit haben</em> zu reden.</h2>
+      </div>
+      <ul class="p-list">
+        <li><span class="t">Coiffeur und Friseursalon</span><p>Färben, Strähnen, Schnitt: 45 bis 120 Minuten im Stuhl. Nirgends wird so offen geredet.</p></li>
+        <li><span class="t">Nagelstudio</span><p>Alle drei bis vier Wochen dieselbe Kundin, eine Stunde, Hände still, Kopf frei. Du kennst ihre Geschichte.</p></li>
+        <li><span class="t">Kosmetik und Beauty</span><p>Wer in Haut und Aussehen investiert, will auch die Figur zurück. Das Thema liegt auf dem Tisch.</p></li>
+        <li><span class="t">Massage und Wellness</span><p>Rücken, Nacken, Erschöpfung. Oft steckt das Gewicht dahinter, und die Kundin weiss es.</p></li>
+        <li><span class="t">Yoga, Pilates, Physio</span><p>Frauen, die schon etwas für sich tun und trotzdem nicht abnehmen. Genau die coachen wir.</p></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Warum das funktioniert: Zweispalter ohne Karte -->
+  <section class="section">
+    <div class="wrap wrap--wide">
+      <div class="p-split">
+        <div>
+          <p class="kicker">Warum das funktioniert</p>
+          <h2>Deine Kundin glaubt dir. Einer Anzeige <em>nicht.</em></h2>
+        </div>
+        <div class="col">
+          <p>Fit on Time gewinnt Kundinnen über Werbung. Das funktioniert, aber jede Frau, die auf eine Anzeige klickt, ist erst mal skeptisch. Bei dir ist sie es nicht. Sie sitzt seit Jahren bei dir. Wenn du sagst «Ich kenn da was, das hat bei einer Kundin von mir funktioniert», ist das mehr wert als jede Anzeige.</p>
+          <p>Deshalb bauen wir ein Netz aus Studios, die unsere Kundinnen sowieso schon kennen. Du bekommst dafür einen Anteil. Deine Kundin bekommt ein Coaching, das bei 97 von 100 Frauen funktioniert. Und du bist die, die es ihr gezeigt hat.</p>
+          <p>Wir fragen deine Kundin im Erstgespräch nie nach Geld, bevor klar ist, dass es passt. Kein Druck, kein Verkaufspitch. Das ist auch dein Ruf, den wir da in der Hand haben.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Partner-Blatt: Positionen mit Punktlinie, Summe (preis/preisblatt) -->
+  <section class="section section--sand">
+    <div class="wrap wrap--wide">
+      <div class="p-split">
+        <div>
+          <p class="kicker">Das Partner-Blatt</p>
+          <h2>Was du bekommst. Was es dich <em>kostet.</em></h2>
+          <p class="lead">Keine Mindestmenge, keine Laufzeit, kein Kleingedrucktes. Du kannst jederzeit aufhören.</p>
+        </div>
+        <div class="p-sheet">
+          <div class="p-sheet-title"><span>Partner-Programm Fit on Time</span><span>Stand September 2026</span></div>
+          <dl>
+            <div><dt>Provision pro gestarteter Kundin</dt><dd>{provisionText}</dd></div>
+            <div><dt>Karten mit deinem Code für den Tresen</dt><dd>inklusive</dd></div>
+            <div><dt>Kurzschulung, 30 Minuten online</dt><dd>inklusive</dd></div>
+            <div><dt>Persönliche Ansprechperson bei Fit on Time</dt><dd>inklusive</dd></div>
+            <div><dt>Erstgespräch für deine Kundin</dt><dd>kostenlos</dd></div>
+            <div><dt>Abrechnung</dt><dd>monatlich</dd></div>
+          </dl>
+          <div class="p-sheet-sum"><span>Dein Einsatz</span><strong>CHF 0</strong></div>
+          <p class="fuss">Die Provision wird fällig, sobald deine Kundin ins Coaching gestartet ist. Du siehst in der monatlichen Abrechnung, welche Empfehlungen gezählt haben.</p>
+          <a class="btn btn--primary" href="#anfrage" onclick="tk('cta_click', { pos: 'blatt' })">Info-Gespräch anfragen <span class="btn-arrow">&rarr;</span></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ: alles offen (faq/zwei-spalten-linien) -->
+  <section class="section">
+    <div class="wrap wrap--wide">
+      <div class="section-head">
+        <p class="kicker">Fragen, die im Info-Gespräch immer kommen</p>
+        <h2>Kurz <em>beantwortet.</em></h2>
+      </div>
+      <ul class="p-faq">
+        <li><span class="q">Muss ich verkaufen?</span><p>Nein. Du empfiehlst, wenn es passt, und gibst die Karte. Alles danach machen wir. Wenn eine Kundin nicht will, will sie nicht.</p></li>
+        <li><span class="q">Was passiert mit meiner Kundin?</span><p>Sie meldet sich mit deinem Code, bekommt ein kostenloses Erstgespräch mit einer Coachin und entscheidet dann selbst. Kein Abo, das sie nicht wollte, kein Anruf, den sie nicht wollte.</p></li>
+        <li><span class="q">Wann bekomme ich die Provision?</span><p>Sobald die Kundin ins Coaching gestartet ist. Abgerechnet wird einmal im Monat, per Mail mit Übersicht, Geld per Überweisung.</p></li>
+        <li><span class="q">Wie weiss ich, welche Kundin von mir kam?</span><p>Über deinen Code auf der Karte. Die Kundin nennt ihn beim Erstgespräch oder trägt ihn online ein. Der Code ist nur deinem Studio zugeordnet.</p></li>
+        <li><span class="q">Was ist Fit on Time genau?</span><p>Ein Online-Coaching für Frauen ab 35 aus der Schweiz. Ernährung, Bewegung und Kopf, mit einer festen Coachin, ohne Diätplan und ohne Spritze. Über 4'000 Frauen haben es gemacht.</p></li>
+        <li><span class="q">Wie geht es nach der Anfrage weiter?</span><p>Wir melden uns innert zwei Werktagen für ein Info-Gespräch von 15 Minuten. Danach entscheidest du. Wenn ja, bekommst du Code, Karten und die Kurzschulung.</p></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Anfrage -->
+  <section class="section section--bright" id="anfrage">
+    <div class="wrap">
+      <form class="p-form" id="pf" novalidate>
+        <p class="kicker">Info-Gespräch anfragen</p>
+        <h2>15 Minuten. Dann weisst du, ob es <em>zu dir passt.</em></h2>
+        <p class="sub">Wir rufen dich an, wann es dir passt. Kein Vertrag, kein Pitch.</p>
+        <div class="fields">
+          <label class="field sel">
+            <span class="pre">Studio</span>
+            <select id="typ" required>
+              <option value="">Art des Studios</option>
+              <option>Coiffeur / Friseur</option>
+              <option>Nagelstudio</option>
+              <option>Kosmetik / Beauty</option>
+              <option>Massage / Wellness</option>
+              <option>Yoga / Pilates</option>
+              <option>Physiotherapie</option>
+              <option>Anderes</option>
+            </select>
+          </label>
+          <div class="row2">
+            <label class="field"><input id="studio" type="text" placeholder="Name des Studios" autocomplete="organization" /></label>
+            <label class="field"><input id="ort" type="text" placeholder="Ort" autocomplete="address-level2" /></label>
+          </div>
+          <label class="field"><input id="fn" type="text" placeholder="Dein Vor- und Nachname" autocomplete="name" /></label>
+          <label class="field"><span class="pre">+41</span><input id="ph" type="tel" placeholder="Telefon" autocomplete="tel" /></label>
+          <label class="field"><input id="em" type="email" placeholder="E-Mail" autocomplete="email" /></label>
+          <label class="field sel">
+            <span class="pre">Kundinnen</span>
+            <select id="vol">
+              <option value="">pro Woche, ungefähr</option>
+              <option>unter 30</option>
+              <option>30 bis 80</option>
+              <option>über 80</option>
+            </select>
+          </label>
+        </div>
+        <label class="cb-row" id="dsRow">
+          <input type="checkbox" id="ds" />
+          <span>Ich bin einverstanden, dass Fit on Time mich zum Partner-Programm kontaktiert. <a href={datenschutzUrl} target="_blank" rel="noopener">Datenschutz</a></span>
+        </label>
+        <button type="submit" class="btn btn--primary" id="sbtn">Info-Gespräch anfragen <span class="btn-arrow">&rarr;</span></button>
+        <p class="after">Rückmeldung innert zwei Werktagen. Deine Daten gehen an niemanden sonst.</p>
+      </form>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <footer>
+      <a href={impressumUrl} target="_blank" rel="noopener">Impressum</a> &middot;
+      <a href={datenschutzUrl} target="_blank" rel="noopener">Datenschutzerklärung</a>
+      <p class="fine">Fit on Time, FoT Fitness GmbH, Frauenfeld. Die genannten Zahlen stammen aus den Kundinnen-Daten von Fit on Time.</p>
+      <div style="margin-top:10px;text-align:center;"><ScaleeeCredit /></div>
+    </footer>
+  </div>
+
+  <script is:inline>
+    // Race-Schutz: __lp wird erst nach dem CookieBanner-Script gesetzt, retry bis verfügbar.
+    function tk(e, d) {
+      var tries = 0;
+      function fire() {
+        if (window.__lp) {
+          window.__lp.track(e, Object.assign({ page: 'partner' }, d || {}), 'fot', 'Partner-Programm');
+          if (e === 'lead_submit') window.__lp.meta('Lead', { content_name: 'FoT Partner-Anfrage', currency: 'CHF' });
+        } else if (tries++ < 40) {
+          setTimeout(fire, 50);
+        }
+      }
+      fire();
+    }
+    tk('page_view');
+
+    function normalizePhone(raw) {
+      var c = (raw || '').replace(/[^\d+]/g, '');
+      if (!c) return '';
+      if (c.charAt(0) === '+') return c;
+      if (c.charAt(0) === '0') return '+41' + c.slice(1);
+      return '+41' + c;
+    }
+
+    document.getElementById('pf').addEventListener('submit', function (ev) {
+      ev.preventDefault();
+      var ids = ['typ', 'studio', 'ort', 'fn', 'ph', 'em'];
+      var v = {};
+      var ok = true;
+      ids.forEach(function (id) {
+        var el = document.getElementById(id);
+        el.parentElement.classList.remove('err');
+        v[id] = (el.value || '').trim();
+        if (!v[id]) { el.parentElement.classList.add('err'); ok = false; }
+      });
+      if (!ok) return;
+      var ds = document.getElementById('ds');
+      document.getElementById('dsRow').classList.remove('error');
+      if (!ds.checked) { document.getElementById('dsRow').classList.add('error'); return; }
+
+      var btn = document.getElementById('sbtn');
+      btn.disabled = true;
+      btn.textContent = 'Wird gesendet';
+
+      // Atomarer Submit: Event, Pixel und Weiterleitung nur nach erfolgreichem Insert
+      fetch('/api/sheets', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          lp_slug: 'partner',
+          lp_name: 'Partner-Programm',
+          name: v.fn,
+          email: v.em,
+          phone: normalizePhone(v.ph),
+          first_name: v.fn.split(' ')[0],
+          datenschutz: true,
+          answers: {
+            studio_typ: v.typ,
+            studio: v.studio,
+            ort: v.ort,
+            kundinnen_woche: (document.getElementById('vol').value || '').trim()
+          }
+        })
+      }).then(function (res) {
+        if (!res.ok) throw new Error('insert-failed');
+        tk('lead_submit', { detail: v.typ });
+        btn.textContent = 'Gesendet';
+        setTimeout(function () { window.location.href = '/partner/danke/'; }, 250);
+      }).catch(function () {
+        btn.disabled = false;
+        btn.innerHTML = 'Info-Gespräch anfragen <span class="btn-arrow">&rarr;</span>';
+        alert('Etwas ist schiefgelaufen. Bitte nochmal versuchen.');
+      });
+    });
+  </script>
+
+  {/* Hyros als First-Party-Attribution, lädt ohne Consent (wie alle FoT-LPs) */}
+  <script is:inline src="https://t.hyros.com/v1/lst/universal-script?ph=689a71ca1ab3be1cb1caddbe6b7902a4ad2c51a228f4ec9ea7fef3123a705f63"></script>
+
+  <CookieBanner
+    metaPixelId={PIXEL_ID}
+    consentKey="fot_partner_consent"
+    impressumUrl={impressumUrl}
+    datenschutzUrl={datenschutzUrl}
+  />
+</body>
+</html>

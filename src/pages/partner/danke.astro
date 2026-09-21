@@ -1,0 +1,66 @@
+---
+// Partner-LP, Bestätigung nach der Anfrage. Sagt, was als Nächstes passiert.
+import '../../styles/bauchfett.css';
+import '../../styles/partner.css';
+import CookieBanner from '../../components/CookieBanner.astro';
+import ScaleeeCredit from '../../components/ScaleeeCredit.astro';
+import FotWordmark from '../../components/FotWordmark.astro';
+const impressumUrl = 'https://fitontime.ch/impressum-datenschutz';
+const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
+const PIXEL_ID = (import.meta.env.PUBLIC_META_PIXEL_ID || '').trim();
+const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..500,0..100;1,9..144,300..500,0..100&family=Albert+Sans:wght@400;500;600&display=swap';
+---
+<html lang="de-CH">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Anfrage erhalten | Fit on Time Partner-Programm</title>
+  <link rel="icon" type="image/png" href="/images/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href={FONTS} rel="stylesheet" />
+</head>
+<body>
+  <div class="wrap wrap--wide">
+    <div class="topbar">
+      <FotWordmark />
+      <span class="tag">Partner-Programm</span>
+    </div>
+  </div>
+
+  <section class="p-thanks">
+    <div class="wrap wrap--wide">
+      <p class="kicker">Anfrage erhalten</p>
+      <h1>Danke. Wir melden uns innert <em>zwei Werktagen.</em></h1>
+      <p class="lead">Jemand aus dem Team von Fit on Time ruft dich an und macht mit dir einen Termin für das Info-Gespräch aus. 15 Minuten, online.</p>
+      <ol class="p-axis" style="max-width:52rem;">
+        <li><time>Schritt 1</time><strong>Anruf</strong><p>Wir rufen dich an und finden einen Termin, der dir passt.</p></li>
+        <li><time>Schritt 2</time><strong>Info-Gespräch</strong><p>Du siehst, wie das Coaching läuft und wie die Abrechnung funktioniert. Du entscheidest.</p></li>
+        <li><time>Schritt 3</time><strong>Code und Karten</strong><p>Wenn ja: Kurzschulung, dein Code, Karten für den Tresen. Dann kann es losgehen.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <footer>
+      <a href={impressumUrl} target="_blank" rel="noopener">Impressum</a> &middot;
+      <a href={datenschutzUrl} target="_blank" rel="noopener">Datenschutzerklärung</a>
+      <div style="margin-top:10px;text-align:center;"><ScaleeeCredit /></div>
+    </footer>
+  </div>
+
+  <script is:inline>
+    (function () {
+      var tries = 0;
+      function fire() {
+        if (window.__lp) { window.__lp.track('page_view', { page: 'partner-danke' }, 'fot', 'Partner-Programm'); }
+        else if (tries++ < 40) setTimeout(fire, 50);
+      }
+      fire();
+    })();
+  </script>
+  <script is:inline src="https://t.hyros.com/v1/lst/universal-script?ph=689a71ca1ab3be1cb1caddbe6b7902a4ad2c51a228f4ec9ea7fef3123a705f63"></script>
+  <CookieBanner metaPixelId={PIXEL_ID} consentKey="fot_partner_consent" impressumUrl={impressumUrl} datenschutzUrl={datenschutzUrl} />
+</body>
+</html>

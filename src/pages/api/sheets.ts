@@ -292,6 +292,23 @@ SHEETS['bauchfett'] = {
   },
 };
 
+// Partner-Programm (Studios als Empfehlungs-Partner, B2B, kein Bot, kein WhatsApp).
+// Sheet "FitonTime Partner Leads": Datum | Status | Studio-Typ | Studio | Ort | Vorname
+// | Nachname | E-Mail | Telefon | Kundinnen pro Woche | Notiz | Datenschutz.
+// Status startet auf "Neu eingegangen", Fabian pflegt per Dropdown.
+SHEETS['partner'] = {
+  id: '11oQxaqVQ7KtG3T_D3k_m5bORZhVPBoKROXFHdqeDYmc',
+  range: 'Leads!A:L',
+  buildRow: (datum, d) => {
+    const a = d.answers || {};
+    const parts = (d.name || '').trim().split(/\s+/);
+    const vorname = parts[0] || '';
+    const nachname = parts.slice(1).join(' ') || '';
+    return [datum, 'Neu eingegangen', a.studio_typ || '', a.studio || '', a.ort || '', vorname, nachname,
+      d.email, d.phone || '', a.kundinnen_woche || '', '', d.datenschutz ? 'Ja' : ''];
+  },
+};
+
 export const POST: APIRoute = async ({ request }) => {
   try {
     const data = await request.json();
