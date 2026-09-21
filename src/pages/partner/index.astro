@@ -13,7 +13,7 @@ import ScaleeeCredit from '../../components/ScaleeeCredit.astro';
 import FotWordmark from '../../components/FotWordmark.astro';
 
 // ── ZAHLEN-SLOTS ─────────────────────────────────────────────────────────────
-// Provision pro gestarteter Kundin. Leer lassen, bis Fabian den Betrag bestätigt:
+// Provision pro Kundin, die startet und bezahlt (Fabian 21.09.: Zahlungseingang, nicht Start). Leer lassen, bis Fabian den Betrag bestätigt:
 // dann steht im Partner-Blatt "im Info-Gespräch" statt einer Zahl.
 const PROVISION_CHF = '';
 // ─────────────────────────────────────────────────────────────────────────────
@@ -84,9 +84,9 @@ const provisionText = PROVISION_CHF ? `CHF ${PROVISION_CHF}` : 'im Info-Gespräc
       <ol class="p-axis">
         <li><time>Minute 5</time><strong>Small Talk</strong><p>Wetter, Ferien, die Kinder. Du arbeitest, sie taut auf.</p></li>
         <li><time>Minute 25</time><strong>Der Satz</strong><p>«Ich hab wieder zugenommen. Seit den Wechseljahren geht gar nichts mehr. Ich hab alles probiert.»</p></li>
-        <li><time>Minute 40</time><strong>Deine Empfehlung</strong><p>«Ich kenn da was. Coaching, keine Diät, keine Spritze. Das Erstgespräch kostet nichts.» Du gibst ihr die Karte mit deinem Code.</p></li>
+        <li><time>Minute 40</time><strong>Deine Empfehlung</strong><p>«Ich kenn da was. Coaching, keine Diät, keine Spritze. Das Erstgespräch kostet nichts.» Du öffnest deinen Empfehlungs-Link auf dem Handy und buchst ihr das kostenlose Erstgespräch gleich im Stuhl. Oder du schickst ihr den Link per WhatsApp.</p></li>
         <li><time>Danach</time><strong>Wir übernehmen</strong><p>Kostenloses Erstgespräch mit einer Coachin. Kein Druck, kein Pitch. Passt es, startet sie ins Coaching.</p></li>
-        <li><time>Monatsende</time><strong>Deine Provision</strong><p>Für jede Kundin mit deinem Code, die gestartet ist. Abrechnung per Mail, Geld auf dein Konto.</p></li>
+        <li><time>Monatsende</time><strong>Deine Provision</strong><p>Für jede Kundin über deinen Link, die gestartet ist und ihre erste Zahlung geleistet hat. Abrechnung per Mail, Geld auf dein Konto.</p></li>
       </ol>
     </div>
   </section>
@@ -137,15 +137,15 @@ const provisionText = PROVISION_CHF ? `CHF ${PROVISION_CHF}` : 'im Info-Gespräc
         <div class="p-sheet">
           <div class="p-sheet-title"><span>Partner-Programm Fit on Time</span><span>Stand September 2026</span></div>
           <dl>
-            <div><dt>Provision pro gestarteter Kundin</dt><dd>{provisionText}</dd></div>
-            <div><dt>Karten mit deinem Code für den Tresen</dt><dd>inklusive</dd></div>
+            <div><dt>Provision pro Kundin, die startet und bezahlt</dt><dd>{provisionText}</dd></div>
+            <div><dt>Dein persönlicher Empfehlungs-Link</dt><dd>inklusive</dd></div>
             <div><dt>Kurzschulung, 30 Minuten online</dt><dd>inklusive</dd></div>
             <div><dt>Persönliche Ansprechperson bei Fit on Time</dt><dd>inklusive</dd></div>
             <div><dt>Erstgespräch für deine Kundin</dt><dd>kostenlos</dd></div>
             <div><dt>Abrechnung</dt><dd>monatlich</dd></div>
           </dl>
           <div class="p-sheet-sum"><span>Dein Einsatz</span><strong>CHF 0</strong></div>
-          <p class="fuss">Die Provision wird fällig, sobald deine Kundin ins Coaching gestartet ist. Du siehst in der monatlichen Abrechnung, welche Empfehlungen gezählt haben.</p>
+          <p class="fuss">Die Provision wird fällig, sobald deine Kundin ins Coaching gestartet ist und ihre erste Zahlung bei uns eingegangen ist. Du siehst in der monatlichen Abrechnung, welche Empfehlungen gezählt haben.</p>
           <a class="btn btn--primary" href="#anfrage" onclick="tk('cta_click', { pos: 'blatt' })">Info-Gespräch anfragen <span class="btn-arrow">&rarr;</span></a>
         </div>
       </div>
@@ -160,12 +160,12 @@ const provisionText = PROVISION_CHF ? `CHF ${PROVISION_CHF}` : 'im Info-Gespräc
         <h2>Kurz <em>beantwortet.</em></h2>
       </div>
       <ul class="p-faq">
-        <li><span class="q">Muss ich verkaufen?</span><p>Nein. Du empfiehlst, wenn es passt, und gibst die Karte. Alles danach machen wir. Wenn eine Kundin nicht will, will sie nicht.</p></li>
-        <li><span class="q">Was passiert mit meiner Kundin?</span><p>Sie meldet sich mit deinem Code, bekommt ein kostenloses Erstgespräch mit einer Coachin und entscheidet dann selbst. Kein Abo, das sie nicht wollte, kein Anruf, den sie nicht wollte.</p></li>
-        <li><span class="q">Wann bekomme ich die Provision?</span><p>Sobald die Kundin ins Coaching gestartet ist. Abgerechnet wird einmal im Monat, per Mail mit Übersicht, Geld per Überweisung.</p></li>
-        <li><span class="q">Wie weiss ich, welche Kundin von mir kam?</span><p>Über deinen Code auf der Karte. Die Kundin nennt ihn beim Erstgespräch oder trägt ihn online ein. Der Code ist nur deinem Studio zugeordnet.</p></li>
+        <li><span class="q">Muss ich verkaufen?</span><p>Nein. Du empfiehlst, wenn es passt, und buchst ihr den Termin über deinen Link. Alles danach machen wir. Wenn eine Kundin nicht will, will sie nicht.</p></li>
+        <li><span class="q">Was passiert mit meiner Kundin?</span><p>Sie bekommt über deinen Link ein kostenloses Erstgespräch mit einer Coachin und entscheidet dann selbst. Kein Abo, das sie nicht wollte, kein Anruf, den sie nicht wollte.</p></li>
+        <li><span class="q">Wann bekomme ich die Provision?</span><p>Sobald die Kundin ins Coaching gestartet ist und ihre erste Zahlung bei uns eingegangen ist. Abgerechnet wird einmal im Monat, per Mail mit Übersicht, Geld per Überweisung.</p></li>
+        <li><span class="q">Wie weiss ich, welche Kundin von mir kam?</span><p>Über deinen Empfehlungs-Link. Jeder Termin, der über den Link gebucht wird, ist automatisch deinem Studio zugeordnet. Kein Code, den sich jemand merken muss, keine Karte.</p></li>
         <li><span class="q">Was ist Fit on Time genau?</span><p>Ein Online-Coaching für Frauen ab 35 aus der Schweiz. Ernährung, Bewegung und Kopf, mit einer festen Coachin, ohne Diätplan und ohne Spritze. Über 4'000 Frauen haben es gemacht.</p></li>
-        <li><span class="q">Wie geht es nach der Anfrage weiter?</span><p>Wir melden uns innert zwei Werktagen für ein Info-Gespräch von 15 Minuten. Danach entscheidest du. Wenn ja, bekommst du Code, Karten und die Kurzschulung.</p></li>
+        <li><span class="q">Wie geht es nach der Anfrage weiter?</span><p>Wir melden uns innert zwei Werktagen für ein Info-Gespräch von 15 Minuten. Danach entscheidest du. Wenn ja, bekommst du deinen Link und die Kurzschulung.</p></li>
       </ul>
     </div>
   </section>

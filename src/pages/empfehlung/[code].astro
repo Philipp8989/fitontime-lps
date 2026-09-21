@@ -1,0 +1,98 @@
+---
+// Empfehlungs-Seite pro Partner-Studio (Fabian 21.09.2026: statt Karten mit Code soll die
+// Inhaberin den Termin direkt über ihre Empfehlungsseite buchen). Ein Link pro Studio:
+// start.fitontime.ch/empfehlung/<code>. Die Inhaberin bucht der Kundin das Erstgespräch im
+// Stuhl oder schickt den Link per WhatsApp. Der Code wandert als PARTNER-Feld in die
+// YCBM-Buchung, damit die Abrechnung am Monatsende weiss, welches Studio empfohlen hat.
+// Voraussetzung in YCBM: Frage "PARTNER" (versteckt) auf fitontime-analyse anlegen.
+import '../../styles/bauchfett.css';
+import '../../styles/partner.css';
+import CookieBanner from '../../components/CookieBanner.astro';
+import FotWordmark from '../../components/FotWordmark.astro';
+
+// Nur Kleinbuchstaben, Ziffern und Bindestrich, sonst 404.
+const raw = (Astro.params.code || '').toLowerCase();
+if (!/^[a-z0-9][a-z0-9-]{1,40}$/.test(raw)) return new Response(null, { status: 404 });
+const code = raw;
+// Anzeigename aus dem Slug: "salon-muster" -> "Salon Muster"
+const studio = code.split('-').map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+
+const ycbm = new URLSearchParams({ noframe: 'true', skipHeaderFooter: 'true', PARTNER: code, source: `partner-${code}` });
+const ycbmUrl = `https://fitontime-analyse.youcanbook.me/?${ycbm.toString()}`;
+
+const impressumUrl = 'https://fitontime.ch/impressum-datenschutz';
+const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
+const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..500,0..100;1,9..144,300..500,0..100&family=Albert+Sans:wght@400;500;600&display=swap';
+---
+<html lang="de-CH">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Dein kostenloses Erstgespräch | Fit on Time</title>
+  <meta name="description" content="Empfohlen von deinem Studio: kostenloses Erstgespräch mit einer Fit on Time Coachin. Ohne Diät, ohne Spritze, ohne Verpflichtung." />
+  <link rel="icon" type="image/png" href="/images/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href={FONTS} rel="stylesheet" />
+  <style>
+    .topbar .tag { text-align: right; margin-left: 1.5rem; max-width: 14ch; line-height: 1.4; }
+    .e-hero { padding: clamp(2.5rem, 6vw, 4.5rem) 0 clamp(1.5rem, 4vw, 2.5rem); }
+    .e-hero h1 { font-size: clamp(2.2rem, 5.5vw, 4.2rem); line-height: 1.02; letter-spacing: -0.02em; max-width: 18ch; margin-bottom: 1.25rem; }
+    .e-hero .lead { max-width: 52ch; }
+    .e-punkte { list-style: none; display: grid; grid-template-columns: repeat(3, 1fr); border-top: var(--hairline); border-bottom: var(--hairline); margin: clamp(1.5rem, 4vw, 2.5rem) 0; }
+    .e-punkte li { padding: 1.1rem 1.25rem 1.1rem 0; margin-right: 1.25rem; border-right: var(--hairline); font-size: 0.95rem; color: var(--ink); }
+    .e-punkte li:last-child { border-right: 0; margin-right: 0; }
+    .e-punkte small { display: block; font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.06em; color: var(--taupe); margin-top: 0.3rem; }
+    .e-ycbm iframe { width: 100%; min-height: 640px; border: 0; display: block; }
+    .e-foot { padding: 2rem 0 3rem; font-size: 0.8rem; color: var(--taupe); display: flex; gap: 1.5rem; flex-wrap: wrap; }
+    .e-foot a { color: inherit; }
+    @media (max-width: 800px) { .e-punkte { grid-template-columns: 1fr; } .e-punkte li { border-right: 0; margin-right: 0; border-bottom: var(--hairline); padding: 0.9rem 0; } .e-punkte li:last-child { border-bottom: 0; } }
+  </style>
+</head>
+<body>
+  <div class="wrap wrap--wide">
+    <div class="topbar">
+      <FotWordmark />
+      <span class="tag">Empfohlen von {studio}</span>
+    </div>
+  </div>
+
+  <section class="e-hero">
+    <div class="wrap wrap--wide">
+      <p class="kicker">Dein kostenloses Erstgespräch</p>
+      <h1>Du hast gerade von uns gehört. <em>Reden wir.</em></h1>
+      <p class="lead">Eine Coachin von Fit on Time nimmt sich 30 Minuten für dich. Ihr schaut, wo du stehst und was bei dir realistisch ist. Ohne Diätplan, ohne Spritze, ohne Verpflichtung. Danach entscheidest du.</p>
+      <ul class="e-punkte">
+        <li>Kostenlos und unverbindlich<small>Kein Abo, kein Rückruf ohne dein Ja</small></li>
+        <li>Online oder per Telefon<small>Du wählst den Termin gleich hier</small></li>
+        <li>Über 4'000 Frauen in der Schweiz<small>Kundinnen-Daten Fit on Time</small></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="e-ycbm" id="termin">
+    <div class="wrap wrap--wide">
+      <iframe src={ycbmUrl} title="Termin für dein Erstgespräch wählen" loading="eager" allowtransparency="true"></iframe>
+    </div>
+  </section>
+
+  <div class="wrap wrap--wide">
+    <div class="e-foot">
+      <span>Fit on Time</span>
+      <a href={impressumUrl} rel="noopener">Impressum</a>
+      <a href={datenschutzUrl} rel="noopener">Datenschutz</a>
+    </div>
+  </div>
+
+  {/* Kein Meta-Pixel: Endkundin mit Gesundheitsbezug, Zuordnung läuft über den Partner-Code in YCBM. */}
+  <CookieBanner consentKey="fot_empfehlung_consent" impressumUrl={impressumUrl} datenschutzUrl={datenschutzUrl} />
+  <script is:inline define:vars={{ code }}>
+    // Pageview mit Partner-Code, damit im Dashboard sichtbar ist, welches Studio den Link nutzt.
+    (function wait(n) {
+      if (window.__lp) { window.__lp.track('page_view', { page: 'empfehlung', partner: code }, 'fot', 'Partner-Empfehlung'); return; }
+      if (n < 40) setTimeout(function () { wait(n + 1); }, 100);
+    })(0);
+  </script>
+</body>
+</html>
