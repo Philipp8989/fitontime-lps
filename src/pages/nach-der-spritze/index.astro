@@ -1,0 +1,470 @@
+---
+// Funnel "Nach der Spritze", Schritt 1: Landing + Weiche + Rechner + Opt-in.
+// Ziel ist der billigste Lead mit gültiger Telefonnummer für die Setter.
+// Logik: Die erste Frage (Weiche) teilt in drei Pfade (A überlegt oder will ohne,
+// B nimmt die Spritze, C hat abgesetzt). Der Rechner zeigt die Zahl der Kilo, die
+// ohne Plan zurückkommen (zwei Drittel, Oxford-Auswertung 2026), verschwommen bis
+// zum Opt-in. Design: neue fitontime.ch (Cream, Ink, Gold, Fraunces), wie /bauchfett.
+// Eigener Pixel (Env PUBLIC_FOT_SPRITZE_PIXEL_ID), damit das Medikamenten-Thema nie
+// den geteilten Pixel der anderen Funnels trifft. Leer = kein Pixel.
+import '../../styles/bauchfett.css';
+import CookieBanner from '../../components/CookieBanner.astro';
+import ScaleeeCredit from '../../components/ScaleeeCredit.astro';
+import FotWordmark from '../../components/FotWordmark.astro';
+const impressumUrl = 'https://fitontime.ch/impressum-datenschutz';
+const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
+const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').trim();
+const PIXEL_ID = (import.meta.env.PUBLIC_FOT_SPRITZE_PIXEL_ID || '').trim();
+const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..500,0..100;1,9..144,300..500,0..100&family=Albert+Sans:wght@400;500;600&display=swap';
+---
+<html lang="de-CH">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Was nach der Spritze passiert | Fit on Time</title>
+  <link rel="icon" type="image/png" href="/images/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href={FONTS} rel="stylesheet" />
+  <style>
+    .gate .opt { text-align: left; }
+    .facts { display: grid; gap: 0; margin-top: 1.5rem; border-top: 1px solid rgba(33,28,23,0.15); }
+    .fact { display: grid; grid-template-columns: 5.5rem 1fr; gap: 1rem; padding: 1.1rem 0; border-bottom: 1px solid rgba(33,28,23,0.15); align-items: baseline; }
+    .fact .fv { font-family: 'Fraunces', serif; font-size: 2rem; line-height: 1; font-variant-numeric: tabular-nums; }
+    .fact p { margin: 0; }
+    .src { font-size: 0.8rem; opacity: 0.7; margin-top: 0.75rem; }
+    .calc { margin: 1.25rem 0 0.5rem; }
+    .calc-val { font-family: 'Fraunces', serif; font-size: 3rem; line-height: 1; text-align: center; font-variant-numeric: tabular-nums; }
+    .calc-val small { font-size: 1.1rem; }
+    .calc input[type=range] { width: 100%; margin: 1.25rem 0 0.25rem; accent-color: #b08a52; height: 2rem; }
+    .calc-scale { display: flex; justify-content: space-between; font-size: 0.8rem; opacity: 0.7; }
+    .teaser { border: 1px solid rgba(176,138,82,0.5); border-radius: 8px; padding: 1rem 1.1rem; margin: 1rem 0 1.25rem; background: rgba(176,138,82,0.08); }
+    .teaser .tl { font-size: 0.85rem; letter-spacing: 0.04em; text-transform: uppercase; opacity: 0.75; }
+    .teaser .tn { font-family: 'Fraunces', serif; font-size: 2.4rem; line-height: 1.1; margin-top: 0.25rem; font-variant-numeric: tabular-nums; }
+    .blur { filter: blur(9px); user-select: none; }
+    .calc .btn { margin-top: 1.25rem; }
+  </style>
+</head>
+<body>
+
+  <!-- ===== LANDING ===== -->
+  <div id="lp">
+    <div class="wrap">
+      <div class="topbar">
+        <FotWordmark />
+        <span class="tag">Spritzen-Check</span>
+      </div>
+    </div>
+
+    <section class="hero">
+      <div class="arc arc--hero"></div>
+      <div class="wrap wrap--wide hero-grid">
+        <div>
+          <p class="eyebrow">1 Minute · 4 Fragen · kostenlos</p>
+          <h1>Die Spritze wirkt. Aber was passiert <em>danach?</em></h1>
+          <p class="lead">Die meisten Frauen nehmen nach dem Absetzen wieder zu. Der Check rechnet dir in einer Minute aus, wie viele Kilo bei dir ohne Plan zurückkommen. Und was du tun kannst, damit sie wegbleiben.</p>
+          <p class="lead" style="font-size:0.95rem;">Von den Ernährungs- und Fitness-Coaches von Fit on Time. Über 4'000 Frauen in der Schweiz begleitet.</p>
+        </div>
+
+        <div class="gate">
+          <div class="gate-q">Wo stehst du gerade?</div>
+          <div class="gate-sub">Tipp auf die Antwort, die passt. Damit startet der Check.</div>
+          <div class="opts">
+            <button class="opt" onclick="startQuiz('ueberlege')">Ich überlege, ob ich die Spritze nehme</button>
+            <button class="opt" onclick="startQuiz('nehme')">Ich nehme sie gerade</button>
+            <button class="opt" onclick="startQuiz('abgesetzt')">Ich habe sie abgesetzt</button>
+            <button class="opt" onclick="startQuiz('ohne')">Ich will es lieber ohne schaffen</button>
+          </div>
+          <div class="gate-note"><span>Kostenlos</span> · <span>Keine Waage nötig</span> · <span>Ergebnis sofort</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Was nach dem Absetzen passiert -->
+    <section class="section section--bright">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow">Was Studien zeigen</p>
+          <h2>Die Spritze nimmt den Hunger weg. <em>Nicht für immer.</em></h2>
+          <p class="lead">Solange du spritzt, ist der Hunger leise. Wenn du aufhörst, kommt er zurück. Oft stärker als vorher. Und dein Körper hat in der Zeit etwas verloren, das du nicht siehst.</p>
+        </div>
+        <div class="facts">
+          <div class="fact"><div class="fv">2/3</div><p><b>der verlorenen Kilo kommen im ersten Jahr zurück.</b> Das zeigt eine Auswertung von 37 Studien. Von 15 Kilo sind nach einem Jahr etwa 10 wieder da.</p></div>
+          <div class="fact"><div class="fv">4×</div><p><b>schneller wieder drauf</b> als nach einer Umstellung mit Ernährung und Bewegung.</p></div>
+          <div class="fact"><div class="fv">Muskeln</div><p><b>gehen mit weg.</b> Wer schnell abnimmt, verliert nicht nur Fett. Weniger Muskeln heisst: Dein Körper braucht weniger. Genau deshalb geht es danach so schnell wieder hoch.</p></div>
+        </div>
+        <p class="src">Quellen: Universität Oxford 2026 (Auswertung von 37 Studien), British Medical Journal.</p>
+      </div>
+    </section>
+
+    <!-- Was hilft -->
+    <section class="section">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow">Das Gute daran</p>
+          <h2>Es liegt nicht an dir. Es fehlt nur <em>der Plan für danach.</em></h2>
+        </div>
+        <div class="tries">
+          <div class="try"><span class="x">1</span><div><b>Essen, das satt macht</b><p>Wenn der Hunger zurückkommt, brauchst du Mahlzeiten, die ihn ruhig halten. Nicht weniger essen, sondern anders.</p></div></div>
+          <div class="try"><span class="x">2</span><div><b>Muskeln halten</b><p>Zwei, drei kurze Einheiten pro Woche. Damit dein Körper nicht auf Sparflamme schaltet.</p></div></div>
+          <div class="try"><span class="x">3</span><div><b>Jemand, der dranbleibt</b><p>Allein hört man nach drei Wochen auf. Mit Begleitung wird es Alltag.</p></div></div>
+        </div>
+        <p class="brake-close">Egal ob du die Spritze nimmst, überlegst oder schon aufgehört hast: Der Plan ist derselbe. Und er funktioniert auch ganz ohne Spritze.</p>
+      </div>
+    </section>
+
+    <!-- Proof -->
+    <section class="section section--sand">
+      <div class="wrap wrap--wide">
+        <div class="section-head">
+          <p class="eyebrow">Frauen, die es ohne Spritze geschafft haben</p>
+          <h2>Abnehmen, das <em>bleibt.</em></h2>
+        </div>
+        <div class="proof-grid">
+          <img src="/images/sd-proof/tf-04.jpg" alt="Vorher Nachher Fit on Time" loading="lazy" />
+          <img src="/images/sd-proof/tf-05.jpg" alt="Vorher Nachher Fit on Time" loading="lazy" />
+          <img src="/images/sd-proof/tf-02.jpg" alt="Vorher Nachher Fit on Time" loading="lazy" />
+          <img src="/images/sd-proof/tf-06.jpg" alt="Vorher Nachher Fit on Time" loading="lazy" />
+        </div>
+        <div style="text-align:center; margin-top:1.75rem;">
+          <a href="#top" class="btn btn--primary" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">Check starten <span class="btn-arrow">&rarr;</span></a>
+        </div>
+      </div>
+    </section>
+
+    <div class="wrap">
+      <footer>
+        <a href={impressumUrl} target="_blank" rel="noopener">Impressum</a> &middot;
+        <a href={datenschutzUrl} target="_blank" rel="noopener">Datenschutzerklärung</a>
+        <p class="fine">Der Check ist eine Einschätzung anhand deiner Antworten und von Studien-Durchschnitten. Er ersetzt keine ärztliche Beratung. Ob du ein Medikament nimmst oder absetzt, besprichst du bitte immer mit deiner Ärztin oder deinem Arzt. Fit on Time begleitet dich bei Ernährung und Bewegung.</p>
+        <div style="margin-top:10px;text-align:center;"><ScaleeeCredit /></div>
+      </footer>
+    </div>
+  </div>
+
+  <!-- ===== QUIZ ===== -->
+  <div id="quiz">
+    <div class="q-head"><FotWordmark /></div>
+    <div class="q-progress"><div class="q-bar"><div class="q-fill" id="qf"></div></div><div class="q-num" id="qn">Frage 2 von 4</div></div>
+    <div class="q-body">
+
+      <!-- Frage 2: Rechner (Kilo) -->
+      <div class="step on" data-s="2">
+        <h2 id="kg-q">Wie viel hast du verloren?</h2>
+        <div class="calc">
+          <div class="calc-val"><span id="kg-v">10</span> <small>kg</small></div>
+          <input type="range" id="kg" min="2" max="40" step="1" value="10" aria-label="Kilo" oninput="kgMove(this.value)" />
+          <div class="calc-scale"><span>2 kg</span><span>40 kg</span></div>
+          <div class="teaser"><div class="tl">Ohne Plan kommen zurück</div><div class="tn"><span class="blur" id="kg-back">7</span> kg</div></div>
+          <button class="btn btn--primary btn--block" onclick="kgNext()">Weiter <span class="btn-arrow">&rarr;</span></button>
+        </div>
+        <div class="tipp" id="kg-tipp"><strong>Gut zu wissen:</strong> Schätzen reicht. Es geht um die Grössenordnung.</div>
+      </div>
+
+      <!-- Frage 3: pfadabhängig, Optionen kommen aus dem Script -->
+      <div class="step" data-s="3">
+        <h2 id="q3-q"></h2>
+        <div class="opts" id="q3-opts"></div>
+        <div class="tipp" id="q3-tipp"></div>
+      </div>
+
+      <!-- Frage 4: Alter -->
+      <div class="step" data-s="4">
+        <h2>Wie alt bist du?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(4,'u35')">Unter 35</button>
+          <button class="opt" onclick="nxt(4,'35-44')">35 bis 44</button>
+          <button class="opt" onclick="nxt(4,'45-54')">45 bis 54</button>
+          <button class="opt" onclick="nxt(4,'55+')">55 oder älter</button>
+        </div>
+        <div class="tipp"><strong>Gut zu wissen:</strong> Ab 40 baut der Körper jedes Jahr Muskeln ab, wenn man nichts tut. Nach der Spritze fällt das doppelt ins Gewicht.</div>
+      </div>
+
+      <!-- Loading -->
+      <div class="step ld" data-s="ld">
+        <div class="spinner"></div>
+        <h2>Deine Zahl wird berechnet</h2>
+        <p>Das dauert nur ein paar Sekunden</p>
+        <div class="checks">
+          <div class="chk" id="c1"><i>&#10003;</i>Antworten ausgewertet</div>
+          <div class="chk" id="c2"><i>&#10003;</i>Mit Studien-Daten verglichen</div>
+          <div class="chk" id="c3"><i>&#10003;</i>Deine Auswertung erstellt</div>
+        </div>
+      </div>
+
+      <!-- Formular -->
+      <div class="step form" data-s="form">
+        <div class="tag">Auswertung fertig</div>
+        <h2>Deine Zahl <em>ist bereit.</em></h2>
+        <div class="teaser"><div class="tl" id="f-tl">Ohne Plan kommen bei dir zurück</div><div class="tn"><span class="blur" id="f-back">7</span> kg</div></div>
+        <p class="sub">Trag dich ein und du siehst deine Zahl sofort. Die Auswertung schicken wir dir zusätzlich per WhatsApp.</p>
+        <div class="fields">
+          <div class="field"><input type="text" id="fn" placeholder="Dein Vor- und Nachname" autocomplete="name" required /></div>
+          <div class="field"><span class="pre">+41</span><input type="tel" id="ph" placeholder="Deine Handynummer" autocomplete="tel" required /></div>
+          <div class="field"><input type="email" id="em" placeholder="Deine E-Mail" autocomplete="email" required /></div>
+        </div>
+        <p class="form-err" id="formErr" role="alert" hidden></p>
+        <p class="form-hint">Deine Handynummer brauchen wir, damit wir dir die Auswertung per WhatsApp schicken können.</p>
+        <div class="cb-row" id="dsRow">
+          <input type="checkbox" id="ds" />
+          <label for="ds">Ich akzeptiere die <a href={datenschutzUrl} target="_blank">Datenschutzbestimmungen</a>.</label>
+        </div>
+        <div class="cb-row" id="waRow">
+          <input type="checkbox" id="wa" />
+          <label for="wa">Ja, Fit on Time darf mir die Auswertung per WhatsApp schicken und mich dazu kontaktieren.</label>
+        </div>
+        <button class="btn btn--primary btn--block" id="sbtn" onclick="send()">Meine Zahl ansehen <span class="btn-arrow">&rarr;</span></button>
+        <div class="form-proof">Deine Daten sind sicher und werden nicht weitergegeben.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <script is:inline>
+    var LP_SLUG = 'nach-der-spritze';
+    var LP_NAME = 'Nach der Spritze';
+    var TOTAL = 4;
+    var RATE = 2 / 3; // Oxford 2026: etwa zwei Drittel kommen im ersten Jahr zurück
+    var quizAnswers = {};
+
+    var PFAD = { ueberlege: 'A', ohne: 'A', nehme: 'B', abgesetzt: 'C' };
+    var Q1_LABEL = {
+      ueberlege: 'Überlegt, ob sie die Spritze nimmt',
+      nehme: 'Nimmt die Spritze gerade',
+      abgesetzt: 'Hat die Spritze abgesetzt',
+      ohne: 'Will es ohne Spritze schaffen'
+    };
+    var PFAD_LABEL = { A: 'Überlegt oder will ohne', B: 'Nimmt die Spritze gerade', C: 'Hat abgesetzt' };
+
+    // Rechner-Frage je Pfad
+    var KG = {
+      A: { q: 'Wie viel willst du abnehmen?', start: 12, label: 'Ziel: {kg} kg weniger', back: 'Mit Spritze kämen nach dem Absetzen zurück',
+           tipp: '<strong>Gut zu wissen:</strong> Mit der Spritze geht es schnell runter. Die Frage ist, was nach dem Absetzen passiert. Genau das rechnen wir.' },
+      B: { q: 'Wie viel hast du bisher verloren?', start: 10, label: '{kg} kg verloren', back: 'Ohne Plan kommen nach dem Absetzen zurück',
+           tipp: '<strong>Gut zu wissen:</strong> Schätzen reicht. Es geht um die Grössenordnung.' },
+      C: { q: 'Wie viel hattest du mit der Spritze verloren?', start: 12, label: '{kg} kg verloren', back: 'Ohne Plan kommen im ersten Jahr zurück',
+           tipp: '<strong>Gut zu wissen:</strong> Schätzen reicht. Es geht um die Grössenordnung.' }
+    };
+
+    // Frage 3 je Pfad. selbst = Selbstzahlerin (Setter-Info: hat Budget).
+    var Q3 = {
+      A: { q: 'Was hält dich bisher von der Spritze ab?',
+           opts: [['kosten', 'Die Kosten'], ['nebenwirkungen', 'Die Nebenwirkungen'], ['ohne', 'Ich will es ohne schaffen'], ['unsicher', 'Ich weiss nicht, ob sie für mich passt']],
+           tipp: '<strong>Gut zu wissen:</strong> Die Kasse zahlt die Spritze nur unter strengen Bedingungen. Viele Frauen zahlen sie selbst.' },
+      B: { q: 'Wer bezahlt deine Spritze?',
+           opts: [['selbst', 'Ich zahle sie selbst'], ['kasse', 'Die Krankenkasse'], ['weissnicht', 'Weiss ich nicht genau']],
+           tipp: '<strong>Gut zu wissen:</strong> Wer spritzt, sollte jetzt schon Muskeln aufbauen. Dann bleibt das Gewicht nach dem Absetzen viel eher.' },
+      C: { q: 'Wie viel ist schon wieder zurück?',
+           opts: [['nichts', 'Noch nichts'], ['1-3', '1 bis 3 kg'], ['3plus', 'Mehr als 3 kg'], ['hunger', 'Noch nichts, aber der Hunger ist zurück']],
+           tipp: '<strong>Gut zu wissen:</strong> Die ersten Monate nach dem Absetzen entscheiden. Wer jetzt einen Plan hat, hält viel mehr.' }
+    };
+    var AGE_LABEL = { u35: 'Unter 35', '35-44': '35 bis 44', '45-54': '45 bis 54', '55+': '55+' };
+
+    function tk(e, d) {
+      var tries = 0;
+      (function fire() {
+        if (window.__lp) {
+          window.__lp.track(e, Object.assign({ page: LP_SLUG }, d || {}), 'fot', LP_NAME);
+          if (e === 'quiz_start') window.__lp.meta('ViewContent', { content_name: 'FoT Quiz Start', currency: 'CHF' });
+          if (e === 'quiz_complete') window.__lp.meta('CompleteRegistration', { content_name: 'FoT Quiz Complete', currency: 'CHF' });
+          if (e === 'lead_submit') window.__lp.meta('Lead', { content_name: 'FoT Lead', currency: 'CHF' });
+          if (e === 'lead_submit') window.__lp.google('generate_lead', 'TnugCP-6zeIcEOfryccD');
+        } else if (tries++ < 40) { setTimeout(fire, 50); }
+      })();
+    }
+    tk('page_view');
+
+    function back(kg) { return Math.max(1, Math.round(kg * RATE)); }
+
+    function show(s) {
+      document.querySelectorAll('.step').forEach(function (el) { el.classList.remove('on'); });
+      document.querySelector('.step[data-s="' + s + '"]').classList.add('on');
+      if (typeof s === 'number') {
+        document.getElementById('qf').style.width = Math.round(((s - 1) / TOTAL) * 100) + '%';
+        document.getElementById('qn').textContent = 'Frage ' + s + ' von ' + TOTAL;
+      }
+      var q = document.getElementById('quiz');
+      if (q) q.scrollTop = 0;
+      window.scrollTo(0, 0);
+    }
+
+    function startQuiz(v) {
+      var p = PFAD[v] || 'A';
+      quizAnswers.q1 = v;
+      quizAnswers.q1_label = Q1_LABEL[v] || v;
+      quizAnswers.pfad = p;
+      quizAnswers.pfad_label = PFAD_LABEL[p];
+      tk('quiz_start', { detail: 'q1_' + v });
+      // Rechner und Frage 3 auf den Pfad einstellen
+      var K = KG[p];
+      document.getElementById('kg-q').textContent = K.q;
+      document.getElementById('kg-tipp').innerHTML = K.tipp;
+      document.querySelector('#quiz .teaser .tl').textContent = K.back;
+      document.getElementById('kg').value = K.start;
+      kgMove(K.start);
+      var Q = Q3[p];
+      document.getElementById('q3-q').textContent = Q.q;
+      document.getElementById('q3-tipp').innerHTML = Q.tipp;
+      var box = document.getElementById('q3-opts');
+      box.innerHTML = '';
+      Q.opts.forEach(function (o) {
+        var b = document.createElement('button');
+        b.className = 'opt';
+        b.textContent = o[1];
+        b.onclick = function () { q3(o[0], o[1]); };
+        box.appendChild(b);
+      });
+      document.getElementById('lp').style.display = 'none';
+      document.getElementById('quiz').classList.add('on');
+      show(2);
+    }
+
+    function kgMove(v) {
+      var kg = parseInt(v, 10) || 0;
+      document.getElementById('kg-v').textContent = kg;
+      document.getElementById('kg-back').textContent = back(kg);
+    }
+
+    function kgNext() {
+      var kg = parseInt(document.getElementById('kg').value, 10) || 0;
+      quizAnswers.kg = kg;
+      quizAnswers.kg_label = KG[quizAnswers.pfad].label.replace('{kg}', kg);
+      quizAnswers.rueckkehr_kg = back(kg);
+      tk('quiz_answer', { detail: 'kg_' + kg });
+      show(3);
+    }
+
+    function q3(v, label) {
+      quizAnswers.q3 = v;
+      quizAnswers.q3_label = label;
+      if (quizAnswers.pfad === 'B') quizAnswers.selbstzahlerin = v === 'selbst' ? 'ja' : (v === 'kasse' ? 'nein' : 'unklar');
+      else quizAnswers.selbstzahlerin = '';
+      tk('quiz_answer', { detail: 'q3_' + v });
+      show(4);
+    }
+
+    function nxt(s, v) {
+      quizAnswers.q4 = v;
+      quizAnswers.q4_label = AGE_LABEL[v] || v;
+      // Setter-Prio: Selbstzahlerin (Budget) oder Kilos kommen schon zurück
+      var hot = quizAnswers.selbstzahlerin === 'ja' || (quizAnswers.pfad === 'C' && quizAnswers.q3 !== 'nichts');
+      quizAnswers.setter_prio = hot ? 'hoch' : 'normal';
+      tk('quiz_answer', { detail: 'q4_' + v });
+      tk('quiz_complete', { detail: quizAnswers.pfad });
+      load();
+    }
+
+    function load() {
+      show('ld');
+      document.getElementById('qf').style.width = '100%';
+      document.getElementById('qn').textContent = 'Auswertung';
+      setTimeout(function(){ document.getElementById('c1').classList.add('show'); }, 500);
+      setTimeout(function(){ document.getElementById('c2').classList.add('show'); }, 1100);
+      setTimeout(function(){ document.getElementById('c3').classList.add('show'); }, 1700);
+      setTimeout(function(){
+        document.getElementById('f-back').textContent = quizAnswers.rueckkehr_kg;
+        if (quizAnswers.pfad === 'A') document.getElementById('f-tl').textContent = 'Mit Spritze kämen nach dem Absetzen zurück';
+        show('form');
+        document.getElementById('qn').textContent = 'Fast fertig';
+      }, 2400);
+    }
+
+    // Gleiche Regeln wie src/lib/phone.ts und src/lib/leadValidation.ts (Server prüft nochmal)
+    function normalizePhone(raw) {
+      var c = (raw || '').replace(/[^\d+]/g, '');
+      if (!c) return '';
+      if (c.indexOf('00') === 0) c = '+' + c.slice(2);
+      if (c.charAt(0) !== '+') c = c.charAt(0) === '0' ? '+41' + c.slice(1) : '+41' + c;
+      if (c.indexOf('+410') === 0) c = '+41' + c.slice(4);
+      return c;
+    }
+    function validName(n) {
+      if (n.length > 80 || /[\d@]/.test(n)) return false;
+      return (n.match(/\p{L}/gu) || []).length >= 2;
+    }
+    function validEmail(e) { return e.length <= 254 && /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i.test(e); }
+    function validPhone(p) {
+      if (!/^\+\d+$/.test(p)) return false;
+      if (p.indexOf('+41') === 0) return /^\+41[2-9]\d{8}$/.test(p);
+      return p.length - 1 >= 10 && p.length - 1 <= 15;
+    }
+
+    function send() {
+      var fnEl = document.getElementById('fn'), emEl = document.getElementById('em'), phEl = document.getElementById('ph');
+      var fn = fnEl.value.trim(), em = emEl.value.trim(), ph = normalizePhone(phEl.value);
+      var errEl = document.getElementById('formErr');
+      [fnEl, emEl, phEl].forEach(function(el){ el.parentElement.classList.remove('err'); el.removeAttribute('aria-invalid'); });
+      errEl.hidden = true;
+      var bad = [];
+      if (!validName(fn)) bad.push([fnEl, 'deinen Vor- und Nachnamen']);
+      if (!validPhone(ph)) bad.push([phEl, 'eine gültige Handynummer (z. B. 079 123 45 67)']);
+      if (!validEmail(em)) bad.push([emEl, 'eine gültige E-Mail']);
+      if (bad.length) {
+        bad.forEach(function(b){ b[0].parentElement.classList.add('err'); b[0].setAttribute('aria-invalid', 'true'); });
+        var parts = bad.map(function(b){ return b[1]; });
+        errEl.textContent = 'Bitte trag ' + (parts.length > 1 ? parts.slice(0, -1).join(', ') + ' und ' + parts[parts.length - 1] : parts[0]) + ' ein.';
+        errEl.hidden = false;
+        bad[0][0].focus();
+        return;
+      }
+      ['dsRow', 'waRow'].forEach(function(id){ document.getElementById(id).classList.remove('error'); });
+      if (!document.getElementById('ds').checked) {
+        document.getElementById('dsRow').classList.add('error');
+        document.getElementById('dsRow').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
+      // WhatsApp-Opt-in ist Pflicht: die Auswertung kommt per WhatsApp, der Bot braucht die Freigabe.
+      if (!document.getElementById('wa').checked) {
+        document.getElementById('waRow').classList.add('error');
+        document.getElementById('waRow').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
+      var btn = document.getElementById('sbtn');
+      btn.disabled = true;
+      btn.textContent = 'Wird gespeichert';
+
+      fetch('/api/sheets', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          lp_slug: LP_SLUG,
+          lp_name: LP_NAME,
+          name: fn,
+          email: em,
+          phone: ph,
+          first_name: fn.split(' ')[0],
+          wa_optin: true,
+          answers: quizAnswers
+        })
+      }).then(function(res){
+        if (!res.ok) throw new Error('insert-failed');
+        tk('lead_submit', { detail: quizAnswers.pfad });
+        try {
+          sessionStorage.setItem('fot_sp_profile', JSON.stringify({
+            name: (fn.split(' ')[0] || '').trim() || 'Du', email: em, phone: ph,
+            pfad: quizAnswers.pfad, q1: quizAnswers.q1, kg: quizAnswers.kg, back: quizAnswers.rueckkehr_kg, q3: quizAnswers.q3
+          }));
+        } catch(e) {}
+        btn.textContent = 'Weiter zu deiner Zahl';
+        setTimeout(function(){ window.location.href = '/nach-der-spritze/ergebnis/'; }, 250);
+      }).catch(function(){
+        btn.disabled = false;
+        btn.innerHTML = 'Meine Zahl ansehen <span class="btn-arrow">&rarr;</span>';
+        errEl.textContent = 'Etwas ist schiefgelaufen. Bitte nochmal versuchen.';
+        errEl.hidden = false;
+      });
+    }
+  </script>
+
+  <script is:inline src="https://t.hyros.com/v1/lst/universal-script?ph=689a71ca1ab3be1cb1caddbe6b7902a4ad2c51a228f4ec9ea7fef3123a705f63"></script>
+
+  <CookieBanner
+    metaPixelId={PIXEL_ID}
+    googleAdsId={GOOGLE_ADS_ID}
+    consentKey="fot_spritze_consent"
+    impressumUrl={impressumUrl}
+    datenschutzUrl={datenschutzUrl}
+  />
+</body>
+</html>

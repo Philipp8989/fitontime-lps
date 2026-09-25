@@ -1,0 +1,107 @@
+---
+// Funnel "Nach der Spritze", Schritt 3: Bestätigung nach der Terminbuchung.
+// Der postMessage-Detektor auf /nach-der-spritze/ergebnis leitet hierher. Die Buchung
+// ist dort schon gezählt (fot_booked_nach-der-spritze), hier nur Pageview + Guard-Fallback.
+import '../../styles/bauchfett.css';
+import CookieBanner from '../../components/CookieBanner.astro';
+import ScaleeeCredit from '../../components/ScaleeeCredit.astro';
+import FotWordmark from '../../components/FotWordmark.astro';
+const impressumUrl = 'https://fitontime.ch/impressum-datenschutz';
+const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
+const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').trim();
+const PIXEL_ID = (import.meta.env.PUBLIC_FOT_SPRITZE_PIXEL_ID || '').trim();
+const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..500,0..100;1,9..144,300..500,0..100&family=Albert+Sans:wght@400;500;600&display=swap';
+---
+<html lang="de-CH">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Dein Termin steht | Fit on Time</title>
+  <link rel="icon" type="image/png" href="/images/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href={FONTS} rel="stylesheet" />
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <FotWordmark />
+      <span class="tag">Termin gebucht</span>
+    </div>
+  </div>
+
+  <section class="confirm">
+    <div class="wrap">
+      <div class="check"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></div>
+      <p class="eyebrow eyebrow--center">Schritt 1 von 3 erledigt</p>
+      <h1 style="margin:0.75rem 0 1rem;">Dein Termin <em>steht,</em> <span id="r-name">du</span>.</h1>
+      <p class="lead">Die Bestätigung mit Uhrzeit und Link ist unterwegs an deine Mail. Schau auch im Spam-Ordner nach, falls nichts kommt.</p>
+
+      <div class="path">
+        <div class="pr done"><div class="pn">&#10003;</div><div><b>Check und Termin</b><p>Erledigt. Wir sehen deine Antworten vor dem Gespräch.</p></div></div>
+        <div class="pr now"><div class="pn">2</div><div><b>Das Gespräch</b><p>30 Minuten mit unserer Strategieberatung. Ihr schaut, wie du dein Gewicht hältst, mit oder ohne Spritze.</p></div></div>
+        <div class="pr"><div class="pn">3</div><div><b>Dein Plan für danach</b><p>Essen, das satt macht, Muskeln halten, und jemand, der mit dir dranbleibt.</p></div></div>
+      </div>
+
+      <div class="why" style="text-align:left;">
+        <h3>Damit das Gespräch etwas bringt</h3>
+        <ul class="gets">
+          <li>Nimm dir die 30 Minuten wirklich frei. Kein Nebenbei, kein Autofahren.</li>
+          <li>Sei ehrlich bei Essen, Bewegung und Spritze. Niemand urteilt, wir wollen nur verstehen, wo du stehst.</li>
+          <li>Wenn du deinen Termin nicht wahrnehmen kannst, verschieb ihn über den Link in der Mail. Der Platz ist sonst für eine andere Frau weg.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <footer>
+      <a href={impressumUrl} target="_blank" rel="noopener">Impressum</a> &middot;
+      <a href={datenschutzUrl} target="_blank" rel="noopener">Datenschutzerklärung</a>
+      <div style="margin-top:10px;text-align:center;"><ScaleeeCredit /></div>
+    </footer>
+  </div>
+
+  <script is:inline>
+    // Landet die Seite im YCBM-iframe (falls der Kalender selbst hierher leitet): ausbrechen.
+    if (window.top !== window.self) {
+      try { window.top.location.href = window.location.href; } catch (e) { window.location.href = window.location.href; }
+    } else {
+      var LP_SLUG = 'nach-der-spritze';
+      var tk = function (e, d) {
+        var tries = 0;
+        (function fire() {
+          if (window.__lp) {
+            window.__lp.track(e, Object.assign({ page: LP_SLUG }, d || {}), 'fot', 'Nach der Spritze');
+            if (e === 'booking_confirmed') window.__lp.meta('Schedule', { content_name: 'FoT Termin gebucht', currency: 'CHF' });
+            if (e === 'booking_confirmed') window.__lp.google('book_appointment', 'yDiXCIK7zeIcEOfryccD');
+          } else if (tries++ < 40) { setTimeout(fire, 50); }
+        })();
+      };
+      tk('thankyou_view');
+      try {
+        var P = JSON.parse(sessionStorage.getItem('fot_sp_profile') || 'null');
+        if (P && P.name && P.name !== 'Du') document.getElementById('r-name').textContent = P.name;
+      } catch (e) {}
+      // Fallback: Buchung noch nicht gezählt (z. B. Kalender hat direkt hierher geleitet)
+      var already = false;
+      try { already = sessionStorage.getItem('fot_booked_' + LP_SLUG) === '1'; } catch (e) {}
+      if (!already) {
+        try { sessionStorage.setItem('fot_booked_' + LP_SLUG, '1'); } catch (e) {}
+        tk('booking_confirmed', { detail: 'via_gebucht' });
+      }
+    }
+  </script>
+
+  <script is:inline src="https://t.hyros.com/v1/lst/universal-script?ph=689a71ca1ab3be1cb1caddbe6b7902a4ad2c51a228f4ec9ea7fef3123a705f63"></script>
+
+  <CookieBanner
+    metaPixelId={PIXEL_ID}
+    googleAdsId={GOOGLE_ADS_ID}
+    consentKey="fot_spritze_consent"
+    impressumUrl={impressumUrl}
+    datenschutzUrl={datenschutzUrl}
+  />
+</body>
+</html>
