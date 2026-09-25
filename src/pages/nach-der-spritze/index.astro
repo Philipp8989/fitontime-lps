@@ -1,6 +1,6 @@
 ---
 // Funnel "Nach der Spritze", Schritt 1: Landing + Weiche + Rechner + Opt-in.
-// Ziel ist der billigste Lead mit gültiger Telefonnummer für die Setter.
+// Ziel ist der billigste Lead mit gültiger Telefonnummer für die Setter. Kein WhatsApp-Bot.
 // Logik: Die erste Frage (Weiche) teilt in drei Pfade (A überlegt oder will ohne,
 // B nimmt die Spritze, C hat abgesetzt). Der Rechner zeigt die Zahl der Kilo, die
 // ohne Plan zurückkommen (zwei Drittel, Oxford-Auswertung 2026), verschwommen bis
@@ -200,21 +200,17 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
         <div class="tag">Auswertung fertig</div>
         <h2>Deine Zahl <em>ist bereit.</em></h2>
         <div class="teaser"><div class="tl" id="f-tl">Ohne Plan kommen bei dir zurück</div><div class="tn"><span class="blur" id="f-back">7</span> kg</div></div>
-        <p class="sub">Trag dich ein und du siehst deine Zahl sofort. Die Auswertung schicken wir dir zusätzlich per WhatsApp.</p>
+        <p class="sub">Trag dich ein und du siehst deine Zahl sofort.</p>
         <div class="fields">
           <div class="field"><input type="text" id="fn" placeholder="Dein Vor- und Nachname" autocomplete="name" required /></div>
           <div class="field"><span class="pre">+41</span><input type="tel" id="ph" placeholder="Deine Handynummer" autocomplete="tel" required /></div>
           <div class="field"><input type="email" id="em" placeholder="Deine E-Mail" autocomplete="email" required /></div>
         </div>
         <p class="form-err" id="formErr" role="alert" hidden></p>
-        <p class="form-hint">Deine Handynummer brauchen wir, damit wir dir die Auswertung per WhatsApp schicken können.</p>
+        <p class="form-hint">Deine Handynummer brauchen wir, damit wir dich kurz anrufen und deine Zahl mit dir durchgehen können. Kostenlos.</p>
         <div class="cb-row" id="dsRow">
           <input type="checkbox" id="ds" />
-          <label for="ds">Ich akzeptiere die <a href={datenschutzUrl} target="_blank">Datenschutzbestimmungen</a>.</label>
-        </div>
-        <div class="cb-row" id="waRow">
-          <input type="checkbox" id="wa" />
-          <label for="wa">Ja, Fit on Time darf mir die Auswertung per WhatsApp schicken und mich dazu kontaktieren.</label>
+          <label for="ds">Ich akzeptiere die <a href={datenschutzUrl} target="_blank">Datenschutzbestimmungen</a> und Fit on Time darf mich zu meiner Auswertung anrufen.</label>
         </div>
         <button class="btn btn--primary btn--block" id="sbtn" onclick="send()">Meine Zahl ansehen <span class="btn-arrow">&rarr;</span></button>
         <div class="form-proof">Deine Daten sind sicher und werden nicht weitergegeben.</div>
@@ -410,16 +406,10 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
         bad[0][0].focus();
         return;
       }
-      ['dsRow', 'waRow'].forEach(function(id){ document.getElementById(id).classList.remove('error'); });
+      ['dsRow'].forEach(function(id){ document.getElementById(id).classList.remove('error'); });
       if (!document.getElementById('ds').checked) {
         document.getElementById('dsRow').classList.add('error');
         document.getElementById('dsRow').scrollIntoView({ behavior: 'smooth', block: 'center' });
-        return;
-      }
-      // WhatsApp-Opt-in ist Pflicht: die Auswertung kommt per WhatsApp, der Bot braucht die Freigabe.
-      if (!document.getElementById('wa').checked) {
-        document.getElementById('waRow').classList.add('error');
-        document.getElementById('waRow').scrollIntoView({ behavior: 'smooth', block: 'center' });
         return;
       }
       var btn = document.getElementById('sbtn');
@@ -436,7 +426,8 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
           email: em,
           phone: ph,
           first_name: fn.split(' ')[0],
-          wa_optin: true,
+          // Kein WhatsApp-Bot für diesen Funnel (Philipp 25.09.): die Setter rufen an.
+          wa_optin: false,
           answers: quizAnswers
         })
       }).then(function(res){
