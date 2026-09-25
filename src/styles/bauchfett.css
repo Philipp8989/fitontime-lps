@@ -277,6 +277,7 @@ footer .fine { font-size: 0.72rem; max-width: 36rem; margin: 0.75rem auto 0; lin
 .field input::placeholder { color: var(--taupe); }
 .field .pre { color: var(--taupe); font-size: 0.95rem; flex-shrink: 0; }
 .field.err { border-color: var(--rust); }
+.form-err { color: var(--rust); font-size: 0.85rem; max-width: 28rem; margin: -0.3rem auto 0.9rem; }
 .cb-row { display: flex; align-items: flex-start; gap: 0.6rem; max-width: 28rem; margin: 0 auto 1rem; text-align: left; }
 .cb-row input { accent-color: var(--ink); width: 1rem; height: 1rem; margin-top: 0.2rem; flex-shrink: 0; }
 .cb-row label { font-size: 0.78rem; color: var(--taupe); line-height: 1.4; }

@@ -359,6 +359,7 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
           <div class="field"><input type="email" id="em" placeholder="Deine E-Mail" autocomplete="email" required /></div>
           <div class="field"><span class="pre">+41</span><input type="tel" id="ph" placeholder="Deine Telefonnummer" autocomplete="tel" required /></div>
         </div>
+        <p class="form-err" id="formErr" role="alert" hidden></p>
         <p class="form-hint">Eine Coachin geht dein Profil kurz und kostenlos mit dir durch, damit du weisst, welche Hebel bei dir zuerst kommen.</p>
         <div class="cb-row" id="dsRow">
           <input type="checkbox" id="ds" />
@@ -490,22 +491,43 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
       }, 3200);
     }
 
+    // Gleiche Regeln wie src/lib/phone.ts und src/lib/leadValidation.ts (Server prüft nochmal)
     function normalizePhone(raw) {
       var c = (raw || '').replace(/[^\d+]/g, '');
       if (!c) return '';
-      if (c.charAt(0) === '+') return c;
-      if (c.charAt(0) === '0') return '+41' + c.slice(1);
-      return '+41' + c;
+      if (c.indexOf('00') === 0) c = '+' + c.slice(2);
+      if (c.charAt(0) !== '+') c = c.charAt(0) === '0' ? '+41' + c.slice(1) : '+41' + c;
+      if (c.indexOf('+410') === 0) c = '+41' + c.slice(4);
+      return c;
+    }
+    function validName(n) {
+      if (n.length > 80 || /[\d@]/.test(n)) return false;
+      return (n.match(/\p{L}/gu) || []).length >= 2;
+    }
+    function validEmail(e) { return e.length <= 254 && /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i.test(e); }
+    function validPhone(p) {
+      if (!/^\+\d+$/.test(p)) return false;
+      if (p.indexOf('+41') === 0) return /^\+41[2-9]\d{8}$/.test(p);
+      return p.length - 1 >= 10 && p.length - 1 <= 15;
     }
 
     function send() {
       var fnEl = document.getElementById('fn'), emEl = document.getElementById('em'), phEl = document.getElementById('ph');
       var fn = fnEl.value.trim(), em = emEl.value.trim(), ph = normalizePhone(phEl.value);
-      [fnEl, emEl, phEl].forEach(function(el){ el.parentElement.classList.remove('err'); });
-      if (!fn || !em || !ph) {
-        if (!fn) fnEl.parentElement.classList.add('err');
-        if (!em) emEl.parentElement.classList.add('err');
-        if (!ph) phEl.parentElement.classList.add('err');
+      var errEl = document.getElementById('formErr');
+      [fnEl, emEl, phEl].forEach(function(el){ el.parentElement.classList.remove('err'); el.removeAttribute('aria-invalid'); });
+      errEl.hidden = true;
+      // Button ohne <form>: HTML-Validierung greift nicht, deshalb hier prüfen (Junk-Lead #9436)
+      var bad = [];
+      if (!validName(fn)) bad.push([fnEl, 'deinen Vor- und Nachnamen']);
+      if (!validEmail(em)) bad.push([emEl, 'eine gültige E-Mail']);
+      if (!validPhone(ph)) bad.push([phEl, 'eine gültige Handynummer (z.\u00a0B. 079\u00a0123\u00a045\u00a067)']);
+      if (bad.length) {
+        bad.forEach(function(b){ b[0].parentElement.classList.add('err'); b[0].setAttribute('aria-invalid', 'true'); });
+        var parts = bad.map(function(b){ return b[1]; });
+        errEl.textContent = 'Bitte trag ' + (parts.length > 1 ? parts.slice(0, -1).join(', ') + ' und ' + parts[parts.length - 1] : parts[0]) + ' ein.';
+        errEl.hidden = false;
+        bad[0][0].focus();
         return;
       }
       // Checkboxen inline validieren statt Button tot zu schalten

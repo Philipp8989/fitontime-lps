@@ -3,6 +3,7 @@ import { google } from 'googleapis';
 import { waitUntil } from '@vercel/functions';
 import { sendCapiEvent, clientMeta } from '../../lib/capi';
 import { normalizePhone } from '../../lib/phone';
+import { invalidLeadFields } from '../../lib/leadValidation';
 import { buildAttribution } from '../../lib/attribution';
 import { sendOpenAiAdsEvent } from '../../lib/openaiAds';
 
@@ -321,6 +322,16 @@ export const POST: APIRoute = async ({ request }) => {
     // die Validierung phone und 400te jede Absendung dieser Funnels -> Totalausfall.
     if (!data.name || !data.email) {
       return new Response(JSON.stringify({ error: 'Name und E-Mail sind Pflicht' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
+    // Format-Pruefung: haelt Junk wie Name "b", Mail "a", Telefon "+417" aus Sheet, CRM und Bot raus.
+    const invalid = invalidLeadFields(data);
+    if (invalid.length) {
+      console.warn('[sheets] Lead abgelehnt', data.lp_slug, invalid.join(','));
+      return new Response(JSON.stringify({ error: 'Ungueltige Angaben', fields: invalid }), {
         status: 400,
         headers: { 'Content-Type': 'application/json' },
       });
