@@ -4,6 +4,11 @@
 if (Astro.url.hostname === 'longevity.fit-on-time.ch') {
   return Astro.rewrite('/longevity');
 }
+// Eigene Domain für den Spritzen-Funnel (Medikamenten-Thema, eigenes Health-Risiko):
+// jede Domain mit "spritze" im Namen zeigt an der Wurzel direkt den Check.
+if (Astro.url.hostname.includes('spritze')) {
+  return Astro.rewrite('/nach-der-spritze');
+}
 ---
 <html lang="de">
 <head>

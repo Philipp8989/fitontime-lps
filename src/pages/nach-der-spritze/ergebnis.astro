@@ -1,0 +1,215 @@
+---
+// Funnel "Nach der Spritze", Schritt 2: persönliche Zahl + Kalender als Angebot.
+// Profil kommt aus sessionStorage (fot_sp_profile, gesetzt auf /nach-der-spritze/ nach dem Insert).
+// Ohne Profil (Direktaufruf) zeigt die Seite ein neutrales Beispiel und den Kalender trotzdem.
+// Ziel des Funnels ist der Lead (Setter rufen an), die Buchung hier ist ein Bonus.
+import '../../styles/bauchfett.css';
+import CookieBanner from '../../components/CookieBanner.astro';
+import ScaleeeCredit from '../../components/ScaleeeCredit.astro';
+import FotWordmark from '../../components/FotWordmark.astro';
+const impressumUrl = 'https://fitontime.ch/impressum-datenschutz';
+const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
+const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').trim();
+const PIXEL_ID = (import.meta.env.PUBLIC_FOT_SPRITZE_PIXEL_ID || '').trim();
+// Eigener Kalender per Env, bis dahin der Bauchfett-Kalender (gleiches Gespräch, anderes Thema).
+const YCBM_DOMAIN = (import.meta.env.PUBLIC_FOT_YCBM_SPRITZE || 'fitontime-bauchfett-weg-check').trim();
+const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..500,0..100;1,9..144,300..500,0..100&family=Albert+Sans:wght@400;500;600&display=swap';
+---
+<html lang="de-CH">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Deine Auswertung | Fit on Time</title>
+  <link rel="icon" type="image/png" href="/images/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href={FONTS} rel="stylesheet" />
+  <style>
+    .big { font-family: 'Fraunces', serif; font-size: clamp(4rem, 18vw, 7rem); line-height: 0.95; font-variant-numeric: tabular-nums; margin: 0.5rem 0 0.25rem; }
+    .big small { font-size: 0.35em; }
+    .big-sub { font-size: 1.05rem; margin-bottom: 1.25rem; }
+    .row2 { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid rgba(33,28,23,0.15); border-bottom: 1px solid rgba(33,28,23,0.15); margin: 1rem 0 1.25rem; }
+    .row2 div { padding: 0.9rem 0; }
+    .row2 div + div { border-left: 1px solid rgba(33,28,23,0.15); padding-left: 1rem; }
+    .row2 b { display: block; font-family: 'Fraunces', serif; font-size: 1.6rem; font-weight: 400; font-variant-numeric: tabular-nums; }
+    .p-text + .p-text { margin-top: 0.9rem; }
+    .why .gets + p { margin-top: 1rem; }
+    .row2 span { font-size: 0.85rem; opacity: 0.75; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <FotWordmark />
+      <span class="tag">Deine Auswertung</span>
+    </div>
+  </div>
+
+  <section class="result-hero">
+    <div class="wrap">
+      <p class="eyebrow">Auswertung für <span id="r-name">dich</span></p>
+      <p class="big-sub" id="r-head" style="margin-top:1rem;">Ohne Plan kommen bei dir im ersten Jahr etwa zurück:</p>
+      <div class="big"><span id="r-back">8</span> <small>kg</small></div>
+      <div class="row2">
+        <div><b id="r-kg">12 kg</b><span id="r-kg-l">verloren</span></div>
+        <div><b id="r-keep">4 kg</b><span id="r-keep-l">bleiben ohne Plan</span></div>
+      </div>
+      <p class="p-text" id="r-text1"></p>
+      <p class="p-text" id="r-text2"></p>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:1.5rem;">
+    <div class="wrap">
+      <div class="why">
+        <h3>So bleiben die Kilo weg</h3>
+        <ul class="gets">
+          <li><strong>Essen, das satt macht.</strong> Wenn der Hunger zurückkommt, brauchst du Mahlzeiten, die ihn ruhig halten.</li>
+          <li><strong>Muskeln halten.</strong> Zwei, drei kurze Einheiten pro Woche, damit dein Körper nicht runterfährt.</li>
+          <li><strong>Jemand, der dranbleibt.</strong> Allein hört man nach drei Wochen auf. Mit Begleitung wird es Alltag.</li>
+        </ul>
+        <p>Wie das bei dir konkret aussieht, hängt von deinem Alltag ab. Das klären wir mit dir im <strong>kostenlosen Gespräch</strong>. 30 Minuten mit unserer Strategieberatung, am Telefon oder per Video.</p>
+        <p class="quote">Wir melden uns auch per WhatsApp bei dir. Wenn du nicht warten willst, such dir hier direkt einen Termin aus.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--sand" style="padding-top:2rem;" id="termin">
+    <div class="wrap">
+      <div class="booking">
+        <div class="b-title">Wann passt dir das Gespräch?</div>
+        <div class="b-sub">Kostenlos · 30 Minuten · am Telefon oder per Video</div>
+        <div id="ycbm-embed"></div>
+        <div class="b-fine">Nach der Buchung bekommst du sofort eine Bestätigung per Mail.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--bright">
+    <div class="wrap wrap--wide">
+      <div class="section-head">
+        <p class="eyebrow">Frauen, die es ohne Spritze geschafft haben</p>
+        <h2>Abnehmen, das <em>bleibt.</em></h2>
+      </div>
+      <div class="proof-grid">
+        <img src="/images/sd-proof/tf-04.jpg" alt="Vorher Nachher Fit on Time" loading="lazy" />
+        <img src="/images/sd-proof/tf-05.jpg" alt="Vorher Nachher Fit on Time" loading="lazy" />
+        <img src="/images/sd-proof/tf-02.jpg" alt="Vorher Nachher Fit on Time" loading="lazy" />
+        <img src="/images/sd-proof/tf-06.jpg" alt="Vorher Nachher Fit on Time" loading="lazy" />
+      </div>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <footer>
+      <a href={impressumUrl} target="_blank" rel="noopener">Impressum</a> &middot;
+      <a href={datenschutzUrl} target="_blank" rel="noopener">Datenschutzerklärung</a>
+      <p class="fine">Die Zahl ist eine Schätzung anhand deiner Angaben und des Durchschnitts aus 37 Studien (Universität Oxford, 2026). Sie ersetzt keine ärztliche Beratung. Über Medikamente entscheidest du immer mit deiner Ärztin oder deinem Arzt.</p>
+      <div style="margin-top:10px;text-align:center;"><ScaleeeCredit /></div>
+    </footer>
+  </div>
+
+  <script is:inline define:vars={{ YCBM_DOMAIN }}>
+    var LP_SLUG = 'nach-der-spritze';
+    var LP_NAME = 'Nach der Spritze';
+
+    function tk(e, d) {
+      var tries = 0;
+      (function fire() {
+        if (window.__lp) {
+          window.__lp.track(e, Object.assign({ page: LP_SLUG }, d || {}), 'fot', LP_NAME);
+          if (e === 'booking_confirmed') window.__lp.meta('Schedule', { content_name: 'FoT Termin gebucht', currency: 'CHF' });
+          if (e === 'booking_confirmed') window.__lp.google('book_appointment', 'yDiXCIK7zeIcEOfryccD');
+        } else if (tries++ < 40) { setTimeout(fire, 50); }
+      })();
+    }
+    tk('page_view');
+    try { sessionStorage.setItem('fot_booking_lp', JSON.stringify({ slug: LP_SLUG, name: LP_NAME })); } catch (e) {}
+
+    var P = null;
+    try { P = JSON.parse(sessionStorage.getItem('fot_sp_profile') || 'null'); } catch (e) {}
+    if (!P) P = { name: 'dich', pfad: 'C', kg: 12, back: 8, q3: '' };
+    var kg = parseInt(P.kg, 10) || 12;
+    var bk = parseInt(P.back, 10) || Math.round(kg * 2 / 3);
+
+    // Texte je Pfad: A überlegt oder will ohne, B nimmt die Spritze, C hat abgesetzt
+    var TEXT = {
+      A: {
+        head: 'Mit Spritze kämen nach dem Absetzen im ersten Jahr etwa zurück:',
+        kgl: 'dein Ziel',
+        t1: 'Die Spritze bringt die Kilo schnell runter. Aber sobald du aufhörst, kommt der Hunger zurück. Und mit ihm meistens zwei Drittel vom Gewicht. Das zeigen 37 Studien.',
+        t2: 'Es geht auch anders: langsamer, dafür bleibt es. Mit Essen, das satt macht, und Muskeln, die dein Gewicht halten. So begleiten wir Frauen seit Jahren beim Abnehmen, ohne Spritze.'
+      },
+      B: {
+        head: 'Ohne Plan kommen nach dem Absetzen im ersten Jahr etwa zurück:',
+        kgl: 'bisher verloren',
+        t1: 'Solange du spritzt, ist der Hunger leise. Das ist die beste Zeit, um dich auf danach vorzubereiten. Denn während du abnimmst, verlierst du auch Muskeln. Und weniger Muskeln heisst: Nach dem Absetzen geht es schneller wieder hoch.',
+        t2: 'Wer jetzt schon Muskeln aufbaut und lernt, wie er satt wird, hält nach dem Absetzen viel mehr. Das ist kein Entweder-oder. Das ist dein Plan für danach.'
+      },
+      C: {
+        head: 'Ohne Plan kommen bei dir im ersten Jahr etwa zurück:',
+        kgl: 'mit Spritze verloren',
+        t1: 'Das liegt nicht an dir. Die Spritze hat den Hunger gedämpft. Jetzt ist er zurück, und dein Körper braucht weniger als vorher, weil mit dem Fett auch Muskeln gegangen sind.',
+        t2: 'Die ersten Monate nach dem Absetzen entscheiden. Wer jetzt einen Plan hat, hält viel mehr von dem, was er geschafft hat. Genau dafür ist das Gespräch da.'
+      }
+    };
+    var T = TEXT[P.pfad] || TEXT.C;
+    document.getElementById('r-name').textContent = P.name || 'dich';
+    document.getElementById('r-head').textContent = T.head;
+    document.getElementById('r-back').textContent = bk;
+    document.getElementById('r-kg').textContent = kg + ' kg';
+    document.getElementById('r-kg-l').textContent = T.kgl;
+    if (P.pfad === 'A') document.getElementById('r-keep-l').textContent = 'bleiben nach dem Absetzen';
+    document.getElementById('r-keep').textContent = Math.max(0, kg - bk) + ' kg';
+    document.getElementById('r-text1').textContent = T.t1;
+    document.getElementById('r-text2').textContent = T.t2;
+    tk('result_shown', { detail: P.pfad });
+
+    // YCBM-Embed
+    var s = document.createElement('script');
+    s.src = 'https://embed.ycb.me';
+    s.async = true;
+    s.setAttribute('data-domain', YCBM_DOMAIN);
+    s.setAttribute('data-displaymode', 'auto');
+    s.onload = function () { tk('booking_embed_loaded'); };
+    document.getElementById('ycbm-embed').appendChild(s);
+
+    // Buchung erkennen (YCBM postet ans Parent), einmal zählen, dann auf /nach-der-spritze/gebucht.
+    window.addEventListener('message', function (ev) {
+      var origin = String(ev.origin || '');
+      if (!/(^|\.)ycb\.me$/.test(origin) && origin.indexOf('youcanbook') === -1) return;
+      var txt = '';
+      try { txt = (typeof ev.data === 'string') ? ev.data : JSON.stringify(ev.data); } catch (e) { return; }
+      txt = txt.toLowerCase();
+      if (txt.indexOf('book') === -1) return;
+      if (!/confirm|complete|created|success|made|finished/.test(txt)) return;
+      if (txt.indexOf('cancel') !== -1) return;
+      var already = false;
+      try { already = sessionStorage.getItem('fot_booked_' + LP_SLUG) === '1'; } catch (e) {}
+      if (!already) {
+        try { sessionStorage.setItem('fot_booked_' + LP_SLUG, '1'); } catch (e) {}
+        tk('booking_confirmed', { detail: P.pfad });
+        // Eigenbuchung melden, damit der WhatsApp-Bot keinen Opener mehr schickt
+        try {
+          if (P.email || P.phone) {
+            fetch('/api/booked', { method: 'POST', headers: { 'Content-Type': 'application/json' }, keepalive: true,
+              body: JSON.stringify({ email: P.email || '', phone: P.phone || '' }) }).catch(function(){});
+          }
+        } catch (e) {}
+      }
+      setTimeout(function () { window.location.href = '/nach-der-spritze/gebucht/'; }, 900);
+    }, false);
+  </script>
+
+  <script is:inline src="https://t.hyros.com/v1/lst/universal-script?ph=689a71ca1ab3be1cb1caddbe6b7902a4ad2c51a228f4ec9ea7fef3123a705f63"></script>
+
+  <CookieBanner
+    metaPixelId={PIXEL_ID}
+    googleAdsId={GOOGLE_ADS_ID}
+    consentKey="fot_spritze_consent"
+    impressumUrl={impressumUrl}
+    datenschutzUrl={datenschutzUrl}
+  />
+</body>
+</html>

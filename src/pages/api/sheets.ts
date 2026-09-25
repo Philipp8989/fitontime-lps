@@ -170,6 +170,24 @@ SHEETS['bauchfett'] = {
   },
 };
 
+// Nach der Spritze (Abnehmspritze, Weiche A/B/C + Rechner). Sheet "FitonTime Spritze Leads"
+// (Owner Philipp, mit leads-writer@ geteilt). Header: Datum | Vorname | Nachname | E-Mail |
+// Telefon | Setter-Prio | Pfad | Stand | Kilo | Kommen zurück (kg) | Frage 3 | Selbstzahlerin |
+// Alter | WhatsApp Opt-in
+SHEETS['nach-der-spritze'] = {
+  id: '1wKsHQ1Ee9DDoL0gwAMfXpfrnX1hadtjdYFS-MEX63Vg',
+  range: 'Leads!A:N',
+  buildRow: (datum, d) => {
+    const a = d.answers || {};
+    const parts = (d.name || '').trim().split(/\s+/);
+    const vorname = parts[0] || '';
+    const nachname = parts.slice(1).join(' ') || '';
+    return [datum, vorname, nachname, d.email, d.phone || '', a.setter_prio || '',
+      a.pfad_label || '', a.q1_label || '', a.kg_label || '', a.rueckkehr_kg ?? '',
+      a.q3_label || '', a.selbstzahlerin || '', a.q4_label || '', d.wa_optin === true ? 'Ja' : 'Nein'];
+  },
+};
+
 // Partner-Programm (Studios als Empfehlungs-Partner, B2B, kein Bot, kein WhatsApp).
 // Sheet "FitonTime Partner Leads": Datum | Status | Studio-Typ | Studio | Ort | Vorname
 // | Nachname | E-Mail | Telefon | Kundinnen pro Woche | Notiz | Datenschutz.
@@ -365,6 +383,9 @@ export const POST: APIRoute = async ({ request }) => {
         // (= der gesperrte Health-Pixel), damit wäre die Dedup über event_id kaputt.
         pixel_id_override:
           lpSlug === 'longevity' ? '1214902253584066'
+            // Eigener Pixel, damit das Medikamenten-Thema den geteilten Pixel nie trifft.
+            // Ohne Env kein CAPI-Override auf einen fremden Pixel: dann geht nichts raus (siehe unten).
+            : lpSlug === 'nach-der-spritze' ? ((import.meta.env.PUBLIC_FOT_SPRITZE_PIXEL_ID || '').trim() || 'none')
             : (lpSlug === 'insulin-check' || lpSlug === 'bauchfett') ? '1316450223953563'
               : undefined,
         // Nur Longevity: geschaetzter Lead-Wert (reine Zahl, KEINE Gesundheitsdaten) behebt Meta-Diagnose "gueltige Preisinfo".

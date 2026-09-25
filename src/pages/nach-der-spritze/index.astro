@@ -30,9 +30,11 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
   <style>
     .gate .opt { text-align: left; }
     .facts { display: grid; gap: 0; margin-top: 1.5rem; border-top: 1px solid rgba(33,28,23,0.15); }
-    .fact { display: grid; grid-template-columns: 5.5rem 1fr; gap: 1rem; padding: 1.1rem 0; border-bottom: 1px solid rgba(33,28,23,0.15); align-items: baseline; }
+    .fact { display: grid; grid-template-columns: 7.5rem 1fr; gap: 1rem; padding: 1.1rem 0; border-bottom: 1px solid rgba(33,28,23,0.15); align-items: baseline; }
     .fact .fv { font-family: 'Fraunces', serif; font-size: 2rem; line-height: 1; font-variant-numeric: tabular-nums; }
     .fact p { margin: 0; }
+    .fact .fv--word { font-size: 1.4rem; }
+    @media (max-width: 480px) { .fact { grid-template-columns: 1fr; gap: 0.4rem; } }
     .src { font-size: 0.8rem; opacity: 0.7; margin-top: 0.75rem; }
     .calc { margin: 1.25rem 0 0.5rem; }
     .calc-val { font-family: 'Fraunces', serif; font-size: 3rem; line-height: 1; text-align: center; font-variant-numeric: tabular-nums; }
@@ -92,7 +94,7 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
         <div class="facts">
           <div class="fact"><div class="fv">2/3</div><p><b>der verlorenen Kilo kommen im ersten Jahr zurück.</b> Das zeigt eine Auswertung von 37 Studien. Von 15 Kilo sind nach einem Jahr etwa 10 wieder da.</p></div>
           <div class="fact"><div class="fv">4×</div><p><b>schneller wieder drauf</b> als nach einer Umstellung mit Ernährung und Bewegung.</p></div>
-          <div class="fact"><div class="fv">Muskeln</div><p><b>gehen mit weg.</b> Wer schnell abnimmt, verliert nicht nur Fett. Weniger Muskeln heisst: Dein Körper braucht weniger. Genau deshalb geht es danach so schnell wieder hoch.</p></div>
+          <div class="fact"><div class="fv fv--word">Muskeln</div><p><b>gehen mit weg.</b> Wer schnell abnimmt, verliert nicht nur Fett. Weniger Muskeln heisst: Dein Körper braucht weniger. Genau deshalb geht es danach so schnell wieder hoch.</p></div>
         </div>
         <p class="src">Quellen: Universität Oxford 2026 (Auswertung von 37 Studien), British Medical Journal.</p>
       </div>

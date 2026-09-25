@@ -65,6 +65,8 @@ function readEnv(name: string): string | undefined {
 
 export async function sendCapiEvent(event: CapiEvent): Promise<{ ok: boolean; status?: number; error?: string }> {
   const pixelId = event.pixel_id_override || readEnv('PUBLIC_META_PIXEL_ID');
+  // 'none' = Funnel hat noch keinen eigenen Pixel, bewusst nichts senden (kein Fallback auf den geteilten).
+  if (pixelId === 'none') return { ok: false, error: 'kein eigener Pixel' };
   const token = readEnv('META_CAPI_TOKEN');
   const testCode = readEnv('META_TEST_EVENT_CODE');
 
