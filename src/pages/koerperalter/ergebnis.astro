@@ -1,0 +1,163 @@
+---
+// Funnel "Körperalter-Test", Schritt 2: Körperalter + die zwei grössten Treiber.
+// Profil aus sessionStorage (fot_ka_profile). Kein Kalender: es zählt nur der Lead, die Setter rufen an.
+import '../../styles/bauchfett.css';
+import CookieBanner from '../../components/CookieBanner.astro';
+import ScaleeeCredit from '../../components/ScaleeeCredit.astro';
+import FotWordmark from '../../components/FotWordmark.astro';
+const impressumUrl = 'https://fitontime.ch/impressum-datenschutz';
+const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
+const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').trim();
+const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..500,0..100;1,9..144,300..500,0..100&family=Albert+Sans:wght@400;500;600&display=swap';
+---
+<html lang="de-CH">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Dein Körperalter | Fit on Time</title>
+  <link rel="icon" type="image/png" href="/images/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href={FONTS} rel="stylesheet" />
+  <style>
+    .big { font-family: 'Fraunces', serif; font-size: clamp(4.5rem, 20vw, 8rem); line-height: 0.95; font-variant-numeric: tabular-nums; margin: 0.5rem 0 0.25rem; }
+    .big small { font-size: 0.3em; }
+    .row2 { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid rgba(33,28,23,0.15); border-bottom: 1px solid rgba(33,28,23,0.15); margin: 1rem 0 1.25rem; }
+    .row2 div { padding: 0.9rem 0; }
+    .row2 div + div { border-left: 1px solid rgba(33,28,23,0.15); padding-left: 1rem; }
+    .row2 b { display: block; font-family: 'Fraunces', serif; font-size: 1.6rem; font-weight: 400; font-variant-numeric: tabular-nums; }
+    .row2 span { font-size: 0.85rem; opacity: 0.75; }
+    .p-text + .p-text { margin-top: 0.9rem; }
+    .drivers { border-top: 1px solid rgba(33,28,23,0.15); margin-top: 1rem; }
+    .driver { padding: 1rem 0; border-bottom: 1px solid rgba(33,28,23,0.15); }
+    .driver p { margin: 0.25rem 0 0; }
+    .call { margin-top: 1.5rem; padding: 1.25rem; border-left: 2px solid #b08a52; background: rgba(176,138,82,0.08); }
+    .call p + p { margin-top: 0.6rem; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <FotWordmark />
+      <span class="tag">Dein Ergebnis</span>
+    </div>
+  </div>
+
+  <section class="result-hero">
+    <div class="wrap">
+      <p class="eyebrow">Auswertung für <span id="r-name">dich</span></p>
+      <p style="margin-top:1rem;">Dein Körperalter:</p>
+      <div class="big"><span id="r-ka">52</span> <small>Jahre</small></div>
+      <div class="row2">
+        <div><b id="r-real">47</b><span>dein Alter</span></div>
+        <div><b id="r-over">+5 Jahre</b><span id="r-over-l">älter als du bist</span></div>
+      </div>
+      <p class="p-text" id="r-text1"></p>
+      <p class="p-text" id="r-text2"></p>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:1.5rem;">
+    <div class="wrap">
+      <p class="eyebrow">Das treibt dein Körperalter gerade hoch</p>
+      <div class="drivers" id="drivers"></div>
+      <div class="call">
+        <p><strong>Wie geht es weiter?</strong></p>
+        <p>Wir rufen dich in den nächsten Tagen kurz an. Kostenlos. Wir gehen dein Ergebnis mit dir durch und sagen dir, was du als Erstes ändern kannst.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--bright">
+    <div class="wrap wrap--wide">
+      <div class="section-head">
+        <p class="eyebrow">Frauen, die es zurückgeholt haben</p>
+        <h2>Leichter, fitter, <em>jünger im Kopf.</em></h2>
+      </div>
+      <div class="proof-grid">
+        <img src="/images/sd-proof/tf-02.jpg" alt="Vorher Nachher Fit on Time" loading="lazy" />
+        <img src="/images/sd-proof/tf-04.jpg" alt="Vorher Nachher Fit on Time" loading="lazy" />
+        <img src="/images/sd-proof/tf-05.jpg" alt="Vorher Nachher Fit on Time" loading="lazy" />
+        <img src="/images/sd-proof/tf-06.jpg" alt="Vorher Nachher Fit on Time" loading="lazy" />
+      </div>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <footer>
+      <a href={impressumUrl} target="_blank" rel="noopener">Impressum</a> &middot;
+      <a href={datenschutzUrl} target="_blank" rel="noopener">Datenschutzerklärung</a>
+      <p class="fine">Das Körperalter ist eine Einschätzung anhand deiner Antworten, kein medizinischer Wert. Es ersetzt keine ärztliche Untersuchung.</p>
+      <div style="margin-top:10px;text-align:center;"><ScaleeeCredit /></div>
+    </footer>
+  </div>
+
+  <script is:inline>
+    var LP_SLUG = 'koerperalter';
+    function tk(e, d) {
+      var tries = 0;
+      (function fire() {
+        if (window.__lp) window.__lp.track(e, Object.assign({ page: LP_SLUG }, d || {}), 'fot', 'Körperalter-Test');
+        else if (tries++ < 40) setTimeout(fire, 50);
+      })();
+    }
+    tk('page_view');
+
+    var P = null;
+    try { P = JSON.parse(sessionStorage.getItem('fot_ka_profile') || 'null'); } catch (e) {}
+    if (!P) P = { name: 'dich', real: 47, ka: 53, over: 6, q2: 'loch', q3: 'nie', q4: 'etwas', q5: 'wach', q6: 'mittel' };
+    var over = parseInt(P.over, 10) || 0;
+
+    document.getElementById('r-name').textContent = P.name || 'dich';
+    document.getElementById('r-ka').textContent = P.ka;
+    document.getElementById('r-real').textContent = P.real;
+    document.getElementById('r-over').textContent = over > 0 ? '+' + over + ' Jahre' : 'gleich';
+    if (over === 0) document.getElementById('r-over-l').textContent = 'wie dein echtes Alter';
+
+    var t1, t2;
+    if (over >= 7) {
+      t1 = 'Dein Körper tickt gerade deutlich älter als du bist. Das merkst du wahrscheinlich an Energie, Bauch und Schlaf. Und genau deshalb klappt Abnehmen gerade so schlecht.';
+      t2 = 'Das ist keine Frage von Disziplin. Ein paar Gewohnheiten ziehen dein Körperalter hoch. Die lassen sich ändern, und das meiste davon holst du zurück.';
+    } else if (over >= 3) {
+      t1 = 'Dein Körper ist ein paar Jahre älter als du. Das ist bei Frauen ab 40 häufig und passiert schleichend. Man merkt es erst, wenn die Hose enger wird.';
+      t2 = 'Jetzt ist der beste Moment, gegenzusteuern. Je früher, desto leichter holst du die Jahre zurück.';
+    } else {
+      t1 = 'Dein Körper ist ungefähr so alt wie du. Das ist gut. Du hast eine starke Basis.';
+      t2 = 'Wenn du trotzdem abnehmen willst, liegt es meistens an Kleinigkeiten im Alltag. Die finden wir mit dir.';
+    }
+    document.getElementById('r-text1').textContent = t1;
+    document.getElementById('r-text2').textContent = t2;
+
+    // Die zwei grössten Treiber aus den Antworten
+    var D = [
+      { k: 'q3', bad: ['nie', 'selten'], w: 15, h: 'Zu wenig Muskeln', p: 'Ohne Krafttraining baut dein Körper ab 40 jedes Jahr Muskeln ab. Du verbrauchst weniger und nimmst leichter zu.' },
+      { k: 'q4', bad: ['mehr', 'etwas'], w: 14, h: 'Der Bauch wächst', p: 'Wenn der Bauch wächst, obwohl du nicht mehr isst, speichert dein Körper anders als früher. Das lässt sich wieder umdrehen.' },
+      { k: 'q2', bad: ['dauer', 'loch', 'morgens'], w: 13, h: 'Wenig Energie', p: 'Ständig müde heisst oft: Blutzucker fährt Achterbahn. Dann kommt der Heisshunger fast von allein.' },
+      { k: 'q5', bad: ['wach', 'ein', 'unausgeruht'], w: 12, h: 'Schlaf', p: 'Wer schlecht schläft, hat am nächsten Tag mehr Hunger und weniger Kraft. Das bremst jedes Abnehmen.' },
+      { k: 'q6', bad: ['hoch', 'mittel'], w: 11, h: 'Süsses und Snacks', p: 'Nicht verbieten, sondern anders takten. Wann du isst, macht mehr aus als du denkst.' }
+    ];
+    var hits = D.filter(function (d) { return d.bad.indexOf(P[d.k]) !== -1; }).sort(function (a, b) { return b.w - a.w; }).slice(0, 2);
+    if (!hits.length) hits = [D[0]];
+    var box = document.getElementById('drivers');
+    hits.forEach(function (d) {
+      var el = document.createElement('div');
+      el.className = 'driver';
+      var b = document.createElement('b'); b.textContent = d.h;
+      var p = document.createElement('p'); p.textContent = d.p;
+      el.appendChild(b); el.appendChild(p); box.appendChild(el);
+    });
+    tk('result_shown', { detail: 'plus_' + over });
+  </script>
+
+  <script is:inline src="https://t.hyros.com/v1/lst/universal-script?ph=689a71ca1ab3be1cb1caddbe6b7902a4ad2c51a228f4ec9ea7fef3123a705f63"></script>
+
+  <CookieBanner
+    metaPixelId="1316450223953563"
+    googleAdsId={GOOGLE_ADS_ID}
+    consentKey="fot_koerperalter_consent"
+    impressumUrl={impressumUrl}
+    datenschutzUrl={datenschutzUrl}
+  />
+</body>
+</html>

@@ -170,6 +170,24 @@ SHEETS['bauchfett'] = {
   },
 };
 
+// Körperalter-Test (Mechanik vom Longevity-Bioalter-Test, fürs Abnehm-Coaching). Kein Bot.
+// Sheet "FitonTime Körperalter Leads" (Owner Philipp, mit leads-writer@ geteilt). Header: Datum |
+// Vorname | Nachname | E-Mail | Telefon | Setter-Prio | Alter | Körperalter | Jahre drüber |
+// Abnehmziel | Energie | Muskeltraining | Bauch | Schlaf | Zucker/Snacks
+SHEETS['koerperalter'] = {
+  id: '1NfGgtGLwVRqThQ3GtUGrBtnHuFbHLENkx3mnr0pYYC0',
+  range: 'Leads!A:O',
+  buildRow: (datum, d) => {
+    const a = d.answers || {};
+    const parts = (d.name || '').trim().split(/\s+/);
+    const vorname = parts[0] || '';
+    const nachname = parts.slice(1).join(' ') || '';
+    return [datum, vorname, nachname, d.email, d.phone || '', a.setter_prio || '',
+      a.q1_label || '', a.koerperalter ?? '', a.jahre_drueber ?? '', a.q7_label || '',
+      a.q2_label || '', a.q3_label || '', a.q4_label || '', a.q5_label || '', a.q6_label || ''];
+  },
+};
+
 // Nach der Spritze (Abnehmspritze, Weiche A/B/C + Rechner). Sheet "FitonTime Spritze Leads"
 // (Owner Philipp, mit leads-writer@ geteilt). Header: Datum | Vorname | Nachname | E-Mail |
 // Telefon | Setter-Prio | Pfad | Stand | Kilo | Kommen zurück (kg) | Frage 3 | Selbstzahlerin |
@@ -386,7 +404,7 @@ export const POST: APIRoute = async ({ request }) => {
             // Eigener Pixel, damit das Medikamenten-Thema den geteilten Pixel nie trifft.
             // Ohne Env kein CAPI-Override auf einen fremden Pixel: dann geht nichts raus (siehe unten).
             : lpSlug === 'nach-der-spritze' ? ((import.meta.env.PUBLIC_FOT_SPRITZE_PIXEL_ID || '').trim() || 'none')
-            : (lpSlug === 'insulin-check' || lpSlug === 'bauchfett') ? '1316450223953563'
+            : (lpSlug === 'insulin-check' || lpSlug === 'bauchfett' || lpSlug === 'koerperalter') ? '1316450223953563'
               : undefined,
         // Nur Longevity: geschaetzter Lead-Wert (reine Zahl, KEINE Gesundheitsdaten) behebt Meta-Diagnose "gueltige Preisinfo".
         // value/currency muessen mit dem Browser-Pixel (longevity/index.astro) uebereinstimmen. Platzhalter 50 CHF.

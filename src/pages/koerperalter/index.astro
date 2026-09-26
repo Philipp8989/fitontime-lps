@@ -1,0 +1,413 @@
+---
+// Funnel "Körperalter-Test", Schritt 1: Landing + 7 Fragen + Opt-in.
+// Mechanik vom Longevity-Bioalter-Test übernommen, dem billigsten Lead im Konto
+// (90 Tage bis 26.09.2026: CPL 5.23 CHF, CPC 0.37). Hier fürs Abnehm-Coaching, Frauen 35 bis 60.
+// Ziel ist der billigste Lead mit gültiger Telefonnummer für die Setter. Kein WhatsApp-Bot.
+// Das Alter ist der erste Klick (ersetzt den CTA), das Körperalter bleibt bis zum Opt-in verschwommen.
+// Design: neue fitontime.ch (Cream, Ink, Gold, Fraunces) wie /bauchfett. Pixel: Clean-Domain-Pixel.
+import '../../styles/bauchfett.css';
+import CookieBanner from '../../components/CookieBanner.astro';
+import ScaleeeCredit from '../../components/ScaleeeCredit.astro';
+import FotWordmark from '../../components/FotWordmark.astro';
+const impressumUrl = 'https://fitontime.ch/impressum-datenschutz';
+const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
+const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').trim();
+const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..500,0..100;1,9..144,300..500,0..100&family=Albert+Sans:wght@400;500;600&display=swap';
+---
+<html lang="de-CH">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Körperalter-Test: Wie alt ist dein Körper wirklich? | Fit on Time</title>
+  <link rel="icon" type="image/png" href="/images/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href={FONTS} rel="stylesheet" />
+  <style>
+    .age-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; margin-top: 1rem; }
+    .age-grid .opt { text-align: center; }
+    .compare { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid rgba(33,28,23,0.15); border-bottom: 1px solid rgba(33,28,23,0.15); margin-top: 1.5rem; }
+    .compare div { padding: 1.25rem 0; }
+    .compare div + div { border-left: 1px solid rgba(33,28,23,0.15); padding-left: 1.25rem; }
+    .compare b { display: block; font-family: 'Fraunces', serif; font-weight: 400; font-size: 2.6rem; line-height: 1; font-variant-numeric: tabular-nums; }
+    .compare span { font-size: 0.9rem; opacity: 0.75; }
+    .levers { margin-top: 1.5rem; border-top: 1px solid rgba(33,28,23,0.15); }
+    .lever { display: grid; grid-template-columns: 2.25rem 1fr; gap: 0.75rem; padding: 1rem 0; border-bottom: 1px solid rgba(33,28,23,0.15); }
+    .lever .ln { font-family: 'Fraunces', serif; font-size: 1.5rem; line-height: 1.2; color: #b08a52; }
+    .lever p { margin: 0.2rem 0 0; }
+    .teaser { border: 1px solid rgba(176,138,82,0.5); border-radius: 8px; padding: 1rem 1.1rem; margin: 1rem 0 1.25rem; background: rgba(176,138,82,0.08); }
+    .teaser .tl { font-size: 0.85rem; letter-spacing: 0.04em; text-transform: uppercase; opacity: 0.75; }
+    .teaser .tn { font-family: 'Fraunces', serif; font-size: 2.4rem; line-height: 1.1; margin-top: 0.25rem; font-variant-numeric: tabular-nums; }
+    .blur { filter: blur(9px); user-select: none; }
+  </style>
+</head>
+<body>
+
+  <!-- ===== LANDING ===== -->
+  <div id="lp">
+    <div class="wrap">
+      <div class="topbar">
+        <FotWordmark />
+        <span class="tag">Körperalter-Test</span>
+      </div>
+    </div>
+
+    <section class="hero">
+      <div class="arc arc--hero"></div>
+      <div class="wrap wrap--wide hero-grid">
+        <div>
+          <p class="eyebrow">1 Minute · 7 Fragen · kostenlos</p>
+          <h1>Wie alt ist dein Körper <em>wirklich?</em></h1>
+          <p class="lead">Dein Körper altert nicht nach dem Kalender. Zwei Frauen mit 48 können sich anfühlen wie 40 und wie 58. Der Test zeigt dir in einer Minute dein Körperalter. Und woran es liegt, dass es gerade höher ist.</p>
+          <p class="lead" style="font-size:0.95rem;">Von den Ernährungs- und Fitness-Coaches von Fit on Time. Über 4'000 Frauen in der Schweiz begleitet.</p>
+        </div>
+
+        <div class="gate">
+          <div class="gate-q">Wie alt bist du?</div>
+          <div class="gate-sub">Tipp auf dein Alter. Damit startet der Test.</div>
+          <div class="age-grid">
+            <button class="opt" onclick="startQuiz('u35')">Unter 35</button>
+            <button class="opt" onclick="startQuiz('35-39')">35 bis 39</button>
+            <button class="opt" onclick="startQuiz('40-44')">40 bis 44</button>
+            <button class="opt" onclick="startQuiz('45-49')">45 bis 49</button>
+            <button class="opt" onclick="startQuiz('50-54')">50 bis 54</button>
+            <button class="opt" onclick="startQuiz('55+')">55 oder älter</button>
+          </div>
+          <div class="gate-note"><span>Kostenlos</span> · <span>Keine Waage nötig</span> · <span>Ergebnis sofort</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Erklärung -->
+    <section class="section section--bright">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow">Was dahintersteckt</p>
+          <h2>Dein Ausweis sagt 48. <em>Dein Körper sagt vielleicht 55.</em></h2>
+          <p class="lead">Wie alt sich dein Körper anfühlt, hängt kaum an deinem Geburtstag. Es hängt an ein paar Dingen, die du jeden Tag machst. Genau die fragt der Test ab.</p>
+        </div>
+        <div class="levers">
+          <div class="lever"><div class="ln">1</div><div><b>Muskeln</b><p>Ab 40 verliert dein Körper jedes Jahr Muskeln, wenn du nichts tust. Weniger Muskeln heisst: Du verbrauchst weniger und nimmst leichter zu.</p></div></div>
+          <div class="lever"><div class="ln">2</div><div><b>Bauch</b><p>Wenn der Bauch wächst, obwohl du nicht mehr isst als früher, ist das ein typisches Zeichen dafür, dass dein Körper älter tickt.</p></div></div>
+          <div class="lever"><div class="ln">3</div><div><b>Energie und Schlaf</b><p>Ständig müde, nachts wach, nachmittags im Loch. Das merkst du zuerst, lange bevor es die Waage zeigt.</p></div></div>
+        </div>
+        <p class="brake-close">Die gute Nachricht: Das meiste davon kannst du zurückholen. Nicht mit Verzicht, sondern mit den richtigen Gewohnheiten.</p>
+      </div>
+    </section>
+
+    <!-- Proof -->
+    <section class="section section--sand">
+      <div class="wrap wrap--wide">
+        <div class="section-head">
+          <p class="eyebrow">Frauen, die es zurückgeholt haben</p>
+          <h2>Leichter, fitter, <em>jünger im Kopf.</em></h2>
+        </div>
+        <div class="proof-grid">
+          <img src="/images/sd-proof/tf-02.jpg" alt="Vorher Nachher Fit on Time" loading="lazy" />
+          <img src="/images/sd-proof/tf-04.jpg" alt="Vorher Nachher Fit on Time" loading="lazy" />
+          <img src="/images/sd-proof/tf-05.jpg" alt="Vorher Nachher Fit on Time" loading="lazy" />
+          <img src="/images/sd-proof/tf-06.jpg" alt="Vorher Nachher Fit on Time" loading="lazy" />
+        </div>
+        <div style="text-align:center; margin-top:1.75rem;">
+          <a href="#top" class="btn btn--primary" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">Test starten <span class="btn-arrow">&rarr;</span></a>
+        </div>
+      </div>
+    </section>
+
+    <div class="wrap">
+      <footer>
+        <a href={impressumUrl} target="_blank" rel="noopener">Impressum</a> &middot;
+        <a href={datenschutzUrl} target="_blank" rel="noopener">Datenschutzerklärung</a>
+        <p class="fine">Das Körperalter ist eine Einschätzung anhand deiner Antworten, kein medizinischer Wert. Es ersetzt keine ärztliche Untersuchung.</p>
+        <div style="margin-top:10px;text-align:center;"><ScaleeeCredit /></div>
+      </footer>
+    </div>
+  </div>
+
+  <!-- ===== QUIZ ===== -->
+  <div id="quiz">
+    <div class="q-head"><FotWordmark /></div>
+    <div class="q-progress"><div class="q-bar"><div class="q-fill" id="qf"></div></div><div class="q-num" id="qn">Frage 2 von 7</div></div>
+    <div class="q-body">
+
+      <div class="step on" data-s="2">
+        <h2>Wie fühlst du dich über den Tag?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(2,'dauer',15)">Eigentlich immer müde</button>
+          <button class="opt" onclick="nxt(2,'loch',11)">Nachmittags im Loch</button>
+          <button class="opt" onclick="nxt(2,'morgens',8)">Morgens schwer in Gang</button>
+          <button class="opt" onclick="nxt(2,'stabil',0)">Meistens fit</button>
+        </div>
+        <div class="tipp"><strong>Gut zu wissen:</strong> Dauernde Müdigkeit ist oft das erste Zeichen, dass der Körper älter tickt als du bist.</div>
+      </div>
+
+      <div class="step" data-s="3">
+        <h2>Wie oft trainierst du deine Muskeln pro Woche?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(3,'nie',15)">Gar nicht</button>
+          <button class="opt" onclick="nxt(3,'selten',11)">Ab und zu</button>
+          <button class="opt" onclick="nxt(3,'1x',6)">Einmal</button>
+          <button class="opt" onclick="nxt(3,'2x',0)">Zweimal oder mehr</button>
+        </div>
+        <div class="tipp"><strong>Gut zu wissen:</strong> Joggen und Spazieren sind super, halten aber keine Muskeln. Dafür braucht es Kraft.</div>
+      </div>
+
+      <div class="step" data-s="4">
+        <h2>Wie hat sich dein Bauch in den letzten 5 Jahren verändert?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(4,'mehr',15)">Deutlich mehr geworden</button>
+          <button class="opt" onclick="nxt(4,'etwas',10)">Etwas mehr</button>
+          <button class="opt" onclick="nxt(4,'gleich',3)">Gleich geblieben</button>
+          <button class="opt" onclick="nxt(4,'weniger',0)">Weniger geworden</button>
+        </div>
+        <div class="tipp"><strong>Gut zu wissen:</strong> Ab 40 wandert Fett gerne von Hüfte und Po zum Bauch. Auch wenn du gleich viel isst.</div>
+      </div>
+
+      <div class="step" data-s="5">
+        <h2>Wie schläfst du?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(5,'wach',12)">Ich wache nachts auf</button>
+          <button class="opt" onclick="nxt(5,'ein',10)">Ich schlafe schlecht ein</button>
+          <button class="opt" onclick="nxt(5,'unausgeruht',8)">Ich wache müde auf</button>
+          <button class="opt" onclick="nxt(5,'gut',0)">Gut</button>
+        </div>
+        <div class="tipp"><strong>Gut zu wissen:</strong> Schlechter Schlaf macht Hunger. Am nächsten Tag isst man im Schnitt deutlich mehr.</div>
+      </div>
+
+      <div class="step" data-s="6">
+        <h2>Wie oft isst du Süsses, Brot oder Snacks?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(6,'hoch',12)">Jeden Tag, mehrmals</button>
+          <button class="opt" onclick="nxt(6,'mittel',8)">Jeden Tag, einmal</button>
+          <button class="opt" onclick="nxt(6,'selten',4)">Ein paar Mal pro Woche</button>
+          <button class="opt" onclick="nxt(6,'bewusst',0)">Selten</button>
+        </div>
+        <div class="tipp"><strong>Gut zu wissen:</strong> Es geht nicht um Verbote. Es geht darum, wann und womit du es isst.</div>
+      </div>
+
+      <div class="step" data-s="7">
+        <h2>Wie viel willst du abnehmen?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(7,'u5',0)">Bis 5 kg</button>
+          <button class="opt" onclick="nxt(7,'5-10',0)">5 bis 10 kg</button>
+          <button class="opt" onclick="nxt(7,'10-20',0)">10 bis 20 kg</button>
+          <button class="opt" onclick="nxt(7,'20+',0)">Mehr als 20 kg</button>
+          <button class="opt" onclick="nxt(7,'form',0)">Nichts, ich will nur fitter werden</button>
+        </div>
+        <div class="tipp"><strong>Gut zu wissen:</strong> Wer Muskeln aufbaut, sieht oft jünger aus, noch bevor die Waage sich bewegt.</div>
+      </div>
+
+      <div class="step ld" data-s="ld">
+        <div class="spinner"></div>
+        <h2>Dein Körperalter wird berechnet</h2>
+        <p>Das dauert nur ein paar Sekunden</p>
+        <div class="checks">
+          <div class="chk" id="c1"><i>&#10003;</i>Antworten ausgewertet</div>
+          <div class="chk" id="c2"><i>&#10003;</i>Mit deiner Altersgruppe verglichen</div>
+          <div class="chk" id="c3"><i>&#10003;</i>Körperalter berechnet</div>
+        </div>
+      </div>
+
+      <div class="step form" data-s="form">
+        <div class="tag">Auswertung fertig</div>
+        <h2>Dein Körperalter <em>ist bereit.</em></h2>
+        <div class="teaser"><div class="tl">Dein Körperalter</div><div class="tn"><span class="blur" id="f-age">52</span> Jahre</div></div>
+        <p class="sub">Trag dich ein und du siehst dein Körperalter sofort.</p>
+        <div class="fields">
+          <div class="field"><input type="text" id="fn" placeholder="Dein Vor- und Nachname" autocomplete="name" required /></div>
+          <div class="field"><span class="pre">+41</span><input type="tel" id="ph" placeholder="Deine Handynummer" autocomplete="tel" required /></div>
+          <div class="field"><input type="email" id="em" placeholder="Deine E-Mail" autocomplete="email" required /></div>
+        </div>
+        <p class="form-err" id="formErr" role="alert" hidden></p>
+        <p class="form-hint">Deine Handynummer brauchen wir, damit wir dich kurz anrufen und dein Ergebnis mit dir durchgehen können. Kostenlos.</p>
+        <div class="cb-row" id="dsRow">
+          <input type="checkbox" id="ds" />
+          <label for="ds">Ich akzeptiere die <a href={datenschutzUrl} target="_blank">Datenschutzbestimmungen</a> und Fit on Time darf mich zu meinem Ergebnis anrufen.</label>
+        </div>
+        <button class="btn btn--primary btn--block" id="sbtn" onclick="send()">Mein Körperalter ansehen <span class="btn-arrow">&rarr;</span></button>
+        <div class="form-proof">Deine Daten sind sicher und werden nicht weitergegeben.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <script is:inline>
+    var LP_SLUG = 'koerperalter';
+    var LP_NAME = 'Körperalter-Test';
+    var TOTAL = 7;
+    var quizAnswers = {};
+    var points = 0;
+    var MAX = 15 + 15 + 15 + 12 + 12; // Summe der Höchstwerte der Fragen 2 bis 6
+
+    var AGE = { u35: [32, 'Unter 35'], '35-39': [37, '35 bis 39'], '40-44': [42, '40 bis 44'], '45-49': [47, '45 bis 49'], '50-54': [52, '50 bis 54'], '55+': [58, '55+'] };
+    var LABELS = {
+      q2: { dauer: 'Immer müde', loch: 'Nachmittags im Loch', morgens: 'Morgens schwer in Gang', stabil: 'Meistens fit' },
+      q3: { nie: 'Gar nicht', selten: 'Ab und zu', '1x': 'Einmal pro Woche', '2x': 'Zweimal oder mehr' },
+      q4: { mehr: 'Deutlich mehr', etwas: 'Etwas mehr', gleich: 'Gleich', weniger: 'Weniger' },
+      q5: { wach: 'Wacht nachts auf', ein: 'Schläft schlecht ein', unausgeruht: 'Wacht müde auf', gut: 'Gut' },
+      q6: { hoch: 'Täglich mehrmals', mittel: 'Täglich einmal', selten: 'Paar Mal pro Woche', bewusst: 'Selten' },
+      q7: { u5: 'Bis 5 kg', '5-10': '5 bis 10 kg', '10-20': '10 bis 20 kg', '20+': 'Mehr als 20 kg', form: 'Nur fitter werden' }
+    };
+
+    function tk(e, d) {
+      var tries = 0;
+      (function fire() {
+        if (window.__lp) {
+          window.__lp.track(e, Object.assign({ page: LP_SLUG }, d || {}), 'fot', LP_NAME);
+          if (e === 'quiz_start') window.__lp.meta('ViewContent', { content_name: 'FoT Quiz Start', currency: 'CHF' });
+          if (e === 'quiz_complete') window.__lp.meta('CompleteRegistration', { content_name: 'FoT Quiz Complete', currency: 'CHF' });
+          if (e === 'lead_submit') window.__lp.meta('Lead', { content_name: 'FoT Lead', currency: 'CHF' });
+          if (e === 'lead_submit') window.__lp.google('generate_lead', 'TnugCP-6zeIcEOfryccD');
+        } else if (tries++ < 40) { setTimeout(fire, 50); }
+      })();
+    }
+    tk('page_view');
+
+    function show(s) {
+      document.querySelectorAll('.step').forEach(function (el) { el.classList.remove('on'); });
+      document.querySelector('.step[data-s="' + s + '"]').classList.add('on');
+      if (typeof s === 'number') {
+        document.getElementById('qf').style.width = Math.round(((s - 1) / TOTAL) * 100) + '%';
+        document.getElementById('qn').textContent = 'Frage ' + s + ' von ' + TOTAL;
+      }
+      var q = document.getElementById('quiz');
+      if (q) q.scrollTop = 0;
+      window.scrollTo(0, 0);
+    }
+
+    function startQuiz(v) {
+      quizAnswers.q1 = v;
+      quizAnswers.q1_label = (AGE[v] || [0, v])[1];
+      quizAnswers.real_age = (AGE[v] || [45])[0];
+      tk('quiz_start', { detail: 'q1_' + v });
+      document.getElementById('lp').style.display = 'none';
+      document.getElementById('quiz').classList.add('on');
+      show(2);
+    }
+
+    function nxt(s, v, pts) {
+      quizAnswers['q' + s] = v;
+      quizAnswers['q' + s + '_label'] = (LABELS['q' + s] || {})[v] || v;
+      points += pts || 0;
+      tk('quiz_answer', { detail: 'q' + s + '_' + v });
+      if (s < TOTAL) { show(s + 1); return; }
+      finish();
+    }
+
+    // Körperalter: bis zu 12 Jahre über dem echten Alter, je nach Antworten (wie der Longevity-Test).
+    function finish() {
+      var pct = Math.max(0, Math.min(1, points / MAX));
+      var over = Math.round(pct * 12);
+      quizAnswers.jahre_drueber = over;
+      quizAnswers.koerperalter = quizAnswers.real_age + over;
+      var big = quizAnswers.q7 === '10-20' || quizAnswers.q7 === '20+';
+      quizAnswers.setter_prio = big ? 'hoch' : 'normal';
+      tk('quiz_complete', { detail: 'plus_' + over });
+      show('ld');
+      document.getElementById('qf').style.width = '100%';
+      document.getElementById('qn').textContent = 'Auswertung';
+      setTimeout(function(){ document.getElementById('c1').classList.add('show'); }, 500);
+      setTimeout(function(){ document.getElementById('c2').classList.add('show'); }, 1100);
+      setTimeout(function(){ document.getElementById('c3').classList.add('show'); }, 1700);
+      setTimeout(function(){
+        document.getElementById('f-age').textContent = quizAnswers.koerperalter;
+        show('form');
+        document.getElementById('qn').textContent = 'Fast fertig';
+      }, 2400);
+    }
+
+    // Gleiche Regeln wie src/lib/phone.ts und src/lib/leadValidation.ts (Server prüft nochmal)
+    function normalizePhone(raw) {
+      var c = (raw || '').replace(/[^\d+]/g, '');
+      if (!c) return '';
+      if (c.indexOf('00') === 0) c = '+' + c.slice(2);
+      if (c.charAt(0) !== '+') c = c.charAt(0) === '0' ? '+41' + c.slice(1) : '+41' + c;
+      if (c.indexOf('+410') === 0) c = '+41' + c.slice(4);
+      return c;
+    }
+    function validName(n) {
+      if (n.length > 80 || /[\d@]/.test(n)) return false;
+      return (n.match(/\p{L}/gu) || []).length >= 2;
+    }
+    function validEmail(e) { return e.length <= 254 && /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i.test(e); }
+    function validPhone(p) {
+      if (!/^\+\d+$/.test(p)) return false;
+      if (p.indexOf('+41') === 0) return /^\+41[2-9]\d{8}$/.test(p);
+      return p.length - 1 >= 10 && p.length - 1 <= 15;
+    }
+
+    function send() {
+      var fnEl = document.getElementById('fn'), emEl = document.getElementById('em'), phEl = document.getElementById('ph');
+      var fn = fnEl.value.trim(), em = emEl.value.trim(), ph = normalizePhone(phEl.value);
+      var errEl = document.getElementById('formErr');
+      [fnEl, emEl, phEl].forEach(function(el){ el.parentElement.classList.remove('err'); el.removeAttribute('aria-invalid'); });
+      errEl.hidden = true;
+      var bad = [];
+      if (!validName(fn)) bad.push([fnEl, 'deinen Vor- und Nachnamen']);
+      if (!validPhone(ph)) bad.push([phEl, 'eine gültige Handynummer (z. B. 079 123 45 67)']);
+      if (!validEmail(em)) bad.push([emEl, 'eine gültige E-Mail']);
+      if (bad.length) {
+        bad.forEach(function(b){ b[0].parentElement.classList.add('err'); b[0].setAttribute('aria-invalid', 'true'); });
+        var parts = bad.map(function(b){ return b[1]; });
+        errEl.textContent = 'Bitte trag ' + (parts.length > 1 ? parts.slice(0, -1).join(', ') + ' und ' + parts[parts.length - 1] : parts[0]) + ' ein.';
+        errEl.hidden = false;
+        bad[0][0].focus();
+        return;
+      }
+      document.getElementById('dsRow').classList.remove('error');
+      if (!document.getElementById('ds').checked) {
+        document.getElementById('dsRow').classList.add('error');
+        document.getElementById('dsRow').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
+      var btn = document.getElementById('sbtn');
+      btn.disabled = true;
+      btn.textContent = 'Wird gespeichert';
+
+      fetch('/api/sheets', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          lp_slug: LP_SLUG,
+          lp_name: LP_NAME,
+          name: fn,
+          email: em,
+          phone: ph,
+          first_name: fn.split(' ')[0],
+          // Kein WhatsApp-Bot für diesen Funnel: die Setter rufen an.
+          wa_optin: false,
+          answers: quizAnswers
+        })
+      }).then(function(res){
+        if (!res.ok) throw new Error('insert-failed');
+        tk('lead_submit', { detail: 'plus_' + quizAnswers.jahre_drueber });
+        try {
+          sessionStorage.setItem('fot_ka_profile', JSON.stringify({
+            name: (fn.split(' ')[0] || '').trim() || 'Du',
+            real: quizAnswers.real_age, ka: quizAnswers.koerperalter, over: quizAnswers.jahre_drueber,
+            q2: quizAnswers.q2, q3: quizAnswers.q3, q4: quizAnswers.q4, q5: quizAnswers.q5, q6: quizAnswers.q6
+          }));
+        } catch(e) {}
+        btn.textContent = 'Weiter zu deinem Ergebnis';
+        setTimeout(function(){ window.location.href = '/koerperalter/ergebnis/'; }, 250);
+      }).catch(function(){
+        btn.disabled = false;
+        btn.innerHTML = 'Mein Körperalter ansehen <span class="btn-arrow">&rarr;</span>';
+        errEl.textContent = 'Etwas ist schiefgelaufen. Bitte nochmal versuchen.';
+        errEl.hidden = false;
+      });
+    }
+  </script>
+
+  <script is:inline src="https://t.hyros.com/v1/lst/universal-script?ph=689a71ca1ab3be1cb1caddbe6b7902a4ad2c51a228f4ec9ea7fef3123a705f63"></script>
+
+  <CookieBanner
+    metaPixelId="1316450223953563"
+    googleAdsId={GOOGLE_ADS_ID}
+    consentKey="fot_koerperalter_consent"
+    impressumUrl={impressumUrl}
+    datenschutzUrl={datenschutzUrl}
+  />
+</body>
+</html>
