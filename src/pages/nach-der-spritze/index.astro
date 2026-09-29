@@ -11,6 +11,7 @@ import '../../styles/bauchfett.css';
 import CookieBanner from '../../components/CookieBanner.astro';
 import ScaleeeCredit from '../../components/ScaleeeCredit.astro';
 import FotWordmark from '../../components/FotWordmark.astro';
+import ProofPaare from '../../components/ProofPaare.astro';
 const impressumUrl = 'https://fitontime.ch/impressum-datenschutz';
 const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
 const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').trim();
@@ -123,12 +124,7 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
           <p class="eyebrow">Frauen, die es ohne Spritze geschafft haben</p>
           <h2>Abnehmen, das <em>bleibt.</em></h2>
         </div>
-        <div class="proof-grid">
-          <img src="/images/sd-proof/tf-04.jpg" alt="Vorher Nachher Fit on Time" loading="lazy" />
-          <img src="/images/sd-proof/tf-05.jpg" alt="Vorher Nachher Fit on Time" loading="lazy" />
-          <img src="/images/sd-proof/tf-02.jpg" alt="Vorher Nachher Fit on Time" loading="lazy" />
-          <img src="/images/sd-proof/tf-06.jpg" alt="Vorher Nachher Fit on Time" loading="lazy" />
-        </div>
+        <ProofPaare />
         <div style="text-align:center; margin-top:1.75rem;">
           <a href="#top" class="btn btn--primary" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">Check starten <span class="btn-arrow">&rarr;</span></a>
         </div>
