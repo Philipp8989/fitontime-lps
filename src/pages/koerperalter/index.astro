@@ -49,7 +49,7 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
     window.__variant = v;
   </script>
   <style>
-    .age-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; margin-top: 1rem; }
+    .age-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.6rem; margin-top: 1rem; }
     .age-grid .opt { text-align: center; }
     .compare { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid rgba(33,28,23,0.15); border-bottom: 1px solid rgba(33,28,23,0.15); margin-top: 1.5rem; }
     .compare div { padding: 1.25rem 0; }
@@ -107,7 +107,10 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
             <button class="opt" onclick="startQuiz('40-44')">40 bis 44</button>
             <button class="opt" onclick="startQuiz('45-49')">45 bis 49</button>
             <button class="opt" onclick="startQuiz('50-54')">50 bis 54</button>
-            <button class="opt" onclick="startQuiz('55+')">55 oder älter</button>
+            <button class="opt" onclick="startQuiz('55-59')">55 bis 59</button>
+            <button class="opt" onclick="startQuiz('60-64')">60 bis 64</button>
+            <button class="opt" onclick="startQuiz('65-69')">65 bis 69</button>
+            <button class="opt" onclick="startQuiz('70+')">70 oder älter</button>
           </div>
           <div class="gate-note"><span>Kostenlos</span> · <span>Keine Waage nötig</span> · <span>Ergebnis sofort</span></div>
         </div>
@@ -292,7 +295,7 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
     var points = 0;
     var MAX = 15 + 15 + 15 + 12 + 12; // Summe der Höchstwerte der Fragen 2 bis 6
 
-    var AGE = { u35: [32, 'Unter 35'], '35-39': [37, '35 bis 39'], '40-44': [42, '40 bis 44'], '45-49': [47, '45 bis 49'], '50-54': [52, '50 bis 54'], '55+': [58, '55+'] };
+    var AGE = { u35: [32, 'Unter 35'], '35-39': [37, '35 bis 39'], '40-44': [42, '40 bis 44'], '45-49': [47, '45 bis 49'], '50-54': [52, '50 bis 54'], '55-59': [57, '55 bis 59'], '60-64': [62, '60 bis 64'], '65-69': [67, '65 bis 69'], '70+': [72, '70+'], '55+': [58, '55+'] };
     var LABELS = {
       q2: { dauer: 'Immer müde', loch: 'Nachmittags im Loch', morgens: 'Morgens schwer in Gang', stabil: 'Meistens fit' },
       q3: { nie: 'Gar nicht', selten: 'Ab und zu', '1x': 'Einmal pro Woche', '2x': 'Zweimal oder mehr' },

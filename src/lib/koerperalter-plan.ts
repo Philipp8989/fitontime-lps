@@ -5,7 +5,10 @@
 
 export const AGE: Record<string, [number, string]> = {
   u35: [32, 'Unter 35'], '35-39': [37, '35 bis 39'], '40-44': [42, '40 bis 44'],
-  '45-49': [47, '45 bis 49'], '50-54': [52, '50 bis 54'], '55+': [58, '55+'],
+  '45-49': [47, '45 bis 49'], '50-54': [52, '50 bis 54'],
+  '55-59': [57, '55 bis 59'], '60-64': [62, '60 bis 64'], '65-69': [67, '65 bis 69'], '70+': [72, '70+'],
+  // Alte Gruppe bis 05.10.: alle ab 55 rechneten mit 58, darum sahen viele Frauen dieselbe Zahl.
+  '55+': [58, '55+'],
 };
 
 const POINTS: Record<string, Record<string, number>> = {
