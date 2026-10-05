@@ -6,7 +6,7 @@ import { normalizePhone } from '../../lib/phone';
 import { invalidLeadFields } from '../../lib/leadValidation';
 import { buildAttribution } from '../../lib/attribution';
 import { sendOpenAiAdsEvent } from '../../lib/openaiAds';
-import { plan as koerperalterPlan, karteUrl } from '../../lib/koerperalter-plan';
+import { KA_SHEET } from '../../lib/koerperalter-sheet';
 
 // Pro LP: Sheet-ID + Spalten-Schema. Fehlt der Eintrag, wird kein Sheet-Write gemacht.
 type SheetConfig = {
@@ -171,40 +171,9 @@ SHEETS['bauchfett'] = {
   },
 };
 
-// Körperalter-Test (Mechanik vom Longevity-Bioalter-Test, fürs Abnehm-Coaching).
-// A/B seit 05.10.2026: Variante a rufen die Setter an, Variante b geht nur an den WhatsApp-Bot
-// (Setter-Prio "WhatsApp-Bot, nicht anrufen").
-// Sheet "FitonTime Körperalter Leads" (Owner Philipp, mit leads-writer@ geteilt). Header: Datum |
-// Vorname | Nachname | E-Mail | Telefon | Setter-Prio | Alter | Körperalter | Jahre drüber |
-// Abnehmziel | Energie | Muskeltraining | Bauch | Schlaf | Zucker/Snacks | Variante
-SHEETS['koerperalter'] = {
-  id: '1NfGgtGLwVRqThQ3GtUGrBtnHuFbHLENkx3mnr0pYYC0',
-  range: 'Leads!A:P',
-  buildRow: (datum, d) => {
-    const a = d.answers || {};
-    const parts = (d.name || '').trim().split(/\s+/);
-    const vorname = parts[0] || '';
-    const nachname = parts.slice(1).join(' ') || '';
-    return [datum, vorname, nachname, d.email, d.phone || '', a.setter_prio || '',
-      a.q1_label || '', a.koerperalter ?? '', a.jahre_drueber ?? '', a.q7_label || '',
-      a.q2_label || '', a.q3_label || '', a.q4_label || '', a.q5_label || '', a.q6_label || '',
-      a.lp_variant || 'a'];
-  },
-};
-
-// Körperalter b: der Bot bekommt den fertigen Plan und den Link zur persönlichen Karte
-// (Bild-Kopf der WhatsApp-Vorlage). Gerechnet wird nur hier, nicht im Browser.
-function botAnswers(lpSlug: string, data: any, request: Request): Record<string, unknown> {
-  const a = data.answers || {};
-  if (lpSlug !== 'koerperalter') return a;
-  const name = String(data.first_name || data.name || '');
-  const p = koerperalterPlan(a, name);
-  return {
-    ...a,
-    plan: { ziel_alter: p.zielAlter, jahre_zurueck: p.jahreZurueck, hebel: p.hebel, schritte: p.schritte },
-    karte_url: karteUrl(new URL(request.url).origin, a, name),
-  };
-}
+// Körperalter-Test: Sheet-Konfiguration liegt in lib/koerperalter-sheet.ts, weil der
+// WhatsApp-Lead (Variante b, api/koerperalter-lead) dieselbe Zeile schreibt.
+SHEETS['koerperalter'] = KA_SHEET;
 
 // Nach der Spritze (Abnehmspritze, Weiche A/B/C + Rechner). Sheet "FitonTime Spritze Leads"
 // (Owner Philipp, mit leads-writer@ geteilt). Header: Datum | Vorname | Nachname | E-Mail |
@@ -362,7 +331,7 @@ export const POST: APIRoute = async ({ request }) => {
         // selbst gebucht?) und Direktbuchung durch den Bot ohne Rückfrage im Chat.
         email: data.email || '',
         score: data.score ?? '',
-        answers: botAnswers(lpSlug, data, request),
+        answers: data.answers || {},
         lp_slug: lpSlug,
         optin_ts: new Date().toISOString(),
       });

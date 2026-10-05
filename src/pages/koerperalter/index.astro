@@ -3,9 +3,11 @@
 // Mechanik vom Longevity-Bioalter-Test übernommen, dem billigsten Lead im Konto
 // (90 Tage bis 26.09.2026: CPL 5.23 CHF, CPC 0.37). Hier fürs Abnehm-Coaching, Frauen 35 bis 60.
 // Ziel ist der billigste Lead mit gültiger Telefonnummer für die Setter.
-// A/B-Test seit 05.10.2026: a = Setter rufen an, b = Ergebnis per WhatsApp, danach nur der Bot
-// (keine Setter). Messung: CPL je Variante plus Termine pro Lead. Variante steht im Sheet (Spalte P).
-// Schalter: PUBLIC_KA_WA_TEST=1 (erst setzen, wenn das Template koerperalter_ergebnis approved ist).
+// A/B-Test seit 05.10.2026: a = Formular, die Setter rufen an. b = kein Formular, Button öffnet
+// WhatsApp mit vorausgefüllter Nachricht plus Code, der Bot schickt die persönliche Karte und
+// übernimmt (keine Setter). Lead zählt in b erst mit der WhatsApp-Nachricht (Bot ruft
+// api/koerperalter-lead: Sheet, CRM, Meta-CAPI). Messung: CPL je Variante plus Termine pro Lead.
+// Schalter: PUBLIC_KA_WA_TEST=1, ohne ihn immer a (QA mit ?v=b).
 // Das Alter ist der erste Klick (ersetzt den CTA), das Körperalter bleibt bis zum Opt-in verschwommen.
 // Design: neue fitontime.ch (Cream, Ink, Gold, Fraunces) wie /bauchfett. Pixel: Clean-Domain-Pixel.
 import '../../styles/bauchfett.css';
@@ -47,8 +49,6 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
     window.__variant = v;
   </script>
   <style>
-    html:not([data-variant="b"]) .vb { display: none !important; }
-    html[data-variant="b"] .va { display: none !important; }
     .age-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; margin-top: 1rem; }
     .age-grid .opt { text-align: center; }
     .compare { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid rgba(33,28,23,0.15); border-bottom: 1px solid rgba(33,28,23,0.15); margin-top: 1.5rem; }
@@ -70,6 +70,10 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
     .kv .kv-label { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); white-space: nowrap; background: #211c17; color: #fffdf9; font-size: 0.85rem; letter-spacing: 0.04em; padding: 0.45rem 0.8rem; border-radius: 2px; }
     .kv-list { list-style: none; padding: 0; margin: 0 0 0.6rem; border-top: 1px solid rgba(33,28,23,0.15); text-align: left; }
     .kv-list li { display: grid; grid-template-columns: 1.6rem 1fr; padding: 0.45rem 0; border-bottom: 1px solid rgba(33,28,23,0.15); font-size: 0.9rem; line-height: 1.35; }
+    .wa-btn { display: flex; align-items: center; justify-content: center; gap: 0.6rem; text-decoration: none; }
+    .wa-btn svg { width: 22px; height: 22px; flex: none; }
+    .form-proof a { color: inherit; }
+    .wa-btn[aria-disabled="true"] { opacity: 0.6; pointer-events: none; }
     .kv-list li b { font-family: 'Fraunces', serif; font-weight: 400; color: #b08a52; font-size: 1.1rem; }
   </style>
 </head>
@@ -237,32 +241,41 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
 
       <div class="step form" data-s="form">
         <div class="tag">Auswertung fertig</div>
-        <h2 class="va">Dein Körperalter <em>ist bereit.</em></h2>
-        <h2 class="vb">Dein Körperalter <em>und dein Plan sind bereit.</em></h2>
-        <div class="teaser va"><div class="tl">Dein Körperalter</div><div class="tn"><span class="blur" id="f-age">52</span> Jahre</div></div>
-        <div class="kv vb"><img id="f-karte" alt="" width="1080" height="1350" /><span class="kv-label">Kommt per WhatsApp</span></div>
-        <ul class="kv-list vb">
-          <li><b>1</b><span>Dein Körperalter und wie viele Jahre du zurückholen kannst</span></li>
-          <li><b>2</b><span>Deine zwei grössten Hebel, aus deinen Antworten gerechnet</span></li>
-          <li><b>3</b><span>Deine ersten 14 Tage: drei konkrete Schritte für deinen Alltag</span></li>
-        </ul>
-        <p class="sub va">Trag dich ein und du siehst dein Körperalter sofort.</p>
-        <p class="sub vb">Trag dich ein und hol dir deine Karte direkt auf WhatsApp. Kostenlos.</p>
+        <h2>Dein Körperalter <em>ist bereit.</em></h2>
+        <div class="teaser"><div class="tl">Dein Körperalter</div><div class="tn"><span class="blur" id="f-age">52</span> Jahre</div></div>
+        <p class="sub">Trag dich ein und du siehst dein Körperalter sofort.</p>
         <div class="fields">
           <div class="field"><input type="text" id="fn" placeholder="Dein Vor- und Nachname" autocomplete="name" required /></div>
           <div class="field"><span class="pre">+41</span><input type="tel" id="ph" placeholder="Deine Handynummer" autocomplete="tel" required /></div>
           <div class="field"><input type="email" id="em" placeholder="Deine E-Mail" autocomplete="email" required /></div>
         </div>
         <p class="form-err" id="formErr" role="alert" hidden></p>
-        <p class="form-hint va">Deine Handynummer brauchen wir, damit wir dich kurz anrufen und dein Ergebnis mit dir durchgehen können. Kostenlos.</p>
-        <p class="form-hint vb">Falls du sie nicht gleich abholst, schicken wir sie dir an diese Nummer.</p>
+        <p class="form-hint">Deine Handynummer brauchen wir, damit wir dich kurz anrufen und dein Ergebnis mit dir durchgehen können. Kostenlos.</p>
         <div class="cb-row" id="dsRow">
           <input type="checkbox" id="ds" />
-          <label for="ds" class="va">Ich akzeptiere die <a href={datenschutzUrl} target="_blank">Datenschutzbestimmungen</a> und Fit on Time darf mich zu meinem Ergebnis anrufen.</label>
-          <label for="ds" class="vb">Ich akzeptiere die <a href={datenschutzUrl} target="_blank">Datenschutzbestimmungen</a> und Fit on Time darf mir meine Karte per WhatsApp schicken und mich dort dazu kontaktieren.</label>
+          <label for="ds">Ich akzeptiere die <a href={datenschutzUrl} target="_blank">Datenschutzbestimmungen</a> und Fit on Time darf mich zu meinem Ergebnis anrufen.</label>
         </div>
-        <button class="btn btn--primary btn--block" id="sbtn" onclick="send()"></button>
+        <button class="btn btn--primary btn--block" id="sbtn" onclick="send()">Mein Körperalter ansehen <span class="btn-arrow">&rarr;</span></button>
         <div class="form-proof">Deine Daten sind sicher und werden nicht weitergegeben.</div>
+      </div>
+
+      <!-- Variante b: kein Formular. Button öffnet WhatsApp mit vorausgefüllter Nachricht samt Code. -->
+      <div class="step form" data-s="wa">
+        <div class="tag">Auswertung fertig</div>
+        <h2>Dein Körperalter <em>und dein Plan sind bereit.</em></h2>
+        <div class="kv"><img id="w-karte" alt="" width="1080" height="1350" /><span class="kv-label">Kommt per WhatsApp</span></div>
+        <ul class="kv-list">
+          <li><b>1</b><span>Dein Körperalter und wie viele Jahre du zurückholen kannst</span></li>
+          <li><b>2</b><span>Deine zwei grössten Hebel, aus deinen Antworten gerechnet</span></li>
+          <li><b>3</b><span>Deine ersten 14 Tage: drei konkrete Schritte für deinen Alltag</span></li>
+        </ul>
+        <a class="btn btn--primary btn--block wa-btn" id="w-btn" href="#" aria-disabled="true" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3a.4.4 0 0 0 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .2-1.3c-.1-.1-.3-.2-.5-.3z"/></svg>
+          <span id="w-btn-t">Karte wird vorbereitet</span>
+        </a>
+        <p class="form-err" id="w-err" role="alert" hidden></p>
+        <p class="form-hint">Die Nachricht ist schon geschrieben, du musst sie nur absenden. Dann schickt dir Sarah deine Karte. Kostenlos.</p>
+        <div class="form-proof">Mit dem Absenden akzeptierst du die <a href={datenschutzUrl} target="_blank">Datenschutzbestimmungen</a>.</div>
       </div>
 
     </div>
@@ -273,8 +286,7 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
     var LP_NAME = 'Körperalter-Test';
     var VARIANT = window.__variant === 'b' ? 'b' : 'a';
     var WA = VARIANT === 'b';
-    var BTN_HTML = (WA ? 'Weiter zu meiner Karte' : 'Mein Körperalter ansehen') + ' <span class="btn-arrow">&rarr;</span>';
-    document.getElementById('sbtn').innerHTML = BTN_HTML;
+    var BTN_HTML = 'Mein Körperalter ansehen <span class="btn-arrow">&rarr;</span>';
     var TOTAL = 7;
     var quizAnswers = {};
     var points = 0;
@@ -342,16 +354,9 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
       quizAnswers.jahre_drueber = over;
       quizAnswers.koerperalter = quizAnswers.real_age + over;
       var big = quizAnswers.q7 === '10-20' || quizAnswers.q7 === '20+';
-      // Variante b: nur der Bot, die Setter rufen nicht an (steht so im Sheet).
-      quizAnswers.setter_prio = WA ? 'WhatsApp-Bot, nicht anrufen' : (big ? 'hoch' : 'normal');
+      quizAnswers.setter_prio = big ? 'hoch' : 'normal';
       quizAnswers.lp_variant = VARIANT;
-      // Code für die vorausgefüllte WhatsApp-Nachricht, damit der Bot sie findet.
-      // Ohne 0/O und 1/I, mindestens eine Ziffer (Bot: app/intake/karte.py).
-      if (WA) {
-        var AL = 'ABCDEFGHJKLMNPQRSTUVWXYZ', DG = '23456789', c = DG.charAt(Math.floor(Math.random() * DG.length));
-        for (var i = 0; i < 3; i++) { var pool = AL + DG; c += pool.charAt(Math.floor(Math.random() * pool.length)); }
-        quizAnswers.ka_code = c.split('').sort(function () { return Math.random() - 0.5; }).join('');
-      }
+      if (WA) startWa();
       tk('quiz_complete', { detail: 'plus_' + over });
       show('ld');
       document.getElementById('qf').style.width = '100%';
@@ -359,16 +364,49 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
       setTimeout(function(){ document.getElementById('c1').classList.add('show'); }, 500);
       setTimeout(function(){ document.getElementById('c2').classList.add('show'); }, 1100);
       setTimeout(function(){ document.getElementById('c3').classList.add('show'); }, 1700);
-      if (WA) {
-        // Eigene Karte ohne Namen als Vorschau, die Zahlen rechnet der Server aus den Antworten
-        var qs = ['q1', 'q2', 'q3', 'q4', 'q5', 'q6'].map(function (k) { return k + '=' + encodeURIComponent(quizAnswers[k] || ''); }).join('&');
-        document.getElementById('f-karte').src = '/api/koerperalter-karte.png?n=&' + qs;
-      }
       setTimeout(function(){
         document.getElementById('f-age').textContent = quizAnswers.koerperalter;
-        show('form');
+        show(WA ? 'wa' : 'form');
         document.getElementById('qn').textContent = 'Fast fertig';
       }, 2400);
+    }
+
+    // Variante b: Code würfeln und beim Bot anmelden (api/koerperalter-start, ohne Personendaten).
+    // Erst danach wird der Button aktiv, sonst kennt der Bot den Code noch nicht.
+    // Code ohne 0/O und 1/I, mindestens eine Ziffer (Bot: app/intake/karte.py).
+    function newCode() {
+      var AL = 'ABCDEFGHJKLMNPQRSTUVWXYZ', DG = '23456789', c = [DG.charAt(Math.floor(Math.random() * DG.length))];
+      for (var i = 0; i < 3; i++) { var pool = AL + DG; c.push(pool.charAt(Math.floor(Math.random() * pool.length))); }
+      c.splice(Math.floor(Math.random() * 4), 0, c.shift());
+      return c.join('');
+    }
+    function startWa(tries) {
+      tries = tries || 0;
+      var code = newCode();
+      var qs = ['q1', 'q2', 'q3', 'q4', 'q5', 'q6'].map(function (k) { return k + '=' + encodeURIComponent(quizAnswers[k] || ''); }).join('&');
+      document.getElementById('w-karte').src = '/api/koerperalter-karte.png?n=&' + qs;
+      var sid = '';
+      try { sid = sessionStorage.getItem('lp_sid') || ''; } catch (e) {}
+      fetch('/api/koerperalter-start', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: code, answers: quizAnswers,
+          track: { sessionId: sid, channel: window.__lp && window.__lp.channel ? window.__lp.channel() : '' } })
+      }).then(function (res) {
+        if (res.status === 409 && tries < 3) return startWa(tries + 1);
+        if (!res.ok) throw new Error('start-' + res.status);
+        var btn = document.getElementById('w-btn');
+        var msg = 'Hoi, ich möchte meine Körperalter-Karte (Code K' + code + ')';
+        btn.href = 'https://wa.me/41799288508?text=' + encodeURIComponent(msg);
+        btn.setAttribute('aria-disabled', 'false');
+        document.getElementById('w-btn-t').textContent = 'Karte auf WhatsApp holen';
+        btn.addEventListener('click', function () { tk('wa_click', { detail: 'plus_' + quizAnswers.jahre_drueber }); });
+      }).catch(function () {
+        if (tries < 2) { setTimeout(function () { startWa(tries + 1); }, 1500); return; }
+        var err = document.getElementById('w-err');
+        err.textContent = 'Etwas ist schiefgelaufen. Bitte lade die Seite neu.';
+        err.hidden = false;
+      });
     }
 
     // Gleiche Regeln wie src/lib/phone.ts und src/lib/leadValidation.ts (Server prüft nochmal)
@@ -429,8 +467,8 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
           email: em,
           phone: ph,
           first_name: fn.split(' ')[0],
-          // Nur Variante b geht an den WhatsApp-Bot, a rufen die Setter an.
-          wa_optin: WA,
+          // Variante a: die Setter rufen an, kein WhatsApp-Bot
+          wa_optin: false,
           answers: quizAnswers
         })
       }).then(function(res){
@@ -439,7 +477,6 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
         try {
           sessionStorage.setItem('fot_ka_profile', JSON.stringify({
             name: (fn.split(' ')[0] || '').trim() || 'Du',
-            wa: WA, code: quizAnswers.ka_code || '', q1: quizAnswers.q1,
             real: quizAnswers.real_age, ka: quizAnswers.koerperalter, over: quizAnswers.jahre_drueber,
             q2: quizAnswers.q2, q3: quizAnswers.q3, q4: quizAnswers.q4, q5: quizAnswers.q5, q6: quizAnswers.q6
           }));

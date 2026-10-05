@@ -394,7 +394,9 @@ const {
             arguments[0] = input;
           }
           var opts = init || (typeof input === 'object' ? input : null);
-          var isSheets = /\/api\/sheets\b/.test(url);
+          // koerperalter-start (Körperalter b ohne Formular) braucht dieselben meta/attr für die
+          // spätere CAPI-Meldung, hat aber keine E-Mail, also auch kein Hyros-Lead.
+          var isSheets = /\/api\/(sheets|koerperalter-start)\b/.test(url);
           var isLeadPost = isSheets || /\/api\/recruiting\b/.test(url);
           if (opts && (opts.method || '').toUpperCase() === 'POST' && isLeadPost &&
               typeof opts.body === 'string' && opts.body.charAt(0) === '{') {
