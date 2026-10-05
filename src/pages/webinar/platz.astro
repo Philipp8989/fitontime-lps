@@ -1,8 +1,8 @@
 ---
 // Reset-Abend, nach der Anmeldung. Nach Vorlage Hardbeat:
 // 1. Kalender-Eintrag per Klick (hebt die Showrate).
-// 2. Hot-Seat-Fragebogen: 30 bis 40 % füllen ihn aus. Zeigt pro Ad, ob die richtigen Frauen kommen,
-//    und gibt den Settern Futter (Ziel, Stand, Bereitschaft). Landet im Tab "Hot-Seat".
+// 2. Fragebogen (gibt die 14-Tage-Checkliste): zeigt pro Ad, ob die richtigen Frauen kommen,
+//    und gibt den Settern Futter (Ziel, Stand, Bereitschaft). Landet im Sheet "Hot-Seat" (Name historisch).
 import '../../styles/bauchfett.css';
 import '../../styles/webinar.css';
 import CookieBanner from '../../components/CookieBanner.astro';
@@ -18,7 +18,7 @@ const gcal = googleCalUrl();
 const FRAGEN = [
   { k: 'alter', q: 'Wie alt bist du?', a: ['Unter 35', '35 bis 44', '45 bis 54', '55 oder älter'] },
   { k: 'ziel', q: 'Wie viel möchtest du abnehmen?', a: ['Bis 5 kg', '5 bis 10 kg', '10 bis 20 kg', 'Über 20 kg', 'Mir geht es um Energie'] },
-  { k: 'bremse', q: 'Was spürst du am meisten?', a: ['Ich esse wenig und nehme trotzdem nicht ab', 'Ich bin dauernd gestresst und schlafe schlecht', 'Ich bin abends völlig leer', 'Seit den Wechseljahren geht nichts mehr'] },
+  { k: 'bremse', q: 'Was spürst du am meisten?', a: ['Ich esse wenig und nehme trotzdem nicht ab', 'Ich bin kurz satt und schnell wieder hungrig', 'Ich bin dauernd gestresst und schlafe schlecht', 'Ich bin abends völlig leer', 'Seit den Wechseljahren geht nichts mehr'] },
   { k: 'probiert', q: 'Was hast du schon probiert?', a: ['Kalorien zählen', 'Sport', 'Shakes oder Apps', 'Abnehmspritze', 'Alles davon'] },
   { k: 'bereit', q: 'Wenn der Weg passt: Bist du bereit, die nächsten 6 Monate in dich zu investieren?', a: ['Ja, ich will das jetzt angehen', 'Vielleicht, ich will erst verstehen', 'Nein, ich schaue nur'] },
 ];
@@ -59,7 +59,7 @@ const FRAGEN = [
         <ol class="steps-done">
           <li class="ok">Anmeldung bestätigt. Die Mail mit dem Zugang ist unterwegs.</li>
           <li>Kalender-Eintrag setzen. Ein Klick oben.</li>
-          <li>Fragebogen unten ausfüllen. Dann bekommst du vorab die 14-Tage-Checkliste und kannst dich für einen der drei Live-Fälle bewerben.</li>
+          <li>Fragebogen unten ausfüllen. Dann bekommst du vorab die 14-Tage-Checkliste.</li>
         </ol>
       </div>
     </div>
@@ -69,8 +69,8 @@ const FRAGEN = [
     <div class="wrap">
       <div class="section-head">
         <p class="eyebrow">2 Minuten, freiwillig</p>
-        <h2>Willst du, dass wir deinen Fall <em>live anschauen?</em></h2>
-        <p class="lead">An dem Abend schaut Fabian bei drei Frauen genau hin: Welche Bremse ist zu, und was wäre ihr erster Schritt. Nur mit Vornamen. Füll dafür die fünf Fragen aus. Alle, die mitmachen, bekommen vorab die 14-Tage-Checkliste "3 Bremsen lösen" per Mail.</p>
+        <h2>Hol dir vorab deine <em>14-Tage-Checkliste.</em></h2>
+        <p class="lead">Beantworte die fünf Fragen. Dann schicken wir dir vorab die 14-Tage-Checkliste "4 Bremsen lösen" per Mail.</p>
       </div>
 
       <form class="hs" id="hsForm" novalidate>
@@ -88,19 +88,13 @@ const FRAGEN = [
           <label for="wunsch">Was soll bis Weihnachten anders sein? In einem Satz.</label>
           <textarea id="wunsch" maxlength="500" placeholder="Zum Beispiel: Ich will morgens wieder mit Energie aufwachen."></textarea>
         </div>
-        <div class="hs-q">
-          <div class="cb-row" style="margin:0;max-width:none;">
-            <input type="checkbox" id="live" />
-            <label for="live" style="font-size:0.9rem;color:var(--ink-soft);">Ja, ich bewerbe mich für einen der drei Live-Fälle. Ihr nennt mich nur mit Vornamen.</label>
-          </div>
-        </div>
         <p class="form-err" id="hsErr" role="alert" hidden style="margin:0 0 1rem;max-width:none;"></p>
         <button class="btn btn--primary btn--block" id="hsBtn" type="submit">Absenden und Checkliste holen <span class="btn-arrow">&rarr;</span></button>
       </form>
 
       <div class="hs-done" id="hsDone" hidden>
         <h2>Danke. <em>Wir haben alles.</em></h2>
-        <p class="lead">Die Checkliste kommt per Mail. Wenn du für einen Live-Fall ausgewählt wirst, melden wir uns vorher bei dir.</p>
+        <p class="lead">Die Checkliste kommt per Mail.</p>
       </div>
     </div>
   </section>
@@ -153,7 +147,6 @@ const FRAGEN = [
         return;
       }
       answers.wunsch = document.getElementById('wunsch').value.trim().slice(0, 500);
-      answers.live = document.getElementById('live').checked ? 'Ja' : 'Nein';
       var btn = document.getElementById('hsBtn');
       btn.disabled = true;
       btn.textContent = 'Wird gesendet';
