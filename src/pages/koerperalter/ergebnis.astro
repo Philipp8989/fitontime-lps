@@ -1,8 +1,10 @@
 ---
 // Funnel "Körperalter-Test", Schritt 2: Körperalter + die zwei grössten Treiber.
 // Profil aus sessionStorage (fot_ka_profile). Kein Kalender: es zählt nur der Lead.
-// Variante a: die Setter rufen an. Variante b (wa im Profil): das Ergebnis kommt per WhatsApp,
-// die Seite zeigt es erst nach Klick auf den Ausweich-Link (falls die Nachricht nicht ankommt).
+// Variante a: die Setter rufen an. Variante b (wa im Profil): verschwommene Karte plus Button,
+// der WhatsApp mit vorausgefüllter Nachricht samt Code öffnet. Der Bot antwortet sofort mit der
+// Karte (fot-bot app/intake/karte.py). Wer nicht schreibt, bekommt sie nach 20 Min als Template.
+// Ausweich-Link zeigt das Ergebnis direkt auf der Seite.
 import '../../styles/bauchfett.css';
 import CookieBanner from '../../components/CookieBanner.astro';
 import ScaleeeCredit from '../../components/ScaleeeCredit.astro';
@@ -44,6 +46,12 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
     .wa-sent { padding: 2.5rem 0 2rem; }
     .wa-sent h1 { font-family: 'Fraunces', serif; font-weight: 400; font-size: clamp(2.2rem, 8vw, 3.4rem); line-height: 1.05; margin: 0.5rem 0 1rem; text-wrap: balance; }
     .wa-sent p { max-width: 60ch; text-wrap: pretty; }
+    .wa-card { position: relative; margin: 1.5rem 0 1.25rem; max-width: 420px; border: 1px solid rgba(176,138,82,0.5); border-radius: 8px; overflow: hidden; background: #f7f2e9; }
+    .wa-card img { display: block; width: 100%; height: 260px; object-fit: cover; object-position: top; filter: blur(6px); transform: scale(1.04); }
+    .wa-btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.6rem; width: 100%; max-width: 420px; min-height: 56px; padding: 0 1.25rem; border-radius: 999px; background: #211c17; color: #fffdf9; font-weight: 600; text-decoration: none; transition: background 150ms; }
+    .wa-btn:hover, .wa-btn:focus-visible { background: #b08a52; }
+    .wa-btn svg { width: 22px; height: 22px; flex: none; }
+    .wa-sent .after { margin-top: 0.9rem; font-size: 0.9rem; opacity: 0.75; }
     .wa-sent .reveal { margin-top: 1.5rem; background: none; border: 0; padding: 0; font: inherit; text-decoration: underline; cursor: pointer; color: inherit; opacity: 0.75; }
     html.wa .ka-result { display: none; }
     html:not(.wa) .wa-sent { display: none; }
@@ -60,9 +68,15 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
   <section class="wa-sent">
     <div class="wrap">
       <p class="eyebrow">Fast geschafft, <span id="w-name">du</span></p>
-      <h1>Deine Karte ist unterwegs auf WhatsApp.</h1>
-      <p>Schau in den nächsten Minuten in dein WhatsApp. Dort bekommst du dein Körperalter, wie viele Jahre du zurückholen kannst und deine ersten 14 Tage. Wenn du auf die Nachricht antwortest, zeigt dir Sarah, wie du diese Woche anfängst.</p>
-      <button class="reveal" type="button" id="w-reveal">Nichts bekommen? Ergebnis hier ansehen</button>
+      <h1>Deine Karte ist bereit.</h1>
+      <p>Dein Körperalter, wie viele Jahre du zurückholen kannst und deine ersten 14 Tage. Tipp auf den Button, die Nachricht ist schon geschrieben. Du musst sie nur absenden, dann schickt dir Sarah deine Karte.</p>
+      <div class="wa-card"><img id="w-karte" alt="" width="1080" height="1350" /></div>
+      <a class="wa-btn" id="w-btn" href="https://wa.me/41799288508" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3a.4.4 0 0 0 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .2-1.3c-.1-.1-.3-.2-.5-.3z"/></svg>
+        Karte auf WhatsApp holen
+      </a>
+      <p class="after">Kein WhatsApp zur Hand? Dann schicken wir sie dir in 20 Minuten an deine Nummer.</p>
+      <button class="reveal" type="button" id="w-reveal">Lieber gleich hier ansehen</button>
     </div>
   </section>
 
@@ -129,7 +143,13 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
     if (P.wa) {
       document.documentElement.classList.add('wa');
       document.getElementById('w-name').textContent = P.name || 'du';
-      document.getElementById('r-next').textContent = 'Sarah hat dir auf WhatsApp geschrieben. Antworte ihr, dann gehst du dein Ergebnis mit ihr durch. Kostenlos.';
+      document.getElementById('r-next').textContent = 'Hol dir deine Karte oben auf WhatsApp. Sarah zeigt dir dort, wie du diese Woche anfängst. Kostenlos.';
+      var msg = 'Hoi, ich möchte meine Körperalter-Karte' + (P.code ? ' (Code K' + P.code + ')' : '');
+      var btn = document.getElementById('w-btn');
+      btn.href = 'https://wa.me/41799288508?text=' + encodeURIComponent(msg);
+      btn.addEventListener('click', function () { tk('wa_click', { detail: 'plus_' + over }); });
+      var qs = ['q1', 'q2', 'q3', 'q4', 'q5', 'q6'].map(function (k) { return k + '=' + encodeURIComponent(P[k] || ''); }).join('&');
+      document.getElementById('w-karte').src = '/api/koerperalter-karte.png?n=' + encodeURIComponent(P.name || '') + '&' + qs;
       document.getElementById('w-reveal').addEventListener('click', function () {
         document.documentElement.classList.remove('wa');
         tk('wa_fallback_reveal', { detail: 'plus_' + over });

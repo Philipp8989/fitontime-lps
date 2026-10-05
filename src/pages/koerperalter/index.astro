@@ -247,7 +247,7 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
           <li><b>3</b><span>Deine ersten 14 Tage: drei konkrete Schritte für deinen Alltag</span></li>
         </ul>
         <p class="sub va">Trag dich ein und du siehst dein Körperalter sofort.</p>
-        <p class="sub vb">Trag dich ein, die Karte kommt sofort per WhatsApp. Kostenlos.</p>
+        <p class="sub vb">Trag dich ein und hol dir deine Karte direkt auf WhatsApp. Kostenlos.</p>
         <div class="fields">
           <div class="field"><input type="text" id="fn" placeholder="Dein Vor- und Nachname" autocomplete="name" required /></div>
           <div class="field"><span class="pre">+41</span><input type="tel" id="ph" placeholder="Deine Handynummer" autocomplete="tel" required /></div>
@@ -255,7 +255,7 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
         </div>
         <p class="form-err" id="formErr" role="alert" hidden></p>
         <p class="form-hint va">Deine Handynummer brauchen wir, damit wir dich kurz anrufen und dein Ergebnis mit dir durchgehen können. Kostenlos.</p>
-        <p class="form-hint vb">An diese Nummer schicken wir dir deine Karte per WhatsApp.</p>
+        <p class="form-hint vb">Falls du sie nicht gleich abholst, schicken wir sie dir an diese Nummer.</p>
         <div class="cb-row" id="dsRow">
           <input type="checkbox" id="ds" />
           <label for="ds" class="va">Ich akzeptiere die <a href={datenschutzUrl} target="_blank">Datenschutzbestimmungen</a> und Fit on Time darf mich zu meinem Ergebnis anrufen.</label>
@@ -273,7 +273,7 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
     var LP_NAME = 'Körperalter-Test';
     var VARIANT = window.__variant === 'b' ? 'b' : 'a';
     var WA = VARIANT === 'b';
-    var BTN_HTML = (WA ? 'Meine Karte auf WhatsApp erhalten' : 'Mein Körperalter ansehen') + ' <span class="btn-arrow">&rarr;</span>';
+    var BTN_HTML = (WA ? 'Weiter zu meiner Karte' : 'Mein Körperalter ansehen') + ' <span class="btn-arrow">&rarr;</span>';
     document.getElementById('sbtn').innerHTML = BTN_HTML;
     var TOTAL = 7;
     var quizAnswers = {};
@@ -345,6 +345,13 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
       // Variante b: nur der Bot, die Setter rufen nicht an (steht so im Sheet).
       quizAnswers.setter_prio = WA ? 'WhatsApp-Bot, nicht anrufen' : (big ? 'hoch' : 'normal');
       quizAnswers.lp_variant = VARIANT;
+      // Code für die vorausgefüllte WhatsApp-Nachricht, damit der Bot sie findet.
+      // Ohne 0/O und 1/I, mindestens eine Ziffer (Bot: app/intake/karte.py).
+      if (WA) {
+        var AL = 'ABCDEFGHJKLMNPQRSTUVWXYZ', DG = '23456789', c = DG.charAt(Math.floor(Math.random() * DG.length));
+        for (var i = 0; i < 3; i++) { var pool = AL + DG; c += pool.charAt(Math.floor(Math.random() * pool.length)); }
+        quizAnswers.ka_code = c.split('').sort(function () { return Math.random() - 0.5; }).join('');
+      }
       tk('quiz_complete', { detail: 'plus_' + over });
       show('ld');
       document.getElementById('qf').style.width = '100%';
@@ -432,7 +439,7 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
         try {
           sessionStorage.setItem('fot_ka_profile', JSON.stringify({
             name: (fn.split(' ')[0] || '').trim() || 'Du',
-            wa: WA,
+            wa: WA, code: quizAnswers.ka_code || '', q1: quizAnswers.q1,
             real: quizAnswers.real_age, ka: quizAnswers.koerperalter, over: quizAnswers.jahre_drueber,
             q2: quizAnswers.q2, q3: quizAnswers.q3, q4: quizAnswers.q4, q5: quizAnswers.q5, q6: quizAnswers.q6
           }));
