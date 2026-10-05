@@ -170,13 +170,15 @@ SHEETS['bauchfett'] = {
   },
 };
 
-// Körperalter-Test (Mechanik vom Longevity-Bioalter-Test, fürs Abnehm-Coaching). Kein Bot.
+// Körperalter-Test (Mechanik vom Longevity-Bioalter-Test, fürs Abnehm-Coaching).
+// A/B seit 05.10.2026: Variante a rufen die Setter an, Variante b geht nur an den WhatsApp-Bot
+// (Setter-Prio "WhatsApp-Bot, nicht anrufen").
 // Sheet "FitonTime Körperalter Leads" (Owner Philipp, mit leads-writer@ geteilt). Header: Datum |
 // Vorname | Nachname | E-Mail | Telefon | Setter-Prio | Alter | Körperalter | Jahre drüber |
-// Abnehmziel | Energie | Muskeltraining | Bauch | Schlaf | Zucker/Snacks
+// Abnehmziel | Energie | Muskeltraining | Bauch | Schlaf | Zucker/Snacks | Variante
 SHEETS['koerperalter'] = {
   id: '1NfGgtGLwVRqThQ3GtUGrBtnHuFbHLENkx3mnr0pYYC0',
-  range: 'Leads!A:O',
+  range: 'Leads!A:P',
   buildRow: (datum, d) => {
     const a = d.answers || {};
     const parts = (d.name || '').trim().split(/\s+/);
@@ -184,7 +186,8 @@ SHEETS['koerperalter'] = {
     const nachname = parts.slice(1).join(' ') || '';
     return [datum, vorname, nachname, d.email, d.phone || '', a.setter_prio || '',
       a.q1_label || '', a.koerperalter ?? '', a.jahre_drueber ?? '', a.q7_label || '',
-      a.q2_label || '', a.q3_label || '', a.q4_label || '', a.q5_label || '', a.q6_label || ''];
+      a.q2_label || '', a.q3_label || '', a.q4_label || '', a.q5_label || '', a.q6_label || '',
+      a.lp_variant || 'a'];
   },
 };
 

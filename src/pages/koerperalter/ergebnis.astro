@@ -1,6 +1,8 @@
 ---
 // Funnel "Körperalter-Test", Schritt 2: Körperalter + die zwei grössten Treiber.
-// Profil aus sessionStorage (fot_ka_profile). Kein Kalender: es zählt nur der Lead, die Setter rufen an.
+// Profil aus sessionStorage (fot_ka_profile). Kein Kalender: es zählt nur der Lead.
+// Variante a: die Setter rufen an. Variante b (wa im Profil): das Ergebnis kommt per WhatsApp,
+// die Seite zeigt es erst nach Klick auf den Ausweich-Link (falls die Nachricht nicht ankommt).
 import '../../styles/bauchfett.css';
 import CookieBanner from '../../components/CookieBanner.astro';
 import ScaleeeCredit from '../../components/ScaleeeCredit.astro';
@@ -21,6 +23,10 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href={FONTS} rel="stylesheet" />
+  <script is:inline>
+    // Variante b schon im Head setzen, sonst blitzt das Ergebnis kurz auf
+    try { if ((JSON.parse(sessionStorage.getItem('fot_ka_profile') || 'null') || {}).wa) document.documentElement.classList.add('wa'); } catch (e) {}
+  </script>
   <style>
     .big { font-family: 'Fraunces', serif; font-size: clamp(4.5rem, 20vw, 8rem); line-height: 0.95; font-variant-numeric: tabular-nums; margin: 0.5rem 0 0.25rem; }
     .big small { font-size: 0.3em; }
@@ -35,6 +41,12 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
     .driver p { margin: 0.25rem 0 0; }
     .call { margin-top: 1.5rem; padding: 1.25rem; border-left: 2px solid #b08a52; background: rgba(176,138,82,0.08); }
     .call p + p { margin-top: 0.6rem; }
+    .wa-sent { padding: 2.5rem 0 2rem; }
+    .wa-sent h1 { font-family: 'Fraunces', serif; font-weight: 400; font-size: clamp(2.2rem, 8vw, 3.4rem); line-height: 1.05; margin: 0.5rem 0 1rem; text-wrap: balance; }
+    .wa-sent p { max-width: 60ch; text-wrap: pretty; }
+    .wa-sent .reveal { margin-top: 1.5rem; background: none; border: 0; padding: 0; font: inherit; text-decoration: underline; cursor: pointer; color: inherit; opacity: 0.75; }
+    html.wa .ka-result { display: none; }
+    html:not(.wa) .wa-sent { display: none; }
   </style>
 </head>
 <body>
@@ -45,7 +57,16 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
     </div>
   </div>
 
-  <section class="result-hero">
+  <section class="wa-sent">
+    <div class="wrap">
+      <p class="eyebrow">Fast geschafft, <span id="w-name">du</span></p>
+      <h1>Dein Körperalter ist unterwegs auf WhatsApp.</h1>
+      <p>Schau in den nächsten Minuten in dein WhatsApp. Dort bekommst du dein Körperalter und was es gerade am meisten hochzieht. Wenn du auf die Nachricht antwortest, sagt dir Sarah, was du als Erstes ändern kannst.</p>
+      <button class="reveal" type="button" id="w-reveal">Nichts bekommen? Ergebnis hier ansehen</button>
+    </div>
+  </section>
+
+  <section class="result-hero ka-result">
     <div class="wrap">
       <p class="eyebrow">Auswertung für <span id="r-name">dich</span></p>
       <p style="margin-top:1rem;">Dein Körperalter:</p>
@@ -59,13 +80,13 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
     </div>
   </section>
 
-  <section class="section" style="padding-top:1.5rem;">
+  <section class="section ka-result" style="padding-top:1.5rem;">
     <div class="wrap">
       <p class="eyebrow">Das treibt dein Körperalter gerade hoch</p>
       <div class="drivers" id="drivers"></div>
       <div class="call">
         <p><strong>Wie geht es weiter?</strong></p>
-        <p>Wir rufen dich in den nächsten Tagen kurz an. Kostenlos. Wir gehen dein Ergebnis mit dir durch und sagen dir, was du als Erstes ändern kannst.</p>
+        <p id="r-next">Wir rufen dich in den nächsten Tagen kurz an. Kostenlos. Wir gehen dein Ergebnis mit dir durch und sagen dir, was du als Erstes ändern kannst.</p>
       </div>
     </div>
   </section>
@@ -94,16 +115,27 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
     function tk(e, d) {
       var tries = 0;
       (function fire() {
-        if (window.__lp) window.__lp.track(e, Object.assign({ page: LP_SLUG }, d || {}), 'fot', 'Körperalter-Test');
+        if (window.__lp) window.__lp.track(e, Object.assign({ page: LP_SLUG, variant: VARIANT }, d || {}), 'fot', 'Körperalter-Test');
         else if (tries++ < 40) setTimeout(fire, 50);
       })();
     }
-    tk('page_view');
 
     var P = null;
     try { P = JSON.parse(sessionStorage.getItem('fot_ka_profile') || 'null'); } catch (e) {}
     if (!P) P = { name: 'dich', real: 47, ka: 53, over: 6, q2: 'loch', q3: 'nie', q4: 'etwas', q5: 'wach', q6: 'mittel' };
     var over = parseInt(P.over, 10) || 0;
+    var VARIANT = P.wa ? 'b' : 'a';
+    tk('page_view');
+    if (P.wa) {
+      document.documentElement.classList.add('wa');
+      document.getElementById('w-name').textContent = P.name || 'du';
+      document.getElementById('r-next').textContent = 'Sarah hat dir auf WhatsApp geschrieben. Antworte ihr, dann gehst du dein Ergebnis mit ihr durch. Kostenlos.';
+      document.getElementById('w-reveal').addEventListener('click', function () {
+        document.documentElement.classList.remove('wa');
+        tk('wa_fallback_reveal', { detail: 'plus_' + over });
+        window.scrollTo(0, 0);
+      });
+    }
 
     document.getElementById('r-name').textContent = P.name || 'dich';
     document.getElementById('r-ka').textContent = P.ka;
@@ -143,7 +175,7 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
       var p = document.createElement('p'); p.textContent = d.p;
       el.appendChild(b); el.appendChild(p); box.appendChild(el);
     });
-    tk('result_shown', { detail: 'plus_' + over });
+    tk(P.wa ? 'wa_sent_shown' : 'result_shown', { detail: 'plus_' + over });
   </script>
 
   <script is:inline src="https://t.hyros.com/v1/lst/universal-script?ph=689a71ca1ab3be1cb1caddbe6b7902a4ad2c51a228f4ec9ea7fef3123a705f63"></script>

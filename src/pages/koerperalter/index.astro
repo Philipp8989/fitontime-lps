@@ -2,7 +2,10 @@
 // Funnel "Körperalter-Test", Schritt 1: Landing + 7 Fragen + Opt-in.
 // Mechanik vom Longevity-Bioalter-Test übernommen, dem billigsten Lead im Konto
 // (90 Tage bis 26.09.2026: CPL 5.23 CHF, CPC 0.37). Hier fürs Abnehm-Coaching, Frauen 35 bis 60.
-// Ziel ist der billigste Lead mit gültiger Telefonnummer für die Setter. Kein WhatsApp-Bot.
+// Ziel ist der billigste Lead mit gültiger Telefonnummer für die Setter.
+// A/B-Test seit 05.10.2026: a = Setter rufen an, b = Ergebnis per WhatsApp, danach nur der Bot
+// (keine Setter). Messung: CPL je Variante plus Termine pro Lead. Variante steht im Sheet (Spalte P).
+// Schalter: PUBLIC_KA_WA_TEST=1 (erst setzen, wenn das Template koerperalter_ergebnis approved ist).
 // Das Alter ist der erste Klick (ersetzt den CTA), das Körperalter bleibt bis zum Opt-in verschwommen.
 // Design: neue fitontime.ch (Cream, Ink, Gold, Fraunces) wie /bauchfett. Pixel: Clean-Domain-Pixel.
 import '../../styles/bauchfett.css';
@@ -13,6 +16,8 @@ import ProofPaare from '../../components/ProofPaare.astro';
 const impressumUrl = 'https://fitontime.ch/impressum-datenschutz';
 const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
 const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').trim();
+// Ohne Schalter bekommt jede Variante a. ?v=b bleibt für QA möglich.
+const WA_TEST = (import.meta.env.PUBLIC_KA_WA_TEST || '').trim() === '1';
 const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..500,0..100;1,9..144,300..500,0..100&family=Albert+Sans:wght@400;500;600&display=swap';
 ---
 <html lang="de-CH">
@@ -25,7 +30,25 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href={FONTS} rel="stylesheet" />
+  <script is:inline define:vars={{ WA_TEST }}>
+    // 50/50 beim Erstbesuch, danach persistent. Eigener Schlüssel, damit sich der
+    // Test nicht mit dem Longevity-Test (fot_lp_variant) auf derselben Domain mischt.
+    var v = null;
+    try {
+      var q = new URLSearchParams(location.search).get('v');
+      if (q === 'a' || q === 'b') { v = q; localStorage.setItem('fot_ka_variant', v); }
+      else if (WA_TEST) v = localStorage.getItem('fot_ka_variant');
+    } catch (e) {}
+    if (v !== 'a' && v !== 'b') {
+      v = WA_TEST && Math.random() < 0.5 ? 'b' : 'a';
+      if (WA_TEST) { try { localStorage.setItem('fot_ka_variant', v); } catch (e) {} }
+    }
+    document.documentElement.setAttribute('data-variant', v);
+    window.__variant = v;
+  </script>
   <style>
+    html:not([data-variant="b"]) .vb { display: none !important; }
+    html[data-variant="b"] .va { display: none !important; }
     .age-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; margin-top: 1rem; }
     .age-grid .opt { text-align: center; }
     .compare { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid rgba(33,28,23,0.15); border-bottom: 1px solid rgba(33,28,23,0.15); margin-top: 1.5rem; }
@@ -209,19 +232,22 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
         <div class="tag">Auswertung fertig</div>
         <h2>Dein Körperalter <em>ist bereit.</em></h2>
         <div class="teaser"><div class="tl">Dein Körperalter</div><div class="tn"><span class="blur" id="f-age">52</span> Jahre</div></div>
-        <p class="sub">Trag dich ein und du siehst dein Körperalter sofort.</p>
+        <p class="sub va">Trag dich ein und du siehst dein Körperalter sofort.</p>
+        <p class="sub vb">Trag dich ein und du bekommst dein Körperalter sofort per WhatsApp.</p>
         <div class="fields">
           <div class="field"><input type="text" id="fn" placeholder="Dein Vor- und Nachname" autocomplete="name" required /></div>
           <div class="field"><span class="pre">+41</span><input type="tel" id="ph" placeholder="Deine Handynummer" autocomplete="tel" required /></div>
           <div class="field"><input type="email" id="em" placeholder="Deine E-Mail" autocomplete="email" required /></div>
         </div>
         <p class="form-err" id="formErr" role="alert" hidden></p>
-        <p class="form-hint">Deine Handynummer brauchen wir, damit wir dich kurz anrufen und dein Ergebnis mit dir durchgehen können. Kostenlos.</p>
+        <p class="form-hint va">Deine Handynummer brauchen wir, damit wir dich kurz anrufen und dein Ergebnis mit dir durchgehen können. Kostenlos.</p>
+        <p class="form-hint vb">An diese Nummer schicken wir dir dein Ergebnis per WhatsApp. Kostenlos.</p>
         <div class="cb-row" id="dsRow">
           <input type="checkbox" id="ds" />
-          <label for="ds">Ich akzeptiere die <a href={datenschutzUrl} target="_blank">Datenschutzbestimmungen</a> und Fit on Time darf mich zu meinem Ergebnis anrufen.</label>
+          <label for="ds" class="va">Ich akzeptiere die <a href={datenschutzUrl} target="_blank">Datenschutzbestimmungen</a> und Fit on Time darf mich zu meinem Ergebnis anrufen.</label>
+          <label for="ds" class="vb">Ich akzeptiere die <a href={datenschutzUrl} target="_blank">Datenschutzbestimmungen</a> und Fit on Time darf mir mein Ergebnis per WhatsApp schicken und mich dort dazu kontaktieren.</label>
         </div>
-        <button class="btn btn--primary btn--block" id="sbtn" onclick="send()">Mein Körperalter ansehen <span class="btn-arrow">&rarr;</span></button>
+        <button class="btn btn--primary btn--block" id="sbtn" onclick="send()"></button>
         <div class="form-proof">Deine Daten sind sicher und werden nicht weitergegeben.</div>
       </div>
 
@@ -231,6 +257,10 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
   <script is:inline>
     var LP_SLUG = 'koerperalter';
     var LP_NAME = 'Körperalter-Test';
+    var VARIANT = window.__variant === 'b' ? 'b' : 'a';
+    var WA = VARIANT === 'b';
+    var BTN_HTML = (WA ? 'Ergebnis auf WhatsApp erhalten' : 'Mein Körperalter ansehen') + ' <span class="btn-arrow">&rarr;</span>';
+    document.getElementById('sbtn').innerHTML = BTN_HTML;
     var TOTAL = 7;
     var quizAnswers = {};
     var points = 0;
@@ -250,7 +280,7 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
       var tries = 0;
       (function fire() {
         if (window.__lp) {
-          window.__lp.track(e, Object.assign({ page: LP_SLUG }, d || {}), 'fot', LP_NAME);
+          window.__lp.track(e, Object.assign({ page: LP_SLUG, variant: VARIANT }, d || {}), 'fot', LP_NAME);
           if (e === 'quiz_start') window.__lp.meta('ViewContent', { content_name: 'FoT Quiz Start', currency: 'CHF' });
           if (e === 'quiz_complete') window.__lp.meta('CompleteRegistration', { content_name: 'FoT Quiz Complete', currency: 'CHF' });
           if (e === 'lead_submit') window.__lp.meta('Lead', { content_name: 'FoT Lead', currency: 'CHF' });
@@ -298,7 +328,9 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
       quizAnswers.jahre_drueber = over;
       quizAnswers.koerperalter = quizAnswers.real_age + over;
       var big = quizAnswers.q7 === '10-20' || quizAnswers.q7 === '20+';
-      quizAnswers.setter_prio = big ? 'hoch' : 'normal';
+      // Variante b: nur der Bot, die Setter rufen nicht an (steht so im Sheet).
+      quizAnswers.setter_prio = WA ? 'WhatsApp-Bot, nicht anrufen' : (big ? 'hoch' : 'normal');
+      quizAnswers.lp_variant = VARIANT;
       tk('quiz_complete', { detail: 'plus_' + over });
       show('ld');
       document.getElementById('qf').style.width = '100%';
@@ -371,8 +403,8 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
           email: em,
           phone: ph,
           first_name: fn.split(' ')[0],
-          // Kein WhatsApp-Bot für diesen Funnel: die Setter rufen an.
-          wa_optin: false,
+          // Nur Variante b geht an den WhatsApp-Bot, a rufen die Setter an.
+          wa_optin: WA,
           answers: quizAnswers
         })
       }).then(function(res){
@@ -381,6 +413,7 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
         try {
           sessionStorage.setItem('fot_ka_profile', JSON.stringify({
             name: (fn.split(' ')[0] || '').trim() || 'Du',
+            wa: WA,
             real: quizAnswers.real_age, ka: quizAnswers.koerperalter, over: quizAnswers.jahre_drueber,
             q2: quizAnswers.q2, q3: quizAnswers.q3, q4: quizAnswers.q4, q5: quizAnswers.q5, q6: quizAnswers.q6
           }));
@@ -389,7 +422,7 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
         setTimeout(function(){ window.location.href = '/koerperalter/ergebnis/'; }, 250);
       }).catch(function(){
         btn.disabled = false;
-        btn.innerHTML = 'Mein Körperalter ansehen <span class="btn-arrow">&rarr;</span>';
+        btn.innerHTML = BTN_HTML;
         errEl.textContent = 'Etwas ist schiefgelaufen. Bitte nochmal versuchen.';
         errEl.hidden = false;
       });
