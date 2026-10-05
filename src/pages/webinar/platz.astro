@@ -1,0 +1,191 @@
+---
+// Reset-Abend, nach der Anmeldung. Nach Vorlage Hardbeat:
+// 1. Kalender-Eintrag per Klick (hebt die Showrate).
+// 2. Hot-Seat-Fragebogen: 30 bis 40 % füllen ihn aus. Zeigt pro Ad, ob die richtigen Frauen kommen,
+//    und gibt den Settern Futter (Ziel, Stand, Bereitschaft). Landet im Tab "Hot-Seat".
+import '../../styles/bauchfett.css';
+import '../../styles/webinar.css';
+import CookieBanner from '../../components/CookieBanner.astro';
+import FotWordmark from '../../components/FotWordmark.astro';
+import { WEBINAR, googleCalUrl } from '../../lib/webinar';
+const impressumUrl = 'https://fitontime.ch/impressum-datenschutz';
+const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
+const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').trim();
+const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..500,0..100;1,9..144,300..500,0..100&family=Albert+Sans:wght@400;500;600&display=swap';
+const gcal = googleCalUrl();
+
+// Fragebogen: Schlüssel, Frage, Antworten. Reihenfolge = Spalten im Tab "Hot-Seat".
+const FRAGEN = [
+  { k: 'alter', q: 'Wie alt bist du?', a: ['Unter 35', '35 bis 44', '45 bis 54', '55 oder älter'] },
+  { k: 'ziel', q: 'Wie viel möchtest du abnehmen?', a: ['Bis 5 kg', '5 bis 10 kg', '10 bis 20 kg', 'Über 20 kg', 'Mir geht es um Energie'] },
+  { k: 'bremse', q: 'Was spürst du am meisten?', a: ['Ich esse wenig und nehme trotzdem nicht ab', 'Ich bin dauernd gestresst und schlafe schlecht', 'Ich bin abends völlig leer', 'Seit den Wechseljahren geht nichts mehr'] },
+  { k: 'probiert', q: 'Was hast du schon probiert?', a: ['Kalorien zählen', 'Sport', 'Shakes oder Apps', 'Abnehmspritze', 'Alles davon'] },
+  { k: 'bereit', q: 'Wenn der Weg passt: Bist du bereit, die nächsten 6 Monate in dich zu investieren?', a: ['Ja, ich will das jetzt angehen', 'Vielleicht, ich will erst verstehen', 'Nein, ich schaue nur'] },
+];
+---
+<html lang="de-CH">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>{`Dein Platz ist reserviert | ${WEBINAR.titel}`}</title>
+  <link rel="icon" type="image/png" href="/images/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href={FONTS} rel="stylesheet" />
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <FotWordmark />
+      <span class="tag">Reset-Abend</span>
+    </div>
+  </div>
+
+  <section class="hero">
+    <div class="arc arc--hero"></div>
+    <div class="wrap">
+      <div class="ticket card">
+        <div class="card-head">
+          <div class="card-kicker" id="hi">Dein Platz ist reserviert</div>
+          <div class="card-date">27. <em>Oktober</em></div>
+          <div class="card-time">{WEBINAR.datumText} · {WEBINAR.zeitText}</div>
+        </div>
+        <p style="text-align:center;margin:0;">Trag den Abend jetzt in deinen Kalender ein. Dann vergisst du ihn nicht.</p>
+        <div class="cal-row">
+          <a class="btn btn--primary" href="/api/webinar.ics" id="calIcs">iPhone oder Outlook</a>
+          <a class="btn btn--outline" href={gcal} target="_blank" rel="noopener" id="calG">Google Kalender</a>
+        </div>
+        <ol class="steps-done">
+          <li class="ok">Anmeldung bestätigt. Die Mail mit dem Zugang ist unterwegs.</li>
+          <li>Kalender-Eintrag setzen. Ein Klick oben.</li>
+          <li>Fragebogen unten ausfüllen. Dann bekommst du vorab die 14-Tage-Checkliste und kannst dich für einen der drei Live-Fälle bewerben.</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--bright" id="hotseat">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">2 Minuten, freiwillig</p>
+        <h2>Willst du, dass wir deinen Fall <em>live anschauen?</em></h2>
+        <p class="lead">An dem Abend schaut Fabian bei drei Frauen genau hin: Welche Bremse ist zu, und was wäre ihr erster Schritt. Nur mit Vornamen. Füll dafür die fünf Fragen aus. Alle, die mitmachen, bekommen vorab die 14-Tage-Checkliste "3 Bremsen lösen" per Mail.</p>
+      </div>
+
+      <form class="hs" id="hsForm" novalidate>
+        {FRAGEN.map((f) => (
+          <fieldset class="hs-q">
+            <legend class="hs-l">{f.q}</legend>
+            <div class="chips">
+              {f.a.map((a) => (
+                <label class="chip"><input type="radio" name={f.k} value={a} /><span>{a}</span></label>
+              ))}
+            </div>
+          </fieldset>
+        ))}
+        <div class="hs-q">
+          <label for="wunsch">Was soll bis Weihnachten anders sein? In einem Satz.</label>
+          <textarea id="wunsch" maxlength="500" placeholder="Zum Beispiel: Ich will morgens wieder mit Energie aufwachen."></textarea>
+        </div>
+        <div class="hs-q">
+          <div class="cb-row" style="margin:0;max-width:none;">
+            <input type="checkbox" id="live" />
+            <label for="live" style="font-size:0.9rem;color:var(--ink-soft);">Ja, ich bewerbe mich für einen der drei Live-Fälle. Ihr nennt mich nur mit Vornamen.</label>
+          </div>
+        </div>
+        <p class="form-err" id="hsErr" role="alert" hidden style="margin:0 0 1rem;max-width:none;"></p>
+        <button class="btn btn--primary btn--block" id="hsBtn" type="submit">Absenden und Checkliste holen <span class="btn-arrow">&rarr;</span></button>
+      </form>
+
+      <div class="hs-done" id="hsDone" hidden>
+        <h2>Danke. <em>Wir haben alles.</em></h2>
+        <p class="lead">Die Checkliste kommt per Mail. Wenn du für einen Live-Fall ausgewählt wirst, melden wir uns vorher bei dir.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <footer>
+      <a href={impressumUrl} target="_blank" rel="noopener">Impressum</a> &middot;
+      <a href={datenschutzUrl} target="_blank" rel="noopener">Datenschutzerklärung</a>
+      <p class="fine">Der Reset-Abend erklärt Zusammenhänge und ersetzt keine medizinische Diagnose oder Behandlung.</p>
+    </footer>
+  </div>
+
+  <script is:inline>
+    var me = {};
+    try { me = JSON.parse(sessionStorage.getItem('fot_webinar') || '{}'); } catch (e) {}
+    if (me.name) document.getElementById('hi').textContent = me.name + ', dein Platz ist reserviert';
+
+    function tk(e, d) {
+      var tries = 0;
+      (function fire() {
+        if (window.__lp) window.__lp.track(e, Object.assign({ page: 'webinar-platz' }, d || {}), 'fot', 'Reset-Abend');
+        else if (tries++ < 40) setTimeout(fire, 50);
+      })();
+    }
+    tk('page_view');
+    document.getElementById('calIcs').addEventListener('click', function () { tk('kalender', { detail: 'ics' }); });
+    document.getElementById('calG').addEventListener('click', function () { tk('kalender', { detail: 'google' }); });
+
+    var KEYS = ['alter', 'ziel', 'bremse', 'probiert', 'bereit'];
+    document.getElementById('hsForm').addEventListener('submit', function (ev) {
+      ev.preventDefault();
+      var err = document.getElementById('hsErr');
+      err.hidden = true;
+      var answers = {};
+      var fehlt = 0;
+      KEYS.forEach(function (k) {
+        var el = document.querySelector('input[name="' + k + '"]:checked');
+        answers[k] = el ? el.value : '';
+        if (!el) fehlt++;
+      });
+      if (fehlt) {
+        err.textContent = fehlt === 1 ? 'Eine Frage fehlt noch.' : 'Es fehlen noch ' + fehlt + ' Fragen.';
+        err.hidden = false;
+        return;
+      }
+      // Ohne Anmeldung in dieser Sitzung (z. B. Link weitergeleitet) gibt es keinen Namen
+      if (!me.email || !me.full) {
+        err.textContent = 'Bitte melde dich zuerst für den Abend an.';
+        err.hidden = false;
+        return;
+      }
+      answers.wunsch = document.getElementById('wunsch').value.trim().slice(0, 500);
+      answers.live = document.getElementById('live').checked ? 'Ja' : 'Nein';
+      var btn = document.getElementById('hsBtn');
+      btn.disabled = true;
+      btn.textContent = 'Wird gesendet';
+      fetch('/api/sheets', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          lp_slug: 'webinar-hotseat',
+          lp_name: 'Reset-Abend Hot-Seat',
+          name: me.full, email: me.email, phone: me.phone || '',
+          answers: answers
+        })
+      }).then(function (res) {
+        if (!res.ok) throw new Error('fail');
+        tk('hotseat_submit', { detail: answers.bereit });
+        document.getElementById('hsForm').hidden = true;
+        document.getElementById('hsDone').hidden = false;
+      }).catch(function () {
+        btn.disabled = false;
+        btn.innerHTML = 'Absenden und Checkliste holen <span class="btn-arrow">&rarr;</span>';
+        err.textContent = 'Etwas ist schiefgelaufen. Bitte versuch es nochmal.';
+        err.hidden = false;
+      });
+    });
+  </script>
+
+  <CookieBanner
+    metaPixelId="1316450223953563"
+    googleAdsId={GOOGLE_ADS_ID}
+    consentKey="fot_webinar_consent"
+    impressumUrl={impressumUrl}
+    datenschutzUrl={datenschutzUrl}
+  />
+</body>
+</html>

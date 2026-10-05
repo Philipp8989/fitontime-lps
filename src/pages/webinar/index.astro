@@ -1,0 +1,379 @@
+---
+// Reset-Abend, Anmeldung. Zwei Wege:
+// 1. Ein-Klick aus der Mail: ?k=1&e=&n=&t=&q=mailN meldet ohne Formular an (Vorlage Hardbeat:
+//    jede Zwischenseite kostet 60 bis 70 % der Klicks). Danach sofort auf /webinar/platz/.
+// 2. Ads: Formular auf der Einladungskarte (Name, Mail, Handy für den Setter-Anruf vorab).
+import '../../styles/bauchfett.css';
+import '../../styles/webinar.css';
+import CookieBanner from '../../components/CookieBanner.astro';
+import ScaleeeCredit from '../../components/ScaleeeCredit.astro';
+import FotWordmark from '../../components/FotWordmark.astro';
+import { WEBINAR } from '../../lib/webinar';
+const impressumUrl = 'https://fitontime.ch/impressum-datenschutz';
+const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
+const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').trim();
+const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..500,0..100;1,9..144,300..500,0..100&family=Albert+Sans:wght@400;500;600&display=swap';
+---
+<html lang="de-CH">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="referrer" content="no-referrer" />
+  <title>{`${WEBINAR.titel}: live am ${WEBINAR.datumText} | Fit on Time`}</title>
+  <meta name="description" content={WEBINAR.untertitel} />
+  <link rel="icon" type="image/png" href="/images/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href={FONTS} rel="stylesheet" />
+  <script is:inline>
+    // Ein-Klick-Link: Seite sofort im Ladezustand zeigen, damit die Anmeldeseite nicht aufblitzt
+    if (/[?&]k=1\b/.test(location.search)) document.documentElement.classList.add('oc');
+  </script>
+  <style>
+    html.oc #lp { display: none; }
+    html:not(.oc) #oc { display: none; }
+  </style>
+</head>
+<body>
+
+  <!-- ===== EIN-KLICK ===== -->
+  <div id="oc" class="oneclick" aria-live="polite">
+    <div>
+      <div class="spinner"></div>
+      <h2 id="ocTitle">Dein Platz wird reserviert</h2>
+      <p id="ocText">Einen Moment, gleich bist du dabei.</p>
+    </div>
+  </div>
+
+  <!-- ===== ANMELDUNG ===== -->
+  <div id="lp">
+    <div class="wrap wrap--wide">
+      <div class="topbar">
+        <FotWordmark />
+        <span class="tag">Live-Abend · kostenlos</span>
+      </div>
+    </div>
+
+    <section class="hero">
+      <div class="arc arc--hero"></div>
+      <div class="wrap wrap--wide invite-grid">
+        <div>
+          <p class="eyebrow">Einladung zum Reset-Abend</p>
+          <h1>Dein Körper ist nicht faul. <em>Er hält fest.</em></h1>
+          <p class="lead">Du isst weniger, bewegst dich mehr, und trotzdem tut sich nichts. Das liegt selten an dir. Meist bremst etwas darunter: der Stoffwechsel, das Stresshormon Cortisol oder ein Nervensystem, das nie Pause hat.</p>
+          <p class="lead hide-sm">An diesem Abend zeigen wir dir live, welche der drei Bremsen bei dir zu ist. Und was du ab dem nächsten Morgen anders machst.</p>
+          <ul class="when">
+            <li>{WEBINAR.datumText}</li>
+            <li>{WEBINAR.zeitText}</li>
+            <li>Live online, vom Sofa aus</li>
+          </ul>
+        </div>
+
+        <div class="card" id="anmelden">
+          <div class="card-head">
+            <div class="card-kicker">Dein Platz am</div>
+            <div class="card-date">27. <em>Oktober</em></div>
+            <div class="card-time">Dienstag · 19:00 Uhr · kostenlos</div>
+          </div>
+          <div class="fields">
+            <div class="field"><input type="text" id="fn" placeholder="Vor- und Nachname" autocomplete="name" /></div>
+            <div class="field"><input type="email" id="em" placeholder="E-Mail" autocomplete="email" /></div>
+            <div class="field"><span class="pre">+41</span><input type="tel" id="ph" placeholder="Handynummer" autocomplete="tel" /></div>
+          </div>
+          <p class="form-err" id="formErr" role="alert" hidden></p>
+          <div class="cb-row" id="dsRow">
+            <input type="checkbox" id="ds" />
+            <label for="ds">Ich akzeptiere die <a href={datenschutzUrl} target="_blank" rel="noopener">Datenschutzbestimmungen</a> und bekomme den Zugang und die Erinnerungen per E-Mail.</label>
+          </div>
+          <div class="cb-row">
+            <input type="checkbox" id="wa" />
+            <label for="wa">Erinnert mich auch per WhatsApp. Und ruft mich kurz an, falls ich vorher eine Frage habe.</label>
+          </div>
+          <button class="btn btn--primary btn--block" id="sbtn" type="button">Platz reservieren <span class="btn-arrow">&rarr;</span></button>
+          <div class="card-foot">Nur Frauen. Kamera bleibt aus, niemand sieht dich.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Was du mitnimmst -->
+    <section class="section section--bright">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow">90 Minuten, drei Bremsen</p>
+          <h2>Das nimmst du an dem Abend <em>mit.</em></h2>
+        </div>
+        <ol class="agenda">
+          <li>
+            <span class="an">01</span>
+            <div>
+              <h3>Warum dein Stoffwechsel auf Sparflamme läuft</h3>
+              <p>Nach vielen Diäten verbraucht dein Körper weniger und hält fest. Das ist keine Willensschwäche. Das ist Anpassung. Wir zeigen dir, woran du das merkst und wie er wieder anspringt.</p>
+            </div>
+          </li>
+          <li>
+            <span class="an">02</span>
+            <div>
+              <h3>Was Cortisol mit deinem Bauch macht</h3>
+              <p>Cortisol ist dein Stresshormon. Ist es den ganzen Tag oben, bleibt dein Körper im Alarmmodus. Du schläfst schlechter, und er gibt kaum etwas her. Du lernst zwei Dinge, die es abends runterholen.</p>
+            </div>
+          </li>
+          <li>
+            <span class="an">03</span>
+            <div>
+              <h3>Warum dein Nervensystem zuerst dran ist</h3>
+              <p>Ohne Erholung wirken Essen und Bewegung nicht. Wir zeigen dir, wie du merkst, ob dein Nervensystem im Schutzmodus steckt. Und warum das gerade rund um die Wechseljahre so oft passiert.</p>
+            </div>
+          </li>
+          <li>
+            <span class="an">04</span>
+            <div>
+              <h3>Live dabei: eine Kundin erzählt</h3>
+              <p>Sie war genau da, wo du jetzt bist. Du kannst ihr deine Fragen direkt stellen. Und drei Frauen aus der Runde bekommen ihren Fall live angeschaut.</p>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- Gastgeber -->
+    <section class="section section--ink">
+      <div class="wrap wrap--wide">
+        <div class="section-head">
+          <p class="eyebrow">Deine Gastgeber</p>
+          <h2>Seit 2016 über 4'000 Frauen <em>begleitet.</em></h2>
+        </div>
+        <div class="hosts">
+          <div class="host">
+            <div class="hn">Fabian Osterwalder</div>
+            <div class="hr">Gründer · Leitender Coach</div>
+            <p>Fabian steht für die messbare Seite. Er zeigt dir, was Werte wie Ruheumsatz und Fettverbrennung über deinen Körper verraten. In Klartext, nicht in Fachsprache.</p>
+          </div>
+          <div class="host">
+            <div class="hn">Filip Mursic</div>
+            <div class="hr">Gründer · Operative Leitung</div>
+            <p>Filip steht für das, was keine Messung zeigt. Für ihn beginnt Veränderung, wenn eine Frau aufhört, gegen sich selbst zu arbeiten.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Kundinnen -->
+    <section class="section">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow">Frauen, die den Weg gegangen sind</p>
+          <h2>Es geht. Auch nach <em>allem, was du schon probiert hast.</em></h2>
+        </div>
+        <div class="voices">
+          <div class="voice"><q>Ich hätte nie gedacht, dass ich mal so begeistert sein werde.</q><div class="vw"><b>Coco</b>, Floristin · −16,3 kg, Grösse 46 auf 40</div></div>
+          <div class="voice"><q>Ich glaube an mich und ich weiss, dass ich das schaffe.</q><div class="vw"><b>Rahel</b> · −12,7 kg, von 80 auf 67,3 kg</div></div>
+          <div class="voice"><q>Ich habe mich verstanden gefühlt.</q><div class="vw"><b>Milli</b>, Krebsforschung · −11,5 kg</div></div>
+        </div>
+        <p class="fine-note">Google 4,8 Sterne aus 567 Rezensionen · Trustpilot 4,4 aus 208 Bewertungen (Stand September 2026). Ergebnisse sind individuell.</p>
+      </div>
+    </section>
+
+    <!-- Für wen -->
+    <section class="section section--sand">
+      <div class="wrap wrap--wide">
+        <div class="section-head">
+          <p class="eyebrow">Ehrlich gesagt</p>
+          <h2>Der Abend ist <em>nicht für alle.</em></h2>
+        </div>
+        <div class="fit">
+          <div>
+            <h3>Komm, wenn …</h3>
+            <ul>
+              <li>du zwischen 35 und 60 bist und spürst, dass deine Energie nicht mehr mitkommt.</li>
+              <li>du schon vieles probiert hast und dein Körper nicht mehr so reagiert wie früher.</li>
+              <li>du wissen willst, was bei dir wirklich bremst. Statt die nächste Methode zu testen, die vier Wochen hält.</li>
+            </ul>
+          </div>
+          <div>
+            <h3>Bleib lieber weg, wenn …</h3>
+            <ul>
+              <li>du einen Quick-Fix suchst. Den haben wir nicht.</li>
+              <li>du nur einen Ernährungsplan willst. Den gibt es an dem Abend nicht.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="section section--bright">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow">Kurz gefragt</p>
+          <h2>Bevor du dich <em>anmeldest.</em></h2>
+        </div>
+        <div class="faq">
+          <details><summary>Kostet der Abend etwas?</summary><p>Nein. Der Reset-Abend ist kostenlos. Am Ende kannst du ein kostenloses Erstgespräch buchen, wenn du willst. Musst du nicht.</p></details>
+          <details><summary>Sieht mich jemand?</summary><p>Nein. Deine Kamera bleibt aus. Du kannst im Chat Fragen stellen, mit Vornamen oder anonym.</p></details>
+          <details><summary>Was brauche ich?</summary><p>Ein Handy, Tablet oder Laptop mit Internet. Den Link bekommst du per Mail. Installieren musst du nichts.</p></details>
+          <details><summary>Gibt es eine Aufzeichnung?</summary><p>Ja, für 24 Stunden. Plane den Abend trotzdem live ein. Nur live kannst du Fragen stellen, und nur live werden die drei Fälle angeschaut.</p></details>
+          <details><summary>Ersetzt das eine ärztliche Abklärung?</summary><p>Nein. Wir erklären, was im Körper passiert. Bei Beschwerden geh bitte zu deiner Ärztin oder deinem Arzt.</p></details>
+        </div>
+        <div style="margin-top:2rem;max-width:28rem;">
+          <a class="btn btn--primary btn--block" href="#anmelden">Platz für den 27. Oktober reservieren <span class="btn-arrow">&rarr;</span></a>
+        </div>
+      </div>
+    </section>
+
+    <div class="wrap">
+      <footer>
+        <a href={impressumUrl} target="_blank" rel="noopener">Impressum</a> &middot;
+        <a href={datenschutzUrl} target="_blank" rel="noopener">Datenschutzerklärung</a>
+        <p class="fine">Der Reset-Abend erklärt Zusammenhänge und ersetzt keine medizinische Diagnose oder Behandlung. Ergebnisse sind individuell und hängen von Ausgangslage und Mitarbeit ab.</p>
+        <div style="margin-top:10px;text-align:center;"><ScaleeeCredit /></div>
+      </footer>
+    </div>
+  </div>
+
+  <script is:inline>
+    var PAGE = 'webinar';
+    var params = new URLSearchParams(location.search);
+    var oneClick = params.get('k') === '1';
+    var quelle = (params.get('q') || '').slice(0, 40);
+
+    // Personendaten aus der Ein-Klick-URL sofort aus der Adresszeile nehmen (Verlauf, Screenshots)
+    if (oneClick) {
+      try { history.replaceState(null, '', location.pathname + (quelle ? '?q=' + encodeURIComponent(quelle) : '')); } catch (e) {}
+    }
+
+    function tk(e, d, pixel) {
+      var tries = 0;
+      function fire() {
+        if (window.__lp) {
+          window.__lp.track(e, Object.assign({ page: PAGE }, d || {}), 'fot', 'Reset-Abend');
+          // Pixel-Lead nur für Anmeldungen über die Seite. Ein-Klick aus der Mail kommt nicht aus
+          // einer Ad und würde Metas Optimierung und den CPL im Werbeanzeigenmanager verfälschen.
+          if (pixel && e === 'lead_submit') {
+            window.__lp.meta('Lead', { content_name: 'FoT Webinar', currency: 'CHF' });
+            window.__lp.google('generate_lead', 'TnugCP-6zeIcEOfryccD');
+          }
+        } else if (tries++ < 40) {
+          setTimeout(fire, 50);
+        }
+      }
+      fire();
+    }
+
+    // Gleiche Regeln wie src/lib/phone.ts und src/lib/leadValidation.ts (Server prüft nochmal)
+    function normalizePhone(raw) {
+      var c = (raw || '').replace(/[^\d+]/g, '');
+      if (!c) return '';
+      if (c.indexOf('00') === 0) c = '+' + c.slice(2);
+      if (c.charAt(0) !== '+') c = c.charAt(0) === '0' ? '+41' + c.slice(1) : '+41' + c;
+      if (c.indexOf('+410') === 0) c = '+41' + c.slice(4);
+      return c;
+    }
+    function validName(n) { return n.length <= 80 && !/[\d@]/.test(n) && (n.match(/\p{L}/gu) || []).length >= 2; }
+    function validEmail(e) { return e.length <= 254 && /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i.test(e); }
+    function validPhone(p) {
+      if (!/^\+\d+$/.test(p)) return false;
+      if (p.indexOf('+41') === 0) return /^\+41[2-9]\d{8}$/.test(p);
+      return p.length - 1 >= 10 && p.length - 1 <= 15;
+    }
+
+    function register(lead, viaOneClick) {
+      return fetch('/api/sheets', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          lp_slug: 'webinar',
+          lp_name: 'Reset-Abend',
+          name: lead.name,
+          email: lead.email,
+          phone: lead.phone,
+          first_name: lead.name.split(' ')[0],
+          oneclick: viaOneClick,
+          wa_ok: !!lead.wa,
+          answers: { quelle: viaOneClick ? (quelle || 'mail') : (quelle || 'seite') }
+        })
+      }).then(function (res) {
+        if (!res.ok) throw new Error('insert-failed');
+        tk('lead_submit', { detail: viaOneClick ? 'oneclick' : 'formular' }, !viaOneClick);
+        try {
+          sessionStorage.setItem('fot_webinar', JSON.stringify({
+            name: lead.name.split(' ')[0] || '', full: lead.name, email: lead.email, phone: lead.phone
+          }));
+        } catch (e) {}
+        setTimeout(function () { location.href = '/webinar/platz/'; }, 250);
+      });
+    }
+
+    // Formular: Ein-Klick hat nicht geklappt oder Besuch über eine Ad
+    function showForm(prefill) {
+      document.documentElement.classList.remove('oc');
+      if (prefill) {
+        if (prefill.name) document.getElementById('fn').value = prefill.name;
+        if (prefill.email) document.getElementById('em').value = prefill.email;
+        if (prefill.phone) document.getElementById('ph').value = prefill.phone.replace(/^\+41/, '0');
+        document.getElementById('anmelden').scrollIntoView({ block: 'center' });
+      }
+    }
+
+    if (oneClick) {
+      var lead = {
+        name: (params.get('n') || '').trim(),
+        email: (params.get('e') || '').trim(),
+        phone: normalizePhone(params.get('t') || '')
+      };
+      if (lead.phone && !validPhone(lead.phone)) lead.phone = '';
+      tk('page_view', { detail: 'oneclick' });
+      if (validName(lead.name) && validEmail(lead.email)) {
+        register(lead, true).catch(function () { showForm(lead); });
+      } else {
+        // Mail-Tool hat den Vornamen nicht eingesetzt: Formular mit dem, was da ist
+        showForm(lead);
+      }
+    } else {
+      tk('page_view');
+    }
+
+    document.getElementById('sbtn').addEventListener('click', function () {
+      var fnEl = document.getElementById('fn'), emEl = document.getElementById('em'), phEl = document.getElementById('ph');
+      var fn = fnEl.value.trim(), em = emEl.value.trim(), ph = normalizePhone(phEl.value);
+      var errEl = document.getElementById('formErr');
+      [fnEl, emEl, phEl].forEach(function (el) { el.parentElement.classList.remove('err'); el.removeAttribute('aria-invalid'); });
+      errEl.hidden = true;
+      var bad = [];
+      if (!validName(fn)) bad.push([fnEl, 'deinen Vor- und Nachnamen']);
+      if (!validEmail(em)) bad.push([emEl, 'eine gültige E-Mail']);
+      if (!validPhone(ph)) bad.push([phEl, 'eine gültige Handynummer (z. B. 079 123 45 67)']);
+      if (bad.length) {
+        bad.forEach(function (b) { b[0].parentElement.classList.add('err'); b[0].setAttribute('aria-invalid', 'true'); });
+        var parts = bad.map(function (b) { return b[1]; });
+        errEl.textContent = 'Bitte trag ' + (parts.length > 1 ? parts.slice(0, -1).join(', ') + ' und ' + parts[parts.length - 1] : parts[0]) + ' ein.';
+        errEl.hidden = false;
+        bad[0][0].focus();
+        return;
+      }
+      var dsRow = document.getElementById('dsRow');
+      dsRow.classList.remove('error');
+      if (!document.getElementById('ds').checked) { dsRow.classList.add('error'); return; }
+      var btn = this;
+      btn.disabled = true;
+      btn.textContent = 'Platz wird reserviert';
+      register({ name: fn, email: em, phone: ph, wa: document.getElementById('wa').checked }, false).catch(function () {
+        btn.disabled = false;
+        btn.innerHTML = 'Platz reservieren <span class="btn-arrow">&rarr;</span>';
+        errEl.textContent = 'Etwas ist schiefgelaufen. Bitte versuch es nochmal.';
+        errEl.hidden = false;
+      });
+    });
+  </script>
+
+  <script is:inline src="https://t.hyros.com/v1/lst/universal-script?ph=689a71ca1ab3be1cb1caddbe6b7902a4ad2c51a228f4ec9ea7fef3123a705f63"></script>
+
+  <CookieBanner
+    metaPixelId="1316450223953563"
+    googleAdsId={GOOGLE_ADS_ID}
+    consentKey="fot_webinar_consent"
+    impressumUrl={impressumUrl}
+    datenschutzUrl={datenschutzUrl}
+  />
+</body>
+</html>
