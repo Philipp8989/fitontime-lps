@@ -64,6 +64,13 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
     .teaser .tl { font-size: 0.85rem; letter-spacing: 0.04em; text-transform: uppercase; opacity: 0.75; }
     .teaser .tn { font-family: 'Fraunces', serif; font-size: 2.4rem; line-height: 1.1; margin-top: 0.25rem; font-variant-numeric: tabular-nums; }
     .blur { filter: blur(9px); user-select: none; }
+    /* Variante b: verschwommene Vorschau der eigenen Karte plus was drauf steht */
+    .kv { position: relative; margin: 0.8rem 0 0.9rem; border: 1px solid rgba(176,138,82,0.5); border-radius: 8px; overflow: hidden; background: #f7f2e9; }
+    .kv img { display: block; width: 100%; height: 150px; object-fit: cover; object-position: top; filter: blur(5px); transform: scale(1.04); }
+    .kv .kv-label { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); white-space: nowrap; background: #211c17; color: #fffdf9; font-size: 0.85rem; letter-spacing: 0.04em; padding: 0.45rem 0.8rem; border-radius: 2px; }
+    .kv-list { list-style: none; padding: 0; margin: 0 0 0.6rem; border-top: 1px solid rgba(33,28,23,0.15); text-align: left; }
+    .kv-list li { display: grid; grid-template-columns: 1.6rem 1fr; padding: 0.45rem 0; border-bottom: 1px solid rgba(33,28,23,0.15); font-size: 0.9rem; line-height: 1.35; }
+    .kv-list li b { font-family: 'Fraunces', serif; font-weight: 400; color: #b08a52; font-size: 1.1rem; }
   </style>
 </head>
 <body>
@@ -230,10 +237,17 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
 
       <div class="step form" data-s="form">
         <div class="tag">Auswertung fertig</div>
-        <h2>Dein Körperalter <em>ist bereit.</em></h2>
-        <div class="teaser"><div class="tl">Dein Körperalter</div><div class="tn"><span class="blur" id="f-age">52</span> Jahre</div></div>
+        <h2 class="va">Dein Körperalter <em>ist bereit.</em></h2>
+        <h2 class="vb">Dein Körperalter <em>und dein Plan sind bereit.</em></h2>
+        <div class="teaser va"><div class="tl">Dein Körperalter</div><div class="tn"><span class="blur" id="f-age">52</span> Jahre</div></div>
+        <div class="kv vb"><img id="f-karte" alt="" width="1080" height="1350" /><span class="kv-label">Kommt per WhatsApp</span></div>
+        <ul class="kv-list vb">
+          <li><b>1</b><span>Dein Körperalter und wie viele Jahre du zurückholen kannst</span></li>
+          <li><b>2</b><span>Deine zwei grössten Hebel, aus deinen Antworten gerechnet</span></li>
+          <li><b>3</b><span>Deine ersten 14 Tage: drei konkrete Schritte für deinen Alltag</span></li>
+        </ul>
         <p class="sub va">Trag dich ein und du siehst dein Körperalter sofort.</p>
-        <p class="sub vb">Trag dich ein und du bekommst dein Körperalter sofort per WhatsApp.</p>
+        <p class="sub vb">Trag dich ein, die Karte kommt sofort per WhatsApp. Kostenlos.</p>
         <div class="fields">
           <div class="field"><input type="text" id="fn" placeholder="Dein Vor- und Nachname" autocomplete="name" required /></div>
           <div class="field"><span class="pre">+41</span><input type="tel" id="ph" placeholder="Deine Handynummer" autocomplete="tel" required /></div>
@@ -241,11 +255,11 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
         </div>
         <p class="form-err" id="formErr" role="alert" hidden></p>
         <p class="form-hint va">Deine Handynummer brauchen wir, damit wir dich kurz anrufen und dein Ergebnis mit dir durchgehen können. Kostenlos.</p>
-        <p class="form-hint vb">An diese Nummer schicken wir dir dein Ergebnis per WhatsApp. Kostenlos.</p>
+        <p class="form-hint vb">An diese Nummer schicken wir dir deine Karte per WhatsApp.</p>
         <div class="cb-row" id="dsRow">
           <input type="checkbox" id="ds" />
           <label for="ds" class="va">Ich akzeptiere die <a href={datenschutzUrl} target="_blank">Datenschutzbestimmungen</a> und Fit on Time darf mich zu meinem Ergebnis anrufen.</label>
-          <label for="ds" class="vb">Ich akzeptiere die <a href={datenschutzUrl} target="_blank">Datenschutzbestimmungen</a> und Fit on Time darf mir mein Ergebnis per WhatsApp schicken und mich dort dazu kontaktieren.</label>
+          <label for="ds" class="vb">Ich akzeptiere die <a href={datenschutzUrl} target="_blank">Datenschutzbestimmungen</a> und Fit on Time darf mir meine Karte per WhatsApp schicken und mich dort dazu kontaktieren.</label>
         </div>
         <button class="btn btn--primary btn--block" id="sbtn" onclick="send()"></button>
         <div class="form-proof">Deine Daten sind sicher und werden nicht weitergegeben.</div>
@@ -259,7 +273,7 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
     var LP_NAME = 'Körperalter-Test';
     var VARIANT = window.__variant === 'b' ? 'b' : 'a';
     var WA = VARIANT === 'b';
-    var BTN_HTML = (WA ? 'Ergebnis auf WhatsApp erhalten' : 'Mein Körperalter ansehen') + ' <span class="btn-arrow">&rarr;</span>';
+    var BTN_HTML = (WA ? 'Meine Karte auf WhatsApp erhalten' : 'Mein Körperalter ansehen') + ' <span class="btn-arrow">&rarr;</span>';
     document.getElementById('sbtn').innerHTML = BTN_HTML;
     var TOTAL = 7;
     var quizAnswers = {};
@@ -338,6 +352,11 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
       setTimeout(function(){ document.getElementById('c1').classList.add('show'); }, 500);
       setTimeout(function(){ document.getElementById('c2').classList.add('show'); }, 1100);
       setTimeout(function(){ document.getElementById('c3').classList.add('show'); }, 1700);
+      if (WA) {
+        // Eigene Karte ohne Namen als Vorschau, die Zahlen rechnet der Server aus den Antworten
+        var qs = ['q1', 'q2', 'q3', 'q4', 'q5', 'q6'].map(function (k) { return k + '=' + encodeURIComponent(quizAnswers[k] || ''); }).join('&');
+        document.getElementById('f-karte').src = '/api/koerperalter-karte.png?n=&' + qs;
+      }
       setTimeout(function(){
         document.getElementById('f-age').textContent = quizAnswers.koerperalter;
         show('form');

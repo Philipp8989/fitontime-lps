@@ -6,6 +6,7 @@ import { normalizePhone } from '../../lib/phone';
 import { invalidLeadFields } from '../../lib/leadValidation';
 import { buildAttribution } from '../../lib/attribution';
 import { sendOpenAiAdsEvent } from '../../lib/openaiAds';
+import { plan as koerperalterPlan, karteUrl } from '../../lib/koerperalter-plan';
 
 // Pro LP: Sheet-ID + Spalten-Schema. Fehlt der Eintrag, wird kein Sheet-Write gemacht.
 type SheetConfig = {
@@ -191,6 +192,20 @@ SHEETS['koerperalter'] = {
   },
 };
 
+// Körperalter b: der Bot bekommt den fertigen Plan und den Link zur persönlichen Karte
+// (Bild-Kopf der WhatsApp-Vorlage). Gerechnet wird nur hier, nicht im Browser.
+function botAnswers(lpSlug: string, data: any, request: Request): Record<string, unknown> {
+  const a = data.answers || {};
+  if (lpSlug !== 'koerperalter') return a;
+  const name = String(data.first_name || data.name || '');
+  const p = koerperalterPlan(a, name);
+  return {
+    ...a,
+    plan: { ziel_alter: p.zielAlter, jahre_zurueck: p.jahreZurueck, hebel: p.hebel, schritte: p.schritte },
+    karte_url: karteUrl(new URL(request.url).origin, a, name),
+  };
+}
+
 // Nach der Spritze (Abnehmspritze, Weiche A/B/C + Rechner). Sheet "FitonTime Spritze Leads"
 // (Owner Philipp, mit leads-writer@ geteilt). Header: Datum | Vorname | Nachname | E-Mail |
 // Telefon | Setter-Prio | Pfad | Stand | Kilo | Kommen zurück (kg) | Frage 3 | Selbstzahlerin |
@@ -347,7 +362,7 @@ export const POST: APIRoute = async ({ request }) => {
         // selbst gebucht?) und Direktbuchung durch den Bot ohne Rückfrage im Chat.
         email: data.email || '',
         score: data.score ?? '',
-        answers: data.answers || {},
+        answers: botAnswers(lpSlug, data, request),
         lp_slug: lpSlug,
         optin_ts: new Date().toISOString(),
       });
