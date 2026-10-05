@@ -8,7 +8,7 @@ import '../../styles/webinar.css';
 import CookieBanner from '../../components/CookieBanner.astro';
 import ScaleeeCredit from '../../components/ScaleeeCredit.astro';
 import FotWordmark from '../../components/FotWordmark.astro';
-import { WEBINAR } from '../../lib/webinar';
+import { WEBINAR, QUELLEN } from '../../lib/webinar';
 const impressumUrl = 'https://fitontime.ch/impressum-datenschutz';
 const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
 const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').trim();
@@ -59,10 +59,11 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
       <div class="arc arc--hero"></div>
       <div class="wrap wrap--wide invite-grid">
         <div>
-          <p class="eyebrow">Einladung zum Reset-Abend</p>
+          <p class="eyebrow" id="heroEyebrow">Einladung zum Reset-Abend</p>
           <h1>Dein Körper ist nicht faul. <em>Er hält fest.</em></h1>
-          <p class="lead">Du isst weniger, bewegst dich mehr, und trotzdem tut sich nichts. Das liegt selten an dir. Meist bremst etwas darunter: der Stoffwechsel, das Stresshormon Cortisol oder ein Nervensystem, das nie Pause hat.</p>
-          <p class="lead hide-sm">An diesem Abend zeigen wir dir live, welche der drei Bremsen bei dir zu ist. Und was du ab dem nächsten Morgen anders machst.</p>
+          <p class="lead">Du isst weniger, bewegst dich mehr, und trotzdem tut sich nichts. Das liegt selten an dir. Meist bremst etwas darunter: der Stoffwechsel, das Insulin, das Stresshormon Cortisol oder ein Nervensystem, das nie Pause hat.</p>
+          <p class="lead lead--quelle" id="heroQuelle" hidden></p>
+          <p class="lead hide-sm" id="heroLead2">An diesem Abend zeigen wir dir live, welche der vier Bremsen bei dir zu ist. Und was du ab dem nächsten Morgen anders machst.</p>
           <ul class="when">
             <li>{WEBINAR.datumText}</li>
             <li>{WEBINAR.zeitText}</li>
@@ -100,33 +101,40 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
     <section class="section section--bright">
       <div class="wrap">
         <div class="section-head">
-          <p class="eyebrow">90 Minuten, drei Bremsen</p>
+          <p class="eyebrow">90 Minuten, vier Bremsen</p>
           <h2>Das nimmst du an dem Abend <em>mit.</em></h2>
         </div>
         <ol class="agenda">
-          <li>
+          <li data-bremse="stoffwechsel">
             <span class="an">01</span>
             <div>
               <h3>Warum dein Stoffwechsel auf Sparflamme läuft</h3>
               <p>Nach vielen Diäten verbraucht dein Körper weniger und hält fest. Das ist keine Willensschwäche. Das ist Anpassung. Wir zeigen dir, woran du das merkst und wie er wieder anspringt.</p>
             </div>
           </li>
-          <li>
+          <li data-bremse="insulin">
             <span class="an">02</span>
+            <div>
+              <h3>Wann Insulin deinen Körper auf Speichern schaltet</h3>
+              <p>Insulin bringt den Zucker aus dem Blut in die Zellen. Bleibt es den ganzen Tag oben, kommt dein Körper kaum an seine Reserven, vor allem am Bauch. Du siehst, woran du das im Alltag merkst: kurz satt, schnell wieder hungrig, müde nach dem Essen.</p>
+            </div>
+          </li>
+          <li data-bremse="cortisol">
+            <span class="an">03</span>
             <div>
               <h3>Was Cortisol mit deinem Bauch macht</h3>
               <p>Cortisol ist dein Stresshormon. Ist es den ganzen Tag oben, bleibt dein Körper im Alarmmodus. Du schläfst schlechter, und er gibt kaum etwas her. Du lernst zwei Dinge, die es abends runterholen.</p>
             </div>
           </li>
-          <li>
-            <span class="an">03</span>
+          <li data-bremse="nerven">
+            <span class="an">04</span>
             <div>
               <h3>Warum dein Nervensystem zuerst dran ist</h3>
               <p>Ohne Erholung wirken Essen und Bewegung nicht. Wir zeigen dir, wie du merkst, ob dein Nervensystem im Schutzmodus steckt. Und warum das gerade rund um die Wechseljahre so oft passiert.</p>
             </div>
           </li>
           <li>
-            <span class="an">04</span>
+            <span class="an">05</span>
             <div>
               <h3>Live dabei: eine Kundin erzählt</h3>
               <p>Sie war genau da, wo du jetzt bist. Du kannst ihr deine Fragen direkt stellen. Und drei Frauen aus der Runde bekommen ihren Fall live angeschaut.</p>
@@ -231,11 +239,23 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
     </div>
   </div>
 
+  <script type="application/json" id="quellen" set:html={JSON.stringify(QUELLEN)}></script>
   <script is:inline>
     var PAGE = 'webinar';
     var params = new URLSearchParams(location.search);
     var oneClick = params.get('k') === '1';
     var quelle = (params.get('q') || '').slice(0, 40);
+    // Thema aus dem Funnel nach oben holen (Daten aus src/lib/webinar.ts)
+    var QUELLEN = JSON.parse(document.getElementById('quellen').textContent);
+    var thema = QUELLEN[quelle];
+    if (thema) {
+      document.getElementById('heroEyebrow').textContent = 'Nach deinem ' + thema.name;
+      var hq = document.getElementById('heroQuelle');
+      hq.textContent = thema.einstieg; hq.hidden = false;
+      document.getElementById('heroLead2').hidden = true;
+      var li = document.querySelector('.agenda li[data-bremse="' + thema.bremse + '"]');
+      if (li) li.classList.add('is-deins');
+    }
 
     // Personendaten aus der Ein-Klick-URL sofort aus der Adresszeile nehmen (Verlauf, Screenshots)
     if (oneClick) {

@@ -102,3 +102,7 @@ fieldset.hs-q { border: 0; border-top: var(--hairline); margin: 0; min-width: 0;
 fieldset.hs-q legend { padding: 0; float: left; width: 100%; }
 fieldset.hs-q .chips { clear: both; }
 @media (max-width: 899px) { .hide-sm { display: none; } .arc--hero { display: none; } }
+
+/* Thema aus dem Funnel: Einstiegssatz und markierte Bremse */
+.lead--quelle { border-left: 2px solid var(--gold); padding-left: 1rem; color: var(--ink); }
+.agenda li.is-deins h3::after { content: "Dein Thema"; margin-left: 0.6rem; font-family: var(--font-body); font-size: 0.7rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold); vertical-align: middle; }
