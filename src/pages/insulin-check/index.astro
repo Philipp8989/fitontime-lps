@@ -10,6 +10,8 @@ const impressumUrl = 'https://fitontime.ch/impressum-datenschutz';
 const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
 // Clean-Domain-Pixel (go.abnehmen-ohne-stress.ch), NICHT der geflaggte Health-Pixel.
 const META_PIXEL_ID = '1316450223953563';
+// Google-Ads-Tag (Report-Conversion-Aktionen), für YouTube-Kampagnen
+const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').trim();
 ---
 <html lang="de">
 <head>
@@ -450,6 +452,7 @@ function tk(e, d) {
       if (e === 'quiz_start') window.__lp.meta('ViewContent', { content_name: 'FoT Quiz Start', currency: 'EUR' });
       if (e === 'quiz_complete') window.__lp.meta('CompleteRegistration', { content_name: 'FoT Quiz Complete', currency: 'EUR' });
       if (e === 'lead_submit') window.__lp.meta('Lead', { content_name: 'FoT Lead', currency: 'EUR' });
+      if (e === 'lead_submit') window.__lp.google('generate_lead', 'TnugCP-6zeIcEOfryccD');
     } else if (tries++ < 40) {
       setTimeout(fire, 50);
     }
@@ -744,6 +747,7 @@ $("r-book").addEventListener("click", function(){ tk('book_click'); });
 
 <CookieBanner
   metaPixelId={META_PIXEL_ID}
+  googleAdsId={GOOGLE_ADS_ID}
   consentKey="fot_insulin_consent"
   impressumUrl={impressumUrl}
   datenschutzUrl={datenschutzUrl}
