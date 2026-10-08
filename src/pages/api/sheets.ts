@@ -257,7 +257,49 @@ SHEETS['webinar-hotseat'] = {
 // (sonst Doppel-Lead plus Benachrichtigung je Listen-Kontakt) und kein Meta-Lead (sonst stimmt der CPL nicht).
 const isWebinarFollowUp = (slug: string, d: any) => slug === 'webinar-hotseat' || (slug === 'webinar' && d.oneclick === true);
 
-export const POST: APIRoute = async ({ request }) => {
+// Modus-Check (Quiz "Schutzmodus oder Arbeitsmodus?"), eingebaut auf fitontime.ch (Ralphis Seite).
+// Kommt von einer fremden Domain, darum die CORS-Freigabe unten. Kein Pixel, kein Bot.
+// Sheet "Website Leads" (Kevin verbindet es mit HubSpot). Header: Datum | Vorname | Nachname | E-Mail | Telefon | Modus
+// | Punkte (0 bis 15) | Lautestes Zeichen | Gewicht | Energie | Heisshunger | Schlaf | Diäten | Seite
+SHEETS['modus-check'] = {
+  id: '1wpvCYDnU9oew7W4IgHwcuKxdewxoUcTKpfd5Z2I2MtQ',
+  range: 'Leads!A:N',
+  buildRow: (datum, d) => {
+    const a = d.answers || {};
+    const parts = (d.name || '').trim().split(/\s+/);
+    const vorname = parts[0] || '';
+    const nachname = parts.slice(1).join(' ') || '';
+    return [datum, vorname, nachname, d.email, d.phone || '', a.modus || '', a.punkte ?? '', a.zeichen || '',
+      a.q1_label || '', a.q2_label || '', a.q3_label || '', a.q4_label || '', a.q5_label || '',
+      (d.attr && d.attr.landing_path) || ''];
+  },
+};
+
+// Fremde Domains, die Leads an diese Schnittstelle schicken dürfen (nur die Hauptseite).
+const CORS_ORIGINS = ['https://fitontime.ch', 'https://www.fitontime.ch'];
+function corsHeaders(request: Request): Record<string, string> {
+  const origin = request.headers.get('origin') || '';
+  if (!CORS_ORIGINS.includes(origin)) return {};
+  return {
+    'Access-Control-Allow-Origin': origin,
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Max-Age': '86400',
+    Vary: 'Origin',
+  };
+}
+
+// Vorab-Anfrage des Browsers bei Aufrufen von einer fremden Domain
+export const OPTIONS: APIRoute = async ({ request }) => new Response(null, { status: 204, headers: corsHeaders(request) });
+
+// Hängt die CORS-Freigabe an jede Antwort, die Lead-Logik selbst bleibt unverändert
+export const POST: APIRoute = async (ctx) => {
+  const res = await handleLead(ctx);
+  for (const [k, v] of Object.entries(corsHeaders(ctx.request))) res.headers.set(k, v);
+  return res;
+};
+
+const handleLead: APIRoute = async ({ request }) => {
   try {
     const data = await request.json();
 
