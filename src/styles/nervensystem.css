@@ -114,8 +114,6 @@
 .e3 figure { margin: 0; }
 .e3-img { position: relative; border-radius: 6px; overflow: hidden; background: var(--sand); }
 .e3 img { width: 100%; height: auto; aspect-ratio: 800 / 652; object-fit: cover; display: block; }
-/* Eigenes Schild liegt exakt über dem eingebrannten Label der Vorlage (x 36 bis 64 %, y 6 bis 18 %) */
-.e3 .e3-tag { position: absolute; left: 50%; top: 4%; transform: translateX(-50%); width: 44%; height: 16%; display: flex; align-items: center; justify-content: center; background: var(--cream-bright); border-radius: 4px; font-family: var(--font-display); font-style: italic; font-size: 0.72rem; color: var(--ink); white-space: nowrap; }
 .e3-quote { margin: 0; align-self: center; border-left: 2px solid var(--gold); padding: 0.5rem 0 0.5rem 1.4rem; display: grid; gap: 1rem; }
 .e3-quote p { font-family: var(--font-display); font-weight: 320; font-size: clamp(1.4rem, 2.4vw, 1.9rem); line-height: 1.25; color: var(--ink); }
 .e3-quote .e3-who { display: grid; gap: 0.2rem; }
