@@ -253,21 +253,20 @@ SHEETS['webinar-hotseat'] = {
   },
 };
 
-// Nervensystem-Check (Vorschaltung zum Reset-Abend). Sheet "FitonTime Nervensystem-Check Leads"
-// (Owner Philipp, mit leads-writer@ geteilt). Header: Datum | Vorname | Nachname | E-Mail | Telefon | Typ |
-// Belastung | Abends | Alter | Nicht runterkommen | Schlaf | Morgens müde | Woche | Heisshunger | Heute egal |
-// Vollgas und leer | Schon probiert | Bereit 10 Min | utm_source | utm_campaign | utm_content
+// Nervensystem-Check, Variante A des A/B-Tests mit Kevins LP (Variante B schreibt über ihr LP-Tool
+// in dieselbe Liste). Sheet "Nervensystem A/B-Test · Leadliste (FitonTime)", Tab Leads, Spaltenfolge
+// im Tab "So kommen Leads rein". Gemeinsame Spalten A bis L, M bis W nur Variante A.
 SHEETS['nervensystem'] = {
   id: '1f_eFLtj12f0C8BoEg79AWtqq5pYrN4Wwyh2MJNuYG7s',
-  range: 'Leads!A:U',
+  range: 'Leads!A:W',
   buildRow: (datum, d) => {
     const a = d.answers || {};
     const u = d.attr || {};
     const [vorname, nachname] = splitName(d.name);
-    return [datum, vorname, nachname, d.email, d.phone || '', a.ns_typ_label || '', a.ns_score ?? '',
+    return [datum, 'A · Philipp', 'https://go.abnehmen-ohne-stress.ch/nervensystem/', vorname, nachname, d.email, d.phone || '',
+      a.ns_typ_label || '', a.ns_score ?? '', u.utm_source || '', u.utm_campaign || '', u.utm_content || '',
       a.q1_label || '', a.q2_label || '', a.q3_label || '', a.q4_label || '', a.q5_label || '', a.q6_label || '',
-      a.q7_label || '', a.q8_label || '', a.q9_label || '', a.q10_label || '', a.bereit || '',
-      u.utm_source || '', u.utm_campaign || '', u.utm_content || ''];
+      a.q7_label || '', a.q8_label || '', a.q9_label || '', a.q10_label || '', a.bereit || ''];
   },
 };
 
