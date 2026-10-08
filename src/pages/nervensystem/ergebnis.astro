@@ -35,12 +35,12 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
   <section class="section result-hero">
     <div class="wrap">
       <div class="profile">
-        <div class="p-label" id="hi">Dein Ergebnis</div>
-        <h2 id="typH">Dein Nervensystem steht <em>unter Strom.</em></h2>
+        <div class="p-label" id="hi">Dein Nervensystem-Ergebnis</div>
+        <h2 id="typH">Dein Nervensystem steckt <em>im Daueralarm.</em></h2>
         <span class="p-where" id="typName">Daueralarm</span>
-        <div class="ns-score"><b id="score">0</b><span>von 100 · Belastung deines Nervensystems</span></div>
+        <div class="ns-score"><b id="score">0</b><span>von 100 · so stark bremst dein Nervensystem dein Abnehmen</span></div>
         <div class="ns-scale"><i id="marker"></i></div>
-        <div class="ns-scale-l"><span>Ruhig</span><span>Angespannt</span><span>Stark belastet</span></div>
+        <div class="ns-scale-l"><span>Kaum</span><span>Deutlich</span><span>Stark</span></div>
         <p class="p-text" id="typText"></p>
         <p class="p-text" id="typGewicht"></p>
       </div>
@@ -51,8 +51,8 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
     <div class="wrap">
       <div class="invite" id="invite">
         <p class="eyebrow">Dein nächster Schritt · kostenlos</p>
-        <h2>Der Reset-Abend: live mit Fabian und Filip.</h2>
-        <p id="invText">Dein Nervensystem ist eine von vier Bremsen, die den Körper ab 40 festhalten. An diesem Abend siehst du, wie du es aus dem Schutzmodus holst. Und ob bei dir noch Stoffwechsel, Insulin oder Cortisol mitziehen.</p>
+        <h2>Am Reset-Abend holst du dein Nervensystem aus dem Alarm.</h2>
+        <p id="invText">Fabian und Filip zeigen dir live, wie du dein Nervensystem Schritt für Schritt beruhigst, damit dein Körper wieder loslässt. Und was du ab dem nächsten Morgen anders machst, damit es diesmal hält.</p>
         <div class="when-row"><span>{WEBINAR.datumText}</span><span>{WEBINAR.zeitText}</span><span>Live online</span></div>
         <button class="btn btn--primary btn--block" id="go">Mit einem Klick dabei sein <span class="btn-arrow">&rarr;</span></button>
         <p class="b-fine">Kostenlos. Kamera bleibt aus, niemand sieht dich.</p>
@@ -64,7 +64,7 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
     <div class="wrap">
       <div class="section-head">
         <p class="eyebrow">Für heute Abend</p>
-        <h2>Drei Dinge, die du <em>sofort tun kannst.</em></h2>
+        <h2>Drei Wege, dein Nervensystem <em>heute Abend zu beruhigen.</em></h2>
       </div>
       <ol class="tips" id="tips"></ol>
     </div>
@@ -95,33 +95,33 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
     var TYPEN = {
       a: {
         name: 'Daueralarm',
-        h: 'Dein Nervensystem steht <em>unter Strom.</em>',
-        text: 'Dein Kopf läuft, dein Körper ist angespannt, auch wenn eigentlich Ruhe wäre. Dein Nervensystem bleibt im Alarm, als müsste es dich dauernd vor etwas schützen.',
-        gewicht: 'Was das fürs Abnehmen heisst: Im Alarm bleibt das Stresshormon Cortisol oft hoch. Der Körper hält dann eher fest, gerade am Bauch. Und abends meldet sich ein Hunger, der eigentlich der Wunsch nach einer Pause ist.',
+        h: 'Dein Nervensystem steckt <em>im Daueralarm.</em>',
+        text: 'Dein Nervensystem schaltet nicht mehr ab. Der Kopf läuft, der Körper bleibt angespannt, auch wenn eigentlich Ruhe wäre. Es verhält sich, als müsste es dich dauernd vor etwas schützen.',
+        gewicht: 'Darum nimmst du nicht ab: Solange dein Nervensystem im Alarm ist, bleibt das Stresshormon Cortisol hoch, und dein Körper hält fest, gerade am Bauch. Abends sucht dein Nervensystem Ruhe, und findet sie im Essen. Keine Diät kommt dagegen an, solange der Alarm läuft.',
         tips: [
           ['Länger aus- als einatmen.', 'Heute Abend 5 Minuten: 4 Sekunden ein, 6 Sekunden aus. Das ist das einfachste Signal an deinen Körper, dass er runterfahren darf.'],
           ['Handy 30 Minuten vor dem Schlafen weg.', 'Nachrichten und Mails halten den Alarm am Laufen. Leg es in ein anderes Zimmer.'],
-          ['Warm essen statt Snacks auf dem Sofa.', 'Ein richtiges Abendessen mit Eiweiss macht satt und ruhig. Häppchen vor dem Fernseher halten den Hunger wach.']
+          ['Warm essen statt Snacks auf dem Sofa.', 'Ein richtiges Abendessen mit Eiweiss beruhigt dein Nervensystem. Häppchen vor dem Fernseher halten es in Bewegung.']
         ]
       },
       l: {
         name: 'Leerer Akku',
-        h: 'Dein Nervensystem hat <em>auf Sparen umgestellt.</em>',
-        text: 'Du schläfst und bist trotzdem müde. Nach langer Anspannung hat dein Körper die Notbremse gezogen und spart Kraft, wo er kann.',
-        gewicht: 'Was das fürs Abnehmen heisst: Nach viel Stress und vielen Diäten schaltet der Körper oft auf Sparflamme. Er verbraucht weniger, und dir fehlt die Kraft, Vorsätze durchzuziehen. Das ist keine Faulheit, das ist Schutz.',
+        h: 'Dein Nervensystem ist <em>erschöpft.</em>',
+        text: 'Nach langer Anspannung hat dein Nervensystem die Notbremse gezogen. Du schläfst und bist trotzdem müde, und dein Körper spart Kraft, wo er kann.',
+        gewicht: 'Darum nimmst du nicht ab: Ein erschöpftes Nervensystem schaltet deinen Körper auf Sparflamme. Er verbraucht weniger, und dir fehlt die Kraft, Vorsätze durchzuziehen. Jede weitere Diät ist für dein Nervensystem noch mehr Stress. Das ist keine Faulheit, das ist Schutz.',
         tips: [
-          ['10 Minuten Tageslicht am Morgen.', 'Kurz raus, bevor der Tag losgeht. Licht am Morgen hilft dem Körper, den Tag-Nacht-Rhythmus wiederzufinden.'],
+          ['10 Minuten Tageslicht am Morgen.', 'Kurz raus, bevor der Tag losgeht. Licht am Morgen gibt deinem Nervensystem den Takt für Wachsein und Schlaf zurück.'],
           ['Frühstück mit Eiweiss statt nur Kaffee.', 'Ein Ei, Joghurt oder Quark. Kaffee auf leeren Magen fühlt sich nach Energie an und kostet später mehr.'],
-          ['Spazieren statt hartem Training.', '15 Minuten nach dem Essen gehen. Ein leerer Akku braucht jetzt Bewegung, die auflädt, nicht noch mehr Anstrengung.']
+          ['Spazieren statt hartem Training.', '15 Minuten nach dem Essen gehen. Ein erschöpftes Nervensystem braucht Bewegung, die auflädt, nicht noch mehr Anstrengung.']
         ]
       },
       x: {
         name: 'Achterbahn',
-        h: 'Dein Nervensystem kippt <em>zwischen Vollgas und leer.</em>',
-        text: 'Eben noch alles im Griff, dann plötzlich nichts mehr. Dein Nervensystem fährt hoch und stürzt ab, und mit dem Absturz kommt der Drang nach schneller Energie.',
-        gewicht: 'Was das fürs Abnehmen heisst: Mit jedem Absturz kommt der Heisshunger, oft auf Süsses. Dein Blutzucker fährt mit Achterbahn, und der Körper schaltet auf Speichern. Nach einem «schlechten» Tag fängst du dann am Montag wieder von vorne an.',
+        h: 'Dein Nervensystem fährt <em>Achterbahn.</em>',
+        text: 'Eben noch alles im Griff, dann plötzlich nichts mehr. Dein Nervensystem fährt hoch und stürzt ab, und findet dazwischen keine Mitte.',
+        gewicht: 'Darum nimmst du nicht ab: Mit jedem Absturz deines Nervensystems kommt der Heisshunger, oft auf Süsses. Der Blutzucker fährt mit, und dein Körper schaltet auf Speichern. Nach einem «schlechten» Tag fängst du am Montag wieder von vorne an, und dein Nervensystem bleibt im selben Kreis.',
         tips: [
-          ['Drei Mahlzeiten, dazwischen Pause.', 'Regelmässig essen nimmt dem Absturz am Nachmittag die Spitze. Lieber satt essen als den ganzen Tag knabbern.'],
+          ['Drei Mahlzeiten, dazwischen Pause.', 'Feste Zeiten geben deinem Nervensystem Halt und nehmen dem Absturz am Nachmittag die Spitze. Lieber satt essen als den ganzen Tag knabbern.'],
           ['Eiweiss zu jeder Mahlzeit.', 'Es hält länger satt und bremst den Heisshunger, der um 16 Uhr kommt.'],
           ['Ein Stück Kuchen ist kein Neustart.', 'Wenn es heute nicht perfekt lief: Die nächste Mahlzeit ganz normal weiter. Nicht erst am Montag.']
         ]
