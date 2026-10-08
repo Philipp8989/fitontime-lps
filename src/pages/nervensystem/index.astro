@@ -60,41 +60,122 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
       </div>
     </section>
 
-    <!-- Wiedererkennen -->
+    <!-- Belegte Zahlen (design-pool beweis/fakten-zeile) -->
+    <section class="fz" aria-label="Fit on Time in Zahlen">
+      <div class="fz-wrap">
+        <div class="fz-item"><strong>4'000+</strong><span>Frauen begleitet</span><small>seit 2016</small></div>
+        <div class="fz-item"><strong>4,8</strong><span>Sterne auf Google</span><small>567 Rezensionen · Stand 09/2026</small></div>
+        <div class="fz-item"><strong>4,4</strong><span>Sterne auf Trustpilot</span><small>208 Bewertungen · Stand 09/2026</small></div>
+        <div class="fz-item"><strong>4</strong><span>Standorte in der Schweiz</span><small>Frauenfeld · Zürich · Bern · St. Gallen</small></div>
+      </div>
+    </section>
+
+    <!-- Nervensystem-Regler (interaktiv) -->
     <section class="section section--bright">
-      <div class="wrap">
-        <div class="section-head">
+      <div class="wrap wrap--wide regler-grid">
+        <div>
           <p class="eyebrow">Der Grund, über den keiner spricht</p>
           <h2>Alle reden über Kalorien. <em>Kaum jemand über dein Nervensystem.</em></h2>
-          <p class="lead">Montag läuft es. Ab Mittwoch ist alles egal. Abends stehst du vor dem Kühlschrank, obwohl du keinen Hunger hast. Das ist kein Charakterfehler. So reagiert ein Nervensystem, das den ganzen Tag unter Strom steht. Es sucht Ruhe, und Essen ist oft die einzige, die es kriegt.</p>
+          <p class="lead">Montag läuft es, ab Mittwoch ist alles egal. Abends stehst du vor dem Kühlschrank, obwohl du keinen Hunger hast. Das ist kein Charakterfehler. So reagiert ein Nervensystem, das den ganzen Tag unter Strom steht.</p>
+          <p class="lead hide-sm">Schieb den Regler und schau, was mit deinem Körper passiert.</p>
         </div>
-        <div class="types">
-          <div class="type-row"><span class="tn">1</span><div><h3>Es lässt deinen Körper festhalten</h3><p>Im Alarm schaltet dein Körper auf Schutz. Er hält Reserven fest, gerade am Bauch, egal wie wenig du isst.</p></div></div>
-          <div class="type-row"><span class="tn">2</span><div><h3>Es macht den Hunger</h3><p>Der Hunger am Abend ist oft kein Hunger. Es ist dein Nervensystem, das endlich runterkommen will.</p></div></div>
-          <div class="type-row"><span class="tn">3</span><div><h3>Es nimmt dir die Kraft zum Durchhalten</h3><p>Wer den ganzen Tag funktioniert, hat abends nichts mehr übrig für gute Vorsätze. Darum scheitern Pläne nicht am Willen.</p></div></div>
+        <div class="regler" id="regler">
+          <div class="r-head"><span>Dein Nervensystem</span><b id="rName">Daueralarm</b></div>
+          <input type="range" id="rIn" min="0" max="100" value="82" aria-label="Wie angespannt ist dein Nervensystem?" />
+          <div class="r-ends"><span>Ruhe</span><span>Anspannung</span><span>Alarm</span></div>
+          <div class="r-meters">
+            <div class="r-m"><div class="r-l"><span>Körper hält fest</span><i id="m1t"></i></div><div class="r-bar"><i id="m1"></i></div></div>
+            <div class="r-m"><div class="r-l"><span>Hunger am Abend</span><i id="m2t"></i></div><div class="r-bar"><i id="m2"></i></div></div>
+            <div class="r-m"><div class="r-l"><span>Kraft zum Durchhalten</span><i id="m3t"></i></div><div class="r-bar"><i id="m3"></i></div></div>
+          </div>
+          <p class="r-text" id="rText"></p>
+          <button class="btn btn--primary btn--block" type="button" onclick="zumStart()">Wo stehst du? Check starten <span class="btn-arrow">&rarr;</span></button>
         </div>
       </div>
     </section>
 
-    <!-- Drei Muster -->
+    <!-- Drei Muster als Tabs (interaktiv) -->
     <section class="section">
       <div class="wrap">
         <div class="section-head">
           <p class="eyebrow">Was der Check zeigt</p>
           <h2>Wie dein Nervensystem <em>dich ausbremst.</em></h2>
+          <p class="lead">Es gibt drei Muster. Tipp eins an.</p>
         </div>
-        <div class="types">
-          <div class="type-row"><span class="tn">1</span><div><h3>Daueralarm</h3><p>Dein Nervensystem kommt nicht mehr runter. Kopf an, Körper angespannt, das Stresshormon Cortisol bleibt oben. Dein Körper hält fest, vor allem am Bauch.</p></div></div>
-          <div class="type-row"><span class="tn">2</span><div><h3>Leerer Akku</h3><p>Dein Nervensystem ist erschöpft und hat auf Sparen umgestellt. Du schläfst und bist trotzdem müde, dein Körper verbraucht weniger.</p></div></div>
-          <div class="type-row"><span class="tn">3</span><div><h3>Achterbahn</h3><p>Dein Nervensystem kippt zwischen Vollgas und leer. Mit jedem Absturz kommt der Heisshunger, und am Montag fängst du wieder von vorne an.</p></div></div>
+        <div class="tabs" role="tablist" aria-label="Die drei Muster">
+          <button role="tab" aria-selected="true" aria-controls="tp-a" id="tb-a" onclick="tab('a')"><span>01</span>Daueralarm</button>
+          <button role="tab" aria-selected="false" aria-controls="tp-l" id="tb-l" onclick="tab('l')"><span>02</span>Leerer Akku</button>
+          <button role="tab" aria-selected="false" aria-controls="tp-x" id="tb-x" onclick="tab('x')"><span>03</span>Achterbahn</button>
         </div>
-        <p class="brake-close">Du bekommst dein Nervensystem-Muster, deinen Belastungswert und drei Wege, dein Nervensystem schon heute Abend zu beruhigen.</p>
-        <div style="margin-top:1.75rem;max-width:28rem;">
-          <a class="btn btn--primary btn--block" href="#top" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">Check starten <span class="btn-arrow">&rarr;</span></a>
+        <div class="tp" role="tabpanel" id="tp-a"><h3>Dein Nervensystem kommt nicht mehr runter.</h3><p>Kopf an, Körper angespannt, das Stresshormon Cortisol bleibt oben. Dein Körper hält fest, vor allem am Bauch. Abends sucht dein Nervensystem Ruhe, und findet sie im Essen.</p><p class="tp-sign">Typisch: «Ich liege im Bett und der Kopf läuft weiter.»</p></div>
+        <div class="tp" role="tabpanel" id="tp-l" hidden><h3>Dein Nervensystem ist erschöpft.</h3><p>Nach langer Anspannung hat es die Notbremse gezogen. Du schläfst und bist trotzdem müde, dein Körper schaltet auf Sparflamme und verbraucht weniger.</p><p class="tp-sign">Typisch: «Ich esse wenig und nehme trotzdem nicht ab.»</p></div>
+        <div class="tp" role="tabpanel" id="tp-x" hidden><h3>Dein Nervensystem fährt Achterbahn.</h3><p>Vollgas, dann Absturz, dazwischen keine Mitte. Mit jedem Absturz kommt der Heisshunger, und am Montag fängst du wieder von vorne an.</p><p class="tp-sign">Typisch: «Ein Stück Kuchen, und dann ist eh alles egal.»</p></div>
+      </div>
+    </section>
+
+    <!-- Atemübung (interaktiv) -->
+    <section class="section section--sand">
+      <div class="wrap wrap--wide atem-grid">
+        <div>
+          <p class="eyebrow">Spür es selbst · 60 Sekunden</p>
+          <h2>So schnell merkt dein Nervensystem, <em>dass es runterfahren darf.</em></h2>
+          <p class="lead">4 Sekunden einatmen, 6 Sekunden aus. Längeres Ausatmen ist das einfachste Signal an deinen Körper, dass keine Gefahr droht. Probier es jetzt, sechs Runden.</p>
+        </div>
+        <div class="atem">
+          <div class="atem-kreis" id="aKreis"><span id="aText">Bereit?</span><small id="aZahl"></small></div>
+          <button class="btn btn--outline" type="button" id="aBtn" onclick="atem()">Übung starten</button>
+          <p class="atem-runde" id="aRunde">6 Runden · 1 Minute</p>
         </div>
       </div>
     </section>
 
+    <!-- Erfolge (design-pool beweis/erfolge-drei) -->
+    <section class="section">
+      <div class="wrap wrap--wide">
+        <div class="section-head">
+          <p class="eyebrow">Frauen, die den Weg gegangen sind</p>
+          <h2>Als der Körper aufgehört hat festzuhalten, <em>ging es.</em></h2>
+        </div>
+        <div class="e3">
+          <figure><img src="/images/sd-proof/testimonial-coco.png" alt="Coco vorher und nachher" loading="lazy" width="671" height="669" /><figcaption><strong>−16,3 kg</strong><b>Coco, Floristin</b><span>Grösse 46 auf 40</span><q>Ich hätte nie gedacht, dass ich mal so begeistert sein werde.</q></figcaption></figure>
+          <figure><img src="/images/sd-proof/testimonial-claudia.jpg" alt="Claudia vorher und nachher" loading="lazy" width="800" height="800" /><figcaption><strong>−37 kg</strong><b>Claudia</b><span>96 auf 59 kg · Oktober 2019 bis Januar 2021</span></figcaption></figure>
+          <figure><img src="/images/sd-proof/testimonial-sandra.jpg" alt="Sandra vorher und nachher" loading="lazy" width="800" height="800" /><figcaption><strong>−11 kg</strong><b>Sandra</b><span>75 auf 64 kg · Februar bis September 2021</span><q>Frei vom Jojo-Effekt.</q></figcaption></figure>
+        </div>
+        <p class="fine-note"><span class="swipe">Wischen für mehr · </span>Ergebnisse sind individuell.</p>
+      </div>
+    </section>
+
+    <!-- FAQ (design-pool faq/zwei-spalten-linien) -->
+    <section class="section section--bright">
+      <div class="wrap wrap--wide">
+        <div class="section-head">
+          <p class="eyebrow">Kurz gefragt</p>
+          <h2>Bevor du <em>startest.</em></h2>
+        </div>
+        <dl class="fl">
+          <div><dt>Was kostet der Check?</dt><dd>Nichts. Du beantwortest 10 Fragen und siehst dein Ergebnis sofort.</dd></div>
+          <div><dt>Wie lange dauert er?</dt><dd>Etwa 2 Minuten. Es gibt kein Richtig oder Falsch, antworte aus dem Bauch heraus.</dd></div>
+          <div><dt>Ist das eine Diagnose?</dt><dd>Nein. Der Check ist eine Einschätzung anhand deiner Antworten. Bei anhaltenden Beschwerden geh bitte zu deiner Ärztin oder deinem Arzt.</dd></div>
+          <div><dt>Was passiert mit meinen Daten?</dt><dd>Wir schicken dir dein Ergebnis und eine Einladung zum kostenlosen Reset-Abend. Keine Weitergabe, abmelden geht jederzeit.</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <!-- Nochmal die erste Frage -->
+    <section class="section">
+      <div class="wrap">
+        <div class="gate gate--end">
+          <div class="gate-q">Abends, wenn endlich Ruhe ist: Was passiert bei dir?</div>
+          <div class="gate-sub">Die erste Frage. Damit startet der Check.</div>
+          <div class="opts">
+            <button class="opt" onclick="startQuiz('kopf')">Mein Kopf läuft weiter, ich komme nicht runter</button>
+            <button class="opt" onclick="startQuiz('kuehlschrank')">Ich stehe vor dem Kühlschrank, obwohl ich keinen Hunger habe</button>
+            <button class="opt" onclick="startQuiz('sofa')">Ich falle aufs Sofa und kriege nichts mehr hin</button>
+            <button class="opt" onclick="startQuiz('ruhig')">Ich bin entspannt und komme gut runter</button>
+          </div>
+        </div>
+      </div>
+    </section>
     <div class="wrap">
       <footer>
         <a href={impressumUrl} target="_blank" rel="noopener">Impressum</a> &middot;
@@ -436,6 +517,80 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
         errEl.hidden = false;
       });
     }
+  </script>
+
+  <script is:inline>
+    // Regler: zeigt, was ein angespanntes Nervensystem mit dem Körper macht
+    (function () {
+      var inp = document.getElementById('rIn');
+      if (!inp) return;
+      var STUFEN = [
+        { bis: 33, name: 'Ruhe', text: 'Dein Körper fühlt sich sicher. Er gibt Energie frei, der Hunger kommt und geht. So kann Abnehmen funktionieren.' },
+        { bis: 66, name: 'Anspannung', text: 'Das Stresshormon Cortisol steigt. Du schläfst unruhiger, am Nachmittag kommt der Heisshunger. Dein Körper fängt an festzuhalten.' },
+        { bis: 100, name: 'Daueralarm', text: 'Dein Körper ist im Schutzmodus. Er hält Reserven fest, vor allem am Bauch. Abends sucht dein Nervensystem Ruhe im Essen. Keine Diät kommt dagegen an.' }
+      ];
+      var gemeldet = false;
+      function stufe(v) { for (var i = 0; i < STUFEN.length; i++) if (v <= STUFEN[i].bis) return STUFEN[i]; return STUFEN[2]; }
+      function setze() {
+        var v = +inp.value, s = stufe(v);
+        var fest = Math.round(15 + v * 0.8), hunger = Math.round(10 + v * 0.85), kraft = Math.round(95 - v * 0.8);
+        document.getElementById('rName').textContent = s.name;
+        document.getElementById('rText').textContent = s.text;
+        [['m1', fest], ['m2', hunger], ['m3', kraft]].forEach(function (m) {
+          document.getElementById(m[0]).style.width = m[1] + '%';
+          document.getElementById(m[0] + 't').textContent = m[1] < 35 ? 'niedrig' : m[1] < 65 ? 'mittel' : 'hoch';
+        });
+        document.getElementById('regler').dataset.stufe = s.name;
+        inp.style.setProperty('--v', v + '%');
+      }
+      inp.addEventListener('input', function () {
+        setze();
+        if (!gemeldet && window.__lp) { gemeldet = true; window.__lp.track('regler_used', { page: 'nervensystem' }, 'fot', 'Nervensystem-Check'); }
+      });
+      setze();
+    })();
+
+    // Drei Muster als Tabs
+    function tab(k) {
+      ['a', 'l', 'x'].forEach(function (x) {
+        document.getElementById('tb-' + x).setAttribute('aria-selected', x === k ? 'true' : 'false');
+        document.getElementById('tp-' + x).hidden = x !== k;
+      });
+    }
+
+    // Atemübung: 6 Runden, 4 Sekunden ein, 6 Sekunden aus
+    var atemTimer = null;
+    function atem() {
+      var btn = document.getElementById('aBtn'), kreis = document.getElementById('aKreis');
+      var txt = document.getElementById('aText'), zahl = document.getElementById('aZahl'), runde = document.getElementById('aRunde');
+      if (atemTimer) { clearInterval(atemTimer); atemTimer = null; kreis.className = 'atem-kreis'; txt.textContent = 'Bereit?'; zahl.textContent = ''; btn.textContent = 'Übung starten'; runde.textContent = '6 Runden · 1 Minute'; return; }
+      if (window.__lp) window.__lp.track('atem_start', { page: 'nervensystem' }, 'fot', 'Nervensystem-Check');
+      btn.textContent = 'Stopp';
+      var r = 1, phase = 'ein', rest = 4;
+      function zeig() {
+        kreis.className = 'atem-kreis ' + (phase === 'ein' ? 'is-ein' : 'is-aus');
+        txt.textContent = phase === 'ein' ? 'Einatmen' : 'Ausatmen';
+        zahl.textContent = rest;
+        runde.textContent = 'Runde ' + r + ' von 6';
+      }
+      zeig();
+      atemTimer = setInterval(function () {
+        rest--;
+        if (rest > 0) { zahl.textContent = rest; return; }
+        if (phase === 'ein') { phase = 'aus'; rest = 6; }
+        else if (r < 6) { r++; phase = 'ein'; rest = 4; }
+        else {
+          clearInterval(atemTimer); atemTimer = null;
+          kreis.className = 'atem-kreis is-fertig'; txt.textContent = 'Gut gemacht'; zahl.textContent = '';
+          runde.textContent = 'Spürst du den Unterschied? Genau da setzt dein Ergebnis an.';
+          btn.textContent = 'Nochmal';
+          return;
+        }
+        zeig();
+      }, 1000);
+    }
+
+    function zumStart() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
   </script>
 
   <script is:inline src="https://t.hyros.com/v1/lst/universal-script?ph=689a71ca1ab3be1cb1caddbe6b7902a4ad2c51a228f4ec9ea7fef3123a705f63"></script>

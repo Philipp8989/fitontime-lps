@@ -71,6 +71,21 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
   </section>
 
   <section class="section">
+    <div class="wrap wrap--wide">
+      <div class="section-head">
+        <p class="eyebrow">Frauen, die den Weg gegangen sind</p>
+        <h2>Als der Körper aufgehört hat festzuhalten, <em>ging es.</em></h2>
+      </div>
+      <div class="e3">
+        <figure><img src="/images/sd-proof/testimonial-coco.png" alt="Coco vorher und nachher" loading="lazy" width="671" height="669" /><figcaption><strong>−16,3 kg</strong><b>Coco, Floristin</b><span>Grösse 46 auf 40</span><q>Ich hätte nie gedacht, dass ich mal so begeistert sein werde.</q></figcaption></figure>
+        <figure><img src="/images/sd-proof/testimonial-claudia.jpg" alt="Claudia vorher und nachher" loading="lazy" width="800" height="800" /><figcaption><strong>−37 kg</strong><b>Claudia</b><span>96 auf 59 kg · Oktober 2019 bis Januar 2021</span></figcaption></figure>
+        <figure><img src="/images/sd-proof/testimonial-sandra.jpg" alt="Sandra vorher und nachher" loading="lazy" width="800" height="800" /><figcaption><strong>−11 kg</strong><b>Sandra</b><span>75 auf 64 kg · Februar bis September 2021</span><q>Frei vom Jojo-Effekt.</q></figcaption></figure>
+      </div>
+      <p class="fine-note"><span class="swipe">Wischen für mehr · </span>Ergebnisse sind individuell.</p>
+    </div>
+  </section>
+
+  <section class="section">
     <div class="wrap">
       <div class="section-head">
         <p class="eyebrow">Das hast du gesagt</p>
@@ -141,9 +156,9 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
       document.getElementById('typGewicht').textContent = t.gewicht;
       document.getElementById('tips').innerHTML = t.tips.map(function (x) { return '<li><div><b>' + x[0] + '</b>' + x[1] + '</div></li>'; }).join('');
       document.getElementById('mine').innerHTML = (d.mine || []).filter(Boolean).map(function (x) { return '<li>' + x + '</li>'; }).join('');
-      // Wert hochzählen, Marker auf der Skala setzen
-      var s = d.score || 0, n = 0;
-      var iv = setInterval(function () { n = Math.min(s, n + 2); document.getElementById('score').textContent = n; if (n >= s) clearInterval(iv); }, 18);
+      // Wert setzen, Marker auf der Skala einblenden
+      var s = d.score || 0;
+      document.getElementById('score').textContent = s;
       setTimeout(function () { document.getElementById('marker').style.left = s + '%'; }, 150);
     }
 
