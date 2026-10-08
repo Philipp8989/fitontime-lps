@@ -1,0 +1,53 @@
+/* Nervensystem-Check: Ergänzungen zu bauchfett.css (gleiche Tokens, Cream, Ink, Gold, Fraunces). */
+
+/* Start-Frage im Hero: Textantworten statt Bilder */
+.gate .opts { margin-top: 0.25rem; }
+.gate .opt { font-size: 0.98rem; }
+
+/* Skala 1 bis 5 */
+.scale { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.45rem; }
+.scale .opt { text-align: center; padding: 0.95rem 0; font-family: var(--font-display); font-size: 1.25rem; font-weight: 340; }
+.scale-ends { display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--taupe); margin-top: 0.5rem; }
+
+/* Zwischenschritt */
+.pause { text-align: center; padding-top: 2.5rem; }
+.pause h2 { margin-bottom: 0.6rem; }
+.pause p { margin: 0 auto 1.5rem; max-width: 26rem; }
+.pause .btn { max-width: 20rem; margin: 0 auto; }
+
+/* Ja-Frage während der Auswertung */
+.ask { display: none; margin: 1.5rem auto 0; max-width: 22rem; background: var(--cream-bright); border: var(--hairline); border-radius: 16px; padding: 1.1rem; box-shadow: var(--shadow-soft); }
+.ask.on { display: block; animation: up .35s var(--ease-out); }
+.ask p { font-size: 0.95rem; color: var(--ink); margin-bottom: 0.9rem; }
+.ask .row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+
+/* Drei Muster auf der Landing */
+.types { display: grid; gap: 0; border-top: var(--hairline); }
+.type-row { display: grid; grid-template-columns: 2.6rem 1fr; gap: 0.9rem; padding: 1.2rem 0; border-bottom: var(--hairline); }
+.type-row .tn { font-family: var(--font-display); font-size: 1.7rem; font-weight: 300; color: var(--gold); line-height: 1; }
+.type-row h3 { margin-bottom: 0.3rem; }
+.type-row p { font-size: 0.98rem; }
+
+/* Ergebnis */
+.ns-score { display: flex; align-items: baseline; gap: 0.5rem; margin: 0.9rem 0 0.4rem; }
+.ns-score b { font-family: var(--font-display); font-size: 3rem; font-weight: 320; color: var(--rust); line-height: 1; font-variant-numeric: tabular-nums; }
+.ns-score span { color: var(--taupe); font-size: 0.9rem; }
+.ns-scale { height: 8px; background: linear-gradient(90deg, var(--sage) 0%, var(--gold-bright) 50%, var(--rust) 100%); border-radius: 4px; position: relative; margin: 0.4rem 0 0.35rem; }
+.ns-scale i { position: absolute; top: -5px; width: 4px; height: 18px; background: var(--ink); border-radius: 2px; transform: translateX(-2px); transition: left 1.2s var(--ease-out); left: 0; }
+.ns-scale-l { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--taupe); }
+.tips { counter-reset: t; list-style: none; display: grid; gap: 0; border-top: var(--hairline); }
+.tips li { counter-increment: t; display: grid; grid-template-columns: 2.2rem 1fr; gap: 0.75rem; padding: 1rem 0; border-bottom: var(--hairline); font-size: 0.98rem; color: var(--ink-soft); }
+.tips li::before { content: counter(t); font-family: var(--font-display); font-size: 1.5rem; color: var(--gold); line-height: 1.1; }
+.tips b { color: var(--ink); font-weight: 600; display: block; }
+.invite { background: var(--ink); color: var(--cream-bright); border-radius: var(--radius-soft); padding: 1.5rem 1.4rem; }
+.invite .eyebrow { color: var(--gold-bright); }
+.invite h2 { color: var(--cream-bright); margin: 0.3rem 0 0.6rem; }
+.invite p { color: color-mix(in srgb, var(--cream-bright) 82%, transparent); font-size: 0.98rem; }
+.invite .when-row { display: flex; flex-wrap: wrap; gap: 0.4rem 1rem; margin: 1rem 0 1.2rem; font-size: 0.9rem; color: var(--cream-bright); }
+.invite .when-row span::before { content: "·"; margin-right: 0.5rem; color: var(--gold-bright); }
+.invite .when-row span:first-child::before { content: none; }
+.invite .btn--primary { background: var(--gold-bright); color: var(--ink); border-color: var(--gold-bright); }
+.invite .b-fine { color: color-mix(in srgb, var(--cream-bright) 60%, transparent); }
+.mine { list-style: none; display: grid; gap: 0.4rem; font-size: 0.9rem; color: var(--ink-soft); }
+.mine li b { color: var(--ink); font-weight: 600; }
+@media (max-width: 899px) { .hide-sm { display: none; } }

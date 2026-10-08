@@ -1,0 +1,180 @@
+---
+// Nervensystem-Check, Ergebnis. Daten kommen aus sessionStorage (fot_ns), gesetzt nach erfolgreichem Lead.
+// Ziel der Seite: Anmeldung zum Reset-Abend per Ein-Klick (/webinar/?k=1&...&q=nervensystem).
+// Die Anmeldung zählt dort als Ein-Klick: kein zweiter CRM-Lead, kein zweiter Meta-Lead.
+import '../../styles/bauchfett.css';
+import '../../styles/nervensystem.css';
+import CookieBanner from '../../components/CookieBanner.astro';
+import ScaleeeCredit from '../../components/ScaleeeCredit.astro';
+import FotWordmark from '../../components/FotWordmark.astro';
+import { WEBINAR } from '../../lib/webinar';
+const impressumUrl = 'https://fitontime.ch/impressum-datenschutz';
+const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
+const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').trim();
+const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..500,0..100;1,9..144,300..500,0..100&family=Albert+Sans:wght@400;500;600&display=swap';
+---
+<html lang="de-CH">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Dein Nervensystem-Ergebnis | Fit on Time</title>
+  <link rel="icon" type="image/png" href="/images/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href={FONTS} rel="stylesheet" />
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <FotWordmark />
+      <span class="tag">Dein Ergebnis</span>
+    </div>
+  </div>
+
+  <section class="section result-hero">
+    <div class="wrap">
+      <div class="profile">
+        <div class="p-label" id="hi">Dein Ergebnis</div>
+        <h2 id="typH">Dein Nervensystem steht <em>unter Strom.</em></h2>
+        <span class="p-where" id="typName">Daueralarm</span>
+        <div class="ns-score"><b id="score">0</b><span>von 100 · Belastung deines Nervensystems</span></div>
+        <div class="ns-scale"><i id="marker"></i></div>
+        <div class="ns-scale-l"><span>Ruhig</span><span>Angespannt</span><span>Stark belastet</span></div>
+        <p class="p-text" id="typText"></p>
+        <p class="p-text" id="typGewicht"></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0.5rem;">
+    <div class="wrap">
+      <div class="invite" id="invite">
+        <p class="eyebrow">Dein nächster Schritt · kostenlos</p>
+        <h2>Der Reset-Abend: live mit Fabian und Filip.</h2>
+        <p id="invText">Dein Nervensystem ist eine von vier Bremsen, die den Körper ab 40 festhalten. An diesem Abend siehst du, wie du es aus dem Schutzmodus holst. Und ob bei dir noch Stoffwechsel, Insulin oder Cortisol mitziehen.</p>
+        <div class="when-row"><span>{WEBINAR.datumText}</span><span>{WEBINAR.zeitText}</span><span>Live online</span></div>
+        <button class="btn btn--primary btn--block" id="go">Mit einem Klick dabei sein <span class="btn-arrow">&rarr;</span></button>
+        <p class="b-fine">Kostenlos. Kamera bleibt aus, niemand sieht dich.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--bright">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">Für heute Abend</p>
+        <h2>Drei Dinge, die du <em>sofort tun kannst.</em></h2>
+      </div>
+      <ol class="tips" id="tips"></ol>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">Das hast du gesagt</p>
+      </div>
+      <ul class="mine" id="mine"></ul>
+      <div style="margin-top:2rem;max-width:28rem;">
+        <button class="btn btn--primary btn--block" id="go2">Platz am Reset-Abend sichern <span class="btn-arrow">&rarr;</span></button>
+      </div>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <footer>
+      <a href={impressumUrl} target="_blank" rel="noopener">Impressum</a> &middot;
+      <a href={datenschutzUrl} target="_blank" rel="noopener">Datenschutzerklärung</a>
+      <p class="fine">Der Nervensystem-Check ist eine Einschätzung anhand deiner Antworten und ersetzt keine ärztliche Abklärung. Bei anhaltenden Beschwerden geh bitte zu deiner Ärztin oder deinem Arzt. Ergebnisse sind individuell.</p>
+      <div style="margin-top:10px;text-align:center;"><ScaleeeCredit /></div>
+    </footer>
+  </div>
+
+  <script is:inline>
+    var TYPEN = {
+      a: {
+        name: 'Daueralarm',
+        h: 'Dein Nervensystem steht <em>unter Strom.</em>',
+        text: 'Dein Kopf läuft, dein Körper ist angespannt, auch wenn eigentlich Ruhe wäre. Dein Nervensystem bleibt im Alarm, als müsste es dich dauernd vor etwas schützen.',
+        gewicht: 'Was das fürs Abnehmen heisst: Im Alarm bleibt das Stresshormon Cortisol oft hoch. Der Körper hält dann eher fest, gerade am Bauch. Und abends meldet sich ein Hunger, der eigentlich der Wunsch nach einer Pause ist.',
+        tips: [
+          ['Länger aus- als einatmen.', 'Heute Abend 5 Minuten: 4 Sekunden ein, 6 Sekunden aus. Das ist das einfachste Signal an deinen Körper, dass er runterfahren darf.'],
+          ['Handy 30 Minuten vor dem Schlafen weg.', 'Nachrichten und Mails halten den Alarm am Laufen. Leg es in ein anderes Zimmer.'],
+          ['Warm essen statt Snacks auf dem Sofa.', 'Ein richtiges Abendessen mit Eiweiss macht satt und ruhig. Häppchen vor dem Fernseher halten den Hunger wach.']
+        ]
+      },
+      l: {
+        name: 'Leerer Akku',
+        h: 'Dein Nervensystem hat <em>auf Sparen umgestellt.</em>',
+        text: 'Du schläfst und bist trotzdem müde. Nach langer Anspannung hat dein Körper die Notbremse gezogen und spart Kraft, wo er kann.',
+        gewicht: 'Was das fürs Abnehmen heisst: Nach viel Stress und vielen Diäten schaltet der Körper oft auf Sparflamme. Er verbraucht weniger, und dir fehlt die Kraft, Vorsätze durchzuziehen. Das ist keine Faulheit, das ist Schutz.',
+        tips: [
+          ['10 Minuten Tageslicht am Morgen.', 'Kurz raus, bevor der Tag losgeht. Licht am Morgen hilft dem Körper, den Tag-Nacht-Rhythmus wiederzufinden.'],
+          ['Frühstück mit Eiweiss statt nur Kaffee.', 'Ein Ei, Joghurt oder Quark. Kaffee auf leeren Magen fühlt sich nach Energie an und kostet später mehr.'],
+          ['Spazieren statt hartem Training.', '15 Minuten nach dem Essen gehen. Ein leerer Akku braucht jetzt Bewegung, die auflädt, nicht noch mehr Anstrengung.']
+        ]
+      },
+      x: {
+        name: 'Achterbahn',
+        h: 'Dein Nervensystem kippt <em>zwischen Vollgas und leer.</em>',
+        text: 'Eben noch alles im Griff, dann plötzlich nichts mehr. Dein Nervensystem fährt hoch und stürzt ab, und mit dem Absturz kommt der Drang nach schneller Energie.',
+        gewicht: 'Was das fürs Abnehmen heisst: Mit jedem Absturz kommt der Heisshunger, oft auf Süsses. Dein Blutzucker fährt mit Achterbahn, und der Körper schaltet auf Speichern. Nach einem «schlechten» Tag fängst du dann am Montag wieder von vorne an.',
+        tips: [
+          ['Drei Mahlzeiten, dazwischen Pause.', 'Regelmässig essen nimmt dem Absturz am Nachmittag die Spitze. Lieber satt essen als den ganzen Tag knabbern.'],
+          ['Eiweiss zu jeder Mahlzeit.', 'Es hält länger satt und bremst den Heisshunger, der um 16 Uhr kommt.'],
+          ['Ein Stück Kuchen ist kein Neustart.', 'Wenn es heute nicht perfekt lief: Die nächste Mahlzeit ganz normal weiter. Nicht erst am Montag.']
+        ]
+      }
+    };
+
+    var d = null;
+    try { d = JSON.parse(sessionStorage.getItem('fot_ns') || 'null'); } catch (e) {}
+    // Direktaufruf ohne Check: zurück zum Start
+    if (!d || !TYPEN[d.typ]) { location.replace('/nervensystem/'); }
+    else {
+      var t = TYPEN[d.typ];
+      if (d.name) document.getElementById('hi').textContent = d.name + ', dein Ergebnis';
+      document.getElementById('typH').innerHTML = t.h;
+      document.getElementById('typName').textContent = t.name;
+      document.getElementById('typText').textContent = t.text;
+      document.getElementById('typGewicht').textContent = t.gewicht;
+      document.getElementById('tips').innerHTML = t.tips.map(function (x) { return '<li><div><b>' + x[0] + '</b>' + x[1] + '</div></li>'; }).join('');
+      document.getElementById('mine').innerHTML = (d.mine || []).filter(Boolean).map(function (x) { return '<li>' + x + '</li>'; }).join('');
+      // Wert hochzählen, Marker auf der Skala setzen
+      var s = d.score || 0, n = 0;
+      var iv = setInterval(function () { n = Math.min(s, n + 2); document.getElementById('score').textContent = n; if (n >= s) clearInterval(iv); }, 18);
+      setTimeout(function () { document.getElementById('marker').style.left = s + '%'; }, 150);
+    }
+
+    function tk(e, x) {
+      var tries = 0;
+      function fire() {
+        if (window.__lp) window.__lp.track(e, Object.assign({ page: 'nervensystem' }, x || {}), 'fot', 'Nervensystem-Check');
+        else if (tries++ < 40) setTimeout(fire, 50);
+      }
+      fire();
+    }
+    if (d) tk('result_shown', { detail: d.typ });
+
+    // Ein-Klick-Anmeldung: Daten aus dem Check, Thema nervensystem auf der Anmeldeseite
+    function anmelden(src) {
+      tk('webinar_click', { detail: src });
+      var p = new URLSearchParams({ k: '1', e: d.email || '', n: d.full || d.name || '', t: d.phone || '', q: 'nervensystem' });
+      setTimeout(function () { location.href = '/webinar/?' + p.toString(); }, 200);
+    }
+    document.getElementById('go').addEventListener('click', function () { anmelden('oben'); });
+    document.getElementById('go2').addEventListener('click', function () { anmelden('unten'); });
+  </script>
+
+  <script is:inline src="https://t.hyros.com/v1/lst/universal-script?ph=689a71ca1ab3be1cb1caddbe6b7902a4ad2c51a228f4ec9ea7fef3123a705f63"></script>
+
+  <CookieBanner
+    metaPixelId="1316450223953563"
+    googleAdsId={GOOGLE_ADS_ID}
+    consentKey="fot_nervensystem_consent"
+    impressumUrl={impressumUrl}
+    datenschutzUrl={datenschutzUrl}
+  />
+</body>
+</html>

@@ -28,7 +28,7 @@ export const QUELLEN: Record<string, { name: string; bremse: Bremse; einstieg: s
   'stoffwechsel-report': { name: 'Stoffwechsel-Report', bremse: 'stoffwechsel', einstieg: 'Du hast deinen Stoffwechsel-Report. Am Reset-Abend siehst du, warum der Stoffwechsel selten allein bremst.' },
   'ab-40': { name: 'Video', bremse: 'stoffwechsel', einstieg: 'Du hast gesehen, warum dein Körper ab 40 auf Speichern schaltet. Am Reset-Abend gehen wir live tiefer, mit echten Fällen.' },
   cortisol: { name: 'Cortisol-Check', bremse: 'cortisol', einstieg: 'Stress hält deinen Körper fest. Am Reset-Abend siehst du, wie Cortisol dabei mitspielt, und was es abends runterholt.' },
-  nervensystem: { name: 'Nervensystem-Test', bremse: 'nerven', einstieg: 'Du hast den Nervensystem-Test gemacht. Am Reset-Abend siehst du, warum ein Körper im Schutzmodus nicht abnimmt, und wie er wieder rauskommt.' },
+  nervensystem: { name: 'Nervensystem-Check', bremse: 'nerven', einstieg: 'Du hast den Nervensystem-Check gemacht. Am Reset-Abend siehst du, warum ein Körper im Schutzmodus nicht abnimmt, und wie er wieder rauskommt.' },
 };
 
 // Zugangslink zum Live-Raum. Solange er fehlt, sagen Kalender und Seite "kommt per Mail".

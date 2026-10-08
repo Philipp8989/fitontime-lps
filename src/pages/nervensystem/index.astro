@@ -1,0 +1,446 @@
+---
+// Nervensystem-Check: Vorschaltung zum Reset-Abend (Ads Nervensystem 1 bis 4).
+// Mechanik nach dem Nervensystem-Typ-Test der Achtsamkeitsakademie (Meta-Werbebibliothek 08.10.2026):
+// erste Frage startet den Check, Skalen- und Alltagsfragen, Zwischenlob, Auswertung mit Ja-Frage,
+// danach nur Vorname und E-Mail. Thema hier: Nervensystem als Grund, warum Abnehmen nicht klappt.
+// Ergebnis auf /nervensystem/ergebnis/, von dort Ein-Klick-Anmeldung zum Reset-Abend (?q=nervensystem).
+import '../../styles/bauchfett.css';
+import '../../styles/nervensystem.css';
+import CookieBanner from '../../components/CookieBanner.astro';
+import ScaleeeCredit from '../../components/ScaleeeCredit.astro';
+import FotWordmark from '../../components/FotWordmark.astro';
+const impressumUrl = 'https://fitontime.ch/impressum-datenschutz';
+const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
+const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').trim();
+const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..500,0..100;1,9..144,300..500,0..100&family=Albert+Sans:wght@400;500;600&display=swap';
+---
+<html lang="de-CH">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Nervensystem-Check: Steht dein Körper unter Strom? | Fit on Time</title>
+  <meta name="description" content="2 Minuten, 10 Fragen, kostenlos. Finde heraus, wie belastet dein Nervensystem ist und warum das beim Abnehmen bremsen kann." />
+  <link rel="icon" type="image/png" href="/images/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href={FONTS} rel="stylesheet" />
+</head>
+<body>
+
+  <!-- ===== LANDING ===== -->
+  <div id="lp">
+    <div class="wrap">
+      <div class="topbar">
+        <FotWordmark />
+        <span class="tag">Nervensystem-Check</span>
+      </div>
+    </div>
+
+    <section class="hero">
+      <div class="arc arc--hero"></div>
+      <div class="wrap wrap--wide hero-grid">
+        <div>
+          <p class="eyebrow">2 Minuten · 10 Fragen · kostenlos</p>
+          <h1>Du isst bewusst. Und trotzdem <em>bewegt sich nichts?</em></h1>
+          <p class="lead">Vielleicht liegt es nicht am Essen. Steht dein Nervensystem den ganzen Tag unter Strom, hält dein Körper fest. Der Check zeigt dir, wie belastet es ist und was das für dein Gewicht heisst.</p>
+          <p class="lead hide-sm" style="font-size:0.95rem;">Von Fit on Time. Seit 2016 über 4'000 Frauen in der Schweiz begleitet.</p>
+        </div>
+
+        <div class="gate">
+          <div class="gate-q">Abends, wenn endlich Ruhe ist: Was passiert bei dir?</div>
+          <div class="gate-sub">Tipp auf die Antwort, die am ehesten passt. Damit startet der Check.</div>
+          <div class="opts">
+            <button class="opt" onclick="startQuiz('kopf')">Mein Kopf läuft weiter, ich komme nicht runter</button>
+            <button class="opt" onclick="startQuiz('kuehlschrank')">Ich stehe vor dem Kühlschrank, obwohl ich keinen Hunger habe</button>
+            <button class="opt" onclick="startQuiz('sofa')">Ich falle aufs Sofa und kriege nichts mehr hin</button>
+            <button class="opt" onclick="startQuiz('ruhig')">Ich bin entspannt und komme gut runter</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Wiedererkennen -->
+    <section class="section section--bright">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow">Kennst du das?</p>
+          <h2>Montag läuft es. <em>Ab Mittwoch ist alles egal.</em></h2>
+          <p class="lead">Einkauf gemacht, Essen vorbereitet, die Motivation ist da. Dann dauert ein Termin länger, du kommst später heim, und abends ist dir einfach alles egal. Der Plan funktioniert nur, solange das Leben mitspielt. Das liegt selten an deiner Disziplin. Ein Nervensystem, das nie Pause hat, macht Durchhalten fast unmöglich.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Drei Muster -->
+    <section class="section">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow">Was der Check zeigt</p>
+          <h2>Drei Muster, die beim Abnehmen <em>bremsen.</em></h2>
+        </div>
+        <div class="types">
+          <div class="type-row"><span class="tn">1</span><div><h3>Daueralarm</h3><p>Der Kopf läuft, der Körper ist angespannt. Das Stresshormon Cortisol bleibt oben, der Körper hält fest, vor allem am Bauch.</p></div></div>
+          <div class="type-row"><span class="tn">2</span><div><h3>Leerer Akku</h3><p>Du schläfst und bist trotzdem müde. Der Körper hat auf Sparen umgestellt und verbraucht weniger.</p></div></div>
+          <div class="type-row"><span class="tn">3</span><div><h3>Achterbahn</h3><p>Vollgas, dann Absturz. Mit dem Absturz kommt der Heisshunger, und am Montag fängst du wieder von vorne an.</p></div></div>
+        </div>
+        <p class="brake-close">Du bekommst dein Muster, deinen Belastungswert und drei Dinge, die du schon heute Abend tun kannst.</p>
+        <div style="margin-top:1.75rem;max-width:28rem;">
+          <a class="btn btn--primary btn--block" href="#top" onclick="window.scrollTo({top:0,behavior:'smooth'});return false;">Check starten <span class="btn-arrow">&rarr;</span></a>
+        </div>
+      </div>
+    </section>
+
+    <div class="wrap">
+      <footer>
+        <a href={impressumUrl} target="_blank" rel="noopener">Impressum</a> &middot;
+        <a href={datenschutzUrl} target="_blank" rel="noopener">Datenschutzerklärung</a>
+        <p class="fine">Der Nervensystem-Check ist eine Einschätzung anhand deiner Antworten und ersetzt keine ärztliche Abklärung. Ergebnisse sind individuell.</p>
+        <div style="margin-top:10px;text-align:center;"><ScaleeeCredit /></div>
+      </footer>
+    </div>
+  </div>
+
+  <!-- ===== QUIZ ===== -->
+  <div id="quiz">
+    <div class="q-head"><FotWordmark /></div>
+    <div class="q-progress"><div class="q-bar"><div class="q-fill" id="qf"></div></div><div class="q-num" id="qn">Frage 2 von 10</div></div>
+    <div class="q-body">
+
+      <div class="step on" data-s="2">
+        <h2>Wie alt bist du?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(2,'u35')">Unter 35</button>
+          <button class="opt" onclick="nxt(2,'35-44')">35 bis 44</button>
+          <button class="opt" onclick="nxt(2,'45-54')">45 bis 54</button>
+          <button class="opt" onclick="nxt(2,'55+')">55 oder älter</button>
+        </div>
+      </div>
+
+      <div class="step" data-s="3">
+        <h2>Ich komme innerlich nicht runter, selbst wenn ich Zeit zum Ausruhen hätte.</h2>
+        <p class="q-sub">Wie sehr trifft das auf dich zu?</p>
+        <div class="scale">
+          <button class="opt" onclick="nxt(3,1)">1</button><button class="opt" onclick="nxt(3,2)">2</button><button class="opt" onclick="nxt(3,3)">3</button><button class="opt" onclick="nxt(3,4)">4</button><button class="opt" onclick="nxt(3,5)">5</button>
+        </div>
+        <div class="scale-ends"><span>Gar nicht</span><span>Voll und ganz</span></div>
+      </div>
+
+      <div class="step" data-s="4">
+        <h2>Wie schläfst du im Moment?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(4,'gut')">Meistens gut</button>
+          <button class="opt" onclick="nxt(4,'gedanken')">Ich schlafe schlecht ein<small>Die Gedanken drehen sich weiter</small></button>
+          <button class="opt" onclick="nxt(4,'wach')">Ich wache nachts auf<small>Oft zwischen 2 und 4 Uhr</small></button>
+          <button class="opt" onclick="nxt(4,'erschoepft')">Ich schlafe genug und bin trotzdem erschöpft</button>
+        </div>
+        <div class="tipp"><strong>Gut zu wissen:</strong> Wer schlecht schläft, hat am nächsten Tag oft mehr Hunger, vor allem auf Süsses. Das ist kein Willensproblem.</div>
+      </div>
+
+      <div class="step" data-s="5">
+        <h2>Morgens bin ich schon müde, bevor der Tag richtig angefangen hat.</h2>
+        <p class="q-sub">Wie sehr trifft das auf dich zu?</p>
+        <div class="scale">
+          <button class="opt" onclick="nxt(5,1)">1</button><button class="opt" onclick="nxt(5,2)">2</button><button class="opt" onclick="nxt(5,3)">3</button><button class="opt" onclick="nxt(5,4)">4</button><button class="opt" onclick="nxt(5,5)">5</button>
+        </div>
+        <div class="scale-ends"><span>Gar nicht</span><span>Voll und ganz</span></div>
+      </div>
+
+      <div class="step pause" data-s="p">
+        <h2>Du machst das <em>gut.</em></h2>
+        <p>Deine Antworten zeichnen schon ein klares Bild. Nur noch 5 Fragen.</p>
+        <button class="btn btn--primary btn--block" onclick="weiter()">Weiter <span class="btn-arrow">&rarr;</span></button>
+      </div>
+
+      <div class="step" data-s="6">
+        <h2>Wie läuft eine normale Woche mit deinen Vorsätzen?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(6,'mittwoch')">Am Anfang gut, ab Mittwoch ist alles egal</button>
+          <button class="opt" onclick="nxt(6,'waage')">Ich halte durch, aber die Waage bewegt sich nicht</button>
+          <button class="opt" onclick="nxt(6,'kraft')">Mir fehlt schon die Kraft, überhaupt anzufangen</button>
+          <button class="opt" onclick="nxt(6,'pause')">Ich bin ständig unter Strom, Essen ist meine Pause</button>
+        </div>
+      </div>
+
+      <div class="step" data-s="7">
+        <h2>Wann kommt der Heisshunger?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(7,'nachmittag')">Am Nachmittag, gegen 16 Uhr</button>
+          <button class="opt" onclick="nxt(7,'abend')">Abends, wenn endlich Ruhe ist</button>
+          <button class="opt" onclick="nxt(7,'stress')">Wenn ich gestresst bin, egal wann</button>
+          <button class="opt" onclick="nxt(7,'selten')">Eher selten</button>
+        </div>
+        <div class="tipp"><strong>Gut zu wissen:</strong> Heisshunger am Abend ist oft kein echter Hunger. Der Körper sucht die Pause, die er tagsüber nicht bekommen hat.</div>
+      </div>
+
+      <div class="step" data-s="8">
+        <h2>Ein Stück Kuchen bei der Arbeit, und ich denke: Heute ist es eh egal.</h2>
+        <p class="q-sub">Wie sehr trifft das auf dich zu?</p>
+        <div class="scale">
+          <button class="opt" onclick="nxt(8,1)">1</button><button class="opt" onclick="nxt(8,2)">2</button><button class="opt" onclick="nxt(8,3)">3</button><button class="opt" onclick="nxt(8,4)">4</button><button class="opt" onclick="nxt(8,5)">5</button>
+        </div>
+        <div class="scale-ends"><span>Gar nicht</span><span>Voll und ganz</span></div>
+      </div>
+
+      <div class="step" data-s="9">
+        <h2>Wie oft kippst du zwischen Vollgas und komplett leer?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(9,'oft')">Oft</button>
+          <button class="opt" onclick="nxt(9,'manchmal')">Manchmal</button>
+          <button class="opt" onclick="nxt(9,'nie')">Fast nie</button>
+        </div>
+      </div>
+
+      <div class="step" data-s="10">
+        <h2>Was hast du schon probiert?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(10,'kalorien')">Kalorien zählen, weniger essen</button>
+          <button class="opt" onclick="nxt(10,'sport')">Mehr Sport</button>
+          <button class="opt" onclick="nxt(10,'fasten')">Intervallfasten</button>
+          <button class="opt" onclick="nxt(10,'alles')">Alles davon</button>
+          <button class="opt" onclick="nxt(10,'nichts')">Noch nichts davon</button>
+        </div>
+        <div class="tipp"><strong>Gut zu wissen:</strong> Weniger essen und mehr Sport sind für ein gestresstes Nervensystem zusätzlicher Stress. Darum wird es oft mit jedem Versuch schwerer.</div>
+      </div>
+
+      <!-- Auswertung mit Ja-Frage -->
+      <div class="step ld" data-s="ld">
+        <div class="spinner"></div>
+        <h2>Wir werten deine Antworten aus</h2>
+        <p>Einen Moment noch</p>
+        <div class="checks">
+          <div class="chk" id="c1"><i>&#10003;</i>Antworten ausgewertet</div>
+          <div class="chk" id="c2"><i>&#10003;</i>Muster erkannt</div>
+          <div class="chk" id="c3"><i>&#10003;</i>Tipps für dich zusammengestellt</div>
+        </div>
+        <div class="ask" id="ask">
+          <p>Würdest du 10 Minuten am Tag für dich einplanen, wenn du wüsstest, dass es wirkt?</p>
+          <div class="row">
+            <button class="btn btn--outline" onclick="bereit('nein')">Nein</button>
+            <button class="btn btn--primary" onclick="bereit('ja')">Ja</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Formular -->
+      <div class="step form" data-s="form">
+        <div class="tag">Auswertung fertig</div>
+        <h2>Dein Ergebnis <em>ist bereit.</em></h2>
+        <p class="sub">Wohin dürfen wir es schicken? Du siehst es sofort und bekommst es zusätzlich per Mail.</p>
+        <div class="fields">
+          <div class="field"><input type="text" id="fn" placeholder="Dein Vorname" autocomplete="given-name" /></div>
+          <div class="field"><input type="email" id="em" placeholder="Deine E-Mail" autocomplete="email" /></div>
+          <div class="field"><span class="pre">+41</span><input type="tel" id="ph" placeholder="Handynummer (freiwillig)" autocomplete="tel" /></div>
+        </div>
+        <p class="form-err" id="formErr" role="alert" hidden></p>
+        <div class="cb-row" id="dsRow">
+          <input type="checkbox" id="ds" />
+          <label for="ds">Ich akzeptiere die <a href={datenschutzUrl} target="_blank" rel="noopener">Datenschutzbestimmungen</a> und bekomme mein Ergebnis per E-Mail. Abmelden geht jederzeit.</label>
+        </div>
+        <button class="btn btn--primary btn--block" id="sbtn" onclick="send()">Mein Ergebnis ansehen <span class="btn-arrow">&rarr;</span></button>
+        <div class="form-proof">Deine Daten sind sicher und werden nicht weitergegeben.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <script is:inline>
+    var A = {};            // Antworten
+    var TOTAL = 10;
+    // Punkte je Muster: a = Daueralarm, l = Leerer Akku, x = Achterbahn
+    var P = { a: 0, l: 0, x: 0 };
+    var POINTS = {
+      q1: { kopf: { a: 2 }, kuehlschrank: { a: 1, x: 1 }, sofa: { l: 2 }, ruhig: {} },
+      q4: { gut: {}, gedanken: { a: 2 }, wach: { a: 2 }, erschoepft: { l: 2 } },
+      q6: { mittwoch: { x: 2 }, waage: { l: 2 }, kraft: { l: 2 }, pause: { a: 2 } },
+      q7: { nachmittag: { x: 2 }, abend: { a: 2 }, stress: { a: 1, x: 1 }, selten: {} },
+      q9: { oft: { x: 2 }, manchmal: { x: 1 }, nie: {} },
+      q10: { kalorien: { l: 1 }, sport: { a: 1 }, fasten: { l: 1 }, alles: { a: 1, l: 1, x: 1 }, nichts: {} }
+    };
+    // Skalenfragen zählen für ein Muster (Wert 4 oder 5 gibt Punkte) und für die Belastung
+    var SCALE = { q3: 'a', q5: 'l', q8: 'x' };
+    var LABELS = {
+      q1: { kopf: 'Kopf läuft weiter', kuehlschrank: 'Kühlschrank ohne Hunger', sofa: 'Sofa, nichts geht mehr', ruhig: 'Entspannt' },
+      q2: { u35: 'Unter 35', '35-44': '35 bis 44', '45-54': '45 bis 54', '55+': '55+' },
+      q4: { gut: 'Schläft gut', gedanken: 'Schlecht einschlafen', wach: 'Wacht nachts auf', erschoepft: 'Genug Schlaf, trotzdem erschöpft' },
+      q6: { mittwoch: 'Ab Mittwoch egal', waage: 'Hält durch, Waage steht', kraft: 'Keine Kraft anzufangen', pause: 'Unter Strom, Essen als Pause' },
+      q7: { nachmittag: 'Nachmittags', abend: 'Abends', stress: 'Bei Stress', selten: 'Selten' },
+      q9: { oft: 'Oft', manchmal: 'Manchmal', nie: 'Fast nie' },
+      q10: { kalorien: 'Kalorien zählen', sport: 'Mehr Sport', fasten: 'Intervallfasten', alles: 'Alles davon', nichts: 'Noch nichts' }
+    };
+    var ORDER = [2, 3, 4, 5, 'p', 6, 7, 8, 9, 10];
+
+    function tk(e, d) {
+      var tries = 0;
+      function fire() {
+        if (window.__lp) {
+          window.__lp.track(e, Object.assign({ page: 'nervensystem' }, d || {}), 'fot', 'Nervensystem-Check');
+          if (e === 'quiz_start') window.__lp.meta('ViewContent', { content_name: 'FoT Nervensystem Start', currency: 'CHF' });
+          if (e === 'quiz_complete') window.__lp.meta('CompleteRegistration', { content_name: 'FoT Nervensystem Complete', currency: 'CHF' });
+          if (e === 'lead_submit') {
+            window.__lp.meta('Lead', { content_name: 'FoT Nervensystem Lead', currency: 'CHF' });
+            window.__lp.google('generate_lead', 'TnugCP-6zeIcEOfryccD');
+          }
+        } else if (tries++ < 40) {
+          setTimeout(fire, 50);
+        }
+      }
+      fire();
+    }
+    tk('page_view');
+
+    function add(q, val) {
+      if (SCALE[q]) { if (val >= 4) P[SCALE[q]] += val - 3; return; }
+      var p = (POINTS[q] || {})[val] || {};
+      for (var k in p) P[k] += p[k];
+    }
+
+    function zeige(s) {
+      document.querySelectorAll('#quiz .step').forEach(function (el) { el.classList.remove('on'); });
+      document.querySelector('.step[data-s="' + s + '"]').classList.add('on');
+      var i = ORDER.indexOf(s);
+      var nr = ORDER.slice(0, i + 1).filter(function (x) { return x !== 'p'; }).length + 1;
+      document.getElementById('qf').style.width = Math.round(((nr - 1) / TOTAL) * 100) + '%';
+      document.getElementById('qn').textContent = s === 'p' ? 'Halbzeit' : 'Frage ' + nr + ' von ' + TOTAL;
+      var q = document.getElementById('quiz'); if (q) q.scrollTop = 0;
+      window.scrollTo(0, 0);
+    }
+
+    function startQuiz(v) {
+      A.q1 = v; A.q1_label = LABELS.q1[v]; add('q1', v);
+      tk('quiz_start', { detail: 'q1_' + v });
+      document.getElementById('lp').style.display = 'none';
+      document.getElementById('quiz').classList.add('on');
+      zeige(2);
+    }
+
+    function nxt(s, val) {
+      var q = 'q' + s;
+      A[q] = val; A[q + '_label'] = SCALE[q] ? val + ' von 5' : ((LABELS[q] || {})[val] || val);
+      add(q, val);
+      tk('quiz_answer', { detail: q + '_' + val });
+      var i = ORDER.indexOf(s);
+      if (i < ORDER.length - 1) zeige(ORDER[i + 1]);
+      else { auswerten(); tk('quiz_complete', { detail: A.ns_typ }); laden(); }
+    }
+    function weiter() { zeige(6); }
+
+    // Belastung 0 bis 100: Skalen (3 mal 1 bis 5) plus Muster-Punkte, nie unter 18
+    function auswerten() {
+      var skala = (A.q3 || 1) + (A.q5 || 1) + (A.q8 || 1) - 3;          // 0 bis 12
+      var muster = Math.min(14, P.a + P.l + P.x);                        // 0 bis 14
+      A.ns_score = Math.max(18, Math.min(96, Math.round((skala / 12) * 55 + (muster / 14) * 45)));
+      var typ = 'a';
+      if (P.l > P[typ]) typ = 'l';
+      if (P.x > P[typ]) typ = 'x';
+      A.ns_typ = typ;
+      A.ns_typ_label = { a: 'Daueralarm', l: 'Leerer Akku', x: 'Achterbahn' }[typ];
+    }
+
+    function laden() {
+      var ld = document.querySelector('.step[data-s="ld"]');
+      document.querySelectorAll('#quiz .step').forEach(function (el) { el.classList.remove('on'); });
+      ld.classList.add('on');
+      document.getElementById('qf').style.width = '100%';
+      document.getElementById('qn').textContent = 'Auswertung';
+      setTimeout(function () { document.getElementById('c1').classList.add('show'); }, 600);
+      setTimeout(function () { document.getElementById('ask').classList.add('on'); }, 1400);
+    }
+    function bereit(v) {
+      A.bereit = v === 'ja' ? 'Ja' : 'Nein';
+      tk('quiz_answer', { detail: 'bereit_' + v });
+      document.getElementById('ask').classList.remove('on');
+      setTimeout(function () { document.getElementById('c2').classList.add('show'); }, 300);
+      setTimeout(function () { document.getElementById('c3').classList.add('show'); }, 1000);
+      setTimeout(function () {
+        document.querySelector('.step[data-s="ld"]').classList.remove('on');
+        document.querySelector('.step[data-s="form"]').classList.add('on');
+        document.getElementById('qn').textContent = 'Fast fertig';
+      }, 1800);
+    }
+
+    // Gleiche Regeln wie src/lib/phone.ts und src/lib/leadValidation.ts (Server prüft nochmal)
+    function normalizePhone(raw) {
+      var c = (raw || '').replace(/[^\d+]/g, '');
+      if (!c) return '';
+      if (c.indexOf('00') === 0) c = '+' + c.slice(2);
+      if (c.charAt(0) !== '+') c = c.charAt(0) === '0' ? '+41' + c.slice(1) : '+41' + c;
+      if (c.indexOf('+410') === 0) c = '+41' + c.slice(4);
+      return c;
+    }
+    function validName(n) { return n.length <= 80 && !/[\d@]/.test(n) && (n.match(/\p{L}/gu) || []).length >= 2; }
+    function validEmail(e) { return e.length <= 254 && /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i.test(e); }
+    function validPhone(p) {
+      if (!/^\+\d+$/.test(p)) return false;
+      if (p.indexOf('+41') === 0) return /^\+41[2-9]\d{8}$/.test(p);
+      return p.length - 1 >= 10 && p.length - 1 <= 15;
+    }
+
+    function send() {
+      var fnEl = document.getElementById('fn'), emEl = document.getElementById('em'), phEl = document.getElementById('ph');
+      var fn = fnEl.value.trim(), em = emEl.value.trim(), ph = normalizePhone(phEl.value);
+      var errEl = document.getElementById('formErr');
+      [fnEl, emEl, phEl].forEach(function (el) { el.parentElement.classList.remove('err'); el.removeAttribute('aria-invalid'); });
+      errEl.hidden = true;
+      var bad = [];
+      if (!validName(fn)) bad.push([fnEl, 'deinen Vornamen']);
+      if (!validEmail(em)) bad.push([emEl, 'eine gültige E-Mail']);
+      // Handy ist freiwillig, aber wenn eingetragen, dann gültig
+      if (ph && !validPhone(ph)) bad.push([phEl, 'eine gültige Handynummer (z. B. 079 123 45 67) oder lass das Feld leer']);
+      if (bad.length) {
+        bad.forEach(function (b) { b[0].parentElement.classList.add('err'); b[0].setAttribute('aria-invalid', 'true'); });
+        var parts = bad.map(function (b) { return b[1]; });
+        errEl.textContent = 'Bitte trag ' + (parts.length > 1 ? parts.slice(0, -1).join(', ') + ' und ' + parts[parts.length - 1] : parts[0]) + ' ein.';
+        errEl.hidden = false;
+        bad[0][0].focus();
+        return;
+      }
+      var dsRow = document.getElementById('dsRow');
+      dsRow.classList.remove('error');
+      if (!document.getElementById('ds').checked) { dsRow.classList.add('error'); dsRow.scrollIntoView({ behavior: 'smooth', block: 'center' }); return; }
+      var btn = document.getElementById('sbtn');
+      btn.disabled = true;
+      btn.textContent = 'Wird gespeichert';
+      fetch('/api/sheets', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          lp_slug: 'nervensystem',
+          lp_name: 'Nervensystem-Check',
+          name: fn,
+          email: em,
+          phone: ph,
+          first_name: fn.split(' ')[0],
+          answers: A
+        })
+      }).then(function (res) {
+        if (!res.ok) throw new Error('insert-failed');
+        tk('lead_submit', { detail: A.ns_typ });
+        try {
+          sessionStorage.setItem('fot_ns', JSON.stringify({
+            name: fn.split(' ')[0] || '', full: fn, email: em, phone: ph,
+            typ: A.ns_typ, score: A.ns_score,
+            mine: [A.q1_label, A.q4_label, A.q6_label, A.q7_label]
+          }));
+        } catch (e) {}
+        btn.textContent = 'Weiter zu deinem Ergebnis';
+        setTimeout(function () { location.href = '/nervensystem/ergebnis/'; }, 250);
+      }).catch(function () {
+        btn.disabled = false;
+        btn.innerHTML = 'Mein Ergebnis ansehen <span class="btn-arrow">&rarr;</span>';
+        errEl.textContent = 'Etwas ist schiefgelaufen. Bitte versuch es nochmal.';
+        errEl.hidden = false;
+      });
+    }
+  </script>
+
+  <script is:inline src="https://t.hyros.com/v1/lst/universal-script?ph=689a71ca1ab3be1cb1caddbe6b7902a4ad2c51a228f4ec9ea7fef3123a705f63"></script>
+
+  <CookieBanner
+    metaPixelId="1316450223953563"
+    googleAdsId={GOOGLE_ADS_ID}
+    consentKey="fot_nervensystem_consent"
+    impressumUrl={impressumUrl}
+    datenschutzUrl={datenschutzUrl}
+  />
+</body>
+</html>
