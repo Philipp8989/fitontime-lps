@@ -4,6 +4,7 @@
 // VSL_EMBED: Loom/Vimeo-Embed-URL eintragen, sobald Fabian das Video aufgenommen hat.
 import CookieBanner from '../../components/CookieBanner.astro';
 import ScaleeeCredit from '../../components/ScaleeeCredit.astro';
+import WebinarEinladung from '../../components/WebinarEinladung.astro';
 
 const LP_SLUG = 'ab-40';
 const LP_NAME = 'Ab-40 VSL Funnel';
@@ -210,6 +211,8 @@ const VSL_EMBED = (import.meta.env.PUBLIC_FOT_AB40_VSL_URL || '').trim();
       <p class="cc-sub">Sichere dir jetzt deinen kostenlosen Stoffwechsel-Test, bevor die Termine der Woche vergeben sind.</p>
       <a class="btn" href="#switchSec">Nach oben zum Schalter ↑</a>
     </div>
+  <WebinarEinladung quelle="ab-40" />
+
   </main>
 
   <footer>

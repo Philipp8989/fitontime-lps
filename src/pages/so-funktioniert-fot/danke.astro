@@ -7,6 +7,7 @@
 // konfiguriert), call_booked feuert dort unter dem ab-40-Slug.
 import CookieBanner from '../../components/CookieBanner.astro';
 import ScaleeeCredit from '../../components/ScaleeeCredit.astro';
+import WebinarEinladung from '../../components/WebinarEinladung.astro';
 
 const LP_SLUG = 'so-funktioniert-fot';
 const LP_NAME = 'So funktioniert FOT (VSL-Funnel)';
@@ -268,6 +269,8 @@ const TF_IMAGES = Array.from({ length: 12 }, (_, i) => `/images/sd-proof/tf-${St
     </div>
     <p class="swipe-hint">← Wischen für mehr →</p>
   </section>
+
+  <WebinarEinladung quelle="so-funktioniert-fot" />
 
   <div class="backtop">
     <a class="btn" href="#cta">Nach oben zur Terminbuchung ↑</a>

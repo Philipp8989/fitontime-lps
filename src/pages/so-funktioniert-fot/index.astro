@@ -713,6 +713,8 @@ const TF_IMAGES = [...Array.from({ length: 12 }, (_, i) => `/images/sd-proof/tf-
       btn.disabled = true;
       btn.textContent = 'Einen Moment …';
       try {
+        // Für den Ein-Klick zum Reset-Abend auf der Danke-Seite
+        try { sessionStorage.setItem('fot_lead', JSON.stringify({ e: email, n: name, t: phone })); } catch (e) {}
         const res = await fetch('/api/sheets', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },

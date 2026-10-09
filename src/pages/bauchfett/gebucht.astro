@@ -6,6 +6,7 @@ import '../../styles/bauchfett.css';
 import CookieBanner from '../../components/CookieBanner.astro';
 import ScaleeeCredit from '../../components/ScaleeeCredit.astro';
 import FotWordmark from '../../components/FotWordmark.astro';
+import WebinarEinladung from '../../components/WebinarEinladung.astro';
 const impressumUrl = 'https://fitontime.ch/impressum-datenschutz';
 const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
 const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').trim();
@@ -53,6 +54,8 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
       </div>
     </div>
   </section>
+
+  <WebinarEinladung quelle="bauchfett" />
 
   <div class="wrap">
     <footer>
