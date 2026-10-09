@@ -1,0 +1,55 @@
+---
+// Nervensystem-Quiz Variante B (Kevin) im A/B-Test gegen /nervensystem/ (Variante A).
+// Design und Ablauf 1:1 aus Kevins Netlify-Funnel (ZIP 09.10.): Quiz ohne Kontaktdaten, Ergebnis, dann Anmeldung zum Reset-Abend.
+// Anmeldung läuft über /api/sheets (A/B-Leadliste "B · Kevin", Webinar-Liste, WebinarJam), Tracking wie Variante A.
+import CookieBanner from '../../components/CookieBanner.astro';
+const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').trim();
+const impressumUrl = 'https://fitontime.ch/impressum-datenschutz';
+---
+<!doctype html><html lang="de-CH"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f8f7f4">
+<meta name="description" content="Müde, schnell gereizt und das Abnehmen stockt? Beantworte 7 konkrete Fragen zu Stress und Erholung. Kostenlos, Ergebnis sofort.">
+<title>Bremst dein Nervensystem deinen Abnehmerfolg? | FIT on TIME</title>
+<link rel="stylesheet" href="/nervensystem-b/assets/style.css"><script is:inline type="module" src="/nervensystem-b/assets/quiz.js"></script>
+<script is:inline>
+  // Tracking wie Variante A: Dashboard-Events plus Meta/Google über window.__lp (lädt der CookieBanner)
+  window.fotB = function (e, d) {
+    var tries = 0;
+    (function fire() {
+      if (window.__lp) {
+        window.__lp.track(e, Object.assign({ page: 'nervensystem-b' }, d || {}), 'fot', 'Nervensystem-Quiz B');
+        if (e === 'quiz_start') window.__lp.meta('ViewContent', { content_name: 'FoT Nervensystem B Start', currency: 'CHF' });
+        if (e === 'quiz_complete') window.__lp.meta('CompleteRegistration', { content_name: 'FoT Nervensystem B Complete', currency: 'CHF' });
+        if (e === 'lead_submit') {
+          window.__lp.meta('Lead', { content_name: 'FoT Nervensystem B Lead', currency: 'CHF' });
+          window.__lp.google('generate_lead', 'TnugCP-6zeIcEOfryccD');
+        }
+      } else if (tries++ < 40) setTimeout(fire, 50);
+    })();
+  };
+  window.fotB('page_view', { detail: 'start' });
+</script>
+</head><body>
+<header class="site-header"><div class="shell header-row"><a href="/nervensystem-b/" aria-label="FIT on TIME Startseite"><img class="logo" src="/nervensystem-b/assets/fit-on-time-logo.png" alt="FIT on TIME" width="195" height="49"></a><span class="header-label">2-MINUTEN-CHECK <span class="muted-dot">·</span> KOSTENLOS</span></div></header>
+<main class="shell main-wrap">
+<section class="surface intro-surface" id="intro">
+  <div class="eyebrow"><span class="eyebrow-line"></span> 7 FRAGEN · SOFORTIGES ERGEBNIS</div>
+  <h1>Bremst dein <span class="accent-underline">Nervensystem</span> deinen Abnehmerfolg?</h1>
+  <p class="lead">Morgens schon müde. Schnell gereizt. Abends Heisshunger. Und auf der Waage tut sich wenig?</p>
+  <p class="sublead">Mach den 2-Minuten-Check und sieh, wie viele Anzeichen für Stress und fehlende Erholung sich in deinem Alltag zeigen.</p>
+  <button id="begin" class="btn btn-primary btn-block">Jetzt den Selbstcheck starten <span aria-hidden="true">→</span></button>
+  <p class="micro center">Kostenlos · Ohne E-Mail · Ergebnis direkt danach</p>
+  <div class="proof-line"><img src="/nervensystem-b/assets/coach.webp" loading="lazy" width="40" height="40" alt="Fit on Time Team"><span><strong>Seit 2016 über 4'000 Frauen begleitet.</strong><small>FIT on TIME · Frauen-Coaching</small></span></div>
+  <div class="divider"></div>
+  <div class="workshop-tease"><div class="workshop-icon">↗</div><div><strong>Danach: Dein nächster Schritt.</strong><br>Erfahre im kostenlosen Live-Abend, welche Rolle Stress, Stoffwechsel, Insulin und Cortisol beim Abnehmen spielen können.</div></div>
+</section>
+<section class="surface question-surface" id="quiz" hidden aria-live="polite">
+  <div class="progress-row"><span id="step">FRAGE 1 VON 7</span><span id="percent">14 %</span></div>
+  <div class="progress"><div id="fill" class="progress-fill"></div></div>
+  <h2 id="question" class="question-title"></h2><p class="muted">Wähle die Antwort, die am ehesten zutrifft.</p>
+  <div id="answers" class="answer-list"></div>
+  <button class="text-btn" id="back" type="button">← Zurück</button>
+</section>
+<p class="foot-legal">Dieser Check ist eine Orientierung anhand deiner Angaben, keine Diagnose. <a href="https://fitontime.ch" target="_blank" rel="noopener">FIT on TIME</a></p>
+</main><CookieBanner metaPixelId="1316450223953563" googleAdsId={GOOGLE_ADS_ID} consentKey="fot_nervensystem_consent" impressumUrl={impressumUrl} datenschutzUrl={impressumUrl} />
+</body></html>

@@ -1,0 +1,32 @@
+---
+// Nervensystem-Quiz Variante B (Kevin) im A/B-Test gegen /nervensystem/ (Variante A).
+// Design und Ablauf 1:1 aus Kevins Netlify-Funnel (ZIP 09.10.): Quiz ohne Kontaktdaten, Ergebnis, dann Anmeldung zum Reset-Abend.
+// Anmeldung läuft über /api/sheets (A/B-Leadliste "B · Kevin", Webinar-Liste, WebinarJam), Tracking wie Variante A.
+import CookieBanner from '../../components/CookieBanner.astro';
+const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').trim();
+const impressumUrl = 'https://fitontime.ch/impressum-datenschutz';
+---
+<!doctype html><html lang="de-CH"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><meta name="theme-color" content="#f8f7f4"><title>Dein Platz ist reserviert | FIT on TIME</title><link rel="stylesheet" href="/nervensystem-b/assets/style.css"><script is:inline type="module" src="/nervensystem-b/assets/thanks.js"></script><script is:inline>
+  // Tracking wie Variante A: Dashboard-Events plus Meta/Google über window.__lp (lädt der CookieBanner)
+  window.fotB = function (e, d) {
+    var tries = 0;
+    (function fire() {
+      if (window.__lp) {
+        window.__lp.track(e, Object.assign({ page: 'nervensystem-b' }, d || {}), 'fot', 'Nervensystem-Quiz B');
+        if (e === 'quiz_start') window.__lp.meta('ViewContent', { content_name: 'FoT Nervensystem B Start', currency: 'CHF' });
+        if (e === 'quiz_complete') window.__lp.meta('CompleteRegistration', { content_name: 'FoT Nervensystem B Complete', currency: 'CHF' });
+        if (e === 'lead_submit') {
+          window.__lp.meta('Lead', { content_name: 'FoT Nervensystem B Lead', currency: 'CHF' });
+          window.__lp.google('generate_lead', 'TnugCP-6zeIcEOfryccD');
+        }
+      } else if (tries++ < 40) setTimeout(fire, 50);
+    })();
+  };
+  window.fotB('page_view', { detail: 'danke' });
+</script>
+</head>
+<body><header class="site-header"><div class="shell header-row"><a href="/nervensystem-b/"><img class="logo" src="/nervensystem-b/assets/fit-on-time-logo.png" alt="FIT on TIME" width="195" height="49"></a><span class="header-label">DEIN RESET-ABEND</span></div></header>
+<main class="shell thanks-wrap"><section class="surface thanks-surface"><div class="big-check">✓</div><h1>Du bist dabei<span id="name"></span>!</h1><p class="lead smaller">Dein Platz beim kostenlosen Reset-Abend ist reserviert.</p><div class="event-card"><div class="eyebrow">DEIN TERMIN</div><div class="event-date">Dienstag, 27. Oktober 2026</div><div class="event-time">19:00–20:30 Uhr · Live online</div></div>
+<div class="action-area"><p class="action-title">Hier ist dein Zugang zum Live-Raum:</p><a class="btn btn-primary btn-block" id="live-link" rel="noopener noreferrer" target="_blank">Zum Live-Raum <span aria-hidden="true">↗</span></a><p id="link-text" class="copyable-link"></p><p class="micro">Der Raum öffnet sich zum Start. Du erhältst deine persönlichen Zugangsdaten auch per E-Mail von WebinarJam.</p></div>
+<div class="divider"></div><h2 class="section-h2">Jetzt in deinen Kalender eintragen</h2><p class="muted">So geht der Termin im Alltag nicht unter.</p><div class="calendar-actions"><a class="btn btn-light" id="google-link" target="_blank" rel="noopener noreferrer">Google Kalender ↗</a><a class="btn btn-light" id="ics-link" download="FIT-on-TIME-Reset-Abend.ics">Apple / Outlook ↓</a></div><div class="info-note">Tipp: Nimm dir ein Getränk und etwas zum Mitschreiben. Deine Kamera bleibt aus.</div><div id="sync-note" class="micro" hidden></div></section><p class="foot-legal">FIT on TIME · Kostenloser Live-Abend</p></main><CookieBanner metaPixelId="1316450223953563" googleAdsId={GOOGLE_ADS_ID} consentKey="fot_nervensystem_consent" impressumUrl={impressumUrl} datenschutzUrl={impressumUrl} />
+</body></html>

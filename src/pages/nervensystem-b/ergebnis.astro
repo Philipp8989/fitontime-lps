@@ -1,0 +1,58 @@
+---
+// Nervensystem-Quiz Variante B (Kevin) im A/B-Test gegen /nervensystem/ (Variante A).
+// Design und Ablauf 1:1 aus Kevins Netlify-Funnel (ZIP 09.10.): Quiz ohne Kontaktdaten, Ergebnis, dann Anmeldung zum Reset-Abend.
+// Anmeldung läuft über /api/sheets (A/B-Leadliste "B · Kevin", Webinar-Liste, WebinarJam), Tracking wie Variante A.
+import CookieBanner from '../../components/CookieBanner.astro';
+const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').trim();
+const impressumUrl = 'https://fitontime.ch/impressum-datenschutz';
+---
+<!doctype html><html lang="de-CH"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#f8f7f4"><meta name="robots" content="noindex">
+<title>Dein Ergebnis und der kostenlose Reset-Abend | FIT on TIME</title><link rel="stylesheet" href="/nervensystem-b/assets/style.css"><script is:inline type="module" src="/nervensystem-b/assets/results.js"></script>
+<script is:inline>
+  // Tracking wie Variante A: Dashboard-Events plus Meta/Google über window.__lp (lädt der CookieBanner)
+  window.fotB = function (e, d) {
+    var tries = 0;
+    (function fire() {
+      if (window.__lp) {
+        window.__lp.track(e, Object.assign({ page: 'nervensystem-b' }, d || {}), 'fot', 'Nervensystem-Quiz B');
+        if (e === 'quiz_start') window.__lp.meta('ViewContent', { content_name: 'FoT Nervensystem B Start', currency: 'CHF' });
+        if (e === 'quiz_complete') window.__lp.meta('CompleteRegistration', { content_name: 'FoT Nervensystem B Complete', currency: 'CHF' });
+        if (e === 'lead_submit') {
+          window.__lp.meta('Lead', { content_name: 'FoT Nervensystem B Lead', currency: 'CHF' });
+          window.__lp.google('generate_lead', 'TnugCP-6zeIcEOfryccD');
+        }
+      } else if (tries++ < 40) setTimeout(fire, 50);
+    })();
+  };
+  window.fotB('page_view', { detail: 'ergebnis' });
+</script>
+</head><body><header class="site-header"><div class="shell header-row"><a href="/nervensystem-b/" aria-label="Zur Startseite"><img class="logo" src="/nervensystem-b/assets/fit-on-time-logo.png" alt="FIT on TIME" width="195" height="49"></a><span class="header-label">DEIN ERGEBNIS</span></div></header>
+<main class="shell result-wrap">
+<section class="surface result-surface">
+<div class="eyebrow success"><span class="success-tick">✓</span> DEIN SELBSTCHECK IST FERTIG</div>
+<h1 id="result-heading">Das zeigen deine Antworten.</h1>
+<p class="lead smaller" id="result-sub">Dein Ergebnis wird berechnet …</p>
+<div class="score-card"><div class="score-top"><div><div class="score-label">DEIN BELASTUNGS-INDEX</div><div class="score-number"><span id="score">–</span><small>/100</small></div></div><span class="status" id="score-level">Auswertung</span></div><div class="score-track"><span id="score-bar"></span></div><p class="micro" style="margin-bottom:0">Orientierungswert aus 7 Antworten. Keine medizinische Messung des Nervensystems.</p></div>
+<div class="notice-box"><strong>Was bei deinen Antworten besonders auffällt:</strong><div id="notices" class="notice-list"></div></div>
+<h2 class="section-h2">Und was hat das mit deinem Abnehmen zu tun?</h2>
+<p class="content-p">Stress und wenig Schlaf können Hunger, Appetit und Essgewohnheiten beeinflussen. Wer tagsüber ständig unter Strom steht, erlebt abends häufiger Situationen, in denen der Ernährungsplan kippt.</p>
+<p class="content-p boldish">Aber: Das Nervensystem ist nur ein Teil des Ganzen. Auch Stoffwechsel, Insulin und Cortisol können relevant sein.</p>
+</section>
+<section class="surface sign-surface" id="anmeldung">
+<div class="eyebrow">KOSTENLOSER LIVE-ABEND</div><h2>Finde heraus, was dich beim Abnehmen bremst.</h2>
+<p class="sublead">90 Minuten, vier wichtige Zusammenhänge – und Ideen, was du schon am nächsten Morgen anders machen kannst.</p>
+<div class="event-strip"><span>📅 <strong>Di, 27. Oktober 2026</strong></span><span>🕖 <strong>19:00–20:30 Uhr</strong></span></div>
+<div class="benefit-list"><div><span class="benefit-check">✓</span><span><b>Stoffwechsel:</b> Warum weniger essen nicht immer weiterhilft.</span></div><div><span class="benefit-check">✓</span><span><b>Insulin:</b> Was mit Hunger und Energietiefs zusammenhängt.</span></div><div><span class="benefit-check">✓</span><span><b>Cortisol & Nervensystem:</b> Was Stress und fehlende Erholung verändern können.</span></div></div>
+<form id="register-form" novalidate>
+<div class="form-grid"><label for="firstName">Vorname<input name="firstName" id="firstName" autocomplete="given-name" required maxlength="70" placeholder="Dein Vorname"></label><label for="lastName">Nachname<input name="lastName" id="lastName" autocomplete="family-name" required maxlength="70" placeholder="Dein Nachname"></label></div>
+<label for="email">E-Mail-Adresse<input type="email" name="email" id="email" autocomplete="email" required maxlength="150" placeholder="du@beispiel.ch" inputmode="email"></label>
+<label for="phone">Handynummer <span class="muted inline-note">für Erinnerungen</span></label><div class="phone-input"><select id="dial" name="dial" aria-label="Ländervorwahl"><option value="+41">🇨🇭 +41</option><option value="+49">🇩🇪 +49</option><option value="+43">🇦🇹 +43</option></select><input id="phone" name="phone" autocomplete="tel-national" type="tel" inputmode="tel" placeholder="79 123 45 67" required maxlength="30" aria-label="Handynummer ohne Ländervorwahl"></div>
+<label class="checkbox-row"><input type="checkbox" id="privacy" required><span>Ich willige ausdrücklich ein, dass meine Angaben einschliesslich der sieben Quizantworten für die Auswertung und Webinar-Anmeldung verarbeitet und bei FIT on TIME in Google Sheets gespeichert werden. Name, E-Mail und Telefonnummer gehen zur Anmeldung an WebinarJam; die Webinar-Erinnerungen erhalte ich per E-Mail. Ich habe die <a href="https://fitontime.ch/impressum-datenschutz/" target="_blank" rel="noopener noreferrer">Datenschutzerklärung</a> gelesen.</span></label>
+<label class="checkbox-row"><input type="checkbox" id="whatsapp"><span>Ja, ich möchte zusätzlich Erinnerungen per WhatsApp erhalten. (Freiwillig)</span></label>
+<input class="honeypot" id="website" type="text" autocomplete="off" tabindex="-1" aria-hidden="true" name="website">
+<button type="submit" class="btn btn-primary btn-block" id="submit-btn">Kostenlosen Platz reservieren <span aria-hidden="true">→</span></button>
+<p class="micro center" style="margin-top:9px">Kostenlos · Live online · Kamera bleibt aus</p>
+<div role="alert" id="form-error" class="form-error" hidden></div>
+</form></section><p class="foot-legal">Der Selbstcheck ersetzt keine medizinische Abklärung. Bei anhaltenden Beschwerden wende dich an eine Ärztin oder einen Arzt.</p></main><CookieBanner metaPixelId="1316450223953563" googleAdsId={GOOGLE_ADS_ID} consentKey="fot_nervensystem_consent" impressumUrl={impressumUrl} datenschutzUrl={impressumUrl} />
+</body></html>

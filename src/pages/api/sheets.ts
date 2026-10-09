@@ -271,9 +271,45 @@ SHEETS['nervensystem'] = {
   },
 };
 
+// Nervensystem-Quiz Variante B (Kevins Funnel, /nervensystem-b/): gleiche A/B-Leadliste wie Variante A.
+// Die Anmeldung dort ist zugleich die Webinar-Anmeldung (siehe handleLead: Webinar-Liste + WebinarJam).
+SHEETS['nervensystem-b'] = {
+  id: '1f_eFLtj12f0C8BoEg79AWtqq5pYrN4Wwyh2MJNuYG7s',
+  range: 'Leads!A:W',
+  buildRow: (datum, d) => {
+    const a = d.answers || {};
+    const u = d.attr || {};
+    const [vorname, nachname] = splitName(d.name);
+    const stufe = ({ hoch: 'Hohe Belastung', mittel: 'Erhöhte Belastung', niedrig: 'Wenig Hinweise' } as any)[a.level] || '';
+    return [datum, 'B · Kevin', 'https://go.abnehmen-ohne-stress.ch/nervensystem-b/', vorname, nachname, d.email, d.phone || '',
+      stufe, a.score ?? '', u.utm_source || '', u.utm_campaign || '', u.utm_content || '',
+      a.q1_label || '', a.q2_label || '', a.q3_label || '', a.q4_label || '', a.q5_label || '', a.q6_label || '',
+      a.q7_label || '', '', '', '', 'Webinar angemeldet'];
+  },
+};
+
 // Ein-Klick-Anmeldungen aus der Mail und Hot-Seat-Antworten sind keine neuen Leads: kein CRM-Eintrag
 // (sonst Doppel-Lead plus Benachrichtigung je Listen-Kontakt) und kein Meta-Lead (sonst stimmt der CPL nicht).
 const isWebinarFollowUp = (slug: string, d: any) => slug === 'webinar-hotseat' || (slug === 'webinar' && d.oneclick === true);
+
+// Zusätzliche Zeile in der Webinar-Liste (für Funnels, deren Anmeldung zugleich die Webinar-Anmeldung ist).
+async function appendWebinarRow(datum: string, d: any) {
+  const auth = new google.auth.GoogleAuth({
+    credentials: {
+      client_email: import.meta.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
+      private_key: (import.meta.env.GOOGLE_PRIVATE_KEY || '').replace(/\\n/g, '\n'),
+    },
+    scopes: ['https://www.googleapis.com/auth/spreadsheets'],
+  });
+  const cfg = SHEETS['webinar'];
+  await google.sheets({ version: 'v4', auth }).spreadsheets.values.append({
+    spreadsheetId: cfg.id,
+    range: 'Leads!A:A',
+    valueInputOption: 'RAW',
+    insertDataOption: 'INSERT_ROWS',
+    requestBody: { values: [cfg.buildRow(datum, d)] },
+  });
+}
 
 // Modus-Check (Quiz "Schutzmodus oder Arbeitsmodus?"), eingebaut auf fitontime.ch (Ralphis Seite).
 // Kommt von einer fremden Domain, darum die CORS-Freigabe unten. Kein Pixel, kein Bot.
@@ -428,9 +464,19 @@ const handleLead: APIRoute = async ({ request }) => {
 
     // Reset-Abend: jede Anmeldung (Formular und Ein-Klick) auch an WebinarJam,
     // dort laufen Bestätigung, Erinnerungen und der Link zum Live-Raum.
+    const ip = (request.headers.get('x-forwarded-for') || '').split(',')[0].trim();
+    let liveLink = '';
     if (lpSlug === 'webinar') {
-      const ip = (request.headers.get('x-forwarded-for') || '').split(',')[0].trim();
       waitUntil(registerWebinarJam({ name: data.name, email: data.email, phone: data.phone, ip }));
+    }
+    // Variante B meldet direkt zum Webinar an: zusätzlich in die Webinar-Liste und auf den Live-Link warten,
+    // den die Danke-Seite zeigt.
+    if (lpSlug === 'nervensystem-b') {
+      const [jam] = await Promise.all([
+        registerWebinarJam({ name: data.name, email: data.email, phone: data.phone, ip }),
+        appendWebinarRow(datum, { ...data, answers: { quelle: 'nervensystem-b' } }).catch((e) => console.error('[sheets] Webinar-Liste B', e?.message || e)),
+      ]);
+      liveLink = jam;
     }
 
     // WhatsApp-Bot-Intake: nur bei explizitem WhatsApp-Opt-in. Server-seitig,
@@ -506,7 +552,7 @@ const handleLead: APIRoute = async ({ request }) => {
             // Eigener Pixel, damit das Medikamenten-Thema den geteilten Pixel nie trifft.
             // Ohne Env kein CAPI-Override auf einen fremden Pixel: dann geht nichts raus (siehe unten).
             : lpSlug === 'nach-der-spritze' ? ((import.meta.env.PUBLIC_FOT_SPRITZE_PIXEL_ID || '').trim() || 'none')
-            : (lpSlug === 'insulin-check' || lpSlug === 'bauchfett' || lpSlug === 'koerperalter' || lpSlug === 'webinar' || lpSlug === 'nervensystem') ? '1316450223953563'
+            : (lpSlug === 'insulin-check' || lpSlug === 'bauchfett' || lpSlug === 'koerperalter' || lpSlug === 'webinar' || lpSlug === 'nervensystem' || lpSlug === 'nervensystem-b') ? '1316450223953563'
               : undefined,
         // Nur Longevity: geschaetzter Lead-Wert (reine Zahl, KEINE Gesundheitsdaten) behebt Meta-Diagnose "gueltige Preisinfo".
         // value/currency muessen mit dem Browser-Pixel (longevity/index.astro) uebereinstimmen. Platzhalter 50 CHF.
@@ -560,7 +606,7 @@ const handleLead: APIRoute = async ({ request }) => {
       }).catch((e: any) => console.error('[OAI-ADS Lead] Fehler:', e?.message || e));
     }
 
-    return new Response(JSON.stringify({ ok: true }), {
+    return new Response(JSON.stringify(liveLink ? { ok: true, liveLink } : { ok: true }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
     });

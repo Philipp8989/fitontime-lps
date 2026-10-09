@@ -15,9 +15,10 @@ function splitPhone(phone: string): [string, string] {
 
 export interface JamLead { name: string; email: string; phone?: string; ip?: string }
 
-export async function registerWebinarJam(lead: JamLead): Promise<boolean> {
+// Gibt den persönlichen Link zum Live-Raum zurück, leer bei Fehler.
+export async function registerWebinarJam(lead: JamLead): Promise<string> {
   const key = import.meta.env.WEBINARJAM_API_KEY;
-  if (!key) return false; // nicht eingerichtet: still überspringen
+  if (!key) return ''; // nicht eingerichtet: still überspringen
   const [vorname, ...rest] = String(lead.name || '').trim().split(/\s+/);
   const [cc, nr] = splitPhone(lead.phone || '');
   const body = new URLSearchParams({
@@ -37,13 +38,13 @@ export async function registerWebinarJam(lead: JamLead): Promise<boolean> {
     try {
       const res = await fetch(REGISTER_URL, { method: 'POST', body });
       const json: any = await res.json().catch(() => ({}));
-      if (res.ok && json.status === 'success') return true;
+      if (res.ok && json.status === 'success') return json.user?.live_room_url || '';
       console.error('[webinarjam] Anmeldung abgelehnt', res.status, JSON.stringify(json).slice(0, 300));
-      if (res.status >= 400 && res.status < 500) return false; // falsche Daten: kein Retry
+      if (res.status >= 400 && res.status < 500) return ''; // falsche Daten: kein Retry
     } catch (e: any) {
       console.error('[webinarjam] Fehler', e?.message || e);
     }
   }
   console.error('[webinarjam] FINAL FAIL, nur im Sheet:', lead.email);
-  return false;
+  return '';
 }
