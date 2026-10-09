@@ -3,6 +3,7 @@
 // VSL mit Fabian, primaerer CTA = kostenfreies Erstgespraech buchen (YCBM). Liest Ergebnis aus sessionStorage.
 import CookieBanner from '../../components/CookieBanner.astro';
 import ScaleeeCredit from '../../components/ScaleeeCredit.astro';
+import WebinarEinladung from '../../components/WebinarEinladung.astro';
 const impressumUrl = 'https://fitontime.ch/impressum-datenschutz';
 const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
 ---
@@ -276,6 +277,8 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
         Keine leeren Versprechen. Fünf Hebel, die wirklich wirken.
       </div>
     </div>
+
+    <WebinarEinladung quelle="longevity" />
 
     <!-- Empty State -->
     <div id="empty-view" class="empty" style="display:none;">

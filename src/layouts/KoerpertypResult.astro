@@ -3,6 +3,7 @@
 // Identische Struktur und Styling, nur Inhalt kommt aus Props.
 import CookieBanner from '../components/CookieBanner.astro';
 import ScaleeeCredit from '../components/ScaleeeCredit.astro';
+import WebinarEinladung from '../components/WebinarEinladung.astro';
 
 export interface Props {
   typ: 'staemmig' | 'soft' | 'zierlich';
@@ -166,6 +167,7 @@ const imageSrc = `/images/bodytypes/${typ}.png`;
       </div>
       <p class="r-summary" id="rSummary">{summary}</p>
     </section>
+    <WebinarEinladung quelle="koerpertyp-test" />
 
     <!-- Video -->
     <div class="video-wrap" id="videoWrap">

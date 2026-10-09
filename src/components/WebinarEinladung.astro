@@ -1,0 +1,55 @@
+---
+// Einladung zum Reset-Abend auf den Danke- und Ergebnisseiten aller Funnels.
+// Ein-Klick: der Funnel legt nach dem Insert sessionStorage 'fot_lead' = {e, n, t} ab,
+// der Knopf schickt sie damit direkt auf /webinar/?k=1 (kein Formular, kein zweiter Lead).
+// Fehlen die Daten, führt der Knopf auf die normale Anmeldeseite mit ihrem Thema.
+// Nach dem Termin blendet sich der Block selbst aus.
+import { WEBINAR, QUELLEN } from '../lib/webinar';
+
+interface Props { quelle: string; seite?: string }
+const { quelle, seite = quelle } = Astro.props;
+const q = QUELLEN[quelle];
+const text = q ? q.einstieg : 'Am Reset-Abend siehst du, welche der vier Bremsen deinen Körper ab 40 festhält, und wie du sie löst.';
+---
+<section class="wbe" data-quelle={quelle} data-seite={seite} data-ende={WEBINAR.endeUtc} hidden>
+  <div class="wbe-card">
+    <p class="wbe-eyebrow">Genau zu deinem Thema · kostenlos</p>
+    <h2 class="wbe-h">Sei am {WEBINAR.datumText} live dabei: {WEBINAR.titel}.</h2>
+    <p class="wbe-p">{text}</p>
+    <p class="wbe-when"><span>{WEBINAR.zeitText}</span><span>Live online</span></p>
+    <a class="wbe-btn" href={`/webinar/?q=${encodeURIComponent(quelle)}`}>Klick hier und sei dabei <span aria-hidden="true">&rarr;</span></a>
+    <p class="wbe-fine">Kostenlos. Mit Fabian und Filip. Kamera bleibt aus, niemand sieht dich.</p>
+  </div>
+</section>
+
+<script is:inline>
+  (function () {
+    var box = document.currentScript.previousElementSibling;
+    if (!box || Date.now() > Date.parse(box.dataset.ende)) return;
+    box.hidden = false;
+    // Erst beim Klick lesen: bei Funnels mit Danke-Schritt auf derselben Seite kommt 'fot_lead' nach dem Laden
+    function lead() { try { return JSON.parse(sessionStorage.getItem('fot_lead') || 'null'); } catch (e) { return null; } }
+    if (lead()) box.querySelector('.wbe-fine').textContent = 'Kostenlos. Deine Daten hast du schon eingegeben, ein Klick reicht.';
+    box.querySelector('.wbe-btn').addEventListener('click', function (ev) {
+      var l = lead();
+      if (window.__lp) window.__lp.track('webinar_click', { page: box.dataset.seite, detail: 'danke' }, 'fot', 'Reset-Abend');
+      if (!l || !l.e) return; // normale Anmeldeseite
+      ev.preventDefault();
+      var p = new URLSearchParams({ k: '1', e: l.e, n: l.n || '', t: l.t || '', q: box.dataset.quelle });
+      setTimeout(function () { location.href = '/webinar/?' + p.toString(); }, 200);
+    });
+  })();
+</script>
+
+<style>
+  .wbe { margin: 2rem auto; width: 100%; max-width: 40rem; padding: 0 1rem; box-sizing: border-box; text-align: left; }
+  .wbe .wbe-card { background: var(--ink, #1f2a24); color: #fbf7ef; border-radius: 8px; padding: 1.6rem 1.5rem; text-align: left; }
+  .wbe .wbe-eyebrow { font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 600; color: #e3c27a; margin: 0; }
+  .wbe .wbe-h { text-align: left; color: #fbf7ef; font-size: clamp(1.35rem, 4.5vw, 1.75rem); line-height: 1.2; margin: 0.4rem 0 0.7rem; text-wrap: balance; }
+  .wbe .wbe-p { color: rgba(251, 247, 239, 0.84); font-size: 1rem; line-height: 1.55; margin: 0; text-wrap: pretty; }
+  .wbe .wbe-when { color: #fbf7ef; display: flex; flex-wrap: wrap; gap: 0.3rem 1rem; margin: 1rem 0 1.2rem; font-size: 0.92rem; font-weight: 600; }
+  .wbe .wbe-when span + span::before { content: "·"; margin-right: 0.6rem; color: #e3c27a; }
+  .wbe .wbe-btn { display: block; text-align: center; background: #e3c27a; color: #1f2a24; font-weight: 700; padding: 0.95rem 1rem; border-radius: 6px; text-decoration: none; font-size: 1.02rem; transition: background 0.15s; }
+  .wbe .wbe-btn:hover, .wbe .wbe-btn:focus-visible { background: #f0d697; }
+  .wbe .wbe-fine { font-size: 0.82rem; color: rgba(251, 247, 239, 0.6); margin: 0.7rem 0 0; }
+</style>

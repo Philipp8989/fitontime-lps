@@ -737,6 +737,8 @@ const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').t
       btn.textContent = 'Wird verarbeitet...';
 
       // Atomarer Submit: lead_submit + Pixel + UI-Weiter NUR bei erfolgreichem Insert
+      // Für den Ein-Klick zum Reset-Abend auf der Danke-Seite
+      try { sessionStorage.setItem('fot_lead', JSON.stringify({ e: em, n: fn, t: ph })); } catch (e) {}
       fetch('/api/sheets', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

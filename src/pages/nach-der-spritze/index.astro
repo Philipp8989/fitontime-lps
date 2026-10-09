@@ -412,6 +412,8 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
       btn.disabled = true;
       btn.textContent = 'Wird gespeichert';
 
+      // Für den Ein-Klick zum Reset-Abend auf der Danke-Seite
+      try { sessionStorage.setItem('fot_lead', JSON.stringify({ e: em, n: fn, t: ph })); } catch (e) {}
       fetch('/api/sheets', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

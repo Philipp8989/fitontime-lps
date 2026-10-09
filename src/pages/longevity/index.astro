@@ -1242,6 +1242,8 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
         })
       };
 
+      // Für den Ein-Klick zum Reset-Abend auf der Danke-Seite
+      try { sessionStorage.setItem('fot_lead', JSON.stringify({ e: payload.email, n: payload.name, t: payload.phone })); } catch (e) {}
       fetch('/api/sheets', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

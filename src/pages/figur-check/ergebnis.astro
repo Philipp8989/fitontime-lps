@@ -2,6 +2,7 @@
 // Schilddrüsen-Report Funnel v3  -  Mobile-First, Proof, Booking-Prio
 import CookieBanner from '../../components/CookieBanner.astro';
 import ScaleeeCredit from '../../components/ScaleeeCredit.astro';
+import WebinarEinladung from '../../components/WebinarEinladung.astro';
 const impressumUrl = 'https://fitontime.ch/impressum-datenschutz';
 const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
 // Google Tag (wie /ab-40): laedt Consent-Mode-v2-Tag, Conversions feuern nur bei Google-Klick
@@ -519,6 +520,7 @@ const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').t
           <li><span class="ic">&#10003;</span>Starte mit Klarheit statt Frust</li>
         </ul>
       </section>
+      <WebinarEinladung quelle="figur-check" />
 
       <!-- Testimonial 2 -->
       <div class="testimonial">

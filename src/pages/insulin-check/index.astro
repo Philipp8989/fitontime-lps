@@ -6,6 +6,7 @@
 // mit event_id, damit Browser-Pixel und CAPI dedupliziert werden.
 import CookieBanner from '../../components/CookieBanner.astro';
 import ScaleeeCredit from '../../components/ScaleeeCredit.astro';
+import WebinarEinladung from '../../components/WebinarEinladung.astro';
 const impressumUrl = 'https://fitontime.ch/impressum-datenschutz';
 const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
 // Clean-Domain-Pixel (go.abnehmen-ohne-stress.ch), NICHT der geflaggte Health-Pixel.
@@ -298,6 +299,7 @@ a{color:var(--moss)}
       <p class="small">Über 1000 begleitete Frauen &middot; zertifiziertes Expertenteam &middot; Ergebnisse sind individuell und hängen von Ausgangslage und Mitarbeit ab. Wir versprechen keine Resultate.</p>
     </div>
 
+    <WebinarEinladung quelle="insulin-check" />
   </section>
 
   <!-- ============ FOOTER ============ -->
@@ -682,6 +684,8 @@ function submitLead(){
   // Atomarer Submit: lead_submit + Meta-Lead + Ergebnis erst nach erfolgreichem Insert.
   // Der fetch-Wrapper aus dem CookieBanner haengt meta{event_id,consent,fbp,fbc}
   // und die Attribution an, /api/sheets feuert daraus die CAPI.
+  // Für den Ein-Klick zum Reset-Abend auf der Danke-Seite
+  try { sessionStorage.setItem('fot_lead', JSON.stringify({ e: mail, n: name, t: tel })); } catch (e) {}
   fetch('/api/sheets', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

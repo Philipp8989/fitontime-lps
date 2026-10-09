@@ -4,6 +4,7 @@
 // UI/UX-Upgrade: echte Vorher-Nachher-Bilder, cleaneres Typo-System, bessere Mobile-UX
 import CookieBanner from '../../components/CookieBanner.astro';
 import ScaleeeCredit from '../../components/ScaleeeCredit.astro';
+import WebinarEinladung from '../../components/WebinarEinladung.astro';
 const impressumUrl = 'https://fitontime.ch/impressum-datenschutz';
 const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
 ---
@@ -622,6 +623,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
           <p><strong>Sichere dir jetzt deinen Platz</strong>, bevor du auf die Warteliste musst.</p>
           <p>(Falls du keinen Termin buchst, bekommst du dein Ergebnis automatisch später, aber ohne persönliche Erklärung.)</p>
         </div>
+        <WebinarEinladung quelle="stoffwechsel-report" />
       </div>
 
     </div>
@@ -735,6 +737,8 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
       btn.textContent = 'Wird verarbeitet...';
 
       // Atomarer Submit: lead_submit + Pixel + UI-Weiter NUR bei erfolgreichem Insert
+      // Für den Ein-Klick zum Reset-Abend auf der Danke-Seite
+      try { sessionStorage.setItem('fot_lead', JSON.stringify({ e: em, n: fn, t: ph })); } catch (e) {}
       fetch('/api/sheets', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

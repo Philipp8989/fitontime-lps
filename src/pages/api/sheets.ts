@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro';
 import { google } from 'googleapis';
 import { waitUntil } from '@vercel/functions';
+import { registerWebinarJam } from '../../lib/webinarjam';
 import { sendCapiEvent, clientMeta } from '../../lib/capi';
 import { normalizePhone } from '../../lib/phone';
 import { invalidLeadFields } from '../../lib/leadValidation';
@@ -423,6 +424,13 @@ const handleLead: APIRoute = async ({ request }) => {
         }
         console.error('Dashboard Lead Insert FINAL FAIL, Lead nur im Sheet:', { lpSlug, email: data.email });
       })());
+    }
+
+    // Reset-Abend: jede Anmeldung (Formular und Ein-Klick) auch an WebinarJam,
+    // dort laufen Bestätigung, Erinnerungen und der Link zum Live-Raum.
+    if (lpSlug === 'webinar') {
+      const ip = (request.headers.get('x-forwarded-for') || '').split(',')[0].trim();
+      waitUntil(registerWebinarJam({ name: data.name, email: data.email, phone: data.phone, ip }));
     }
 
     // WhatsApp-Bot-Intake: nur bei explizitem WhatsApp-Opt-in. Server-seitig,
