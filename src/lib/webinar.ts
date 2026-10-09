@@ -23,7 +23,7 @@ export const QUELLEN: Record<string, { name: string; bremse: Bremse; einstieg: s
   longevity: { name: 'Longevity-Check', bremse: 'stoffwechsel', einstieg: 'Du kennst jetzt dein Körperalter. Am Reset-Abend siehst du, welche Bremsen es hochziehen, und wie du Jahre zurückholst.' },
   'nach-der-spritze': { name: 'Spritzen-Check', bremse: 'stoffwechsel', einstieg: 'Mit oder ohne Spritze: Am Reset-Abend geht es darum, was dein Körper braucht, damit die Kilos auch danach wegbleiben.' },
   'figur-check': { name: 'Fettabbau-Check', bremse: 'stoffwechsel', einstieg: 'Du hast den Fettabbau-Check gemacht. Am Reset-Abend siehst du, warum dein Körper festhält, und welche Bremse du zuerst löst.' },
-  'koerper-report': { name: 'Körpertyp-Test', bremse: 'stoffwechsel', einstieg: 'Du kennst jetzt deinen Körpertyp. Am Reset-Abend siehst du, welche Bremse bei deinem Typ am häufigsten zu ist.' },
+  'koerper-report': { name: 'Stoffwechsel-Check', bremse: 'stoffwechsel', einstieg: 'Du weisst jetzt, was deinen Stoffwechsel bremst. Am Reset-Abend siehst du, warum er selten allein bremst, und was du ab dem nächsten Morgen anders machst.' },
   'koerpertyp-test': { name: 'Körpertyp-Test', bremse: 'stoffwechsel', einstieg: 'Du kennst jetzt deinen Körpertyp. Am Reset-Abend siehst du, welche Bremse bei deinem Typ am häufigsten zu ist.' },
   'stoffwechsel-report': { name: 'Stoffwechsel-Report', bremse: 'stoffwechsel', einstieg: 'Du hast deinen Stoffwechsel-Report. Am Reset-Abend siehst du, warum der Stoffwechsel selten allein bremst.' },
   'ab-40': { name: 'Video', bremse: 'stoffwechsel', einstieg: 'Du hast gesehen, warum dein Körper ab 40 auf Speichern schaltet. Am Reset-Abend gehen wir live tiefer, mit echten Fällen.' },
