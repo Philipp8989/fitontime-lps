@@ -59,7 +59,7 @@ const FRAGEN = [
         <ol class="steps-done">
           <li class="ok">Anmeldung bestätigt. Die Mail mit dem Zugang ist unterwegs.</li>
           <li>Kalender-Eintrag setzen. Ein Klick oben.</li>
-          <li>Fragebogen unten ausfüllen. Dann bekommst du vorab die 14-Tage-Checkliste.</li>
+          <li>Fragebogen unten ausfüllen. Dann holst du dir sofort die 14-Tage-Checkliste.</li>
         </ol>
       </div>
     </div>
@@ -70,7 +70,7 @@ const FRAGEN = [
       <div class="section-head">
         <p class="eyebrow">2 Minuten, freiwillig</p>
         <h2>Hol dir vorab deine <em>14-Tage-Checkliste.</em></h2>
-        <p class="lead">Beantworte die fünf Fragen. Dann schicken wir dir vorab die 14-Tage-Checkliste "4 Bremsen lösen" per Mail.</p>
+        <p class="lead">Beantworte die fünf Fragen. Danach lädst du dir die 14-Tage-Checkliste "4 Bremsen lösen" direkt herunter.</p>
       </div>
 
       <form class="hs" id="hsForm" novalidate>
@@ -94,7 +94,8 @@ const FRAGEN = [
 
       <div class="hs-done" id="hsDone" hidden>
         <h2>Danke. <em>Wir haben alles.</em></h2>
-        <p class="lead">Die Checkliste kommt per Mail.</p>
+        <p class="lead">Hier ist deine Checkliste. Fang heute an und bring deine Notizen zum Reset-Abend mit.</p>
+        <a class="btn btn--primary" id="clDl" href="/webinar/14-tage-checkliste.pdf" download="14-Tage-Checkliste Reset-Abend.pdf" style="margin-top:1.25rem;">Checkliste herunterladen (PDF) <span class="btn-arrow">&rarr;</span></a>
       </div>
     </div>
   </section>
@@ -171,6 +172,8 @@ const FRAGEN = [
         err.hidden = false;
       });
     });
+    // Download zählen
+    document.getElementById('clDl').addEventListener('click', function () { tk('checkliste_download'); });
   </script>
 
   <CookieBanner
