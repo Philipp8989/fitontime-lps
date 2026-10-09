@@ -340,7 +340,7 @@ const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
       } catch (ex) {
         btn.disabled = false;
         btn.textContent = 'Ja, zeig mir das Video →';
-        err.textContent = 'Das hat leider nicht geklappt. Bitte versuch es nochmal.';
+        err.textContent = (window.__lpErr ? window.__lpErr('Das hat leider nicht geklappt. Bitte versuch es nochmal.') : 'Das hat leider nicht geklappt. Bitte versuch es nochmal.');
         err.classList.add('show');
       }
     });

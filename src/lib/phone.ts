@@ -12,6 +12,11 @@ export function normalizePhone(raw: unknown, cc = '41'): string {
   if (c.charAt(0) !== '+') c = c.charAt(0) === '0' ? '+' + cc + c.slice(1) : '+' + cc + c;
   // Nationale 0 nach dem Laendercode (haeufig bei "+41 079 ...") entfernen
   if (c.startsWith('+' + cc + '0')) c = '+' + cc + c.slice(cc.length + 2);
+  // Deutsche/österreichische Handynummer ohne Vorwahl (0151…, 0664…) landet sonst als +41 1…/+41 6…
+  // und fällt durch. Schweizer Nummern haben nach +41 genau 9 Ziffern und beginnen nie mit 1.
+  const rest = c.startsWith('+41') ? c.slice(3) : '';
+  if (/^1[5-7]\d{8,9}$/.test(rest)) c = '+49' + rest;
+  else if (/^6[5-9]\d{7,10}$/.test(rest)) c = '+43' + rest;
   return c;
 }
 

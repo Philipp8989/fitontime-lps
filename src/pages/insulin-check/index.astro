@@ -705,7 +705,7 @@ function submitLead(){
   })["catch"](function(){
     btn.disabled = false;
     btn.textContent = "Auswertung anzeigen";
-    fail(err, "Da ist etwas schiefgelaufen. Bitte schick das Formular noch einmal ab.");
+    fail(err, window.__lpErr ? window.__lpErr("Da ist etwas schiefgelaufen. Bitte schick das Formular noch einmal ab.") : "Da ist etwas schiefgelaufen. Bitte schick das Formular noch einmal ab.");
   });
 }
 

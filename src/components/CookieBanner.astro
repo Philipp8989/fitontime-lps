@@ -383,6 +383,15 @@ const hyrosPh = hyrosPhProp || '689a71ca1ab3be1cb1caddbe6b7902a4ad2c51a228f4ec9e
     // und {attr:...} an jeden Lead-POST (/api/sheets + /api/recruiting), damit Klick-IDs und UTMs
     // im CRM landen. Zusaetzlich: Hyros-Lead erst NACH erfolgreichem Insert melden (hyros_email-Event,
     // wird vom Universal-Script validiert und als Lead angelegt; Telefon via window.hrs).
+    // Fehlertext für Lead-Formulare: konkreter Hinweis, wenn der Server ein Feld abgelehnt hat.
+    window.__lpErr = function (fallback) {
+      var f = window.__lpLeadErr || [];
+      if (f.indexOf('phone') >= 0) return 'Bitte prüf deine Handynummer, zum Beispiel 079 123 45 67 oder +49 151 1234567.';
+      if (f.indexOf('email') >= 0) return 'Bitte prüf deine E-Mail-Adresse.';
+      if (f.indexOf('name') >= 0) return 'Bitte gib deinen Vornamen ein (nur Buchstaben).';
+      return fallback;
+    };
+
     if (!window.__lpFetchPatched) {
       window.__lpFetchPatched = true;
       var origFetch = window.fetch;
@@ -412,6 +421,15 @@ const hyrosPh = hyrosPhProp || '689a71ca1ab3be1cb1caddbe6b7902a4ad2c51a228f4ec9e
           }
         } catch (e) {}
         var p = origFetch.apply(this, arguments);
+        // Abgelehnte Felder merken (400 mit fields), damit die Seite statt "Etwas ist schiefgelaufen"
+        // sagen kann, was zu korrigieren ist (window.__lpErr oben).
+        if (typeof isSheets !== 'undefined' && isSheets) {
+          p = p.then(function (res) {
+            window.__lpLeadErr = [];
+            if (!res || res.status !== 400) return res;
+            return res.clone().json().then(function (j) { window.__lpLeadErr = (j && j.fields) || []; return res; }, function () { return res; });
+          });
+        }
         if (hyrosLead) {
           p.then(function (res) {
             if (!res || !res.ok) return;

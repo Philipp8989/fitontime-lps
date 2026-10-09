@@ -771,7 +771,7 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
       }).catch(function(){
         btn.disabled = false;
         btn.textContent = 'Jetzt Report kostenlos erhalten ✨';
-        alert('Etwas ist schiefgelaufen. Bitte nochmal versuchen.');
+        alert((window.__lpErr ? window.__lpErr('Etwas ist schiefgelaufen. Bitte nochmal versuchen.') : 'Etwas ist schiefgelaufen. Bitte nochmal versuchen.'));
       });
     }
   </script>

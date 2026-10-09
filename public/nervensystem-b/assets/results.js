@@ -23,7 +23,7 @@ form.addEventListener('submit',async ev=>{
   const labels={score:result.score,level:result.level};QUESTIONS.forEach((q,i)=>{labels['q'+(i+1)+'_label']=q.options[result.answers[i]]});
   const response=await fetch('/api/sheets',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({lp_slug:'nervensystem-b',lp_name:'Nervensystem-Quiz B (Kevin)',name:payload.firstName+' '+payload.lastName,first_name:payload.firstName,email:payload.email,phone:fullPhone,wa_ok:payload.whatsappConsent,answers:labels})});
   const data=await response.json();
-  if(!response.ok||!data.ok)throw new Error(response.status===400?'Bitte prüfe Name, E-Mail und Handynummer.':'Die Anmeldung konnte noch nicht abgeschlossen werden.');
+  if(!response.ok||!data.ok)throw new Error(response.status===400?(window.__lpErr?window.__lpErr('Bitte prüfe Name, E-Mail und Handynummer.'):'Bitte prüfe Name, E-Mail und Handynummer.'):'Die Anmeldung konnte noch nicht abgeschlossen werden.');
   window.fotB&&window.fotB('lead_submit',{detail:result.level});
   const info={firstName:payload.firstName,liveLink:data.liveLink,registered:true,sheetStatus:data.sheetStatus||'ok'};
   sessionStorage.setItem('fitRegistration',JSON.stringify(info));setTimeout(()=>{location.href='/nervensystem-b/danke/'},250);

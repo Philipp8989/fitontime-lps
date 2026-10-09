@@ -1097,7 +1097,7 @@ const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').t
       }).catch(function(){
         btn.disabled = false;
         btn.textContent = 'Jetzt Report sichern';
-        alert('Etwas ist schiefgelaufen. Bitte nochmal versuchen.');
+        alert((window.__lpErr ? window.__lpErr('Etwas ist schiefgelaufen. Bitte nochmal versuchen.') : 'Etwas ist schiefgelaufen. Bitte nochmal versuchen.'));
       });
     }
 

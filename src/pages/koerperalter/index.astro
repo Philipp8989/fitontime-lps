@@ -428,7 +428,7 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
     function validEmail(e) { return e.length <= 254 && /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i.test(e); }
     function validPhone(p) {
       if (!/^\+\d+$/.test(p)) return false;
-      if (p.indexOf('+41') === 0) return /^\+41[2-9]\d{8}$/.test(p);
+      if (p.indexOf('+41') === 0) return /^\+41[2-9]\d{8}$/.test(p) || /^\+41(1[5-7]\d{8,9}|6[5-9]\d{7,10})$/.test(p); // DE/AT ohne Vorwahl: Server stellt um
       return p.length - 1 >= 10 && p.length - 1 <= 15;
     }
 
@@ -491,7 +491,7 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
       }).catch(function(){
         btn.disabled = false;
         btn.innerHTML = BTN_HTML;
-        errEl.textContent = 'Etwas ist schiefgelaufen. Bitte nochmal versuchen.';
+        errEl.textContent = (window.__lpErr ? window.__lpErr('Etwas ist schiefgelaufen. Bitte nochmal versuchen.') : 'Etwas ist schiefgelaufen. Bitte nochmal versuchen.');
         errEl.hidden = false;
       });
     }
