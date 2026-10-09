@@ -12,12 +12,14 @@ export interface Props {
 }
 const {
   metaPixelId = '',
-  hyrosPh = '',
+  hyrosPh: hyrosPhProp = '',
   googleAdsId = '',
   impressumUrl,
   datenschutzUrl,
   consentKey = 'lp_consent',
 } = Astro.props;
+// FoT-Hyros-ID als Fallback: PUBLIC_HYROS_ID ist in Vercel nicht gesetzt, Seiten reichen sonst '' durch.
+const hyrosPh = hyrosPhProp || '689a71ca1ab3be1cb1caddbe6b7902a4ad2c51a228f4ec9ea7fef3123a705f63';
 ---
 <div id="cc-banner" class="cc-banner" hidden>
   <div class="cc-inner">
