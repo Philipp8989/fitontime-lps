@@ -6,8 +6,8 @@
 // Nach dem Termin blendet sich der Block selbst aus.
 import { WEBINAR, QUELLEN } from '../lib/webinar';
 
-interface Props { quelle: string; seite?: string }
-const { quelle, seite = quelle } = Astro.props;
+interface Props { quelle: string; seite?: string; danach?: string }
+const { quelle, seite = quelle, danach } = Astro.props;
 const q = QUELLEN[quelle];
 const text = q ? q.einstieg : 'Am Reset-Abend siehst du, welche der vier Bremsen deinen Körper ab 40 festhält, und wie du sie löst.';
 ---
@@ -20,6 +20,7 @@ const text = q ? q.einstieg : 'Am Reset-Abend siehst du, welche der vier Bremsen
     <a class="wbe-btn" href={`/webinar/?q=${encodeURIComponent(quelle)}`}>Klick hier und sei dabei <span aria-hidden="true">&rarr;</span></a>
     <p class="wbe-fine">Kostenlos. Mit Fabian und Filip. Kamera bleibt aus, niemand sieht dich.</p>
   </div>
+  {danach && <p class="wbe-next">{danach} <span aria-hidden="true">&darr;</span></p>}
 </section>
 
 <script is:inline>
@@ -51,5 +52,6 @@ const text = q ? q.einstieg : 'Am Reset-Abend siehst du, welche der vier Bremsen
   .wbe .wbe-when span + span::before { content: "·"; margin-right: 0.6rem; color: #e3c27a; }
   .wbe .wbe-btn { display: block; text-align: center; background: #e3c27a; color: #1f2a24; font-weight: 700; padding: 0.95rem 1rem; border-radius: 6px; text-decoration: none; font-size: 1.02rem; transition: background 0.15s; }
   .wbe .wbe-btn:hover, .wbe .wbe-btn:focus-visible { background: #f0d697; }
+  .wbe .wbe-next { text-align: center; font-weight: 600; font-size: 1.05rem; margin: 1.4rem 0 0; color: inherit; }
   .wbe .wbe-fine { font-size: 0.82rem; color: rgba(251, 247, 239, 0.6); margin: 0.7rem 0 0; }
 </style>
