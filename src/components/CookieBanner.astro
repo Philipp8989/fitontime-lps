@@ -1,6 +1,6 @@
 ---
 // DSGVO-konformer Cookie-Banner  -  LP Machine (v2)
-// Meta Pixel + Hyros NUR nach Consent.
+// Meta Pixel NUR nach Consent, Hyros lädt immer.
 // Verbesserungen v2: event_id, sendBeacon, noscript-Fallback, consent-Key pro Kunde
 export interface Props {
   metaPixelId?: string;
@@ -432,8 +432,12 @@ const {
       window.fbq('track', 'PageView', {}, { eventID: eid() });
     }
 
+    // Hyros lädt immer, unabhängig vom Consent (Entscheidung Philipp 09.10.2026).
+    // Guard: manche Seiten binden das Universal-Script schon inline ein.
     function loadHyros() {
-      if (!hyrosPh) return;
+      if (!hyrosPh || window.__lpHyrosLoaded) return;
+      if (document.querySelector('script[src*="t.hyros.com/v1/lst/universal-script"]')) return;
+      window.__lpHyrosLoaded = true;
       var s = document.createElement('script');
       s.type = 'text/javascript';
       s.async = true;
@@ -446,14 +450,13 @@ const {
       if (banner) banner.hidden = true;
       if (level === 'all') {
         loadMetaPixel();
-        loadHyros();
         grantGoogleConsent();
       }
     }
 
+    loadHyros();
     if (current === 'all') {
       loadMetaPixel();
-      loadHyros();
       grantGoogleConsent();
     } else if (current !== 'essential') {
       if (banner) banner.hidden = false;
