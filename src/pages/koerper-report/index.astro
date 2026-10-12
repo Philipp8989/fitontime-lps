@@ -182,6 +182,7 @@ const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').t
     .yn-btn { background: var(--accent); color: #fff; border: 2px solid var(--accent); border-radius: 12px; padding: 18px 16px; font-size: 18px; font-weight: 700; cursor: pointer; transition: all 0.2s; font-family: var(--font); -webkit-tap-highlight-color: transparent; text-align: center; }
     .yn-btn:hover { background: var(--accent-dark); border-color: var(--accent-dark); transform: translateY(-2px); }
     .yn-btn:active { transform: scale(0.97); }
+    .yn-wide { grid-column: 1 / -1; }
 
     /* Tipp-Box unter jeder Frage */
     .tipp { background: #eef6ff; border: 1px solid #c4ddff; border-radius: 10px; padding: 12px 14px; margin-top: 16px; display: flex; align-items: flex-start; gap: 10px; }
@@ -461,6 +462,8 @@ const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').t
         <div class="yn-row">
           <button class="yn-btn" onclick="nxt(1,this,'ja')">&#128077; Ja</button>
           <button class="yn-btn" onclick="nxt(1,this,'nein')">&#128078; Nein</button>
+          <!-- Schichtdienst-Test 12.10.: misst den Anteil Pflege/Gastro im Funnel -->
+          <button class="yn-btn yn-wide" onclick="nxt(1,this,'schicht')">&#128337; Ja, im Schichtdienst</button>
         </div>
         <div class="tipp">
           <span class="tipp-icon">&#128161;</span>
