@@ -383,6 +383,20 @@ const handleLead: APIRoute = async ({ request }) => {
     const lpSlug = (data.lp_slug || 'schilddruesen-report').toString();
     const config = SHEETS[lpSlug];
 
+    // Modus-Check kommt server-zu-server von fitontime.ch (Cloudflare) und muss X-Lead-Secret mitschicken.
+    // Geblockt wird erst mit MODUS_CHECK_SECRET_ENFORCE=1, vorher nur Warnung im Log (Übergangsphase).
+    const modusSecret = import.meta.env.MODUS_CHECK_SECRET;
+    if (lpSlug === 'modus-check' && modusSecret && request.headers.get('x-lead-secret') !== modusSecret) {
+      if (import.meta.env.MODUS_CHECK_SECRET_ENFORCE === '1') {
+        console.warn('[sheets] modus-check ohne gültiges Secret abgelehnt');
+        return new Response(JSON.stringify({ error: 'Nicht erlaubt' }), {
+          status: 401,
+          headers: { 'Content-Type': 'application/json' },
+        });
+      }
+      console.warn('[sheets] modus-check ohne gültiges Secret (noch nicht blockiert)');
+    }
+
     // Datum (Schweizer Zeit)
     const datum = new Date().toLocaleString('de-CH', {
       day: '2-digit', month: '2-digit', year: 'numeric',
