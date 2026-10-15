@@ -18,15 +18,11 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
 <head>
   <meta charset="utf-8" />
   <script is:inline>
-    // A/B-Splitter Nervensystem (seit 09.10.2026): alle Ads zeigen hierher, 50 % gehen fest auf Kevins Variante B.
-    // Zuteilung bleibt pro Browser gleich (fot_ns_variant). QA: ?v=a oder ?v=b erzwingt die Variante.
+    // A/B-Test Nervensystem beendet am 15.10.2026: A gewinnt (24 zu 4 LP-Leads bei gleichem Traffic, CPL ca. 12 zu 70 CHF).
+    // Alle Besucher bleiben auf A, auch wer vorher B zugeteilt war. Variante B nur noch per ?v=b erreichbar.
     (function () {
-      var k = 'fot_ns_variant', q = new URLSearchParams(location.search).get('v'), v;
-      try { v = localStorage.getItem(k); } catch (e) {}
-      if (q === 'a' || q === 'b') v = q;
-      if (v !== 'a' && v !== 'b') v = Math.random() < 0.5 ? 'a' : 'b';
-      try { localStorage.setItem(k, v); } catch (e) {}
-      if (v === 'b') location.replace('/nervensystem-b/' + location.search + location.hash);
+      try { localStorage.removeItem('fot_ns_variant'); } catch (e) {}
+      if (new URLSearchParams(location.search).get('v') === 'b') location.replace('/nervensystem-b/' + location.search + location.hash);
     })();
   </script>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
