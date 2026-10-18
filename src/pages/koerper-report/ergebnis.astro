@@ -4,7 +4,6 @@
 // UI/UX-Upgrade: echte Vorher-Nachher-Bilder, cleaneres Typo-System, bessere Mobile-UX
 import CookieBanner from '../../components/CookieBanner.astro';
 import ScaleeeCredit from '../../components/ScaleeeCredit.astro';
-import WebinarEinladung from '../../components/WebinarEinladung.astro';
 const impressumUrl = 'https://fitontime.ch/impressum-datenschutz';
 const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
 // Google Tag (wie /ab-40): laedt Consent-Mode-v2-Tag, Conversions feuern nur bei Google-Klick
@@ -594,7 +593,6 @@ const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').t
 
       <!-- Ergebnis-Seite (1:1 Logik von Live-Winner fit-on-time.ch/blockaden-loesen/) -->
       <div class="step result" data-s="thankyou" style="display:none;">
-        <WebinarEinladung quelle="koerper-report" danach="Hier ist dein Ergebnis" />
         <div class="cogs">
           <span class="cog big">&#9881;&#65039;</span>
           <span class="cog small">&#9881;&#65039;</span>
