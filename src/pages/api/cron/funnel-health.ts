@@ -4,7 +4,7 @@
 // Verhindert künftig den Schilddrüsen-Bug (511 quiz_completes, 0 lead_submits über 3 Tage
 // ohne dass jemand es gemerkt hat).
 //
-// Auth: Vercel-Cron sendet automatisch Header x-vercel-cron. Für manuelle Trigger geht
+// Auth: Vercel-Cron sendet Authorization: Bearer <CRON_SECRET>. Für manuelle Trigger geht
 // auch ?key=<DASHBOARD_KEY> als Query-Parameter.
 //
 // Ausgabe: JSON-Status. Wenn Alerts: Mail an ADMIN_EMAIL.
@@ -37,7 +37,9 @@ type LpFunnel = {
 
 export const GET: APIRoute = async ({ request, url }) => {
   // Auth
-  const isVercelCron = !!request.headers.get('x-vercel-cron');
+  // Vercel-Cron schickt Authorization: Bearer <CRON_SECRET> (kein x-vercel-cron-Header)
+  const cronSecret = import.meta.env.CRON_SECRET;
+  const isVercelCron = !!cronSecret && request.headers.get('authorization') === `Bearer ${cronSecret}`;
   const queryKey = url.searchParams.get('key');
   const dashKey = import.meta.env.DASHBOARD_KEY;
   if (!isVercelCron && (!dashKey || queryKey !== dashKey)) {

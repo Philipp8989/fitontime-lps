@@ -5,7 +5,7 @@
 // Ziel: Reset-Abend-Anmeldungen, Tab Leads (gleiche Spalten wie SHEETS['webinar'] in api/sheets.ts).
 // Doppelte E-Mails und Testzeilen bleiben draussen. Kein CRM, kein Meta-Lead (wie Ein-Klick in api/sheets.ts).
 //
-// Auth: Vercel-Cron-Header oder ?key=<DASHBOARD_KEY> für manuelle Läufe.
+// Auth: Vercel-Cron (Bearer CRON_SECRET) oder ?key=<DASHBOARD_KEY> für manuelle Läufe.
 
 import type { APIRoute } from 'astro';
 import { google } from 'googleapis';
@@ -22,7 +22,9 @@ const json = (body: unknown, status = 200) =>
 const istTest = (...felder: string[]) => /test/i.test(felder.join(' '));
 
 export const GET: APIRoute = async ({ request, url }) => {
-  const isVercelCron = !!request.headers.get('x-vercel-cron');
+  // Vercel-Cron schickt Authorization: Bearer <CRON_SECRET> (kein x-vercel-cron-Header)
+  const cronSecret = import.meta.env.CRON_SECRET;
+  const isVercelCron = !!cronSecret && request.headers.get('authorization') === `Bearer ${cronSecret}`;
   const dashKey = import.meta.env.DASHBOARD_KEY;
   if (!isVercelCron && (!dashKey || url.searchParams.get('key') !== dashKey)) {
     return json({ error: 'Unauthorized' }, 401);
