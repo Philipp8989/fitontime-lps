@@ -13,6 +13,7 @@
     { "source": "/:slug(stoffwechsel-report|koerpertyp-test|figur-check|koerper-report|ab-40|bauchfett|insulin-check)/:path*/", "has": [{ "type": "host", "value": "start.fitontime.ch" }], "destination": "https://go.abnehmen-ohne-stress.ch/:slug/:path*/", "permanent": false }
   ],
   "crons": [
-    { "path": "/api/cron/funnel-health", "schedule": "0 */3 * * *" }
+    { "path": "/api/cron/funnel-health", "schedule": "0 */3 * * *" },
+    { "path": "/api/cron/mail-anmeldungen", "schedule": "*/5 * * * *" }
   ]
 }
