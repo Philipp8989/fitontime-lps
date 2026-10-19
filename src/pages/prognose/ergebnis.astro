@@ -1,0 +1,180 @@
+---
+// 5-Jahres-Prognose, Ergebnis. Daten aus sessionStorage (fot_prog), gesetzt nach erfolgreichem Lead.
+// Ziel: Eigenbuchung im geteilten YCBM-Kalender 'fitontime-stoffwechsel-report'. Die Bestätigung
+// läuft über /koerper-report/gebucht/ und ordnet per sessionStorage fot_funnel='prognose' zu.
+// Lead zählt unabhängig von der Buchung (Setter rufen an).
+import '../../styles/bauchfett.css';
+import '../../styles/nervensystem.css';
+import '../../styles/prognose.css';
+import CookieBanner from '../../components/CookieBanner.astro';
+import ScaleeeCredit from '../../components/ScaleeeCredit.astro';
+import FotWordmark from '../../components/FotWordmark.astro';
+const impressumUrl = 'https://fitontime.ch/impressum-datenschutz';
+const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
+const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').trim();
+const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..500,0..100;1,9..144,300..500,0..100&family=Albert+Sans:wght@400;500;600&display=swap';
+const ZIELJAHR = new Date().getFullYear() + 5;
+---
+<html lang="de-CH">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Deine Prognose | Fit on Time</title>
+  <link rel="icon" type="image/png" href="/images/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href={FONTS} rel="stylesheet" />
+</head>
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <FotWordmark />
+      <span class="tag">Deine Prognose</span>
+    </div>
+  </div>
+
+  <section class="section result-hero" style="padding-top:0.5rem;">
+    <div class="wrap">
+      <div class="profile">
+        <div class="p-label" id="hi">Deine Prognose</div>
+        <div class="prog-zahl"><b id="kg">+0,0 kg</b><span>Fett bis {ZIELJAHR}</span></div>
+        <p class="prog-sub">wenn alles so bleibt wie jetzt</p>
+        <div class="butter" id="butter" aria-hidden="true"></div>
+        <p class="butter-l" id="butterText"></p>
+        <p class="p-text" id="waage"></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--bright">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">Jahr für Jahr</p>
+        <h2>So wächst es, <em>wenn du nichts änderst.</em></h2>
+      </div>
+      <ul class="jahre" id="jahre"></ul>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head">
+        <p class="eyebrow">Warum es bei dir so viel ist</p>
+        <h2>Das treibt <em>deine Kurve.</em></h2>
+      </div>
+      <ol class="tips" id="gruende"></ol>
+    </div>
+  </section>
+
+  <section class="section section--sand" id="termin">
+    <div class="wrap">
+      <div class="buchung">
+        <p class="eyebrow">Dein nächster Schritt · kostenlos</p>
+        <h2>Du kannst die Kurve drehen. <em>Wir zeigen dir, wie.</em></h2>
+        <p>In 30 Minuten schaut eine Coachin von Fit on Time mit dir auf deine Prognose. Ohne Diät, ohne Spritze. Such dir unten einen Termin aus.</p>
+        <ul class="b-list">
+          <li><b>Was bei dir das Fett festhält.</b> Schlaf, Muskeln, Stress oder Essen.</li>
+          <li><b>Wie dein Körper wieder Fett verbrennt.</b> Mit Schritten, die in deinen Alltag passen.</li>
+          <li><b>Was du ab morgen anders machst.</b> Konkret und ohne Hungern.</li>
+        </ul>
+        <div id="ycbm-embed"></div>
+        <p class="b-fine" style="margin-top:0.9rem;font-size:0.85rem;color:var(--taupe);">Kein passender Termin dabei? Kein Problem, wir rufen dich in den nächsten Tagen an.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap wrap--wide">
+      <div class="section-head">
+        <p class="eyebrow">Frauen, die die Kurve gedreht haben</p>
+        <h2>Als ihr Körper wieder Fett verbrannt hat, <em>ging es.</em></h2>
+      </div>
+      <div class="e3">
+        <figure><div class="e3-img"><img src="/images/nervensystem/kundin-a.webp" alt="Kundin von Fit on Time, vorher und nachher" loading="lazy" width="800" height="652" /></div><figcaption><b>Kundin von Fit on Time</b><span>vorher · nachher</span></figcaption></figure>
+        <figure><div class="e3-img"><img src="/images/nervensystem/kundin-b.webp" alt="Kundin von Fit on Time, vorher und nachher" loading="lazy" width="800" height="652" /></div><figcaption><b>Kundin von Fit on Time</b><span>vorher · nachher</span></figcaption></figure>
+        <blockquote class="e3-quote"><p>«Ich hätte nie gedacht, dass ich mal so begeistert sein werde.»</p><div class="e3-who"><strong>−16,3 kg</strong><b>Coco, Floristin</b><span>Grösse 46 auf 40</span></div></blockquote>
+      </div>
+      <p class="fine-note"><span class="swipe">Wischen für mehr · </span>Ergebnisse sind individuell.</p>
+      <div style="margin-top:2rem;max-width:28rem;">
+        <a class="btn btn--primary btn--block" href="#termin">Termin aussuchen <span class="btn-arrow">&rarr;</span></a>
+      </div>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <footer>
+      <a href={impressumUrl} target="_blank" rel="noopener">Impressum</a> &middot;
+      <a href={datenschutzUrl} target="_blank" rel="noopener">Datenschutzerklärung</a>
+      <p class="fine">Die Prognose ist eine Schätzung und ersetzt keine ärztliche Abklärung. Grundlage: Körperfett nach Deurenberg (BMI und Alter), Fettzuwachs und Muskelabbau nach der SWAN-Studie (Greendale u. a., JCI Insight 2019), Fettverbrennung nach Lovejoy u. a. (International Journal of Obesity 2008), angepasst an deine Antworten. Ergebnisse sind individuell.</p>
+      <div style="margin-top:10px;text-align:center;"><ScaleeeCredit /></div>
+    </footer>
+  </div>
+
+  <script is:inline>
+    var GRUENDE = {
+      phase: ['Du steckst mitten im Übergang.', 'In dieser Phase wächst das Fett am schnellsten, fast doppelt so schnell wie vorher. Gleichzeitig sinkt deine Fettverbrennung.'],
+      schlaf: ['Dein Schlaf ist gestört.', 'Wer schlecht schläft, hat am nächsten Tag mehr Hunger, vor allem auf Süsses und Brot. Dein Körper ist im Stress und hält fest.'],
+      muskeln: ['Deine Muskeln bekommen zu wenig zu tun.', 'Muskeln verbrennen Energie, sogar im Schlaf. Ohne Krafttraining baut dein Körper sie jetzt Jahr für Jahr ab, und dein Verbrauch sinkt mit.'],
+      stress: ['Du kommst selbst zu kurz.', 'Dauerstress hält das Stresshormon Cortisol oben. Cortisol sorgt dafür, dass Fett am Bauch gespeichert wird.'],
+      diaet: ['Diäten haben deinen Körper vorsichtig gemacht.', 'Jede Diät kostet Muskeln. Danach braucht dein Körper weniger, und das Fett kommt schneller zurück als vorher.']
+    };
+    var FALLBACK = ['Die Wechseljahre stellen deinen Körper um.', 'Auch wenn du sonst vieles richtig machst: Mit sinkendem Östrogen verbrennt dein Körper weniger Fett und speichert mehr am Bauch.'];
+
+    function kg(x) { return x.toFixed(1).replace('.', ','); }
+
+    var d = null;
+    try { d = JSON.parse(sessionStorage.getItem('fot_prog') || 'null'); } catch (e) {}
+    // Direktaufruf ohne Prognose: zurück zum Start
+    if (!d || typeof d.kg !== 'number') { location.replace('/prognose/'); }
+    else {
+      if (d.name) document.getElementById('hi').textContent = d.name + ', deine Prognose';
+      document.getElementById('kg').textContent = '+' + kg(d.kg) + ' kg';
+      var pack = Math.round(d.kg / 0.25);
+      document.getElementById('butter').innerHTML = new Array(pack + 1).join('<i></i>');
+      document.getElementById('butterText').textContent = 'Das sind ' + pack + ' Päckchen Butter. Das meiste davon setzt sich am Bauch an.';
+      var waage = Math.max(0, d.kg - d.muskel);
+      document.getElementById('waage').textContent = 'Auf der Waage siehst du davon nur etwa ' + kg(waage) + ' kg. Denn gleichzeitig verlierst du rund ' + kg(d.muskel) + ' kg Muskeln. Darum merkst du es zuerst an der Hose und nicht an der Waage.';
+      var start = new Date().getFullYear();
+      var max = d.jahre[d.jahre.length - 1] || 1;
+      document.getElementById('jahre').innerHTML = d.jahre.map(function (x, i) {
+        return '<li><span class="j">' + (start + i + 1) + '</span><span class="bar"><i data-w="' + Math.round(x / max * 100) + '"></i></span><span class="kg">+' + kg(x) + ' kg</span></li>';
+      }).join('');
+      setTimeout(function () { document.querySelectorAll('.jahre .bar i').forEach(function (el) { el.style.width = el.dataset.w + '%'; }); }, 150);
+      var liste = (d.gruende || []).map(function (k) { return GRUENDE[k]; }).filter(Boolean);
+      if (!liste.length) liste.push(FALLBACK);
+      document.getElementById('gruende').innerHTML = liste.map(function (x) { return '<li><div><b>' + x[0] + '</b>' + x[1] + '</div></li>'; }).join('');
+    }
+
+    function tk(e, x) {
+      var tries = 0;
+      function fire() {
+        if (window.__lp) window.__lp.track(e, Object.assign({ page: 'prognose' }, x || {}), 'fot', '5-Jahres-Prognose');
+        else if (tries++ < 40) setTimeout(fire, 50);
+      }
+      fire();
+    }
+    if (d) tk('result_shown', { detail: String(d.kg) });
+
+    // Funnel-Marker für /koerper-report/gebucht/ (geteilter YCBM-Kalender)
+    try { sessionStorage.setItem('fot_funnel', 'prognose'); } catch (e) {}
+    var ycbm = document.createElement('script');
+    ycbm.src = 'https://embed.ycb.me';
+    ycbm.async = true;
+    ycbm.setAttribute('data-domain', 'fitontime-stoffwechsel-report');
+    ycbm.setAttribute('data-displaymode', 'auto');
+    document.getElementById('ycbm-embed').appendChild(ycbm);
+    tk('booking_embed_loaded');
+  </script>
+
+  <script is:inline src="https://t.hyros.com/v1/lst/universal-script?ph=689a71ca1ab3be1cb1caddbe6b7902a4ad2c51a228f4ec9ea7fef3123a705f63"></script>
+
+  <CookieBanner
+    metaPixelId="1316450223953563"
+    googleAdsId={GOOGLE_ADS_ID}
+    consentKey="fot_prognose_consent"
+    impressumUrl={impressumUrl}
+    datenschutzUrl={datenschutzUrl}
+  />
+</body>
+</html>

@@ -1,0 +1,52 @@
+/* 5-Jahres-Prognose: Ergänzungen zu bauchfett.css und nervensystem.css (gleiche Tokens). */
+
+/* Grösse und Gewicht per Regler */
+.mass { display: grid; gap: 1.4rem; max-width: 30rem; margin: 0 auto 1.5rem; }
+.mass-row label { display: flex; justify-content: space-between; align-items: baseline; font-size: 0.95rem; color: var(--ink); margin-bottom: 0.5rem; }
+.mass-row output { font-family: var(--font-display); font-size: 1.6rem; font-weight: 340; font-variant-numeric: tabular-nums; color: var(--ink); }
+.mass-row input[type="range"] { -webkit-appearance: none; appearance: none; width: 100%; height: 8px; border-radius: 4px; background: var(--sand-deep); outline: none; cursor: pointer; }
+.mass-row input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 30px; height: 30px; border-radius: 50%; background: var(--cream-bright); border: 2px solid var(--ink); box-shadow: 0 4px 14px -4px rgb(33 28 23 / .35); }
+.mass-row input[type="range"]::-moz-range-thumb { width: 28px; height: 28px; border-radius: 50%; background: var(--cream-bright); border: 2px solid var(--ink); }
+.mass-row input[type="range"]:focus-visible { outline: 2px solid var(--gold); outline-offset: 6px; }
+.mass-step .btn { max-width: 30rem; margin: 0 auto; display: flex; justify-content: center; }
+
+/* Unscharfe Zahl vor dem Opt-in */
+.teaser { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; border-top: var(--hairline); border-bottom: var(--hairline); padding: 1rem 0; margin: 0 0 1.25rem; }
+.teaser span { font-size: 0.92rem; color: var(--ink-soft); }
+.teaser b { font-family: var(--font-display); font-size: 2.4rem; font-weight: 320; color: var(--rust); font-variant-numeric: tabular-nums; filter: blur(9px); user-select: none; line-height: 1; white-space: nowrap; }
+
+/* Jahres-Regler auf der Landing */
+.jahr-out { display: flex; align-items: baseline; gap: 0.6rem; margin: 0.2rem 0 0.4rem; }
+.jahr-out b { font-family: var(--font-display); font-size: 3rem; font-weight: 320; color: var(--rust); line-height: 1; font-variant-numeric: tabular-nums; }
+.jahr-out span { color: var(--taupe); font-size: 0.9rem; }
+.beispiel { font-family: ui-monospace, monospace; font-size: 0.7rem; letter-spacing: 0.05em; color: var(--taupe); margin-top: 0.9rem; }
+
+/* Butter-Reihe: ein Block = ein Päckchen (250 g) */
+.butter { display: flex; flex-wrap: wrap; gap: 5px; margin: 0.9rem 0 0.6rem; min-height: 22px; }
+.butter i { width: 30px; height: 16px; border-radius: 2px; background: #f1d98a; border: 1px solid #d9bd62; display: block; }
+.butter-l { font-size: 0.95rem; color: var(--ink-soft); }
+
+/* Quellen unter den Fakten */
+.quelle { display: block; margin-top: 0.45rem; font-family: ui-monospace, monospace; font-size: 0.7rem; letter-spacing: 0.03em; color: var(--taupe); }
+
+/* Ergebnis: grosse Zahl */
+.prog-zahl { display: flex; align-items: baseline; flex-wrap: wrap; gap: 0.4rem 0.8rem; margin: 0.6rem 0 0.2rem; }
+.prog-zahl b { font-family: var(--font-display); font-size: clamp(3.6rem, 12vw, 5.5rem); font-weight: 320; color: var(--rust); line-height: 0.95; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+.prog-zahl span { font-size: 1.05rem; color: var(--ink); }
+.prog-sub { color: var(--taupe); font-size: 0.92rem; margin-bottom: 0.4rem; }
+
+/* Ergebnis: Jahr für Jahr */
+.jahre { list-style: none; border-top: var(--hairline); margin-top: 0.5rem; }
+.jahre li { display: grid; grid-template-columns: 3.4rem 1fr 4.2rem; gap: 0.9rem; align-items: center; padding: 0.75rem 0; border-bottom: var(--hairline); font-variant-numeric: tabular-nums; }
+.jahre .j { font-family: ui-monospace, monospace; font-size: 0.8rem; color: var(--taupe); }
+.jahre .bar { height: 8px; background: var(--sand); border-radius: 4px; overflow: hidden; }
+.jahre .bar i { display: block; height: 100%; width: 0; background: var(--rust); border-radius: 4px; transition: width 1s var(--ease-out); }
+.jahre .kg { text-align: right; font-weight: 600; color: var(--ink); }
+@media (prefers-reduced-motion: reduce) { .jahre .bar i { transition: none; } }
+
+/* Ergebnis: Buchung */
+.buchung { background: var(--cream-bright); border: var(--hairline); border-radius: var(--radius-soft); padding: 1.5rem 1.25rem; }
+.buchung #ycbm-embed { margin-top: 1.25rem; min-height: 420px; }
+.buchung .b-list { list-style: none; border-top: var(--hairline); margin-top: 1rem; }
+.buchung .b-list li { padding: 0.65rem 0; border-bottom: var(--hairline); font-size: 0.97rem; color: var(--ink-soft); }
+.buchung .b-list b { color: var(--ink); font-weight: 600; }

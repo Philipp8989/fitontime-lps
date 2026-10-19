@@ -288,6 +288,22 @@ SHEETS['nervensystem-b'] = {
   },
 };
 
+// 5-Jahres-Prognose (Wechseljahre-Funnel, /prognose/). Sheet "FitonTime 5-Jahres-Prognose Leads", Tab Leads.
+// Setter-Prio: hoch = ab 10 kg Ziel und Ja zu 15 Minuten am Tag, niedrig = Nein, sonst mittel.
+SHEETS['prognose'] = {
+  id: '1Mb25Oe4SooXBBIh6zyr9UzaAeAbQl69pFmXgxMZiWeA',
+  range: 'Leads!A:U',
+  buildRow: (datum, d) => {
+    const a = d.answers || {};
+    const u = d.attr || {};
+    const [vorname, nachname] = splitName(d.name);
+    const prio = a.bereit === 'Nein' ? 'niedrig' : (a.q9 === '10-20' || a.q9 === '20+') && a.bereit === 'Ja' ? 'hoch' : 'mittel';
+    return [datum, vorname, nachname, d.email, d.phone || '', prio, a.prog_kg ?? '', a.q9_label || '', a.q2_label || '',
+      a.q3_label || '', a.groesse ?? '', a.gewicht ?? '', a.q1_label || '', a.q5_label || '', a.q6_label || '',
+      a.q7 ?? '', a.q8_label || '', a.bereit || '', u.utm_source || '', u.utm_campaign || '', u.utm_content || ''];
+  },
+};
+
 // Ein-Klick-Anmeldungen aus der Mail und Hot-Seat-Antworten sind keine neuen Leads: kein CRM-Eintrag
 // (sonst Doppel-Lead plus Benachrichtigung je Listen-Kontakt) und kein Meta-Lead (sonst stimmt der CPL nicht).
 const isWebinarFollowUp = (slug: string, d: any) => slug === 'webinar-hotseat' || (slug === 'webinar' && d.oneclick === true);
@@ -571,7 +587,7 @@ const handleLead: APIRoute = async ({ request }) => {
             // Eigener Pixel, damit das Medikamenten-Thema den geteilten Pixel nie trifft.
             // Ohne Env kein CAPI-Override auf einen fremden Pixel: dann geht nichts raus (siehe unten).
             : lpSlug === 'nach-der-spritze' ? ((import.meta.env.PUBLIC_FOT_SPRITZE_PIXEL_ID || '').trim() || 'none')
-            : (lpSlug === 'insulin-check' || lpSlug === 'bauchfett' || lpSlug === 'koerperalter' || lpSlug === 'webinar' || lpSlug === 'nervensystem' || lpSlug === 'nervensystem-b') ? '1316450223953563'
+            : (lpSlug === 'insulin-check' || lpSlug === 'bauchfett' || lpSlug === 'koerperalter' || lpSlug === 'webinar' || lpSlug === 'nervensystem' || lpSlug === 'nervensystem-b' || lpSlug === 'prognose') ? '1316450223953563'
               : undefined,
         // Nur Longevity: geschaetzter Lead-Wert (reine Zahl, KEINE Gesundheitsdaten) behebt Meta-Diagnose "gueltige Preisinfo".
         // value/currency muessen mit dem Browser-Pixel (longevity/index.astro) uebereinstimmen. Platzhalter 50 CHF.

@@ -74,7 +74,7 @@ const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').t
       // Domain). Fremde Funnels auf dem geteilten Kalender -> 'stoffwechsel-report'.
       var funnel = 'stoffwechsel-report';
       try { funnel = sessionStorage.getItem('fot_funnel') || 'stoffwechsel-report'; } catch (e) {}
-      var funnelName = funnel === 'koerper-report' ? 'Stoffwechsel-Report v2' : 'Stoffwechsel Report';
+      var funnelName = funnel === 'koerper-report' ? 'Stoffwechsel-Report v2' : funnel === 'prognose' ? '5-Jahres-Prognose' : 'Stoffwechsel Report';
       var tk = function (e, d) {
         var tries = 0;
         (function fire() {

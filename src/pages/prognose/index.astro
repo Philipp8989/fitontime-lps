@@ -1,0 +1,559 @@
+---
+// 5-Jahres-Prognose: Wechseljahre-Funnel nach Bahmann und Henri (Analysen 13.10.2026, 01_Competitor-Analyse).
+// Angle: Neugier plus Angst. Wie viel Fett legt dein Körper bis in 5 Jahren zu, wenn alles bleibt wie jetzt?
+// Rechnung: Körperfett nach Deurenberg (BMI, Alter), Zuwachs nach SWAN (Greendale 2019: 1,0 % pro Jahr
+// vor, 1,7 % in den Wechseljahren), Aufschläge je Antwort. Zahl unscharf vor dem Opt-in, scharf im Ergebnis.
+// Pfad, Titel und Meta-Events bewusst neutral (kein "Wechseljahre"), wegen der Gesundheitsdaten-Sperre vom Mai.
+import '../../styles/bauchfett.css';
+import '../../styles/nervensystem.css';
+import '../../styles/prognose.css';
+import CookieBanner from '../../components/CookieBanner.astro';
+import ScaleeeCredit from '../../components/ScaleeeCredit.astro';
+import FotWordmark from '../../components/FotWordmark.astro';
+const impressumUrl = 'https://fitontime.ch/impressum-datenschutz';
+const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
+const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').trim();
+const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..500,0..100;1,9..144,300..500,0..100&family=Albert+Sans:wght@400;500;600&display=swap';
+const ZIELJAHR = new Date().getFullYear() + 5;
+---
+<html lang="de-CH">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Deine 5-Jahres-Prognose | Fit on Time</title>
+  <meta name="description" content="Wie viel Fett legt dein Körper in den nächsten 5 Jahren zu, wenn alles so bleibt? Die Prognose zeigt es dir in 2 Minuten." />
+  <link rel="icon" type="image/png" href="/images/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href={FONTS} rel="stylesheet" />
+</head>
+<body>
+
+  <!-- ===== LANDING ===== -->
+  <div id="lp">
+    <div class="wrap">
+      <div class="topbar">
+        <FotWordmark />
+        <span class="tag">5-Jahres-Prognose</span>
+      </div>
+    </div>
+
+    <section class="hero">
+      <div class="arc arc--hero"></div>
+      <div class="wrap wrap--wide hero-grid">
+        <div>
+          <p class="eyebrow">2 Minuten · 9 Fragen · kostenlos</p>
+          <h1>Ab 45 legt dein Körper jedes Jahr Fett zu. <em>Auch wenn du gleich isst wie immer.</em></h1>
+          <p class="lead">In den Wechseljahren verbrennt dein Körper rund ein Drittel weniger Fett. Er speichert mehr, und das meiste landet am Bauch. Die meisten Frauen merken es erst, wenn die Hose nicht mehr zugeht. Die Prognose zeigt dir, wie viel Fett dein Körper bis {ZIELJAHR} zulegt, wenn alles so bleibt wie jetzt.</p>
+          <p class="lead hide-sm" style="font-size:0.95rem;">Von Fit on Time. Seit 2016 über 4'000 Frauen in der Schweiz begleitet.</p>
+        </div>
+
+        <div class="gate">
+          <div class="gate-q">Was hat sich an deinem Körper in den letzten Jahren verändert?</div>
+          <div class="gate-sub">Tipp auf die Antwort, die am ehesten passt. Damit startet die Prognose.</div>
+          <div class="opts">
+            <button class="opt" onclick="startQuiz('bauch')">Mein Bauch wird runder, obwohl ich nicht mehr esse</button>
+            <button class="opt" onclick="startQuiz('waage')">Die Waage geht langsam, aber stetig nach oben</button>
+            <button class="opt" onclick="startQuiz('muede')">Ich bin oft müde und schlafe schlecht</button>
+            <button class="opt" onclick="startQuiz('nichts')">Eigentlich hat sich nichts verändert</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Belegte Zahlen (design-pool beweis/fakten-zeile) -->
+    <section class="fz" aria-label="Fit on Time in Zahlen">
+      <div class="fz-wrap">
+        <div class="fz-item"><strong>4'000+</strong><span>Frauen begleitet</span><small>seit 2016</small></div>
+        <div class="fz-item"><strong>4,8</strong><span>Sterne auf Google</span><small>567 Rezensionen · Stand 09/2026</small></div>
+        <div class="fz-item"><strong>4,4</strong><span>Sterne auf Trustpilot</span><small>208 Bewertungen · Stand 09/2026</small></div>
+        <div class="fz-item"><strong>4</strong><span>Standorte in der Schweiz</span><small>Frauenfeld · Zürich · Bern · St. Gallen</small></div>
+      </div>
+    </section>
+
+    <!-- Der Satz vom Arzt plus Jahres-Regler (interaktiv) -->
+    <section class="section section--bright">
+      <div class="wrap wrap--wide regler-grid">
+        <div>
+          <p class="eyebrow">Der Satz, den fast jede Frau hört</p>
+          <h2>«In den Wechseljahren nimmt man halt zu.» <em>Stimmt. Wenn du nichts änderst.</em></h2>
+          <p class="lead">Dein Körper verändert sich, da hat deine Ärztin recht. Er nimmt aber nicht zu, weil du älter wirst. Er nimmt zu, weil er weniger Fett verbrennt und Muskeln abbaut. Beides kannst du beeinflussen.</p>
+          <p class="lead hide-sm">Schieb den Regler und schau, was Jahr für Jahr dazukommt.</p>
+        </div>
+        <div class="regler" id="jahrRegler">
+          <div class="r-head"><span>Nach</span><b id="jName">5 Jahren</b></div>
+          <input type="range" id="rIn" min="1" max="10" value="5" aria-label="Wie viele Jahre?" />
+          <div class="r-ends"><span>1 Jahr</span><span>5 Jahre</span><span>10 Jahre</span></div>
+          <div class="jahr-out"><b id="jKg">+0,0 kg</b><span>Fett, wenn alles bleibt</span></div>
+          <div class="butter" id="jButter" aria-hidden="true"></div>
+          <p class="butter-l" id="jText"></p>
+          <p class="beispiel">Beispiel: Frau, 50 Jahre, 165 cm, 72 kg, mitten in den Wechseljahren. Werte aus der SWAN-Studie.</p>
+          <button class="btn btn--primary btn--block" type="button" onclick="zumStart()" style="margin-top:1.2rem;">Wie sieht es bei dir aus? <span class="btn-arrow">&rarr;</span></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Was im Körper passiert -->
+    <section class="section">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow">Was in deinem Körper passiert</p>
+          <h2>Vier Dinge, die dir <em>kaum jemand sagt.</em></h2>
+        </div>
+        <div class="types">
+          <div class="type-row"><span class="tn">01</span><div><h3>Deine Fettverbrennung sinkt um 32 %.</h3><p>Das hat eine Studie mit 156 Frauen über vier Jahre gemessen. Bei den Frauen, die noch nicht in den Wechseljahren waren, blieb sie gleich.</p><span class="quelle">Lovejoy u. a., International Journal of Obesity 2008</span></div></div>
+          <div class="type-row"><span class="tn">02</span><div><h3>Fett wächst fast doppelt so schnell.</h3><p>Vor den Wechseljahren legt der Körper etwa 1 % Fett pro Jahr zu. In den Wechseljahren sind es 1,7 %. Gleichzeitig gehen Muskeln verloren. Die Waage zeigt kaum etwas, die Hose schon.</p><span class="quelle">SWAN-Studie, 1'246 Frauen, Greendale u. a., JCI Insight 2019</span></div></div>
+          <div class="type-row"><span class="tn">03</span><div><h3>Das neue Fett sitzt am Bauch.</h3><p>Das Fett zwischen den Organen hat in der Studie nur bei den Frauen zugenommen, die in die Wechseljahre gekommen sind. Genau dieses Fett macht den Bauch rund und fest.</p><span class="quelle">Lovejoy u. a., International Journal of Obesity 2008</span></div></div>
+          <div class="type-row"><span class="tn">04</span><div><h3>Weniger essen macht es schlimmer.</h3><p>Wer jetzt hungert, verliert noch mehr Muskeln. Muskeln verbrauchen Energie, sogar im Schlaf. Also sinkt dein Verbrauch weiter, und das Fett kommt schneller zurück.</p></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Erfolge (design-pool beweis/erfolge-drei) -->
+    <section class="section section--sand">
+      <div class="wrap wrap--wide">
+        <div class="section-head">
+          <p class="eyebrow">Frauen, die die Kurve gedreht haben</p>
+          <h2>Als ihr Körper wieder Fett verbrannt hat, <em>ging es.</em></h2>
+        </div>
+        <div class="e3">
+          <figure><div class="e3-img"><img src="/images/nervensystem/kundin-a.webp" alt="Kundin von Fit on Time, vorher und nachher" loading="lazy" width="800" height="652" /></div><figcaption><b>Kundin von Fit on Time</b><span>vorher · nachher</span></figcaption></figure>
+          <figure><div class="e3-img"><img src="/images/nervensystem/kundin-b.webp" alt="Kundin von Fit on Time, vorher und nachher" loading="lazy" width="800" height="652" /></div><figcaption><b>Kundin von Fit on Time</b><span>vorher · nachher</span></figcaption></figure>
+          <blockquote class="e3-quote"><p>«Ich hätte nie gedacht, dass ich mal so begeistert sein werde.»</p><div class="e3-who"><strong>−16,3 kg</strong><b>Coco, Floristin</b><span>Grösse 46 auf 40</span></div></blockquote>
+        </div>
+        <p class="fine-note"><span class="swipe">Wischen für mehr · </span>Ergebnisse sind individuell.</p>
+      </div>
+    </section>
+
+    <!-- FAQ (design-pool faq/zwei-spalten-linien) -->
+    <section class="section section--bright">
+      <div class="wrap wrap--wide">
+        <div class="section-head">
+          <p class="eyebrow">Kurz gefragt</p>
+          <h2>Bevor du <em>startest.</em></h2>
+        </div>
+        <dl class="fl">
+          <div><dt>Was kostet die Prognose?</dt><dd>Nichts. Du beantwortest 9 Fragen und siehst deine Zahl sofort.</dd></div>
+          <div><dt>Ich bin noch nicht in den Wechseljahren.</dt><dd>Dann lohnt sich die Prognose besonders. Der Körper fängt oft schon Jahre vor der letzten Periode an umzustellen. Viele merken es zuerst am Schlaf und am Bauch.</dd></div>
+          <div><dt>Ist das eine Diagnose?</dt><dd>Nein. Die Prognose rechnet mit Durchschnittswerten aus Studien und deinen Antworten. Bei Beschwerden geh bitte zu deiner Ärztin oder deinem Arzt.</dd></div>
+          <div><dt>Warum braucht ihr meine Nummer?</dt><dd>Eine Coachin von Fit on Time ruft dich kurz an und erklärt dir, was deine Zahl bedeutet und was du dagegen tun kannst. Kostenlos. Deine Daten geben wir nicht weiter.</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <!-- Nochmal die erste Frage -->
+    <section class="section">
+      <div class="wrap">
+        <div class="gate gate--end">
+          <div class="gate-q">Was hat sich an deinem Körper in den letzten Jahren verändert?</div>
+          <div class="gate-sub">Die erste Frage. Damit startet die Prognose.</div>
+          <div class="opts">
+            <button class="opt" onclick="startQuiz('bauch')">Mein Bauch wird runder, obwohl ich nicht mehr esse</button>
+            <button class="opt" onclick="startQuiz('waage')">Die Waage geht langsam, aber stetig nach oben</button>
+            <button class="opt" onclick="startQuiz('muede')">Ich bin oft müde und schlafe schlecht</button>
+            <button class="opt" onclick="startQuiz('nichts')">Eigentlich hat sich nichts verändert</button>
+          </div>
+        </div>
+      </div>
+    </section>
+    <div class="wrap">
+      <footer>
+        <a href={impressumUrl} target="_blank" rel="noopener">Impressum</a> &middot;
+        <a href={datenschutzUrl} target="_blank" rel="noopener">Datenschutzerklärung</a>
+        <p class="fine">Die Prognose ist eine Schätzung anhand von Studienwerten und deinen Antworten und ersetzt keine ärztliche Abklärung. Ergebnisse sind individuell.</p>
+        <div style="margin-top:10px;text-align:center;"><ScaleeeCredit /></div>
+      </footer>
+    </div>
+  </div>
+
+  <!-- ===== QUIZ ===== -->
+  <div id="quiz">
+    <div class="q-head"><FotWordmark /></div>
+    <div class="q-progress"><div class="q-bar"><div class="q-fill" id="qf"></div></div><div class="q-num" id="qn">Frage 2 von 9</div></div>
+    <div class="q-body">
+
+      <div class="step on" data-s="2">
+        <h2>Wie alt bist du?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(2,'u40')">Unter 40</button>
+          <button class="opt" onclick="nxt(2,'40-44')">40 bis 44</button>
+          <button class="opt" onclick="nxt(2,'45-49')">45 bis 49</button>
+          <button class="opt" onclick="nxt(2,'50-54')">50 bis 54</button>
+          <button class="opt" onclick="nxt(2,'55-59')">55 bis 59</button>
+          <button class="opt" onclick="nxt(2,'60+')">60 oder älter</button>
+        </div>
+      </div>
+
+      <div class="step" data-s="3">
+        <h2>Wie ist deine Periode im Moment?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(3,'regel')">Noch regelmässig</button>
+          <button class="opt" onclick="nxt(3,'unregel')">Unregelmässig<small>Mal früher, mal später, mal gar nicht</small></button>
+          <button class="opt" onclick="nxt(3,'vorbei')">Seit über einem Jahr keine mehr</button>
+          <button class="opt" onclick="nxt(3,'unklar')">Weiss ich nicht<small>Zum Beispiel nach einer Operation</small></button>
+        </div>
+        <div class="tipp"><strong>Gut zu wissen:</strong> Der Körper fängt oft schon einige Jahre vor der letzten Periode an umzustellen. Gerade dann wächst das Fett am schnellsten.</div>
+      </div>
+
+      <div class="step mass-step" data-s="4">
+        <h2>Wie gross bist du, und was wiegst du ungefähr?</h2>
+        <p class="q-sub">Nur für die Berechnung. Schätzen reicht.</p>
+        <div class="mass">
+          <div class="mass-row"><label for="inH"><span>Grösse</span><output id="outH">165 cm</output></label><input type="range" id="inH" min="145" max="195" value="165" /></div>
+          <div class="mass-row"><label for="inW"><span>Gewicht</span><output id="outW">75 kg</output></label><input type="range" id="inW" min="45" max="150" value="75" /></div>
+        </div>
+        <button class="btn btn--primary btn--block" onclick="massWeiter()">Weiter <span class="btn-arrow">&rarr;</span></button>
+      </div>
+
+      <div class="step pause" data-s="p">
+        <h2>Gut gemacht. <em>Deine Kurve steht schon.</em></h2>
+        <p>Jetzt noch 4 Fragen zu deinem Alltag. Die entscheiden, wie steil sie bei dir wird.</p>
+        <button class="btn btn--primary btn--block" onclick="weiter()">Weiter <span class="btn-arrow">&rarr;</span></button>
+      </div>
+
+      <div class="step" data-s="5">
+        <h2>Wie schläfst du im Moment?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(5,'gut')">Meistens gut</button>
+          <button class="opt" onclick="nxt(5,'wach')">Ich wache nachts auf<small>Oft verschwitzt oder mit Herzklopfen</small></button>
+          <button class="opt" onclick="nxt(5,'ein')">Ich schlafe schlecht ein</button>
+          <button class="opt" onclick="nxt(5,'muede')">Ich schlafe genug und bin trotzdem müde</button>
+        </div>
+        <div class="tipp"><strong>Gut zu wissen:</strong> Wer schlecht schläft, hat am nächsten Tag mehr Hunger, vor allem auf Süsses und Brot.</div>
+      </div>
+
+      <div class="step" data-s="6">
+        <h2>Wie bewegst du dich in einer normalen Woche?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(6,'kraft')">Krafttraining, mindestens zweimal</button>
+          <button class="opt" onclick="nxt(6,'ausdauer')">Joggen, Velo oder Kurse</button>
+          <button class="opt" onclick="nxt(6,'spazieren')">Vor allem Spazieren</button>
+          <button class="opt" onclick="nxt(6,'kaum')">Kaum, mir fehlt die Zeit</button>
+        </div>
+        <div class="tipp"><strong>Gut zu wissen:</strong> Muskeln sind dein grösster Fettverbrenner. Ab 40 baut der Körper sie ab, wenn du sie nicht forderst.</div>
+      </div>
+
+      <div class="step" data-s="7">
+        <h2>Mein Alltag ist so voll, dass ich selbst zu kurz komme.</h2>
+        <p class="q-sub">Wie sehr trifft das auf dich zu?</p>
+        <div class="scale">
+          <button class="opt" onclick="nxt(7,1)">1</button><button class="opt" onclick="nxt(7,2)">2</button><button class="opt" onclick="nxt(7,3)">3</button><button class="opt" onclick="nxt(7,4)">4</button><button class="opt" onclick="nxt(7,5)">5</button>
+        </div>
+        <div class="scale-ends"><span>Gar nicht</span><span>Voll und ganz</span></div>
+      </div>
+
+      <div class="step" data-s="8">
+        <h2>Was hast du schon probiert?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(8,'weniger')">Weniger essen, Kalorien zählen</button>
+          <button class="opt" onclick="nxt(8,'fasten')">Intervallfasten</button>
+          <button class="opt" onclick="nxt(8,'sport')">Mehr Sport</button>
+          <button class="opt" onclick="nxt(8,'alles')">Alles davon</button>
+          <button class="opt" onclick="nxt(8,'nichts')">Noch nichts davon</button>
+        </div>
+        <div class="tipp"><strong>Gut zu wissen:</strong> Jede Diät kostet in den Wechseljahren auch Muskeln. Darum wird es mit jedem Versuch schwerer, nicht leichter.</div>
+      </div>
+
+      <div class="step" data-s="9">
+        <h2>Wie viel möchtest du abnehmen?</h2>
+        <div class="opts">
+          <button class="opt" onclick="nxt(9,'bis5')">Bis 5 kg</button>
+          <button class="opt" onclick="nxt(9,'5-10')">5 bis 10 kg</button>
+          <button class="opt" onclick="nxt(9,'10-20')">10 bis 20 kg</button>
+          <button class="opt" onclick="nxt(9,'20+')">Mehr als 20 kg</button>
+        </div>
+      </div>
+
+      <!-- Auswertung mit Ja-Frage -->
+      <div class="step ld" data-s="ld">
+        <div class="spinner"></div>
+        <h2>Wir rechnen deine Prognose</h2>
+        <p>Einen Moment noch</p>
+        <div class="checks">
+          <div class="chk" id="c1"><i>&#10003;</i>Antworten ausgewertet</div>
+          <div class="chk" id="c2"><i>&#10003;</i>Fettverbrennung berechnet</div>
+          <div class="chk" id="c3"><i>&#10003;</i>Prognose bis {ZIELJAHR} erstellt</div>
+        </div>
+        <div class="ask" id="ask">
+          <p>Würdest du 15 Minuten am Tag für deinen Körper einplanen, wenn du wüsstest, dass er dann wieder Fett verbrennt?</p>
+          <div class="row">
+            <button class="btn btn--outline" onclick="bereit('nein')">Nein</button>
+            <button class="btn btn--primary" onclick="bereit('ja')">Ja</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Formular -->
+      <div class="step form" data-s="form">
+        <div class="tag">Prognose fertig</div>
+        <h2>Deine Prognose bis {ZIELJAHR} <em>ist bereit.</em></h2>
+        <div class="teaser"><span>So viel Fett legt dein Körper bis {ZIELJAHR} zu</span><b id="teaserKg" aria-hidden="true">+0,0 kg</b></div>
+        <p class="sub">Wohin dürfen wir sie schicken? Du siehst sie sofort. Eine Coachin von Fit on Time ruft dich danach kurz an und erklärt dir, was die Zahl für dich bedeutet.</p>
+        <div class="fields">
+          <div class="field"><input type="text" id="fn" placeholder="Dein Vorname" autocomplete="given-name" /></div>
+          <div class="field"><input type="email" id="em" placeholder="Deine E-Mail" autocomplete="email" /></div>
+          <div class="field"><span class="pre">+41</span><input type="tel" id="ph" placeholder="Deine Handynummer" autocomplete="tel" /></div>
+        </div>
+        <p class="form-err" id="formErr" role="alert" hidden></p>
+        <div class="cb-row" id="dsRow">
+          <input type="checkbox" id="ds" />
+          <label for="ds">Ich akzeptiere die <a href={datenschutzUrl} target="_blank" rel="noopener">Datenschutzbestimmungen</a>, bekomme meine Prognose per E-Mail und einen kurzen Anruf von Fit on Time. Abmelden geht jederzeit.</label>
+        </div>
+        <button class="btn btn--primary btn--block" id="sbtn" onclick="send()">Meine Prognose ansehen <span class="btn-arrow">&rarr;</span></button>
+        <div class="form-proof">Deine Daten sind sicher und werden nicht weitergegeben.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <script is:inline define:vars={{ ZIELJAHR }}>
+    window.ZIELJAHR = ZIELJAHR;
+  </script>
+  <script is:inline>
+    var A = {};            // Antworten
+    var TOTAL = 9;
+    var ORDER = [2, 3, 4, 'p', 5, 6, 7, 8, 9];
+    var LABELS = {
+      q1: { bauch: 'Bauch wird runder', waage: 'Waage steigt stetig', muede: 'Müde, schläft schlecht', nichts: 'Nichts verändert' },
+      q2: { u40: 'Unter 40', '40-44': '40 bis 44', '45-49': '45 bis 49', '50-54': '50 bis 54', '55-59': '55 bis 59', '60+': '60+' },
+      q3: { regel: 'Noch regelmässig', unregel: 'Unregelmässig', vorbei: 'Seit über 1 Jahr keine', unklar: 'Weiss nicht' },
+      q5: { gut: 'Schläft gut', wach: 'Wacht nachts auf', ein: 'Schlecht einschlafen', muede: 'Genug Schlaf, trotzdem müde' },
+      q6: { kraft: 'Krafttraining', ausdauer: 'Ausdauer, Kurse', spazieren: 'Spazieren', kaum: 'Kaum Bewegung' },
+      q8: { weniger: 'Weniger essen', fasten: 'Intervallfasten', sport: 'Mehr Sport', alles: 'Alles davon', nichts: 'Noch nichts' },
+      q9: { bis5: 'Bis 5 kg', '5-10': '5 bis 10 kg', '10-20': '10 bis 20 kg', '20+': 'Über 20 kg' }
+    };
+    var ALTER = { u40: 38, '40-44': 42, '45-49': 47, '50-54': 52, '55-59': 57, '60+': 62 };
+    // Fettzuwachs pro Jahr in Prozent der Fettmasse. SWAN: 1,0 vor, 1,7 in den Wechseljahren.
+    // Regelmässig: Übergang liegt meist noch in den 5 Jahren. Vorbei: Kurve flacht 2 Jahre danach ab.
+    var BASIS = { regel: 1.3, unregel: 1.7, vorbei: 1.4, unklar: 1.5 };
+
+    function tk(e, d) {
+      var tries = 0;
+      function fire() {
+        if (window.__lp) {
+          window.__lp.track(e, Object.assign({ page: 'prognose' }, d || {}), 'fot', '5-Jahres-Prognose');
+          if (e === 'quiz_start') window.__lp.meta('ViewContent', { content_name: 'FoT Quiz Start', currency: 'CHF' });
+          if (e === 'quiz_complete') window.__lp.meta('CompleteRegistration', { content_name: 'FoT Quiz Complete', currency: 'CHF' });
+          if (e === 'lead_submit') {
+            window.__lp.meta('Lead', { content_name: 'FoT Lead', currency: 'CHF' });
+            window.__lp.google('generate_lead', 'TnugCP-6zeIcEOfryccD');
+          }
+        } else if (tries++ < 40) {
+          setTimeout(fire, 50);
+        }
+      }
+      fire();
+    }
+    tk('page_view');
+
+    function zeige(s) {
+      document.querySelectorAll('#quiz .step').forEach(function (el) { el.classList.remove('on'); });
+      document.querySelector('.step[data-s="' + s + '"]').classList.add('on');
+      var i = ORDER.indexOf(s);
+      var nr = ORDER.slice(0, i + 1).filter(function (x) { return x !== 'p'; }).length + 1;
+      document.getElementById('qf').style.width = Math.round(((nr - 1) / TOTAL) * 100) + '%';
+      document.getElementById('qn').textContent = s === 'p' ? 'Halbzeit' : 'Frage ' + nr + ' von ' + TOTAL;
+      var q = document.getElementById('quiz'); if (q) q.scrollTop = 0;
+      window.scrollTo(0, 0);
+    }
+
+    function startQuiz(v) {
+      A.q1 = v; A.q1_label = LABELS.q1[v];
+      tk('quiz_start', { detail: 'q1_' + v });
+      document.getElementById('lp').style.display = 'none';
+      document.getElementById('quiz').classList.add('on');
+      zeige(2);
+    }
+
+    function nxt(s, val) {
+      var q = 'q' + s;
+      A[q] = val; A[q + '_label'] = s === 7 ? val + ' von 5' : ((LABELS[q] || {})[val] || val);
+      tk('quiz_answer', { detail: q + '_' + val });
+      var i = ORDER.indexOf(s);
+      if (i < ORDER.length - 1) zeige(ORDER[i + 1]);
+      else { rechnen(); tk('quiz_complete', { detail: A.prog_stufe }); laden(); }
+    }
+    function weiter() { zeige(5); }
+
+    // Grösse und Gewicht
+    var inH = document.getElementById('inH'), inW = document.getElementById('inW');
+    function massZeigen() {
+      document.getElementById('outH').textContent = inH.value + ' cm';
+      document.getElementById('outW').textContent = inW.value + ' kg';
+    }
+    inH.addEventListener('input', massZeigen); inW.addEventListener('input', massZeigen);
+    function massWeiter() {
+      A.groesse = +inH.value; A.gewicht = +inW.value;
+      A.q4_label = A.groesse + ' cm, ' + A.gewicht + ' kg';
+      tk('quiz_answer', { detail: 'q4_mass' });
+      zeige('p');
+    }
+
+    // Prognose: Fettmasse nach Deurenberg, Zuwachs pro Jahr nach Phase plus Aufschläge je Antwort
+    function rechnen() {
+      var bmi = A.gewicht / Math.pow(A.groesse / 100, 2);
+      var alter = ALTER[A.q2] || 50;
+      var kfa = Math.max(18, Math.min(50, 1.2 * bmi + 0.23 * alter - 5.4));
+      var fett = A.gewicht * kfa / 100;
+      var r = BASIS[A.q3] || 1.5;
+      var gruende = [];
+      if (A.q3 === 'unregel') gruende.push('phase');
+      if (A.q5 && A.q5 !== 'gut') { r += 0.2; gruende.push('schlaf'); }
+      if (A.q6 === 'kaum') { r += 0.35; gruende.push('muskeln'); }
+      else if (A.q6 === 'spazieren' || A.q6 === 'ausdauer') { r += 0.2; gruende.push('muskeln'); }
+      if (A.q7 >= 4) { r += 0.3; gruende.push('stress'); } else if (A.q7 === 3) { r += 0.15; }
+      if (A.q8 === 'weniger' || A.q8 === 'fasten' || A.q8 === 'alles') { r += 0.25; gruende.push('diaet'); }
+      r = Math.min(3, r);
+      // Muskelabbau: SWAN 0,2 % pro Jahr, ohne Krafttraining doppelt
+      var muskelRate = A.q6 === 'kraft' ? 0.2 : 0.4;
+      var mager = A.gewicht - fett;
+      var jahre = [];
+      for (var j = 1; j <= 5; j++) jahre.push(Math.round(fett * (Math.pow(1 + r / 100, j) - 1) * 10) / 10);
+      A.prog_kg = jahre[4];
+      A.prog_muskel = Math.round(mager * (1 - Math.pow(1 - muskelRate / 100, 5)) * 10) / 10;
+      A.prog_rate = Math.round(r * 100) / 100;
+      A.prog_jahre = jahre;
+      A.prog_gruende = gruende;
+      A.prog_stufe = A.prog_kg >= 4 ? 'hoch' : A.prog_kg >= 2.5 ? 'mittel' : 'niedrig';
+    }
+
+    function kgText(x) { return '+' + x.toFixed(1).replace('.', ',') + ' kg'; }
+
+    function laden() {
+      var ld = document.querySelector('.step[data-s="ld"]');
+      document.querySelectorAll('#quiz .step').forEach(function (el) { el.classList.remove('on'); });
+      ld.classList.add('on');
+      document.getElementById('qf').style.width = '100%';
+      document.getElementById('qn').textContent = 'Auswertung';
+      document.getElementById('teaserKg').textContent = kgText(A.prog_kg);
+      setTimeout(function () { document.getElementById('c1').classList.add('show'); }, 600);
+      setTimeout(function () { document.getElementById('ask').classList.add('on'); }, 1400);
+    }
+    function bereit(v) {
+      A.bereit = v === 'ja' ? 'Ja' : 'Nein';
+      tk('quiz_answer', { detail: 'bereit_' + v });
+      document.getElementById('ask').classList.remove('on');
+      setTimeout(function () { document.getElementById('c2').classList.add('show'); }, 300);
+      setTimeout(function () { document.getElementById('c3').classList.add('show'); }, 1000);
+      setTimeout(function () {
+        document.querySelector('.step[data-s="ld"]').classList.remove('on');
+        document.querySelector('.step[data-s="form"]').classList.add('on');
+        document.getElementById('qn').textContent = 'Fast fertig';
+      }, 1800);
+    }
+
+    // Gleiche Regeln wie src/lib/phone.ts und src/lib/leadValidation.ts (Server prüft nochmal)
+    function normalizePhone(raw) {
+      var c = (raw || '').replace(/[^\d+]/g, '');
+      if (!c) return '';
+      if (c.indexOf('00') === 0) c = '+' + c.slice(2);
+      if (c.charAt(0) !== '+') c = c.charAt(0) === '0' ? '+41' + c.slice(1) : '+41' + c;
+      if (c.indexOf('+410') === 0) c = '+41' + c.slice(4);
+      return c;
+    }
+    function validName(n) { return n.length <= 80 && !/[\d@]/.test(n) && (n.match(/\p{L}/gu) || []).length >= 2; }
+    function validEmail(e) { return e.length <= 254 && /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i.test(e); }
+    function validPhone(p) {
+      if (!/^\+\d+$/.test(p)) return false;
+      if (p.indexOf('+41') === 0) return /^\+41[2-9]\d{8}$/.test(p) || /^\+41(1[5-7]\d{8,9}|6[5-9]\d{7,10})$/.test(p); // DE/AT ohne Vorwahl: Server stellt um
+      return p.length - 1 >= 10 && p.length - 1 <= 15;
+    }
+
+    function send() {
+      var fnEl = document.getElementById('fn'), emEl = document.getElementById('em'), phEl = document.getElementById('ph');
+      var fn = fnEl.value.trim(), em = emEl.value.trim(), ph = normalizePhone(phEl.value);
+      var errEl = document.getElementById('formErr');
+      [fnEl, emEl, phEl].forEach(function (el) { el.parentElement.classList.remove('err'); el.removeAttribute('aria-invalid'); });
+      errEl.hidden = true;
+      var bad = [];
+      if (!validName(fn)) bad.push([fnEl, 'deinen Vornamen']);
+      if (!validEmail(em)) bad.push([emEl, 'eine gültige E-Mail']);
+      // Handy ist Pflicht: die Setter rufen an
+      if (!ph || !validPhone(ph)) bad.push([phEl, 'eine gültige Handynummer (z. B. 079 123 45 67)']);
+      if (bad.length) {
+        bad.forEach(function (b) { b[0].parentElement.classList.add('err'); b[0].setAttribute('aria-invalid', 'true'); });
+        var parts = bad.map(function (b) { return b[1]; });
+        errEl.textContent = 'Bitte trag ' + (parts.length > 1 ? parts.slice(0, -1).join(', ') + ' und ' + parts[parts.length - 1] : parts[0]) + ' ein.';
+        errEl.hidden = false;
+        bad[0][0].focus();
+        return;
+      }
+      var dsRow = document.getElementById('dsRow');
+      dsRow.classList.remove('error');
+      if (!document.getElementById('ds').checked) { dsRow.classList.add('error'); dsRow.scrollIntoView({ behavior: 'smooth', block: 'center' }); return; }
+      var btn = document.getElementById('sbtn');
+      btn.disabled = true;
+      btn.textContent = 'Wird gespeichert';
+      fetch('/api/sheets', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          lp_slug: 'prognose',
+          lp_name: '5-Jahres-Prognose',
+          name: fn,
+          email: em,
+          phone: ph,
+          first_name: fn.split(' ')[0],
+          answers: A
+        })
+      }).then(function (res) {
+        if (!res.ok) throw new Error('insert-failed');
+        tk('lead_submit', { detail: A.prog_stufe });
+        try {
+          sessionStorage.setItem('fot_prog', JSON.stringify({
+            name: fn.split(' ')[0] || '',
+            kg: A.prog_kg, muskel: A.prog_muskel, jahre: A.prog_jahre, gruende: A.prog_gruende,
+            phase: A.q3, ziel: A.q9_label
+          }));
+        } catch (e) {}
+        btn.textContent = 'Weiter zu deiner Prognose';
+        setTimeout(function () { location.href = '/prognose/ergebnis/'; }, 250);
+      }).catch(function () {
+        btn.disabled = false;
+        btn.innerHTML = 'Meine Prognose ansehen <span class="btn-arrow">&rarr;</span>';
+        errEl.textContent = (window.__lpErr ? window.__lpErr('Etwas ist schiefgelaufen. Bitte versuch es nochmal.') : 'Etwas ist schiefgelaufen. Bitte versuch es nochmal.');
+        errEl.hidden = false;
+      });
+    }
+  </script>
+
+  <script is:inline>
+    // Jahres-Regler: Beispielfrau 50 Jahre, 165 cm, 72 kg, mitten im Übergang (1,7 % pro Jahr)
+    (function () {
+      var inp = document.getElementById('rIn');
+      if (!inp) return;
+      var bmi = 72 / Math.pow(1.65, 2);
+      var fett = 72 * (1.2 * bmi + 0.23 * 50 - 5.4) / 100;
+      var gemeldet = false;
+      function setze() {
+        var j = +inp.value;
+        var kg = fett * (Math.pow(1.017, j) - 1);
+        var pack = Math.round(kg / 0.25);
+        document.getElementById('jName').textContent = j === 1 ? '1 Jahr' : j + ' Jahren';
+        document.getElementById('jKg').textContent = '+' + kg.toFixed(1).replace('.', ',') + ' kg';
+        document.getElementById('jButter').innerHTML = new Array(pack + 1).join('<i></i>');
+        document.getElementById('jText').textContent = 'Das sind ' + pack + ' Päckchen Butter. Das meiste davon setzt sich am Bauch an.';
+        inp.style.setProperty('--v', ((j - 1) / 9 * 100) + '%');
+      }
+      inp.addEventListener('input', function () {
+        setze();
+        if (!gemeldet && window.__lp) { gemeldet = true; window.__lp.track('regler_used', { page: 'prognose' }, 'fot', '5-Jahres-Prognose'); }
+      });
+      setze();
+    })();
+
+    function zumStart() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
+  </script>
+
+  <script is:inline src="https://t.hyros.com/v1/lst/universal-script?ph=689a71ca1ab3be1cb1caddbe6b7902a4ad2c51a228f4ec9ea7fef3123a705f63"></script>
+
+  <CookieBanner
+    metaPixelId="1316450223953563"
+    googleAdsId={GOOGLE_ADS_ID}
+    consentKey="fot_prognose_consent"
+    impressumUrl={impressumUrl}
+    datenschutzUrl={datenschutzUrl}
+  />
+</body>
+</html>
