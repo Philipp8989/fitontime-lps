@@ -51,17 +51,21 @@ export const GET: APIRoute = async ({ request, url }) => {
 
   const cutoffMs = Date.now() - WINDOW_HOURS * 3600 * 1000;
 
-  // 1. Blob-Metadaten paginieren und auf Window filtern
+  // 1. Blob-Metadaten nur im Zeitfenster listen
+  // Dateinamen beginnen mit Date.now() (13 Stellen), daher Präfix je 10^7 ms (rund 2,8 h).
+  // Vollscan über events/ lief bei über 67k Blobs in den 300s-Timeout (20.10.).
   const relevant: { url: string }[] = [];
-  let cursor: string | undefined;
-  do {
-    const r = await list({ prefix: 'events/', limit: 1000, cursor });
-    for (const b of r.blobs) {
-      const m = b.pathname.match(/events\/(\d+)-/);
-      if (m && parseInt(m[1]) >= cutoffMs) relevant.push({ url: b.url });
-    }
-    cursor = r.hasMore ? r.cursor : undefined;
-  } while (cursor);
+  for (let p = Math.floor(cutoffMs / 1e7); p <= Math.floor(Date.now() / 1e7); p++) {
+    let cursor: string | undefined;
+    do {
+      const r = await list({ prefix: `events/${p}`, limit: 1000, cursor });
+      for (const b of r.blobs) {
+        const m = b.pathname.match(/events\/(\d+)-/);
+        if (m && parseInt(m[1]) >= cutoffMs) relevant.push({ url: b.url });
+      }
+      cursor = r.hasMore ? r.cursor : undefined;
+    } while (cursor);
+  }
 
   // 2. Events parallel laden
   const CONC = 200;
