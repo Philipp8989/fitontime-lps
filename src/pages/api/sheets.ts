@@ -8,6 +8,7 @@ import { invalidLeadFields } from '../../lib/leadValidation';
 import { buildAttribution } from '../../lib/attribution';
 import { sendOpenAiAdsEvent } from '../../lib/openaiAds';
 import { KA_SHEET } from '../../lib/koerperalter-sheet';
+import { upsertHubspotContact } from '../../lib/hubspot';
 
 // Pro LP: Sheet-ID + Spalten-Schema. Fehlt der Eintrag, wird kein Sheet-Write gemacht.
 type SheetConfig = {
@@ -304,6 +305,9 @@ SHEETS['prognose'] = {
   },
 };
 
+// Funnels ohne Zap: Slug -> lead_quelle in HubSpot
+const HUBSPOT_DIRECT: Record<string, string> = { prognose: 'Prognose' };
+
 // Ein-Klick-Anmeldungen aus der Mail und Hot-Seat-Antworten sind keine neuen Leads: kein CRM-Eintrag
 // (sonst Doppel-Lead plus Benachrichtigung je Listen-Kontakt) und kein Meta-Lead (sonst stimmt der CPL nicht).
 const isWebinarFollowUp = (slug: string, d: any) => slug === 'webinar-hotseat' || (slug === 'webinar' && d.oneclick === true);
@@ -512,6 +516,16 @@ const handleLead: APIRoute = async ({ request }) => {
         appendWebinarRow(datum, { ...data, answers: { quelle: 'nervensystem-b' } }).catch((e) => console.error('[sheets] Webinar-Liste B', e?.message || e)),
       ]);
       liveLink = jam;
+    }
+
+    // HubSpot direkt statt Zapier: das Prognose-Sheet hängt an keinem Zap (Lücke seit 20.10.).
+    // Der Workflow "Prognose -> Deal erstellen" in HubSpot legt danach Deal und Setter an.
+    const hubspotToken = import.meta.env.HUBSPOT_TOKEN;
+    if (hubspotToken && HUBSPOT_DIRECT[lpSlug]) {
+      const [vorname, nachname] = splitName(data.name);
+      waitUntil(upsertHubspotContact(hubspotToken, {
+        vorname, nachname, email: data.email, phone: data.phone || '', quelle: HUBSPOT_DIRECT[lpSlug],
+      }).catch((e) => console.error('[sheets] HubSpot', lpSlug, e?.message || e)));
     }
 
     // WhatsApp-Bot-Intake: nur bei explizitem WhatsApp-Opt-in. Server-seitig,
