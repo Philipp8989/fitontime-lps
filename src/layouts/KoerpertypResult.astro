@@ -3,7 +3,6 @@
 // Identische Struktur und Styling, nur Inhalt kommt aus Props.
 import CookieBanner from '../components/CookieBanner.astro';
 import ScaleeeCredit from '../components/ScaleeeCredit.astro';
-import WebinarEinladung from '../components/WebinarEinladung.astro';
 
 export interface Props {
   typ: 'staemmig' | 'soft' | 'zierlich';
@@ -153,7 +152,6 @@ const imageSrc = `/images/bodytypes/${typ}.png`;
   <main class="wrap">
 
     <!-- Hero mit Silhouette + Profil -->
-    <WebinarEinladung quelle="koerpertyp-test" danach="Hier ist dein Ergebnis" />
     <section class="result-hero">
       <div class="rh-badge">⚡ Dein Stoffwechsel-Typ</div>
       <div class="rh-visual">

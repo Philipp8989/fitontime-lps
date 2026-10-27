@@ -4,7 +4,6 @@
 // UI/UX-Upgrade: echte Vorher-Nachher-Bilder, cleaneres Typo-System, bessere Mobile-UX
 import CookieBanner from '../../components/CookieBanner.astro';
 import ScaleeeCredit from '../../components/ScaleeeCredit.astro';
-import WebinarEinladung from '../../components/WebinarEinladung.astro';
 const impressumUrl = 'https://fitontime.ch/impressum-datenschutz';
 const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
 ---
@@ -592,7 +591,6 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
 
       <!-- Ergebnis-Seite (1:1 Logik von Live-Winner fit-on-time.ch/blockaden-loesen/) -->
       <div class="step result" data-s="thankyou" style="display:none;">
-        <WebinarEinladung quelle="stoffwechsel-report" danach="Hier ist dein Ergebnis" />
         <div class="cogs">
           <span class="cog big">&#9881;&#65039;</span>
           <span class="cog small">&#9881;&#65039;</span>
@@ -738,7 +736,6 @@ const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
 
       // Atomarer Submit: lead_submit + Pixel + UI-Weiter NUR bei erfolgreichem Insert
       // Für den Ein-Klick zum Reset-Abend auf der Danke-Seite
-      try { sessionStorage.setItem('fot_lead', JSON.stringify({ e: em, n: fn, t: ph })); } catch (e) {}
       fetch('/api/sheets', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
