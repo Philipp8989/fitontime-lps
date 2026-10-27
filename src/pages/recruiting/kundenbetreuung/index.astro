@@ -1,110 +1,184 @@
 ---
-// Recruiting-Funnel: Coach im Bereich Ernährung und Bewegung oder Mindset (m/w/d)
-// 1:1-Replik von https://www.fit-on-time.ch/kundenbetreuung/
+// Recruiting-Funnel: Coach Ernährung, Bewegung und Mindset (w/m/d), Arbeitsort Frauenfeld TG
+// Umbau 27.10.2026: Aufbau wie /recruiting/scbewerbung (Eyebrow, Proof-Leiste, Alltag,
+// Passt/Passt-nicht, Arbeitsweg-Frage, Danke-Schritte). Anlass: Oktober 1 Bewerbung auf
+// rund 1.400 Klicks. Fakten nur aus der bisherigen Stellenseite, keine neuen Versprechen.
+// Kein scharfes s (Schweiz). Ortsname Frauenfeld traegt die Botschaft, kein "100 Prozent vor Ort".
 import RecruitingFunnel from '../../../layouts/RecruitingFunnel.astro';
 
-// extraSection: "Wir sind Fit on Time" + "Deine Aufgaben" + "Über dich" — auf der Job-Page
-const extraSection = [
-  {
-    title: 'Wir sind Fit on Time! Das bieten wir dir:',
-    items: [
-      '🦺 Sicherer Arbeitsplatz: Wir planen immer langfristig und bieten dir einen sicheren Arbeitsplatz, auch in Kriesenzeiten oder im "Sommerloch". 😉',
-      '💸 Attraktives Gehaltspaket: Wir bieten überdurchschnittliche Fixgehälter und vergüten zusätzlich einen attraktiven leistungsorientierten Provisionsanteil.',
-      '🎓 Bezahlte Weiterbildung: Wir fördern, fordern und bilden unsere Mitarbeiter konstant weiter, um sicherzustellen, dass du stets auf dem neuesten Stand bist und neben deinen privaten Zielen auch deine beruflichen Ziele erreichst.',
-      '😀 Tolle Arbeitsatmosphäre: Der Umgang untereinander ist sehr kollegial und familiär. Wir ziehen alle am gleichen Strang und motivieren uns gegenseitig, Bestleistungen zu erzielen und persönlich zu wachsen.',
-    ],
-  },
-  {
-    title: 'Deine Aufgaben bei Fit on Time',
-    items: [
-      '🤝 Ganzheitliche Betreuung unserer Kundinnen in den Bereichen Ernährung, Bewegung und Mindset',
-      '📚 Systematische Kundenbindung & Account Management, du begleitest aktiv durch den Coaching-Prozess',
-      '🌱 Mitarbeit an Verkaufsstrategien & enge Zusammenarbeit mit unserem Sales- & Marketingteam',
-      '😍 Verantwortung für Bestandskundenpflege & Ergebnisüberwachung',
-      '🔧 Individuelle Coachings & Konzeptanpassungen, abgestimmt auf den Kundenfortschritt',
-      '💪 Strukturierte Arbeit mit CRM-Systemen, Feedbackschleifen & Betreuungskonzepten',
-    ],
-  },
-  {
-    title: 'Über dich — Das bringst du mit',
-    items: [
-      'Du hast mind. 2 Jahre Coaching-Erfahrung, idealerweise in den Bereichen Ernährung, Fitness oder Mentaltraining',
-      'Du hast ein gutes Gespür für Menschen und bleibst stets ziel- und lösungsorientiert',
-      'Du denkst strukturiert, kommunizierst klar und verfolgst Kundenbeziehungen aktiv',
-      'Du bist ein Teamplayer, offen, lernwillig und bereit, dich im Vertrieb & Account Management stetig weiterzuentwickeln',
-      'Du willst echte Transformation begleiten, nicht nur „Tipps geben", sondern echte Veränderung bewirken',
-    ],
-  },
-];
-
 const steps = [
-  // Step 0: Job + Quiz Q1 (binary Ja/Nein direkt auf Page) + Vorteile + Aufgaben
+  // Step 0: Job + Zahlen + Alltag + Filter + CTA
   {
     kind: 'job',
-    jobTitle: 'Bist du ein engagierter: Coach im Bereich Ernährung und Bewegung oder Mindset (m/w/d)?',
-    jobIntro: 'Du sollst unser Team im Coaching unterstützten und gleichzeitig ein Flair für den Verkauf mitbringen.',
+    jobPill: 'Bewerbung in 60 Sekunden, ohne Anschreiben, ohne Lebenslauf',
+    jobEyebrow: 'Coaching bei Fit on Time',
+    jobTitle: 'Coach für Ernährung, Bewegung und Mindset (w/m/d) in Frauenfeld',
+    jobIntro:
+      'Du begleitest unsere Kundinnen durch ihr Coaching, bis das Ergebnis da ist. Nicht mit Tipps, sondern mit einem Plan, Nachfassen und ehrlichem Feedback.',
     jobMeta: [
-      { icon: '📍', text: 'Frauenfeld' },
-      { icon: '🕐', text: 'Vollzeit' },
+      { icon: '🕑', text: 'Vollzeit, ab sofort' },
+      { icon: '💰', text: 'Fixgehalt plus Provision' },
+    ],
+    proofBar: [
+      { value: '4.000+', label: 'betreute Kundinnen' },
+      { value: '3', label: 'Bereiche: Ernährung, Bewegung, Mindset' },
+      { value: '60 Sek.', label: 'bis deine Bewerbung da ist' },
     ],
     jobHook: {
-      title: 'Hast du Erfahrung in der Betreuung von Menschen in den Bereichen Training, Ernährung, Gesundheit oder Mindset und fühlst dich auch in der Kundenbindung wohl?',
-      primary: { label: 'Ja', emoji: '👍' },
-      secondary: { label: 'Nein', emoji: '👎' },
+      title: 'Klingt nach dir?',
+      primary: { label: 'Ja, zeig mir mehr', emoji: '🙌' },
+      secondary: { label: 'Erst mehr erfahren', emoji: '🔍' },
     },
-    jobCta: 'Jetzt in nur 60 Sekunden bei uns bewerben ✨',
+    sectionsTitle: 'So sieht dein Alltag als Coach aus:',
+    jobSections: [
+      {
+        emoji: '🤝',
+        heading: 'Du betreust deine eigenen Kundinnen',
+        lines: [
+          'Ernährung, Bewegung und Mindset aus einer Hand. Du kennst deine Kundinnen, ihre Ziele und ihren Stand.',
+        ],
+      },
+      {
+        emoji: '📈',
+        heading: 'Du misst Fortschritt, statt nur zu motivieren',
+        lines: [
+          'Du schaust auf die Ergebnisse, passt das Konzept an und fasst nach, wenn jemand hängt.',
+        ],
+      },
+      {
+        emoji: '💬',
+        heading: 'Du hältst zufriedene Kundinnen langfristig',
+        lines: [
+          'Kundenbindung und Verlängerungen gehören zu deinem Job. Wer gute Ergebnisse liefert, führt diese Gespräche leicht.',
+        ],
+      },
+      {
+        emoji: '🧠',
+        heading: 'Du arbeitest mit System, nicht aus dem Bauch',
+        lines: [
+          'Betreuungskonzepte, CRM und feste Feedbackschleifen. Du weisst jeden Morgen, wer heute dran ist.',
+        ],
+      },
+      {
+        emoji: '🏢',
+        heading: 'Du sitzt mit Sales und Marketing an einem Tisch',
+        lines: [
+          'Kurze Wege nach Frauenfeld ins Team. Was du bei den Kundinnen hörst, landet direkt in unseren Abläufen.',
+        ],
+      },
+    ],
+    fitTitle: 'Bevor du 60 Sekunden investierst',
+    fitLists: [
+      {
+        tone: 'yes',
+        title: '✅ Das passt, wenn du',
+        items: [
+          'mindestens zwei Jahre Menschen in Training, Ernährung oder Mindset begleitet hast',
+          'in oder um Frauenfeld wohnst oder bereit bist, täglich zu pendeln',
+          'Ergebnisse sehen willst und nicht nur Stunden abarbeitest',
+          'auch ein Gespräch über Verlängerung oder Upgrade gern führst',
+          'strukturiert arbeitest und Feedback magst',
+        ],
+      },
+      {
+        tone: 'no',
+        title: '❌ Das passt nicht, wenn du',
+        items: [
+          'nur remote arbeiten willst',
+          'Verkaufen in jeder Form ablehnst',
+          'lieber Trainingspläne schreibst als mit Menschen sprichst',
+          'eine Teilzeitstelle nebenbei suchst',
+        ],
+      },
+    ],
+    jobLeidenschaftTitle: 'Was wir dir bieten 💛',
+    jobLeidenschaftBody:
+      'Ein überdurchschnittliches Fixgehalt und dazu einen Provisionsanteil, der deine Leistung abbildet. Die Zahlen bekommst du im ersten Gespräch.\nBezahlte Weiterbildung, damit du fachlich vorne bleibst.\nEin Team, das zusammen gewinnt und sich gegenseitig besser macht.\nEin sicherer Arbeitsplatz, auch im Sommerloch. Wir planen langfristig.',
+    jobCta: 'Jetzt in 60 Sekunden bewerben',
+    jobCtaSub: 'Kein Lebenslauf nötig. Wir melden uns innerhalb von 48 Stunden.',
   },
-  // Step 1: Quiz Q2 (Multi - Eigenschaften)
+  // Step 1: Quiz Q1 (Single) — Erfahrung
+  {
+    kind: 'quiz',
+    quiz: {
+      id: 'q1',
+      type: 'single',
+      title: 'Wie viel Coaching-Erfahrung bringst du mit?',
+      subtitle: '(Training, Ernährung, Gesundheit oder Mindset)',
+      cta: 'Weiter',
+      options: [
+        { value: 'ueber_5j', label: 'Mehr als 5 Jahre', emoji: '🏆' },
+        { value: '2_5j', label: '2 bis 5 Jahre', emoji: '💪' },
+        { value: 'unter_2j', label: 'Weniger als 2 Jahre', emoji: '🌱' },
+        { value: 'keine', label: 'Noch keine, aber eine Ausbildung', emoji: '🎓' },
+      ],
+    },
+  },
+  // Step 2: Quiz Q2 (Multi) — Schwerpunkt
   {
     kind: 'quiz',
     quiz: {
       id: 'q2',
       type: 'multi',
-      title: 'Welche Eigenschaften bringst du mit?',
-      subtitle: '(Mehrfach Auswahl möglich)',
-      cta: "Weiter geht's! Zur nächsten Frage",
+      title: 'Wo liegt deine Stärke?',
+      subtitle: '(Mehrfachauswahl, ehrlich ist besser als vollständig)',
+      cta: 'Weiter',
       options: [
-        { value: 'erfahrung_2j', label: 'Du hast mind. 2 Jahre Coaching-Erfahrung, idealerweise in den Bereichen Ernährung, Fitness oder Mentaltraining', emoji: '👁️' },
-        { value: 'gespuer', label: 'Du hast ein gutes Gespür für Menschen und bleibst stets ziel- und lösungsorientiert', emoji: '📚' },
-        { value: 'strukturiert', label: 'Du denkst strukturiert, kommunizierst klar und verfolgst Kundenbeziehungen aktiv', emoji: '🚘' },
-        { value: 'teamplayer_offen', label: 'Du bist ein Teamplayer, offen, lernwillig und bereit, dich im Vertrieb & Account Management stetig weiterzuentwickeln', emoji: '💡' },
-        { value: 'transformation', label: 'Du willst echte Transformation begleiten, nicht nur „Tipps geben", sondern echte Veränderung bewirken', emoji: '👯‍♂️' },
-        { value: 'lernen', label: 'Du bist ein Teamplayer und freust dich von deinen Kollegen zu lernen!.', emoji: '🔍' },
+        { value: 'ernaehrung', label: 'Ernährung', emoji: '🥗' },
+        { value: 'bewegung', label: 'Training und Bewegung', emoji: '🏋️' },
+        { value: 'mindset', label: 'Mindset und Gewohnheiten', emoji: '🧠' },
+        { value: 'bindung', label: 'Kundenbindung und Verlängerung', emoji: '🤝' },
+        { value: 'struktur', label: 'Struktur, CRM und Zahlen', emoji: '📊' },
       ],
     },
+    benefitBox: {
+      title: 'Dein Vorteil:',
+      subtitle: 'Du musst nicht alles schon können',
+      body: 'Was dir fehlt, lernst du bei uns in der bezahlten Weiterbildung. Wichtig ist, dass du Menschen gern zum Ergebnis bringst.',
+    },
   },
-  // Step 2: Quiz Q3 (Multi - Erreichbarkeit)
+  // Step 3: Quiz Q3 (Single) — Arbeitsweg, bewusst als eigene Frage
   {
     kind: 'quiz',
     quiz: {
       id: 'q3',
-      type: 'multi',
-      title: 'Wie bist du erreichbar?',
-      subtitle: '(Mehrfachauswahl möglich)',
-      cta: 'Weiter 🚀 zum Abschluss',
+      type: 'single',
+      title: 'Wie sieht dein Arbeitsweg nach Frauenfeld aus?',
+      subtitle: '(Arbeitsort ist unser Büro in Frauenfeld)',
+      cta: 'Weiter',
       options: [
-        { value: 'jederzeit', label: 'Jederzeit', emoji: '🔆' },
-        { value: 'vormittag', label: 'Vormittags von 8-12 Uhr', emoji: '🕛' },
-        { value: 'nachmittag', label: 'Nachmittags von 12-18 Uhr', emoji: '🕕' },
-        { value: 'abends', label: 'Abends ab 18 Uhr', emoji: '🌙' },
+        { value: 'vor_ort', label: 'Ich wohne in Frauenfeld oder in der Nähe', emoji: '🏠' },
+        { value: 'pendeln', label: 'Ich pendle gern täglich hierher', emoji: '🚆' },
+        { value: 'umzug', label: 'Ich würde für die Stelle umziehen', emoji: '📦' },
+        { value: 'unklar', label: 'Frauenfeld wäre für mich schwierig', emoji: '🤔' },
       ],
+      bottomNote: 'Wir fragen das offen, weil wir niemandem die Zeit stehlen wollen.',
     },
   },
-  // Step 3: Form
+  // Step 4: Form
   {
     kind: 'form',
-    formTitle: 'Super, du hast beste Voraussetzungen für eine Ausbildung bei uns! 🎉',
-    formSubtitle: 'Damit wir uns bei dir melden können, lass uns bitte wissen, wie wir dich am besten erreichen!',
-    formCta: 'Jetzt deine Bewerbung absenden! 📧',
+    formTitle: 'Fast geschafft 💛',
+    formSubtitle: 'Wie erreichen wir dich am besten?',
+    formCta: 'Bewerbung jetzt absenden',
   },
-  // Step 4: Danke
-  { kind: 'thanks' },
+  // Step 5: Danke
+  {
+    kind: 'thanks',
+    thanksTitle: 'Deine Bewerbung ist da 🎉',
+    thanksBody: 'Wir schauen sie uns persönlich an und melden uns innerhalb von 48 Stunden bei dir.',
+    thanksSteps: [
+      { title: 'Kurzes Telefonat, 15 Minuten. ', text: 'Wir klären gegenseitig die Basics, inklusive Zahlen.' },
+      { title: 'Gespräch im Büro in Frauenfeld. ', text: 'Du siehst den Arbeitsplatz und lernst das Team kennen.' },
+      { title: 'Entscheidung. ', text: 'Danach wissen wir beide, ob es passt. Ohne lange Hängepartie.' },
+    ],
+  },
 ];
 ---
 <RecruitingFunnel
   slug="recruiting-kundenbetreuung"
   funnelName="Coach Ernährung/Bewegung/Mindset"
-  pageTitle="Bist du ein engagierter Coach im Bereich Ernährung und Gesundheit oder Mindset (m/w/d)?"
+  pageTitle="Coach für Ernährung, Bewegung und Mindset gesucht in Frauenfeld"
+  locationBadge="Frauenfeld TG · ab sofort"
   steps={steps}
-  extraSection={extraSection}
 />
