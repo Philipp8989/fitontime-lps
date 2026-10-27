@@ -682,7 +682,6 @@ function submitLead(){
   // Atomarer Submit: lead_submit + Meta-Lead + Ergebnis erst nach erfolgreichem Insert.
   // Der fetch-Wrapper aus dem CookieBanner haengt meta{event_id,consent,fbp,fbc}
   // und die Attribution an, /api/sheets feuert daraus die CAPI.
-  // Für den Ein-Klick zum Reset-Abend auf der Danke-Seite
   fetch('/api/sheets', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
