@@ -1,13 +1,11 @@
 ---
 // Nervensystem-Check, Ergebnis. Daten kommen aus sessionStorage (fot_ns), gesetzt nach erfolgreichem Lead.
-// Ziel der Seite: Anmeldung zum Reset-Abend per Ein-Klick (/webinar/?k=1&...&q=nervensystem).
-// Die Anmeldung zählt dort als Ein-Klick: kein zweiter CRM-Lead, kein zweiter Meta-Lead.
+// Ziel der Seite: kostenloses Erstgespräch buchen (YCBM, gleicher Kalender wie Körper-Report). Webinar seit 27.10. vorbei.
 import '../../styles/bauchfett.css';
 import '../../styles/nervensystem.css';
 import CookieBanner from '../../components/CookieBanner.astro';
 import ScaleeeCredit from '../../components/ScaleeeCredit.astro';
 import FotWordmark from '../../components/FotWordmark.astro';
-import { WEBINAR } from '../../lib/webinar';
 const impressumUrl = 'https://fitontime.ch/impressum-datenschutz';
 const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
 const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').trim();
@@ -36,11 +34,9 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
     <div class="wrap">
       <div class="invite" id="invite">
         <p class="eyebrow">Dein nächster Schritt · kostenlos</p>
-        <h2>Am Reset-Abend holst du dein Nervensystem aus dem Alarm.</h2>
-        <p id="invText">Fabian und Filip zeigen dir live, wie du dein Nervensystem Schritt für Schritt beruhigst, damit dein Körper wieder loslässt. Und was du ab dem nächsten Morgen anders machst, damit es diesmal hält.</p>
-        <div class="when-row"><span>{WEBINAR.datumText}</span><span>{WEBINAR.zeitText}</span><span>Live online</span></div>
-        <button class="btn btn--primary btn--block" id="go">Mit einem Klick dabei sein <span class="btn-arrow">&rarr;</span></button>
-        <p class="b-fine">Kostenlos. Kamera bleibt aus, niemand sieht dich.</p>
+        <h2>Im Erstgespräch schauen wir, wie dein Nervensystem wieder runterkommt.</h2>
+        <p>Eine Strategieberaterin von Fit on Time schaut sich mit dir dein Ergebnis an. Du erfährst, was dein Körper braucht, damit er loslässt, und was du ab morgen anders machst.</p>
+        <div id="ycbm-embed" style="background:#fff;border-radius:8px;min-height:400px;margin-top:1rem;"></div>
       </div>
     </div>
   </section>
@@ -94,7 +90,7 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
       </div>
       <ul class="mine" id="mine"></ul>
       <div style="margin-top:2rem;max-width:28rem;">
-        <button class="btn btn--primary btn--block" id="go2">Platz am Reset-Abend sichern <span class="btn-arrow">&rarr;</span></button>
+        <a class="btn btn--primary btn--block" id="go2" href="#invite">Kostenloses Erstgespräch buchen <span class="btn-arrow">&rarr;</span></a>
       </div>
     </div>
   </section>
@@ -174,14 +170,15 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
     }
     if (d) tk('result_shown', { detail: d.typ });
 
-    // Ein-Klick-Anmeldung: Daten aus dem Check, Thema nervensystem auf der Anmeldeseite
-    function anmelden(src) {
-      tk('webinar_click', { detail: src });
-      var p = new URLSearchParams({ k: '1', e: d.email || '', n: d.full || d.name || '', t: d.phone || '', q: 'nervensystem' });
-      setTimeout(function () { location.href = '/webinar/?' + p.toString(); }, 200);
-    }
-    document.getElementById('go').addEventListener('click', function () { anmelden('oben'); });
-    document.getElementById('go2').addEventListener('click', function () { anmelden('unten'); });
+    // Buchung: YCBM-Kalender laden, Funnel-Marker für /gebucht setzen
+    try { sessionStorage.setItem('fot_funnel', 'nervensystem'); } catch (e) {}
+    var ycbm = document.createElement('script');
+    ycbm.src = 'https://embed.ycb.me';
+    ycbm.async = true;
+    ycbm.setAttribute('data-domain', 'fitontime-stoffwechsel-report');
+    ycbm.setAttribute('data-displaymode', 'auto');
+    document.getElementById('ycbm-embed').appendChild(ycbm);
+    document.getElementById('go2').addEventListener('click', function () { tk('cta_click', { detail: 'unten' }); });
   </script>
 
   <script is:inline src="https://t.hyros.com/v1/lst/universal-script?ph=689a71ca1ab3be1cb1caddbe6b7902a4ad2c51a228f4ec9ea7fef3123a705f63"></script>

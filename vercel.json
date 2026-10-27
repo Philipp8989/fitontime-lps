@@ -7,11 +7,6 @@
       "permanent": false
     },
     {
-      "source": "/nervensystem/:path+/",
-      "destination": "/koerper-report/",
-      "permanent": false
-    },
-    {
       "source": "/nervensystem-b/:path+/",
       "destination": "/koerper-report/",
       "permanent": false
@@ -28,21 +23,6 @@
     },
     {
       "source": "/webinar/:path*",
-      "destination": "/koerper-report/",
-      "permanent": false
-    },
-    {
-      "source": "/nervensystem",
-      "destination": "/koerper-report/",
-      "permanent": false
-    },
-    {
-      "source": "/nervensystem/",
-      "destination": "/koerper-report/",
-      "permanent": false
-    },
-    {
-      "source": "/nervensystem/:path*",
       "destination": "/koerper-report/",
       "permanent": false
     },
