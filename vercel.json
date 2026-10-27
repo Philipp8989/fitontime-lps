@@ -2,6 +2,21 @@
   "framework": "astro",
   "redirects": [
     {
+      "source": "/webinar/:path+/",
+      "destination": "/koerper-report/",
+      "permanent": false
+    },
+    {
+      "source": "/nervensystem/:path+/",
+      "destination": "/koerper-report/",
+      "permanent": false
+    },
+    {
+      "source": "/nervensystem-b/:path+/",
+      "destination": "/koerper-report/",
+      "permanent": false
+    },
+    {
       "source": "/webinar",
       "destination": "/koerper-report/",
       "permanent": false
