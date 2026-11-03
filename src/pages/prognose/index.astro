@@ -44,20 +44,23 @@ const ZIELJAHR = new Date().getFullYear() + 5;
       <div class="wrap wrap--wide hero-grid">
         <div>
           <p class="eyebrow">2 Minuten · 9 Fragen · kostenlos</p>
-          <h1>Ab 45 legt dein Körper jedes Jahr Fett zu. <em>Auch wenn du gleich isst wie immer.</em></h1>
-          <p class="lead">In den Wechseljahren verbrennt dein Körper rund ein Drittel weniger Fett. Er speichert mehr, und das meiste landet am Bauch. Die meisten Frauen merken es erst, wenn die Hose nicht mehr zugeht. Die Prognose zeigt dir, wie viel Fett dein Körper bis {ZIELJAHR} zulegt, wenn alles so bleibt wie jetzt.</p>
+          <h1>Wie viel Fett legt dein Körper <em>bis {ZIELJAHR} zu?</em></h1>
+          <p class="lead">Ab Mitte 40 verbrennt der Körper rund ein Drittel weniger Fett, auch wenn du gleich isst wie immer. Die Prognose zeigt dir, was das bei dir heisst.</p>
           <p class="lead hide-sm" style="font-size:0.95rem;">Von Fit on Time. Seit 2016 über 4'000 Frauen in der Schweiz begleitet.</p>
         </div>
 
         <div class="gate">
-          <div class="gate-q">Was hat sich an deinem Körper in den letzten Jahren verändert?</div>
-          <div class="gate-sub">Tipp auf die Antwort, die am ehesten passt. Damit startet die Prognose.</div>
-          <div class="opts">
-            <button class="opt" onclick="startQuiz('bauch')">Mein Bauch wird runder, obwohl ich nicht mehr esse</button>
-            <button class="opt" onclick="startQuiz('waage')">Die Waage geht langsam, aber stetig nach oben</button>
-            <button class="opt" onclick="startQuiz('muede')">Ich bin oft müde und schlafe schlecht</button>
-            <button class="opt" onclick="startQuiz('nichts')">Eigentlich hat sich nichts verändert</button>
+          <div class="gate-q">Wie alt bist du?</div>
+          <div class="gate-sub">Tipp auf dein Alter. Damit startet die Prognose.</div>
+          <div class="age-grid">
+            <button class="opt" onclick="startQuiz('u40')">Unter 40</button>
+            <button class="opt" onclick="startQuiz('40-44')">40 bis 44</button>
+            <button class="opt" onclick="startQuiz('45-49')">45 bis 49</button>
+            <button class="opt" onclick="startQuiz('50-54')">50 bis 54</button>
+            <button class="opt" onclick="startQuiz('55-59')">55 bis 59</button>
+            <button class="opt" onclick="startQuiz('60+')">60 oder älter</button>
           </div>
+          <div class="gate-note"><span>Kostenlos</span> · <span>Keine Waage nötig</span> · <span>Ergebnis sofort</span></div>
         </div>
       </div>
     </section>
@@ -146,13 +149,15 @@ const ZIELJAHR = new Date().getFullYear() + 5;
     <section class="section">
       <div class="wrap">
         <div class="gate gate--end">
-          <div class="gate-q">Was hat sich an deinem Körper in den letzten Jahren verändert?</div>
+          <div class="gate-q">Wie alt bist du?</div>
           <div class="gate-sub">Die erste Frage. Damit startet die Prognose.</div>
-          <div class="opts">
-            <button class="opt" onclick="startQuiz('bauch')">Mein Bauch wird runder, obwohl ich nicht mehr esse</button>
-            <button class="opt" onclick="startQuiz('waage')">Die Waage geht langsam, aber stetig nach oben</button>
-            <button class="opt" onclick="startQuiz('muede')">Ich bin oft müde und schlafe schlecht</button>
-            <button class="opt" onclick="startQuiz('nichts')">Eigentlich hat sich nichts verändert</button>
+          <div class="age-grid">
+            <button class="opt" onclick="startQuiz('u40')">Unter 40</button>
+            <button class="opt" onclick="startQuiz('40-44')">40 bis 44</button>
+            <button class="opt" onclick="startQuiz('45-49')">45 bis 49</button>
+            <button class="opt" onclick="startQuiz('50-54')">50 bis 54</button>
+            <button class="opt" onclick="startQuiz('55-59')">55 bis 59</button>
+            <button class="opt" onclick="startQuiz('60+')">60 oder älter</button>
           </div>
         </div>
       </div>
@@ -173,15 +178,13 @@ const ZIELJAHR = new Date().getFullYear() + 5;
     <div class="q-progress"><div class="q-bar"><div class="q-fill" id="qf"></div></div><div class="q-num" id="qn">Frage 2 von 9</div></div>
     <div class="q-body">
 
-      <div class="step on" data-s="2">
-        <h2>Wie alt bist du?</h2>
+      <div class="step on" data-s="1">
+        <h2>Was hat sich an deinem Körper in den letzten Jahren verändert?</h2>
         <div class="opts">
-          <button class="opt" onclick="nxt(2,'u40')">Unter 40</button>
-          <button class="opt" onclick="nxt(2,'40-44')">40 bis 44</button>
-          <button class="opt" onclick="nxt(2,'45-49')">45 bis 49</button>
-          <button class="opt" onclick="nxt(2,'50-54')">50 bis 54</button>
-          <button class="opt" onclick="nxt(2,'55-59')">55 bis 59</button>
-          <button class="opt" onclick="nxt(2,'60+')">60 oder älter</button>
+          <button class="opt" onclick="nxt(1,'bauch')">Mein Bauch wird runder, obwohl ich nicht mehr esse</button>
+          <button class="opt" onclick="nxt(1,'waage')">Die Waage geht langsam, aber stetig nach oben</button>
+          <button class="opt" onclick="nxt(1,'muede')">Ich bin oft müde und schlafe schlecht</button>
+          <button class="opt" onclick="nxt(1,'nichts')">Eigentlich hat sich nichts verändert</button>
         </div>
       </div>
 
@@ -313,7 +316,7 @@ const ZIELJAHR = new Date().getFullYear() + 5;
   <script is:inline>
     var A = {};            // Antworten
     var TOTAL = 9;
-    var ORDER = [2, 3, 4, 'p', 5, 6, 7, 8, 9];
+    var ORDER = [1, 3, 4, 'p', 5, 6, 7, 8, 9];   // Alter (q2) kommt aus dem Einstieg
     var LABELS = {
       q1: { bauch: 'Bauch wird runder', waage: 'Waage steigt stetig', muede: 'Müde, schläft schlecht', nichts: 'Nichts verändert' },
       q2: { u40: 'Unter 40', '40-44': '40 bis 44', '45-49': '45 bis 49', '50-54': '50 bis 54', '55-59': '55 bis 59', '60+': '60+' },
@@ -358,12 +361,13 @@ const ZIELJAHR = new Date().getFullYear() + 5;
       window.scrollTo(0, 0);
     }
 
+    // Einstieg fragt das Alter (q2), danach folgt die Veränderungs-Frage (q1)
     function startQuiz(v) {
-      A.q1 = v; A.q1_label = LABELS.q1[v];
-      tk('quiz_start', { detail: 'q1_' + v });
+      A.q2 = v; A.q2_label = LABELS.q2[v];
+      tk('quiz_start', { detail: 'q2_' + v });
       document.getElementById('lp').style.display = 'none';
       document.getElementById('quiz').classList.add('on');
-      zeige(2);
+      zeige(1);
     }
 
     function nxt(s, val) {

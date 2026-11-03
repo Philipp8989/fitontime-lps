@@ -50,3 +50,7 @@
 .buchung .b-list { list-style: none; border-top: var(--hairline); margin-top: 1rem; }
 .buchung .b-list li { padding: 0.65rem 0; border-bottom: var(--hairline); font-size: 0.97rem; color: var(--ink-soft); }
 .buchung .b-list b { color: var(--ink); font-weight: 600; }
+
+/* Einstieg: Alters-Kacheln wie Körperalter, damit die erste Antwort ohne Scrollen sichtbar ist */
+.age-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.6rem; margin-top: 1rem; }
+.age-grid .opt { text-align: center; }
