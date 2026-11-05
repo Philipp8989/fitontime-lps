@@ -1,6 +1,7 @@
 ---
-// Buchungs-Bestätigung 1:1-Workshop: YCBM fitontime-workshop leitet nach der Buchung hierher.
+// Buchungs-Bestätigung 1:1-Workshop, Kevins Dankeseite (05.11.2026). YCBM fitontime-workshop leitet hierher.
 // Feuert einmalig booking_confirmed plus Meta Schedule, fot_funnel trennt Variante A und B im Splittest.
+// Ohne Marker zählt die Buchung als workshop-unbekannt, damit Direktaufrufe keine Variante verfälschen.
 import CookieBanner from '../../components/CookieBanner.astro';
 import ScaleeeCredit from '../../components/ScaleeeCredit.astro';
 
@@ -8,31 +9,70 @@ const IMPRESSUM_URL = 'https://fitontime.ch/impressum-datenschutz';
 const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
 const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').trim();
 ---
-<!DOCTYPE html>
+<!doctype html>
 <html lang="de-CH">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="robots" content="noindex, nofollow" />
-<title>Termin gebucht | Fit on Time</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#f8f8f4">
+<meta name="description" content="Dein 1:1 Workshop bei Fit on Time ist gebucht. So bereitest du dich vor.">
+<title>Dein Workshop ist gebucht | Fit on Time</title>
 <link rel="icon" type="image/png" href="/images/logo.png" />
 <style is:global>
-*{box-sizing:border-box}body{margin:0;background:#f8f8f4;color:#20382d;font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
-.wrap{max-width:560px;margin:auto;padding:64px 24px 40px}.logo{font-size:21px;font-weight:850;letter-spacing:-1.3px;margin-bottom:48px}.logo span{color:#73966e}
-h1{font-size:40px;line-height:1.1;letter-spacing:-.05em;margin:0 0 16px}p{font-size:17px;line-height:1.58;color:#52675a;margin:0 0 10px}
-.legal{font-size:11px;color:#829084;margin-top:48px}.legal a{color:#829084}
+:root{--ink:#20382d;--green:#254b3f;--mid:#6d9374;--bg:#f8f8f4;--muted:#617167;--line:#dfe8de;--soft:#edf3e8;--white:#fff}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}a{color:#315d44}header{max-width:1080px;margin:auto;padding:23px 24px;display:flex;align-items:center;justify-content:space-between}.logo{font-size:21px;font-weight:850;letter-spacing:-1.3px}.logo span{color:#73966e}.mini{font-size:11px;text-transform:uppercase;letter-spacing:.12em;color:#879389;font-weight:800}.wrap{max-width:1030px;margin:auto;padding:18px 24px 75px}.hero{text-align:center;max-width:760px;margin:0 auto 31px}.success{height:74px;width:74px;border-radius:50%;background:#e7f3e4;display:grid;place-items:center;margin:0 auto 19px;color:#357249;border:1px solid #d1e7cd}.eyebrow{display:inline-block;font-size:12px;font-weight:850;letter-spacing:.06em;text-transform:uppercase;color:#426f4c;background:#e9f1e5;padding:9px 13px;border-radius:99px}.hero h1{font-size:clamp(37px,5vw,61px);letter-spacing:-.055em;line-height:1.075;margin:16px 0}.hero h1 em{font-style:normal;color:#6f9275}.lead{font-size:18px;line-height:1.65;color:#52675a;margin:0 auto;max-width:670px}.layout{display:grid;grid-template-columns:1.08fr .92fr;gap:22px;align-items:start}.card{background:white;border:1px solid #e2e8e0;border-radius:20px;box-shadow:0 14px 44px rgba(25,50,30,.045);padding:29px}.card h2{font-size:26px;letter-spacing:-.04em;line-height:1.2;margin:0 0 11px}.card p{color:var(--muted);font-size:15px;line-height:1.62}.feature{display:flex;gap:14px;align-items:flex-start;padding:18px 0;border-bottom:1px solid var(--line)}.feature:last-of-type{border:0}.n{width:32px;height:32px;flex:none;border-radius:10px;background:#e8f0e4;display:grid;place-items:center;color:#426a48;font-size:13px;font-weight:850}.feature h3{margin:0 0 5px;font-size:16px;line-height:1.35}.feature p{margin:0;font-size:14px}.btn{display:inline-flex;justify-content:center;align-items:center;gap:8px;background:var(--green);color:#fff;text-decoration:none;font-size:14px;font-weight:800;padding:15px 18px;border-radius:11px;border:0;cursor:pointer;transition:background .15s}.btn:hover{background:#32634c}.btn.secondary{background:#e9f1e5;color:#274d37}.btn.secondary:hover{background:#dae9d5}.btn.full{width:100%}.side-title{font-size:12px;letter-spacing:.08em;text-transform:uppercase;font-weight:850;color:#4a7054;margin:0 0 14px}.pill{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:750;color:#386546;background:#eaf4e6;padding:9px 12px;border-radius:99px;margin:0 0 17px}.facts{display:grid;gap:12px;margin:17px 0 22px}.fact{display:flex;align-items:flex-start;gap:11px;color:#365243;font-size:14px;line-height:1.5}.fact svg{flex:none;color:#608d66}.callout{background:var(--soft);border-radius:13px;padding:17px 18px;margin-top:19px}.callout strong{font-size:14px}.callout p{margin:6px 0 0;font-size:13px}.proof{margin-top:23px;border:1px solid var(--line);padding:21px 24px;border-radius:16px;background:#fff;display:flex;justify-content:space-between;align-items:center;gap:22px}.proof h3{font-size:17px;margin:0 0 6px}.proof p{color:var(--muted);font-size:14px;line-height:1.5;margin:0}.proof a{white-space:nowrap}.foot{text-align:center;color:#879389;font-size:11px;line-height:1.65;max-width:710px;margin:28px auto 0}.booking-info{background:#f5f9f3;border:1px solid #dfeadd;border-radius:12px;padding:14px 16px;font-size:14px;line-height:1.5;margin:10px 0 16px}.booking-info span{display:block;color:#52675a;font-size:12px;margin-top:3px}.hidden{display:none!important}@media(max-width:760px){.layout{grid-template-columns:1fr}.wrap{padding:8px 16px 46px}.card{padding:23px 19px}.hero{margin-bottom:24px}.lead{font-size:16px}.proof{align-items:flex-start;flex-direction:column}.proof a{white-space:normal}.mini{display:none}header{padding:20px 17px}}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+.legal{font-size:11px;text-align:center;color:#879389;margin:16px auto 0}.legal a{color:#879389}
 </style>
 </head>
 <body>
+<header><div class="logo">FIT <span>on</span> TIME</div><div class="mini">Persönlich · Online · Schweiz</div></header>
 <main class="wrap">
-  <div class="logo">FIT <span>on</span> TIME</div>
-  <h1>Dein Termin ist gebucht.</h1>
-  <p>Du bekommst gleich eine Bestätigung per E-Mail mit allen Details.</p>
-  <p>Falls nichts ankommt, schau bitte auch im Spam-Ordner nach.</p>
-  <div class="legal">
-    <a href={IMPRESSUM_URL} target="_blank" rel="noopener">Impressum</a> · <a href={DATENSCHUTZ_URL} target="_blank" rel="noopener">Datenschutz</a>
-    <div style="margin-top:10px;"><ScaleeeCredit /></div>
-  </div>
+<section class="hero" aria-labelledby="headline">
+<div class="success" aria-hidden="true"><svg width="39" height="39" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 4 4L19 6"/></svg></div>
+<div class="eyebrow">Deine Buchung ist abgeschlossen</div>
+<h1 id="headline">Geschafft! <em>Dein 1:1 Workshop ist gebucht.</em></h1>
+<p class="lead">Wir freuen uns auf dich! Damit du möglichst viel aus unserem gemeinsamen Workshop mitnehmen kannst, haben wir hier die wichtigsten Infos für dich zusammengestellt.</p>
+</section>
+<div class="layout">
+<section class="card" aria-labelledby="steps">
+<h2 id="steps">So bist du bestens vorbereitet</h2>
+<p style="margin-top:0">Drei kleine Dinge, mehr musst du nicht machen.</p>
+<div class="feature"><div class="n">01</div><div><h3>Termin im Kalender blockieren</h3><p>Du erhältst eine Bestätigung per E-Mail mit deinem Termin und den Kalenderlinks. Am besten gleich eintragen, damit nichts dazwischenkommt.</p></div></div>
+<div class="feature"><div class="n">02</div><div><h3>Telefon bereithalten & einen ruhigen Ort suchen</h3><p>Wir rufen dich zum vereinbarten Zeitpunkt an. Plane die Zeit ungestört ein, damit wir uns ganz auf deine Fragen konzentrieren können.</p></div></div>
+<div class="feature"><div class="n">03</div><div><h3>Eine Frage kurz überlegen</h3><p><strong>Was ist aktuell deine grösste Herausforderung beim Abnehmen?</strong> Du musst nichts vorbereiten oder aufschreiben, eine kurze Überlegung reicht völlig.</p></div></div>
+</section>
+<aside class="card" aria-labelledby="expect">
+<div class="pill">✓ Kostenloser persönlicher 1:1 Workshop</div>
+<h2 id="expect">Was dich erwartet</h2>
+<p style="margin-top:0">Kein allgemeiner Vortrag. Wir nehmen uns persönlich Zeit für deine Situation.</p>
+<div class="facts">
+<div class="fact"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m5 12 4 4L19 6"/></svg><span>Wir sprechen über deine bisherigen Erfahrungen und Fragen.</span></div>
+<div class="fact"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m5 12 4 4L19 6"/></svg><span>Wir schauen auf mögliche Einflussfaktoren wie Stoffwechsel, Schilddrüse, Nervensystem und Insulin.</span></div>
+<div class="fact"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m5 12 4 4L19 6"/></svg><span>Du bekommst Orientierung zu sinnvollen nächsten Schritten, ohne medizinisches Diagnoseversprechen.</span></div>
+</div>
+<div id="dynamicBooking" class="booking-info hidden" aria-live="polite"></div>
+<a id="calendarBtn" class="btn full hidden" href="#" target="_blank" rel="noopener noreferrer">Termin zu Google Kalender hinzufügen</a>
+<div class="callout"><strong>📩 Schau kurz in dein E-Mail-Postfach</strong><p>Dort findest du deine Buchungsbestätigung mit dem genauen Termin und den Kalenderlinks. Falls du nichts siehst, prüfe bitte auch den Spam-Ordner.</p></div>
+</aside>
+</div>
+<section class="proof"><div><h3>Du möchtest Fit on Time vorher kennenlernen?</h3><p>Hier findest du echte Erfahrungsberichte und kannst dir in Ruhe einen Eindruck verschaffen.</p></div><a class="btn secondary" href="https://go.fit-on-time.ch/erfahrung/" target="_blank" rel="noopener noreferrer">Erfahrungen ansehen ↗</a></section>
+<p class="foot">Wir freuen uns auf dich! Falls du den Termin nicht wahrnehmen kannst, nutze bitte den Umbuchungslink in deiner Bestätigungsmail, damit der Platz wieder frei wird. Der Workshop ersetzt keine ärztliche Untersuchung oder Diagnose.</p>
+<div class="legal"><a href={IMPRESSUM_URL} target="_blank" rel="noopener">Impressum</a> · <a href={DATENSCHUTZ_URL} target="_blank" rel="noopener">Datenschutz</a><div style="margin-top:10px;"><ScaleeeCredit /></div></div>
 </main>
+<script is:inline>
+/* Optional: Buchungsplattform kann diese Daten nach erfolgreicher Buchung übergeben:
+   ?date=2026-11-08&time=11:00&name=Vorname
+   Die Seite zeigt ohne Parameter bewusst keinen erfundenen Termin an.
+   Die Kalenderlinks aus der echten Buchungsbestätigung bleiben massgeblich. */
+(function(){
+ const p=new URLSearchParams(location.search);const date=p.get('date');const time=p.get('time');
+ if(!date||!time||!/^\d{4}-\d{2}-\d{2}$/.test(date)||!/^([01]\d|2[0-3]):[0-5]\d$/.test(time))return;
+ const d=new Date(date+'T12:00:00');if(Number.isNaN(d.getTime())||d.toISOString().slice(0,10)!==date)return;
+ const nice=new Intl.DateTimeFormat('de-CH',{weekday:'long',day:'numeric',month:'long',year:'numeric',timeZone:'UTC'}).format(d);
+ const box=document.getElementById('dynamicBooking');box.textContent='Dein Termin: '+nice+' um '+time+' Uhr (Schweizer Zeit).';box.classList.remove('hidden');
+ /* Kalenderlinks nur aus authentifizierten Buchungsdaten verwenden, keine automatisch geratenen Dauer-/Zeitzonenwerte. */
+})();
+</script>
 
 <script is:inline src="https://t.hyros.com/v1/lst/universal-script?ph=689a71ca1ab3be1cb1caddbe6b7902a4ad2c51a228f4ec9ea7fef3123a705f63"></script>
 
@@ -49,9 +89,10 @@ h1{font-size:40px;line-height:1.1;letter-spacing:-.05em;margin:0 0 16px}p{font-s
   if (window.top !== window.self) {
     try { window.top.location.href = window.location.href; } catch (e) { window.location.href = window.location.href; }
   } else {
-    var funnel = 'workshop';
-    try { funnel = sessionStorage.getItem('fot_funnel') || 'workshop'; } catch (e) {}
-    var name = funnel === 'workshop-direkt' ? '1:1 Workshop B (direkt Kalender)' : '1:1 Workshop A (Opt-in)';
+    var funnel = 'workshop-unbekannt';
+    try { funnel = sessionStorage.getItem('fot_funnel') || 'workshop-unbekannt'; } catch (e) {}
+    var names = { 'workshop': '1:1 Workshop A (Opt-in)', 'workshop-direkt': '1:1 Workshop B (direkt Kalender)' };
+    var name = names[funnel] || '1:1 Workshop (Variante unbekannt)';
     var already = false;
     try { already = sessionStorage.getItem('fot_booking_fired') === '1'; } catch (e) {}
     if (!already) {
