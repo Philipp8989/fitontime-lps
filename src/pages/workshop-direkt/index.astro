@@ -1,7 +1,6 @@
 ---
 // 1:1-Workshop, Splittest Variante B: direkt Kalender ohne Opt-in (Kevin, 05.11.2026).
-// CSS und Inhalt 1:1 aus Kevins HTML. Ergänzt: noindex, neutraler Titel, Rechtslinks, Credit, Tracking.
-// Buchung läuft über YCBM fitontime-workshop, Bestätigung auf /workshop/gebucht (fot_funnel trennt A und B).
+// CSS und Inhalt 1:1 aus Kevins HTML. Buchung über YCBM fitontime-workshop, Bestätigung auf /workshop/gebucht.
 import CookieBanner from '../../components/CookieBanner.astro';
 import ScaleeeCredit from '../../components/ScaleeeCredit.astro';
 
@@ -50,5 +49,20 @@ const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').t
   impressumUrl={IMPRESSUM_URL}
   datenschutzUrl={DATENSCHUTZ_URL}
 />
+<script is:inline>
+  // Tracking nach LP-Machine-Muster: __lp kommt aus dem CookieBanner
+  var LP_NAME = '1:1 Workshop B (direkt Kalender)';
+  function tk(e, d) {
+    var tries = 0;
+    (function fire() {
+      if (window.__lp) {
+        window.__lp.track(e, Object.assign({ page: 'workshop-direkt' }, d || {}), 'fot', LP_NAME);
+        if (e === 'lead_submit') window.__lp.meta('Lead', { content_name: 'FoT Lead', currency: 'CHF' });
+      } else if (tries++ < 40) { setTimeout(fire, 50); }
+    })();
+  }
+  tk('page_view');
+</script>
+
 </body>
 </html>

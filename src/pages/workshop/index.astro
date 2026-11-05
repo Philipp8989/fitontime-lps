@@ -1,0 +1,117 @@
+---
+// 1:1-Workshop, Splittest Variante A: Opt-in, danach Kalender (Kevin, 05.11.2026).
+// CSS und Inhalt 1:1 aus Kevins HTML. Lead geht in sein Sheet "1:1 Workshop Leads" über /api/sheets.
+import CookieBanner from '../../components/CookieBanner.astro';
+import ScaleeeCredit from '../../components/ScaleeeCredit.astro';
+
+const IMPRESSUM_URL = 'https://fitontime.ch/impressum-datenschutz';
+const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
+const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').trim();
+---
+<!DOCTYPE html>
+<html lang="de-CH">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow" />
+<meta name="description" content="Kostenloser persönlicher 1:1 Workshop: Jetzt anmelden und Wunschtermin wählen.">
+<title>1:1 Workshop, jetzt anmelden | Fit on Time</title>
+<link rel="icon" type="image/png" href="/images/logo.png" />
+<!-- Hyros First-Party-Attribution, lädt ohne Consent (analog zu allen FOT-Funnels) -->
+<script is:inline src="https://t.hyros.com/v1/lst/universal-script?ph=689a71ca1ab3be1cb1caddbe6b7902a4ad2c51a228f4ec9ea7fef3123a705f63"></script>
+<script is:inline>
+  // Funnel-Marker für /workshop/gebucht, damit Buchungen der richtigen Variante zählen
+  try { sessionStorage.setItem('fot_funnel', 'workshop'); } catch (e) {}
+</script>
+<style is:global>
+:root{--ink:#20382d;--green:#254b3f;--mid:#6d9374;--bg:#f8f8f4;--muted:#617167;--line:#dfe8de;--soft:#edf3e8;--white:#fff}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}a{color:inherit}header{max-width:1090px;margin:auto;padding:23px 25px;display:flex;justify-content:space-between;align-items:center}.logo{font-size:21px;font-weight:850;letter-spacing:-1.3px;white-space:nowrap}.logo span{color:#73966e}.mini{font-size:11px;text-transform:uppercase;color:#879389;letter-spacing:.12em;font-weight:800}main{max-width:1090px;margin:auto;padding:22px 25px 60px}.layout{display:grid;grid-template-columns:1.04fr .96fr;gap:62px;align-items:start}.left{padding:35px 0}.eyebrow{display:inline-flex;align-items:center;gap:8px;background:#e8f0e4;padding:9px 14px;border-radius:50px;font-size:11px;letter-spacing:.07em;text-transform:uppercase;font-weight:850;color:#3e6548}.eyebrow:before{content:"";height:7px;width:7px;background:#78a26c;border-radius:50%}h1{font-size:clamp(40px,4.9vw,61px);line-height:1.075;letter-spacing:-.055em;margin:20px 0 18px}h1 em{font-style:normal;color:#6f9275}.lead{font-size:18px;line-height:1.58;color:#52675a;max-width:540px;margin:0 0 23px}.question{font-weight:800;font-size:17px;margin:0 0 12px}.brakes{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 0 22px}.brake{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:13px;font-size:14px;font-weight:750}.num{height:26px;width:26px;flex:none;display:grid;place-items:center;background:#e9f1e3;border-radius:8px;color:#466b4a;font-size:11px}.why{font-size:14px;line-height:1.6;background:#edf3e8;padding:15px 16px;border-left:3px solid #91b185;border-radius:0 10px 10px 0;color:#42584a}.trust{display:flex;gap:9px;flex-wrap:wrap;color:#6c7b70;font-size:12px;margin-top:21px}.trust b{color:#244333}.panel{background:#fff;border:1px solid #e2e8e0;border-radius:21px;box-shadow:0 19px 60px rgba(25,50,30,.09);padding:28px 29px 26px;min-width:0}.step-label{display:flex;justify-content:space-between;font-size:12px;font-weight:800;margin:0 0 12px;color:#526b59}.progress{height:8px;background:#eaf0e6;border-radius:30px;overflow:hidden;margin-bottom:26px}.progress-fill{height:100%;width:50%;background:linear-gradient(90deg,#65966e,#8eb78c);border-radius:30px;transition:width .35s ease}.tag{display:inline-block;font-size:11px;background:#e8f2e1;color:#4b7349;font-weight:800;text-transform:uppercase;letter-spacing:.055em;padding:7px 10px;border-radius:7px;margin-bottom:15px}h2{font-size:30px;letter-spacing:-.04em;line-height:1.18;margin:0 0 10px}.sub{font-size:14px;line-height:1.6;color:var(--muted);margin:0 0 20px}.price{display:flex;align-items:baseline;gap:10px;margin-bottom:19px}.price s{font-size:17px;color:#9aa49a}.price strong{font-size:25px;color:#2d7449}.field{margin-bottom:14px}.field label{display:block;font-size:12px;font-weight:800;margin-bottom:7px}.field input{height:50px;display:block;width:100%;padding:0 14px;border:1px solid #d7e0d5;border-radius:10px;outline:0;font:inherit;font-size:15px;color:var(--ink);background:white}.field input:focus{border-color:#699675;box-shadow:0 0 0 3px #86ae8126}.field input::placeholder{color:#a5afa4}.consent{display:flex;align-items:flex-start;gap:10px;font-size:11px;line-height:1.55;color:#627569;margin:16px 0}.consent input{margin-top:3px;accent-color:var(--green);flex:none}.cta{width:100%;background:var(--green);border:0;border-radius:11px;color:white;font-size:15px;font-weight:850;padding:17px 15px;cursor:pointer;font-family:inherit;transition:transform .15s,background .15s}.cta:hover{background:#32634c;transform:translateY(-1px)}.cta:disabled{opacity:.6;cursor:wait;transform:none}.hint{text-align:center;font-size:11px;color:#7b897d;line-height:1.45;margin:12px 0 0}.error{display:none;margin:0 0 12px;color:#a33434;background:#fff1ef;border:1px solid #f1c8c2;padding:10px 12px;border-radius:8px;font-size:12px;line-height:1.5}.error.show{display:block}.done{display:flex;align-items:center;gap:10px;border-radius:10px;padding:12px;background:#ecf4e9;font-size:13px;font-weight:760;color:#365b41;margin-bottom:17px}.done .check{display:grid;place-items:center;height:25px;width:25px;border-radius:50%;background:#d5e8d1}.embed{min-height:515px;border:1px solid #e2e9df;border-radius:12px;overflow:hidden;background:#fff}.embed iframe{width:100%!important;max-width:100%!important;border:none}.small{font-size:11px;color:#78877b;line-height:1.6;margin:12px 0 0;text-align:center}.back{border:0;background:transparent;color:#567a5c;text-decoration:underline;font-size:12px;cursor:pointer;margin:16px 0 0;padding:0}.foot{font-size:11px;line-height:1.65;text-align:center;color:#829084;max-width:850px;margin:31px auto 0}.step[hidden]{display:none!important}@media(max-width:900px){.layout{grid-template-columns:1fr;gap:18px;max-width:640px;margin:auto}.left{padding:6px 0}.panel{padding:24px}main{padding-top:8px}h1{font-size:clamp(40px,7vw,55px)}}@media(max-width:500px){header{padding:20px}.mini{display:none}main{padding:5px 16px 42px}.left{padding:2px 0}h1{font-size:42px}.lead{font-size:16px}.brake{padding:11px 9px;font-size:13px}.num{width:23px;height:23px}.panel{padding:23px 17px;border-radius:17px}h2{font-size:28px}.embed{min-height:510px}}
+.legal{font-size:11px;text-align:center;color:#829084;margin:16px auto 0}.legal a{color:#829084}
+</style>
+</head>
+<body>
+<header><div class="logo">FIT <span>on</span> TIME</div><div class="mini">Persönlich · Online · Schweiz</div></header>
+<main><div class="layout"><section class="left" aria-labelledby="headline"><div class="eyebrow">Zum ersten Mal: persönlicher 1:1 Workshop</div><h1>Du gibst dir Mühe. <em>Aber dein Gewicht bewegt sich kaum?</em></h1><p class="lead">Vielleicht brauchst du keine neue Diät. Sondern ein besseres Verständnis dafür, <strong>was dich beim Abnehmen ausbremsen könnte.</strong></p><p class="question">Welche der 4 Bremsen könnte bei dir eine Rolle spielen?</p><div class="brakes"><div class="brake"><span class="num">01</span> Stoffwechsel</div><div class="brake"><span class="num">02</span> Schilddrüse</div><div class="brake"><span class="num">03</span> Nervensystem</div><div class="brake"><span class="num">04</span> Insulin</div></div><div class="why"><b>Das erwartet dich:</b> Im kostenlosen 1:1-Workshop sprechen wir über deine Situation, mögliche Zusammenhänge und sinnvolle nächste Schritte. Kein Standard-Vortrag, sondern Zeit nur für dich.</div><div class="trust"><span><b>4'000+</b> begleitete Frauen</span><span>·</span><span><b>Seit 2016</b></span><span>·</span><span><b>Fit on Time Schweiz</b></span></div></section>
+<aside class="panel" aria-label="Workshop-Anmeldung"><div class="step-label"><span id="steptext">Schritt 1 von 2 · Anmeldung</span><span id="percent">50 % erledigt</span></div><div class="progress" role="progressbar" aria-label="Fortschritt" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" id="progress"><div class="progress-fill" id="fill"></div></div>
+<section class="step" id="step1"><div class="tag">Kostenlose Workshop-Aktion</div><h2>Sichere dir deinen 1:1-Workshop.</h2><p class="sub">Trag dich kurz ein. Im nächsten Schritt kannst du direkt deinen Wunschtermin aussuchen.</p><div class="price"><s>CHF 500</s><strong>Jetzt CHF 0*</strong></div><form id="leadform"><div class="field"><label for="fullname">Dein Vor- und Nachname</label><input id="fullname" name="name" autocomplete="name" placeholder="Vor- und Nachname" required maxlength="120"></div><div class="field"><label for="email">Deine E-Mail-Adresse</label><input id="email" name="email" type="email" autocomplete="email" placeholder="deine@email.ch" required maxlength="200"></div><div class="field"><label for="phone">Deine Telefonnummer</label><input id="phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="+41 79 123 45 67" required minlength="7" maxlength="35"></div><div class="field" style="position:absolute;left:-99999px" aria-hidden="true"><label for="website">Website</label><input id="website" name="website" autocomplete="off" tabindex="-1"></div><label class="consent"><input type="checkbox" id="consent" required><span>Ich bin einverstanden, dass Fit on Time meine Angaben zur Bearbeitung meiner Workshop-Anfrage verwendet und mich dazu per E-Mail oder Telefon kontaktieren darf, auch wenn ich keinen Termin auswähle. <a href="https://fitontime.ch/impressum-datenschutz/" target="_blank" rel="noopener noreferrer">Datenschutz</a></span></label><div class="error" id="error" role="alert"></div><button class="cta" type="submit" id="submit">Weiter zur Terminauswahl →</button><p class="hint">Schritt 2: Passenden Termin auswählen · Unverbindliche Anmeldung</p></form></section>
+<section class="step" id="step2" hidden><div class="done"><span class="check">✓</span><span>Deine Anmeldung ist eingegangen!</span></div><h2>Wähle jetzt deinen passenden Termin.</h2><p class="sub">Fast geschafft! Such dir jetzt einen freien Termin für deinen persönlichen 1:1-Workshop aus.</p><div class="embed" id="bookingembed"><!-- YCBM wird erst nach erfolgreicher Lead-Übermittlung geladen. --></div><p class="small">Die Terminbuchung erfolgt über YouCanBookMe. Deine Anmeldung aus Schritt 1 bleibt auch dann erhalten, wenn du noch keinen Termin wählst.</p><button type="button" class="back" id="back">← Angaben korrigieren</button></section>
+</aside></div><p class="foot">* Kostenloses Angebot und ein allfälliges Platzlimit gelten nur, sofern sie tatsächlich angeboten werden. Der Workshop ersetzt keine medizinische Diagnose. Bei Verdacht auf Erkrankungen der Schilddrüse oder des Stoffwechsels ist eine ärztliche Abklärung sinnvoll.</p>
+<div class="legal"><a href={IMPRESSUM_URL} target="_blank" rel="noopener">Impressum</a> · <a href={DATENSCHUTZ_URL} target="_blank" rel="noopener">Datenschutz</a><div style="margin-top:10px;"><ScaleeeCredit /></div></div></main>
+
+
+<CookieBanner
+  metaPixelId="1316450223953563"
+  googleAdsId={GOOGLE_ADS_ID}
+  consentKey="fot_workshop_consent"
+  impressumUrl={IMPRESSUM_URL}
+  datenschutzUrl={DATENSCHUTZ_URL}
+/>
+<script is:inline>
+  // Tracking nach LP-Machine-Muster: __lp kommt aus dem CookieBanner
+  var LP_NAME = '1:1 Workshop A (Opt-in)';
+  function tk(e, d) {
+    var tries = 0;
+    (function fire() {
+      if (window.__lp) {
+        window.__lp.track(e, Object.assign({ page: 'workshop' }, d || {}), 'fot', LP_NAME);
+        if (e === 'lead_submit') window.__lp.meta('Lead', { content_name: 'FoT Lead', currency: 'CHF' });
+      } else if (tries++ < 40) { setTimeout(fire, 50); }
+    })();
+  }
+  tk('page_view');
+</script>
+<script is:inline>
+  // Variante A: Lead geht über /api/sheets (Sheet, Dashboard-CRM, Meta-CAPI). Der fetch-Wrapper aus dem
+  // CookieBanner hängt Consent und event_id an, damit Browser-Pixel und CAPI dedupliziert werden.
+  const form = document.getElementById('leadform'), error = document.getElementById('error'), submit = document.getElementById('submit');
+  let savedData = ''; let leadFired = false; let bookingLoaded = false;
+  function message(text) { error.textContent = text; error.classList.add('show'); }
+  function showStep(second) {
+    document.getElementById('step1').hidden = second;
+    document.getElementById('step2').hidden = !second;
+    document.getElementById('steptext').textContent = second ? 'Schritt 2 von 2 · Termin wählen' : 'Schritt 1 von 2 · Anmeldung';
+    document.getElementById('percent').textContent = second ? '100 % · letzter Schritt' : '50 % erledigt';
+    document.getElementById('fill').style.width = second ? '100%' : '50%';
+    document.getElementById('progress').setAttribute('aria-valuenow', second ? '100' : '50');
+    document.querySelector('.panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (second && !bookingLoaded) {
+      const s = document.createElement('script');
+      s.src = 'https://embed.ycb.me'; s.async = true;
+      s.dataset.domain = 'fitontime-workshop'; s.dataset.displaymode = 'auto';
+      document.getElementById('bookingembed').appendChild(s);
+      bookingLoaded = true;
+      tk('booking_embed_loaded');
+    }
+  }
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    error.classList.remove('show');
+    if (!form.reportValidity()) return;
+    if (document.getElementById('website').value) return;
+    const name = document.getElementById('fullname').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    // Unverändert zurück: nichts erneut senden. Korrigierte Angaben gehen als neue Zeile ins Sheet.
+    const current = JSON.stringify([name, email, phone]);
+    if (savedData === current) { showStep(true); return; }
+    submit.disabled = true;
+    submit.textContent = 'Anmeldung wird gespeichert …';
+    try {
+      const res = await fetch('/api/sheets', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, phone, first_name: name.split(' ')[0], lp_slug: 'workshop', lp_name: LP_NAME }),
+      });
+      if (!res.ok) throw new Error('Serverantwort: ' + res.status);
+      savedData = current;
+      if (!leadFired) { leadFired = true; tk('lead_submit'); }
+      showStep(true);
+    } catch (err) {
+      message('Deine Angaben konnten noch nicht gespeichert werden. Bitte prüfe sie und versuche es erneut.');
+    } finally {
+      submit.disabled = false;
+      submit.textContent = 'Weiter zur Terminauswahl →';
+    }
+  });
+  document.getElementById('back').addEventListener('click', () => showStep(false));
+</script>
+</body>
+</html>
