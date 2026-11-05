@@ -1,0 +1,71 @@
+---
+// Buchungs-Bestätigung 1:1-Workshop: YCBM fitontime-workshop leitet nach der Buchung hierher.
+// Feuert einmalig booking_confirmed plus Meta Schedule, fot_funnel trennt Variante A und B im Splittest.
+import CookieBanner from '../../components/CookieBanner.astro';
+import ScaleeeCredit from '../../components/ScaleeeCredit.astro';
+
+const IMPRESSUM_URL = 'https://fitontime.ch/impressum-datenschutz';
+const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
+const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').trim();
+---
+<!DOCTYPE html>
+<html lang="de-CH">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow" />
+<title>Termin gebucht | Fit on Time</title>
+<link rel="icon" type="image/png" href="/images/logo.png" />
+<style is:global>
+*{box-sizing:border-box}body{margin:0;background:#f8f8f4;color:#20382d;font-family:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:560px;margin:auto;padding:64px 24px 40px}.logo{font-size:21px;font-weight:850;letter-spacing:-1.3px;margin-bottom:48px}.logo span{color:#73966e}
+h1{font-size:40px;line-height:1.1;letter-spacing:-.05em;margin:0 0 16px}p{font-size:17px;line-height:1.58;color:#52675a;margin:0 0 10px}
+.legal{font-size:11px;color:#829084;margin-top:48px}.legal a{color:#829084}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="logo">FIT <span>on</span> TIME</div>
+  <h1>Dein Termin ist gebucht.</h1>
+  <p>Du bekommst gleich eine Bestätigung per E-Mail mit allen Details.</p>
+  <p>Falls nichts ankommt, schau bitte auch im Spam-Ordner nach.</p>
+  <div class="legal">
+    <a href={IMPRESSUM_URL} target="_blank" rel="noopener">Impressum</a> · <a href={DATENSCHUTZ_URL} target="_blank" rel="noopener">Datenschutz</a>
+    <div style="margin-top:10px;"><ScaleeeCredit /></div>
+  </div>
+</main>
+
+<script is:inline src="https://t.hyros.com/v1/lst/universal-script?ph=689a71ca1ab3be1cb1caddbe6b7902a4ad2c51a228f4ec9ea7fef3123a705f63"></script>
+
+<CookieBanner
+  metaPixelId="1316450223953563"
+  googleAdsId={GOOGLE_ADS_ID}
+  consentKey="fot_workshop_consent"
+  impressumUrl={IMPRESSUM_URL}
+  datenschutzUrl={DATENSCHUTZ_URL}
+/>
+
+<script is:inline>
+  // YCBM-Redirect landet u. U. im Embed-iframe: dann ins Top-Fenster ausbrechen, dort wird getrackt
+  if (window.top !== window.self) {
+    try { window.top.location.href = window.location.href; } catch (e) { window.location.href = window.location.href; }
+  } else {
+    var funnel = 'workshop';
+    try { funnel = sessionStorage.getItem('fot_funnel') || 'workshop'; } catch (e) {}
+    var name = funnel === 'workshop-direkt' ? '1:1 Workshop B (direkt Kalender)' : '1:1 Workshop A (Opt-in)';
+    var already = false;
+    try { already = sessionStorage.getItem('fot_booking_fired') === '1'; } catch (e) {}
+    if (!already) {
+      try { sessionStorage.setItem('fot_booking_fired', '1'); } catch (e) {}
+      var tries = 0;
+      (function fire() {
+        if (window.__lp) {
+          window.__lp.track('booking_confirmed', { page: funnel, detail: funnel }, 'fot', name);
+          window.__lp.meta('Schedule', { content_name: 'FoT Termin gebucht', currency: 'CHF' });
+          window.__lp.google('book_appointment', 'yDiXCIK7zeIcEOfryccD');
+        } else if (tries++ < 40) { setTimeout(fire, 50); }
+      })();
+    }
+  }
+</script>
+</body>
+</html>
