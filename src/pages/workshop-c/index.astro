@@ -1,0 +1,295 @@
+---
+// 1:1-Workshop, Variante C (12.11.2026): Neuentwurf der Ads-Variante A.
+// Konzept: Die Seite ist die erste Frage des Workshops. Erst Bremse antippen, dann Opt-in, dann Kalender.
+// Technik wie A: Lead über /api/sheets in Kevins Sheet "1:1 Workshop Leads", YCBM fitontime-workshop,
+// Bestätigung /workshop/gebucht. Eigener Slug workshop-c für die Auswertung. Entwurf: Figma FitonTime, Seite Landingpages.
+import '../../styles/bauchfett.css';
+import CookieBanner from '../../components/CookieBanner.astro';
+import ScaleeeCredit from '../../components/ScaleeeCredit.astro';
+import FotWordmark from '../../components/FotWordmark.astro';
+
+const IMPRESSUM_URL = 'https://fitontime.ch/impressum-datenschutz';
+const DATENSCHUTZ_URL = 'https://fitontime.ch/impressum-datenschutz';
+const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').trim();
+const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..500,0..100;1,9..144,300..500,0..100&family=Albert+Sans:wght@400;500;600&display=swap';
+
+// Die vier Bremsen plus Ausweg. Sätze aus den laufenden Funnels abgeleitet.
+const BREMSEN = [
+  { nr: '01', id: 'Stoffwechsel', satz: 'Du isst wenig und nimmst trotzdem nicht ab.' },
+  { nr: '02', id: 'Schilddrüse', satz: 'Du bist oft müde und hast kalte Hände oder Füsse.' },
+  { nr: '03', id: 'Nervensystem', satz: 'Abends kommt der Heisshunger, obwohl du satt bist.' },
+  { nr: '04', id: 'Insulin', satz: 'Es setzt vor allem am Bauch und an der Taille an.' },
+  { nr: '?', id: 'Ich weiss es nicht', satz: 'Genau dafür ist der Workshop da.' },
+];
+const ABLAUF = [
+  { t: 'Deine Situation', d: 'Du erzählst, was du schon versucht hast und wo es hängt.' },
+  { t: 'Mögliche Zusammenhänge', d: 'Wir schauen, welche der vier Bremsen bei dir eine Rolle spielen könnte.' },
+  { t: 'Dein nächster Schritt', d: 'Du gehst mit einem klaren, sinnvollen nächsten Schritt aus dem Gespräch.' },
+];
+---
+<!DOCTYPE html>
+<html lang="de-CH">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="description" content="Kostenloser persönlicher 1:1-Workshop: Bremse wählen, anmelden, Wunschtermin aussuchen." />
+  <title>1:1-Workshop: Was bremst dich beim Abnehmen? | Fit on Time</title>
+  <link rel="icon" type="image/png" href="/images/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href={FONTS} rel="stylesheet" />
+  <!-- Hyros First-Party-Attribution, lädt ohne Consent (analog zu allen FOT-Funnels) -->
+  <script is:inline src="https://t.hyros.com/v1/lst/universal-script?ph=689a71ca1ab3be1cb1caddbe6b7902a4ad2c51a228f4ec9ea7fef3123a705f63"></script>
+  <script is:inline>
+    // Funnel-Marker für /workshop/gebucht, damit Buchungen der richtigen Variante zählen
+    try { sessionStorage.setItem('fot_funnel', 'workshop-c'); } catch (e) {}
+  </script>
+  <style is:global>
+    .ws-kopf { display: flex; align-items: center; justify-content: space-between; padding: 1.5rem 0 1rem; }
+    .ws-kopf .ws-tag { font-size: 0.75rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-soft); font-weight: 500; }
+    .ws-wrap { max-width: 75rem; margin: 0 auto; padding: 0 clamp(1.25rem, 4vw, 2rem); }
+    .ws-einstieg { display: grid; grid-template-columns: 1fr; gap: 1.25rem; padding: 0.5rem 0 2.5rem; }
+    .ws-kicker { display: flex; align-items: center; gap: 0.9rem; font-size: 0.72rem; letter-spacing: 0.17em; text-transform: uppercase; color: var(--gold); font-weight: 500; }
+    .ws-kicker::before { content: ''; width: 2.25rem; height: 1px; background: var(--gold); display: none; }
+    .ws-h1 { font-family: var(--font-display); font-weight: 320; font-variation-settings: 'opsz' 110, 'SOFT' 40; font-size: clamp(2.25rem, 5.4vw, 4.25rem); line-height: 1.06; letter-spacing: -0.025em; text-wrap: balance; margin: 0.9rem 0 1rem; }
+    .ws-h1 em { font-style: italic; }
+    .ws-lead { font-size: 1rem; line-height: 1.5; color: var(--ink-soft); max-width: 34rem; text-wrap: pretty; }
+    .ws-lead .ws-lang { display: none; }
+    .ws-trust { font-size: 0.82rem; color: var(--ink-soft); }
+    .ws-trust--oben { display: none; }
+
+    .ws-karte { background: var(--cream-bright); border: 1px solid var(--sand); border-radius: 8px; padding: 1.1rem 1.25rem 1.25rem; scroll-margin-top: 0.75rem; }
+    .ws-schritt { font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); font-weight: 500; }
+    .ws-karte h2 { font-family: var(--font-display); font-weight: 400; font-size: clamp(1.45rem, 2.2vw, 1.75rem); line-height: 1.2; letter-spacing: -0.01em; margin: 0.7rem 0 0.35rem; text-wrap: balance; }
+    .ws-hinweis { font-size: 0.88rem; color: var(--ink-soft); margin-bottom: 1.1rem; }
+    .ws-bremsen { list-style: none; border-top: 1px solid var(--sand); }
+    .ws-bremsen li { border-bottom: 1px solid var(--sand); }
+    .ws-bremse { display: grid; grid-template-columns: 1.6rem 1fr auto; align-items: center; gap: 0.85rem; width: 100%; padding: 1rem 0.25rem; background: none; border: 0; text-align: left; color: inherit; cursor: pointer; transition: background-color 0.15s, padding 0.15s; }
+    .ws-bremse:hover, .ws-bremse:focus-visible { background: var(--cream); padding-left: 0.6rem; padding-right: 0.6rem; }
+    .ws-bremse:focus-visible { outline: 2px solid var(--ink); outline-offset: -2px; }
+    .ws-bremse .nr { font-size: 0.8rem; letter-spacing: 0.08em; color: var(--gold); font-weight: 500; }
+    .ws-bremse b { display: block; font-weight: 600; font-size: 1.1rem; line-height: 1.3; }
+    .ws-bremse span.satz { display: block; font-size: 0.97rem; line-height: 1.4; color: var(--ink-soft); }
+    .ws-bremse .pfeil { color: var(--gold); font-size: 1.3rem; }
+    .ws-karte-fuss { text-align: center; font-size: 0.82rem; color: var(--ink-soft); margin-top: 1rem; }
+
+    .ws-thema { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; background: var(--cream); border-radius: 6px; padding: 0.75rem 0.9rem; margin-top: 1rem; font-size: 0.94rem; color: var(--ink-soft); }
+    .ws-thema b { color: var(--ink); font-weight: 600; }
+    .ws-link { background: none; border: 0; padding: 0; font-size: 0.88rem; color: var(--ink-soft); text-decoration: underline; cursor: pointer; }
+    .ws-preis { display: flex; align-items: baseline; gap: 0.75rem; margin: 0.9rem 0 1rem; font-variant-numeric: tabular-nums; }
+    .ws-preis s { color: var(--ink-soft); font-size: 1.05rem; }
+    .ws-preis strong { font-size: 1.5rem; font-weight: 600; }
+    .ws-feld { margin-bottom: 0.9rem; }
+    .ws-feld label { display: block; font-size: 0.82rem; font-weight: 500; margin-bottom: 0.35rem; }
+    .ws-feld input { width: 100%; font: inherit; font-size: 1rem; color: var(--ink); background: var(--cream-bright); border: 1px solid var(--sand-deep); border-radius: 6px; padding: 0.85rem 0.9rem; }
+    .ws-feld input::placeholder { color: var(--taupe); }
+    .ws-feld input:focus { outline: 2px solid var(--ink); outline-offset: 1px; border-color: var(--ink); }
+    .ws-consent { display: grid; grid-template-columns: auto 1fr; gap: 0.65rem; font-size: 0.76rem; line-height: 1.45; color: var(--ink-soft); margin: 0.25rem 0 1rem; }
+    .ws-consent input { width: 1.1rem; height: 1.1rem; margin-top: 0.1rem; accent-color: var(--ink); }
+    .ws-consent a { color: inherit; }
+    .ws-knopf { width: 100%; font: inherit; font-weight: 600; font-size: 1.05rem; color: var(--cream-bright); background: var(--ink); border: 0; border-radius: 6px; padding: 1.1rem 1rem; cursor: pointer; transition: background-color 0.15s; }
+    .ws-knopf:hover { background: #3a322a; }
+    .ws-knopf:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+    .ws-knopf:disabled { opacity: 0.6; cursor: wait; }
+    .ws-fehler { display: none; background: #f6e3dc; color: var(--rust); border-radius: 6px; padding: 0.75rem 0.9rem; font-size: 0.9rem; margin-bottom: 0.9rem; }
+    .ws-fehler.show { display: block; }
+    .ws-klein { text-align: center; font-size: 0.82rem; color: var(--ink-soft); margin-top: 0.85rem; }
+    .ws-embed { min-height: 34rem; margin-top: 1rem; }
+    .ws-fertig { font-size: 0.94rem; color: var(--ink-soft); margin-top: 0.9rem; }
+
+    .ws-ablauf { background: var(--cream-bright); padding: 3rem 0; }
+    .ws-ablauf-raster { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
+    .ws-ablauf h2 { font-family: var(--font-display); font-weight: 320; font-variation-settings: 'opsz' 110, 'SOFT' 40; font-size: clamp(1.9rem, 3.4vw, 2.75rem); line-height: 1.12; letter-spacing: -0.02em; margin-top: 0.9rem; text-wrap: balance; }
+    .ws-ablauf ol { list-style: none; border-top: 1px solid var(--sand); counter-reset: s; }
+    .ws-ablauf li { display: grid; grid-template-columns: 2.4rem 1fr; gap: 0.75rem; padding: 1.3rem 0; border-bottom: 1px solid var(--sand); counter-increment: s; }
+    .ws-ablauf li::before { content: counter(s); font-family: var(--font-display); font-weight: 320; font-size: 2.1rem; line-height: 1; color: var(--gold); }
+    .ws-ablauf li b { display: block; font-weight: 600; font-size: 1.1rem; }
+    .ws-ablauf li span { display: block; color: var(--ink-soft); font-size: 1rem; line-height: 1.5; max-width: 34rem; }
+    .ws-fuss { padding: 1.75rem 0 2.5rem; font-size: 0.78rem; line-height: 1.5; color: var(--ink-soft); }
+    .ws-fuss a { color: inherit; }
+    .ws-fuss p + p { margin-top: 0.6rem; }
+
+    @media (min-width: 60rem) {
+      .ws-wrap { padding: 0 2.5rem; }
+      .ws-einstieg { grid-template-columns: minmax(0, 7fr) minmax(0, 6fr); gap: 5rem; align-items: start; padding: 2rem 0 6.5rem; }
+      .ws-links { padding-top: 2.25rem; }
+      .ws-kicker { font-size: 0.8rem; }
+      .ws-kicker::before { display: block; }
+      .ws-h1 { margin: 1.6rem 0 1.6rem; }
+      .ws-lead { font-size: 1.25rem; line-height: 1.55; }
+      .ws-lead .ws-kurz { display: none; }
+      .ws-lead .ws-lang { display: inline; }
+      .ws-trust--oben { display: block; margin-top: 1.6rem; font-size: 0.94rem; }
+      .ws-trust--unten { display: none; }
+      .ws-karte { padding: 1.9rem 2.25rem 1.5rem; }
+      .ws-ablauf { padding: 6rem 0; }
+      .ws-ablauf-raster { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 5rem; }
+      .ws-ablauf li { grid-template-columns: 3.4rem 1fr; padding: 1.75rem 0; }
+      .ws-ablauf li::before { font-size: 2.75rem; }
+      .ws-ablauf li b { font-size: 1.25rem; }
+    }
+    @media (prefers-reduced-motion: reduce) { .ws-bremse, .ws-knopf { transition: none; } }
+  </style>
+</head>
+<body>
+  <div class="ws-wrap">
+    <header class="ws-kopf"><FotWordmark /><span class="ws-tag">1:1-Workshop</span></header>
+
+    <main class="ws-einstieg">
+      <section class="ws-links" aria-labelledby="ws-h1">
+        <p class="ws-kicker">Kostenlos · Persönlich · Online</p>
+        <h1 class="ws-h1" id="ws-h1">Du gibst dir Mühe. <em>Und dein Gewicht bewegt sich kaum?</em></h1>
+        <p class="ws-lead"><span class="ws-kurz">Im 1:1-Workshop schauen wir, was dich bremsen könnte.</span><span class="ws-lang">Oft bremst etwas, das mit Disziplin nichts zu tun hat. Im 1:1-Workshop schauen wir gemeinsam, was es bei dir sein könnte.</span></p>
+        <p class="ws-trust ws-trust--oben">Über 4'000 Frauen in der Schweiz begleitet. Seit 2016.</p>
+      </section>
+
+      <aside class="ws-karte" id="karte" aria-label="Workshop-Anmeldung" aria-live="polite">
+        <p class="ws-schritt" id="schritttext">Schritt 1 von 3</p>
+
+        <section id="step1">
+          <h2>Was erkennst du bei dir am meisten?</h2>
+          <p class="ws-hinweis">Tipp auf eine Zeile. Damit startet deine Anmeldung.</p>
+          <ul class="ws-bremsen">
+            {BREMSEN.map((b) => (
+              <li><button type="button" class="ws-bremse" data-bremse={b.id}><span class="nr">{b.nr}</span><span><b>{b.id}</b><span class="satz">{b.satz}</span></span><span class="pfeil" aria-hidden="true">&rarr;</span></button></li>
+            ))}
+          </ul>
+          <p class="ws-karte-fuss">CHF 0 statt CHF 500 · Termin wählst du selbst</p>
+        </section>
+
+        <section id="step2" hidden>
+          <div class="ws-thema"><span>Dein Thema: <b id="thema"></b></span><button type="button" class="ws-link" id="aendern">ändern</button></div>
+          <h2 id="h2-step2">Darüber sprechen wir. Wohin dürfen wir die Einladung schicken?</h2>
+          <div class="ws-preis"><s>CHF 500</s><strong>CHF 0*</strong></div>
+          <form id="leadform">
+            <div class="ws-feld"><label for="fullname">Vor- und Nachname</label><input id="fullname" name="name" autocomplete="name" placeholder="Vor- und Nachname" required maxlength="120" /></div>
+            <div class="ws-feld"><label for="email">E-Mail</label><input id="email" name="email" type="email" autocomplete="email" placeholder="deine@email.ch" required maxlength="200" /></div>
+            <div class="ws-feld"><label for="phone">Telefon</label><input id="phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="+41 79 123 45 67" required minlength="7" maxlength="35" /></div>
+            <div class="ws-feld" style="position:absolute;left:-99999px" aria-hidden="true"><label for="website">Website</label><input id="website" name="website" autocomplete="off" tabindex="-1" /></div>
+            <label class="ws-consent"><input type="checkbox" id="consent" required /><span>Ich bin einverstanden, dass Fit on Time meine Angaben zur Bearbeitung meiner Workshop-Anfrage verwendet und mich dazu per E-Mail oder Telefon kontaktieren darf, auch wenn ich keinen Termin auswähle. <a href="https://fitontime.ch/impressum-datenschutz/" target="_blank" rel="noopener noreferrer">Datenschutz</a></span></label>
+            <div class="ws-fehler" id="error" role="alert"></div>
+            <button class="ws-knopf" id="submit" type="submit">Weiter zur Terminauswahl →</button>
+          </form>
+          <p class="ws-klein">Schritt 3: Termin im Kalender wählen</p>
+        </section>
+
+        <section id="step3" hidden>
+          <h2>Deine Anmeldung ist da. Wähle jetzt deinen Termin.</h2>
+          <p class="ws-fertig">Such dir einen freien Termin für deinen persönlichen 1:1-Workshop aus.</p>
+          <div class="ws-embed" id="bookingembed"><!-- YCBM wird erst nach erfolgreicher Lead-Übermittlung geladen. --></div>
+          <p class="ws-klein">Die Terminbuchung läuft über YouCanBookMe. Deine Anmeldung bleibt erhalten, auch wenn du noch keinen Termin wählst.</p>
+          <p class="ws-klein"><button type="button" class="ws-link" id="back">← Angaben korrigieren</button></p>
+        </section>
+      </aside>
+      <p class="ws-trust ws-trust--unten">Über 4'000 Frauen in der Schweiz begleitet. Seit 2016.</p>
+    </main>
+  </div>
+
+  <section class="ws-ablauf" aria-labelledby="ws-ablauf-h">
+    <div class="ws-wrap ws-ablauf-raster">
+      <div>
+        <p class="ws-kicker">Was im Workshop passiert</p>
+        <h2 id="ws-ablauf-h">Zeit nur für dich. Kein Vortrag.</h2>
+      </div>
+      <ol>
+        {ABLAUF.map((s) => (<li><div><b>{s.t}</b><span>{s.d}</span></div></li>))}
+      </ol>
+    </div>
+  </section>
+
+  <footer class="ws-wrap ws-fuss">
+    <p>* Kostenloses Angebot und ein allfälliges Platzlimit gelten nur, sofern sie tatsächlich angeboten werden. Der Workshop ersetzt keine medizinische Diagnose. Bei Verdacht auf Erkrankungen der Schilddrüse oder des Stoffwechsels ist eine ärztliche Abklärung sinnvoll.</p>
+    <p><a href={IMPRESSUM_URL} target="_blank" rel="noopener">Impressum</a> · <a href={DATENSCHUTZ_URL} target="_blank" rel="noopener">Datenschutz</a></p>
+    <div style="margin-top:10px;"><ScaleeeCredit /></div>
+  </footer>
+
+<CookieBanner
+  metaPixelId="1316450223953563"
+  googleAdsId={GOOGLE_ADS_ID}
+  consentKey="fot_workshop_consent"
+  impressumUrl={IMPRESSUM_URL}
+  datenschutzUrl={DATENSCHUTZ_URL}
+/>
+<script is:inline>
+  // Tracking nach LP-Machine-Muster: __lp kommt aus dem CookieBanner
+  var LP_NAME = '1:1 Workshop C (Neuentwurf)';
+  function tk(e, d) {
+    var tries = 0;
+    (function fire() {
+      if (window.__lp) {
+        window.__lp.track(e, Object.assign({ page: 'workshop-c' }, d || {}), 'fot', LP_NAME);
+        if (e === 'lead_submit') window.__lp.meta('Lead', { content_name: 'FoT Lead', currency: 'CHF' });
+      } else if (tries++ < 40) { setTimeout(fire, 50); }
+    })();
+  }
+  tk('page_view');
+</script>
+<script is:inline>
+  // Ablauf: Bremse antippen (Schritt 1), Opt-in (Schritt 2), Kalender (Schritt 3).
+  // Lead geht über /api/sheets (Sheet, Dashboard-CRM, Meta-CAPI). Der fetch-Wrapper aus dem
+  // CookieBanner hängt Consent und event_id an, damit Browser-Pixel und CAPI dedupliziert werden.
+  const form = document.getElementById('leadform'), error = document.getElementById('error'), submit = document.getElementById('submit');
+  const steps = [null, document.getElementById('step1'), document.getElementById('step2'), document.getElementById('step3')];
+  let bremse = ''; let savedData = ''; let leadFired = false; let bookingLoaded = false; let started = false;
+  function message(text) { error.textContent = text; error.classList.add('show'); }
+  function showStep(n) {
+    for (let i = 1; i <= 3; i++) steps[i].hidden = i !== n;
+    document.getElementById('schritttext').textContent = 'Schritt ' + n + ' von 3';
+    document.getElementById('karte').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (n === 2) setTimeout(() => document.getElementById('fullname').focus({ preventScroll: true }), 350);
+    if (n === 3 && !bookingLoaded) {
+      const s = document.createElement('script');
+      s.src = 'https://embed.ycb.me'; s.async = true;
+      s.dataset.domain = 'fitontime-workshop'; s.dataset.displaymode = 'auto';
+      document.getElementById('bookingembed').appendChild(s);
+      bookingLoaded = true;
+      tk('booking_embed_loaded');
+    }
+  }
+  document.querySelectorAll('.ws-bremse').forEach((b) => b.addEventListener('click', () => {
+    bremse = b.dataset.bremse;
+    document.getElementById('thema').textContent = bremse;
+    // Wer es nicht weiss, bekommt eine passende Überschrift statt "Darüber sprechen wir"
+    document.getElementById('h2-step2').textContent = bremse === 'Ich weiss es nicht'
+      ? 'Das finden wir zusammen heraus. Wohin dürfen wir die Einladung schicken?'
+      : 'Darüber sprechen wir. Wohin dürfen wir die Einladung schicken?';
+    if (!started) { started = true; tk('quiz_start', { detail: bremse }); }
+    tk('quiz_answer', { detail: bremse });
+    showStep(2);
+  }));
+  document.getElementById('aendern').addEventListener('click', () => showStep(1));
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    error.classList.remove('show');
+    if (!form.reportValidity()) return;
+    if (document.getElementById('website').value) return;
+    const name = document.getElementById('fullname').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    // Unverändert zurück: nichts erneut senden. Korrigierte Angaben gehen als neue Zeile ins Sheet.
+    const current = JSON.stringify([name, email, phone]);
+    if (savedData === current) { showStep(3); return; }
+    submit.disabled = true;
+    submit.textContent = 'Anmeldung wird gespeichert …';
+    try {
+      const res = await fetch('/api/sheets', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, phone, first_name: name.split(' ')[0], lp_slug: 'workshop-c', lp_name: LP_NAME, answers: { bremse } }),
+      });
+      if (!res.ok) throw new Error('Serverantwort: ' + res.status);
+      savedData = current;
+      if (!leadFired) { leadFired = true; tk('lead_submit', { detail: bremse }); }
+      showStep(3);
+    } catch (err) {
+      message('Deine Angaben konnten noch nicht gespeichert werden. Bitte prüfe sie und versuche es erneut.');
+    } finally {
+      submit.disabled = false;
+      submit.textContent = 'Weiter zur Terminauswahl →';
+    }
+  });
+  document.getElementById('back').addEventListener('click', () => showStep(2));
+</script>
+</body>
+</html>

@@ -55,6 +55,12 @@ const SHEETS: Record<string, SheetConfig> = {
     range: 'Tabellenblatt1!A:D',
     buildRow: (datum, d) => [datum, d.name, d.email, d.phone || ''],
   },
+  // Variante C (Neuentwurf der Ads-Variante A, 12.11.2026): gleiches Sheet, gleiche Spalten.
+  'workshop-c': {
+    id: '1K1q6hV_oYK4xJihVpdyGhfENmcU2g8g21J_utLfoljM',
+    range: 'Tabellenblatt1!A:D',
+    buildRow: (datum, d) => [datum, d.name, d.email, d.phone || ''],
+  },
   // InsulinCheck (Quiz, 1:1-Nachbau des Netlify-Prototyps insulin.hormon-check.ch).
   // Eigenes Sheet "Insulin-Check Leads". Spaltenschema exakt wie der Zapier-Flow
   // des Prototyps, damit beide Quellen in dieselbe Liste schreiben koennen:
@@ -608,7 +614,7 @@ const handleLead: APIRoute = async ({ request }) => {
             // Eigener Pixel, damit das Medikamenten-Thema den geteilten Pixel nie trifft.
             // Ohne Env kein CAPI-Override auf einen fremden Pixel: dann geht nichts raus (siehe unten).
             : lpSlug === 'nach-der-spritze' ? ((import.meta.env.PUBLIC_FOT_SPRITZE_PIXEL_ID || '').trim() || 'none')
-            : (lpSlug === 'workshop' || lpSlug === 'insulin-check' || lpSlug === 'bauchfett' || lpSlug === 'koerperalter' || lpSlug === 'webinar' || lpSlug === 'nervensystem' || lpSlug === 'nervensystem-b' || lpSlug === 'prognose') ? '1316450223953563'
+            : (lpSlug === 'workshop' || lpSlug === 'workshop-c' || lpSlug === 'insulin-check' || lpSlug === 'bauchfett' || lpSlug === 'koerperalter' || lpSlug === 'webinar' || lpSlug === 'nervensystem' || lpSlug === 'nervensystem-b' || lpSlug === 'prognose') ? '1316450223953563'
               : undefined,
         // Nur Longevity: geschaetzter Lead-Wert (reine Zahl, KEINE Gesundheitsdaten) behebt Meta-Diagnose "gueltige Preisinfo".
         // value/currency muessen mit dem Browser-Pixel (longevity/index.astro) uebereinstimmen. Platzhalter 50 CHF.
