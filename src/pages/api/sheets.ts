@@ -285,6 +285,11 @@ SHEETS['nervensystem'] = {
   },
 };
 
+// Figur-Check Fassung T "Die Einladung" (/einladung/, seit 13.11.2026): gleiches Sheet und gleiche Spalten
+// wie Fassung A, damit Setter und HubSpot nichts umstellen. Slug enthält "figur-check", damit der
+// WhatsApp-Bot denselben Gesprächsrahmen nutzt. Getrennt ausgewertet wird über lp_slug im Dashboard.
+SHEETS['figur-check-einladung'] = SHEETS['figur-check'];
+
 // Nervensystem-Quiz Variante B (Kevins Funnel, /nervensystem-b/): gleiche A/B-Leadliste wie Variante A.
 // Die Anmeldung dort ist zugleich die Webinar-Anmeldung (siehe handleLead: Webinar-Liste + WebinarJam).
 SHEETS['nervensystem-b'] = {
@@ -614,7 +619,7 @@ const handleLead: APIRoute = async ({ request }) => {
             // Eigener Pixel, damit das Medikamenten-Thema den geteilten Pixel nie trifft.
             // Ohne Env kein CAPI-Override auf einen fremden Pixel: dann geht nichts raus (siehe unten).
             : lpSlug === 'nach-der-spritze' ? ((import.meta.env.PUBLIC_FOT_SPRITZE_PIXEL_ID || '').trim() || 'none')
-            : (lpSlug === 'workshop' || lpSlug === 'workshop-c' || lpSlug === 'insulin-check' || lpSlug === 'bauchfett' || lpSlug === 'koerperalter' || lpSlug === 'webinar' || lpSlug === 'nervensystem' || lpSlug === 'nervensystem-b' || lpSlug === 'prognose') ? '1316450223953563'
+            : (lpSlug === 'workshop' || lpSlug === 'workshop-c' || lpSlug === 'figur-check-einladung' || lpSlug === 'insulin-check' || lpSlug === 'bauchfett' || lpSlug === 'koerperalter' || lpSlug === 'webinar' || lpSlug === 'nervensystem' || lpSlug === 'nervensystem-b' || lpSlug === 'prognose') ? '1316450223953563'
               : undefined,
         // Nur Longevity: geschaetzter Lead-Wert (reine Zahl, KEINE Gesundheitsdaten) behebt Meta-Diagnose "gueltige Preisinfo".
         // value/currency muessen mit dem Browser-Pixel (longevity/index.astro) uebereinstimmen. Platzhalter 50 CHF.
