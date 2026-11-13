@@ -577,7 +577,7 @@ const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').t
       <div class="step form" data-s="form">
         <div class="tag">&#10003; Analyse abgeschlossen!</div>
         <h2>Dein Körper-Fahrplan ist bereit!</h2>
-        <p class="sub">Trage dich ein und erhalte deinen individuellen Report, kostenlos per E-Mail.</p>
+        <p class="sub">Trage dich ein und erhalte dein individuelles Ergebnis, kostenlos und persönlich erklärt.</p>
         <div class="fields">
           <div class="field"><span class="ic">&#128075;</span><input type="text" id="fn" placeholder="Dein Vor- und Nachname" required /></div>
           <div class="field"><span class="ic">&#128236;</span><input type="email" id="em" placeholder="Deine E-Mail" required /></div>
@@ -625,7 +625,6 @@ const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').t
           <div class="sc-title"><span>&#9888;</span><span>Wichtiger Hinweis</span></div>
           <p>Wir können nur eine begrenzte Zahl an Ergebnissen <strong>sofort persönlich übergeben</strong>.</p>
           <p><strong>Sichere dir jetzt deinen Platz</strong>, bevor du auf die Warteliste musst.</p>
-          <p>(Falls du keinen Termin buchst, bekommst du dein Ergebnis automatisch später, aber ohne persönliche Erklärung.)</p>
         </div>
       </div>
 
@@ -758,6 +757,8 @@ const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').t
         tk('lead_submit', { detail: fn });
         var firstName = (fn.split(' ')[0] || '').trim();
         try { sessionStorage.setItem('fot_result_name', firstName || 'Du'); } catch(e) {}
+        // Angaben für den Kalender auf der Ergebnisseite merken (nur dieser Tab), damit dort niemand doppelt tippt.
+        try { sessionStorage.setItem('fot_prefill', JSON.stringify({ name: fn, email: em, phone: ph })); } catch(e) {}
         tk('result_shown', { detail: 'booking' });
         btn.textContent = 'Weiter zum Termin...';
         // 250ms Puffer, damit Pixel + sendBeacon raus sind, bevor navigiert wird
