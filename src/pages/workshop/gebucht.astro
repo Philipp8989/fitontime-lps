@@ -91,7 +91,7 @@ const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').t
   } else {
     var funnel = 'workshop-unbekannt';
     try { funnel = sessionStorage.getItem('fot_funnel') || 'workshop-unbekannt'; } catch (e) {}
-    var names = { 'workshop': '1:1 Workshop A (Opt-in)', 'workshop-direkt': '1:1 Workshop B (direkt Kalender)', 'workshop-c': '1:1 Workshop C (Neuentwurf)', 'figur-check-einladung': 'Figur-Check T:Einladung' };
+    var names = { 'workshop': '1:1 Workshop A (Opt-in)', 'workshop-direkt': '1:1 Workshop B (direkt Kalender)', 'workshop-c': '1:1 Workshop C (Neuentwurf)', 'figur-check-einladung': 'Figur-Check T:Einladung', 'figur-check-einladung-b': 'Figur-Check T:Einladung direkt' };
     var name = names[funnel] || '1:1 Workshop (Variante unbekannt)';
     var already = false;
     try { already = sessionStorage.getItem('fot_booking_fired') === '1'; } catch (e) {}
