@@ -98,7 +98,7 @@ const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').t
           }
         } catch (e) {}
         var v = 'B';
-        try { v = sessionStorage.getItem('fot_ab_fe') || 'B'; } catch (e) {}
+        try { v = 'book-' + (sessionStorage.getItem('fot_fc_book') || 'A'); } catch (e) {}
         tk('booking_confirmed', { variant: v, detail: v });
       }
     }

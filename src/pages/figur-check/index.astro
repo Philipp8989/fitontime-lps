@@ -25,6 +25,22 @@ const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').t
       window.__fe = v;
       if (v === 'B') document.documentElement.classList.add('fe-quiz');
     })();
+    // A/B-Test Termin seit 13.11.2026 (Filip: Book Rate hoch).
+    // A = wie bisher (Ergebnis mit Prozent und Video, Kalender darunter).
+    // T = Startseite kündigt das Gespräch an, Ergebnisseite zeigt den Kalender zuerst.
+    // Zuteilung 50/50, bleibt pro Gerät gleich. ?b=a oder ?b=t erzwingt eine Fassung.
+    (function () {
+      var b = '';
+      try {
+        var f = (new URLSearchParams(location.search).get('b') || '').toUpperCase();
+        b = (f === 'A' || f === 'T') ? f : (localStorage.getItem('fot_fc_book') || '');
+        if (b !== 'A' && b !== 'T') b = Math.random() < 0.5 ? 'A' : 'T';
+        localStorage.setItem('fot_fc_book', b);
+        sessionStorage.setItem('fot_fc_book', b);
+      } catch (e) { b = 'A'; }
+      window.__book = b;
+      if (b === 'T') document.documentElement.classList.add('fc-t');
+    })();
   </script>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="robots" content="noindex, nofollow" />
@@ -215,6 +231,14 @@ const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').t
     .intro-sub { font-size: 14px; color: var(--text-2); margin-top: 16px; }
     .intro-lead { font-size: 15px; color: var(--text-2); line-height: 1.5; margin: 12px auto 18px; max-width: 420px; }
     .intro-lead strong { color: var(--text); font-weight: 700; }
+
+    /* A/B-Test Termin (seit 13.11.2026): html.fc-t = Fassung T, sonst A */
+    html.fc-t .only-a { display: none !important; }
+    html:not(.fc-t) .only-t { display: none !important; }
+    /* Fassung T: Ablauf in drei Schritten unter der Einleitung */
+    .ablauf { list-style: none; display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 0 auto 18px; max-width: 420px; text-align: left; }
+    .ablauf li { display: flex; align-items: flex-start; gap: 7px; font-size: 12px; color: var(--text-2); line-height: 1.35; font-weight: 500; }
+    .ablauf b { flex-shrink: 0; width: 20px; height: 20px; border-radius: 50%; border: 1.5px solid var(--accent); color: var(--accent); font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
     .intro-proof { margin-bottom: 18px; display: flex; flex-direction: column; align-items: center; gap: 5px; }
     /* Im Intro flacher als in der Text-LP, damit die Auswahl trotz Cookie-Banner
        auf dem Handy ueber dem Fold bleibt. */
@@ -588,9 +612,17 @@ const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').t
     <div class="intro-inner">
       <div class="intro-logo"><img src="/images/logo.png" alt="Fit on Time" /></div>
       <h1>Was blockiert dich <em>wirklich beim Abnehmen?</em></h1>
-      <p class="intro-lead">Beantworte <strong>7 Fragen</strong> und erfahre, ob deine Schilddrüse
+      <p class="intro-lead only-a">Beantworte <strong>7 Fragen</strong> und erfahre, ob deine Schilddrüse
         deinen Stoffwechsel ausbremst, mit persönlicher Auswertung von unseren Ernährungs-Coaches.
         Kostenlos.</p>
+      <p class="intro-lead only-t">Beantworte <strong>7 Fragen</strong>. Danach wählst du einen Termin, und eine unserer
+        Ernährungs-Coaches <strong>geht deine Auswertung persönlich mit dir durch</strong>, ob deine Schilddrüse
+        deinen Stoffwechsel ausbremst. Kostenlos.</p>
+      <ol class="ablauf only-t">
+        <li><b>1</b><span>7 Fragen beantworten</span></li>
+        <li><b>2</b><span>Termin wählen</span></li>
+        <li><b>3</b><span>Coach geht deine Auswertung mit dir durch</span></li>
+      </ol>
       <!-- Proof: Absender und Sozialbeleg. Bis 17.06. nur in der Text-LP (Variante A)
            vorhanden, die als Ganzes gegen das nackte Quiz verloren hat. Hier bewusst
            auf die Elemente reduziert, die der Report-Funnel ueber dem Fold hat, und
@@ -617,7 +649,8 @@ const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').t
           <span class="g-label">Mann</span>
         </div>
       </div>
-      <div class="intro-sub">90 Sekunden &middot; 100% kostenlos</div>
+      <div class="intro-sub only-a">90 Sekunden &middot; 100% kostenlos</div>
+      <div class="intro-sub only-t">90 Sekunden &middot; Gespräch ca. 20 Minuten &middot; kostenlos</div>
       <div class="intro-legal">
         <a href="https://fitontime.ch/impressum-datenschutz" target="_blank" rel="noopener">Impressum</a> &middot;
         <a href="https://fitontime.ch/impressum-datenschutz" target="_blank" rel="noopener">Datenschutz</a>
@@ -727,7 +760,8 @@ const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').t
       <div class="step ld" data-s="ld">
         <div class="spinner"></div>
         <h2>Wird ausgewertet...</h2>
-        <p>Dein persönlicher Report wird erstellt</p>
+        <p class="only-a">Dein persönlicher Report wird erstellt</p>
+        <p class="only-t">Deine Auswertung für das Gespräch wird vorbereitet</p>
         <div class="checks">
           <div class="chk" id="c1"><i>&#10003;</i>Antworten analysiert</div>
           <div class="chk" id="c2"><i>&#10003;</i>Körper-Profil erstellt</div>
@@ -738,8 +772,10 @@ const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').t
       <!-- Formular -->
       <div class="step form" data-s="form">
         <div class="tag">&#10003; Deine Analyse ist fertig</div>
-        <h2>Dein Ergebnis ist startklar</h2>
-        <p class="sub">Trag dich jetzt ein und sieh sofort, was bei dir wirklich los ist. Deine persönliche Auswertung wartet schon auf dich.</p>
+        <h2 class="only-a">Dein Ergebnis ist startklar</h2>
+        <p class="sub only-a">Trag dich jetzt ein und sieh sofort, was bei dir wirklich los ist. Deine persönliche Auswertung wartet schon auf dich.</p>
+        <h2 class="only-t">Deine Auswertung ist bereit</h2>
+        <p class="sub only-t">Trag dich ein. Im nächsten Schritt wählst du deinen Termin, und deine Coach geht dein Ergebnis persönlich mit dir durch (ca. 20 Minuten, kostenlos).</p>
         <div class="fields">
           <div class="field"><span class="ic">&#128100;</span><input type="text" id="fn" placeholder="Vorname" required /></div>
           <div class="field"><span class="ic">&#128100;</span><input type="text" id="ln" placeholder="Nachname" required /></div>
@@ -754,7 +790,7 @@ const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').t
           <input type="checkbox" id="ds" />
           <label for="ds">Ich akzeptiere die <a href="https://fitontime.ch/impressum-datenschutz" target="_blank">Datenschutzbestimmungen</a></label>
         </div>
-        <button class="submit" id="sbtn" disabled onclick="send()">Mein Ergebnis jetzt ansehen</button>
+        <button class="submit" id="sbtn" disabled onclick="send()"><span class="only-a">Mein Ergebnis jetzt ansehen</span><span class="only-t">Weiter zur Terminwahl</span></button>
 
         <!-- Proof im Formular -->
         <div class="form-proof">
@@ -930,7 +966,7 @@ const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').t
 
         // Zugewiesene Front-End-Variante (A=Text, B=Quiz)
         var v = 'unknown';
-        try { v = sessionStorage.getItem('fot_ab_fe') || 'unknown'; } catch (e) {}
+        try { v = 'book-' + (sessionStorage.getItem('fot_fc_book') || 'A'); } catch (e) {}
 
         tk('booking_confirmed', { variant: v, detail: v });
       }, false);
@@ -1065,7 +1101,7 @@ const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').t
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           lp_slug: 'figur-check',
-          lp_name: feVariant === 'B' ? 'Schilddrüsen-Report v2 (B:Quiz)' : 'Schilddrüsen-Report v2 (A:Text)',
+          lp_name: (feVariant === 'B' ? 'Schilddrüsen-Report v2 (B:Quiz)' : 'Schilddrüsen-Report v2 (A:Text)') + (window.__book === 'T' ? ' T:Termin' : ' A:Ergebnis'),
           name: fullName,
           first_name: fn,
           email: em,
@@ -1086,6 +1122,7 @@ const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').t
 
         // Front-End-Variante (A=Text, B=Quiz) fuer Messung mitschicken.
         tk('ab_assign_fe', { detail: feVariant, variant: feVariant });
+        tk('ab_assign_book', { detail: 'book-' + window.__book, variant: 'book-' + window.__book });
 
         // Ergebnis auf separater Seite (immer FC-Mirror/thx2 - thx wurde entfernt).
         try { sessionStorage.setItem('fot_result_name', fn || 'Du'); } catch(e) {}
@@ -1094,7 +1131,7 @@ const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').t
         setTimeout(function(){ window.location.href = '/figur-check/ergebnis/?score=' + sdScore; }, 250);
       }).catch(function(){
         btn.disabled = false;
-        btn.textContent = 'Jetzt Report sichern';
+        btn.textContent = window.__book === 'T' ? 'Weiter zur Terminwahl' : 'Jetzt Report sichern';
         alert((window.__lpErr ? window.__lpErr('Etwas ist schiefgelaufen. Bitte nochmal versuchen.') : 'Etwas ist schiefgelaufen. Bitte nochmal versuchen.'));
       });
     }

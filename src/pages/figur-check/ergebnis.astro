@@ -10,6 +10,19 @@ const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').t
 <html lang="de">
 <head>
   <meta charset="utf-8" />
+  <script is:inline>
+    // A/B-Test Termin (seit 13.11.2026): Fassung kommt von /figur-check/ (fot_fc_book), ?b=t erzwingt T.
+    (function () {
+      var b = 'A';
+      try {
+        var f = (new URLSearchParams(location.search).get('b') || '').toUpperCase();
+        b = (f === 'A' || f === 'T') ? f : (sessionStorage.getItem('fot_fc_book') || 'A');
+        sessionStorage.setItem('fot_fc_book', b);
+      } catch (e) {}
+      window.__book = b;
+      if (b === 'T') document.documentElement.classList.add('fc-t');
+    })();
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="robots" content="noindex, nofollow" />
   <title>Kostenloser Schilddrüsen-Check | Fit on Time</title>
@@ -337,6 +350,27 @@ const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').t
 
     /* === DANKE-SEITE V2 (FC-Mirror, A/B-Variante B) === */
     .thanks-v2 { text-align: center; max-width: 600px; width: 100%; padding-bottom: 40px; }
+    /* A/B-Test Termin: html.fc-t = Fassung T, sonst A */
+    html.fc-t .only-a { display: none !important; }
+    html:not(.fc-t) .only-t { display: none !important; }
+    /* Fassung T: Kalender direkt unter der Überschrift, Bundle darunter, Prozent und Video aus */
+    html.fc-t .step.thanks-v2.on { display: flex; flex-direction: column; }
+    html.fc-t .thanks-v2 .result-eyebrow { order: 1; }
+    html.fc-t .thanks-v2 h2 { order: 2; }
+    html.fc-t .thanks-v2 .t-intro { order: 3; }
+    html.fc-t #ycbm-container-v2 { order: 4; margin-top: 4px; margin-bottom: 28px; }
+    html.fc-t .thanks-v2 .bundle-box { order: 5; }
+    html.fc-t .thanks-v2 .score-wrap,
+    html.fc-t .thanks-v2 .vsl-box,
+    html.fc-t .thanks-v2 .v2-sec-title,
+    html.fc-t .thanks-v2 .v2-symptoms,
+    html.fc-t .thanks-v2 .bundle-cta,
+    html.fc-t .thanks-v2 .how-to { display: none !important; }
+    .t-intro { text-align: left; max-width: 440px; margin: 0 auto 8px; }
+    .t-intro p { font-size: 15px; color: var(--text-2); line-height: 1.5; margin-bottom: 12px; text-align: center; }
+    .t-intro ul { list-style: none; display: flex; flex-direction: column; gap: 6px; margin-bottom: 4px; }
+    .t-intro li { font-size: 14px; color: var(--text-2); line-height: 1.4; display: flex; gap: 8px; }
+    .t-intro li::before { content: "\2713"; color: var(--accent); font-weight: 700; flex-shrink: 0; }
     .thanks-v2 .result-eyebrow { font-size: 11px; text-transform: uppercase; letter-spacing: 1.4px; color: var(--accent); font-weight: 700; margin-bottom: 10px; }
     .thanks-v2 h2 { font-size: 22px; font-weight: 800; line-height: 1.25; letter-spacing: -0.4px; margin-bottom: 8px; }
     .thanks-v2 h2 em { font-style: normal; color: var(--accent); }
@@ -671,7 +705,17 @@ const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').t
       <!-- Danke V2 - FC-Mirror (Gewinner) -->
       <div class="step thanks-v2" data-s="thx2">
         <div class="result-eyebrow">Auswertung abgeschlossen</div>
-        <h2>Dein Ergebnis: Zu <em><span id="v2-score-h">89</span>%</em> blockiert Deine Schilddrüse Deinen Stoffwechsel</h2>
+        <h2 class="only-t"><span class="t-name">Du</span>, wähle jetzt deinen Termin für deine Auswertung</h2>
+        <div class="t-intro only-t">
+          <p>Deine Coach geht dein Ergebnis in einem kostenlosen Gespräch (ca. 20 Minuten) persönlich mit dir durch.</p>
+          <ul>
+            <li>Wie stark deine Schilddrüse deinen Stoffwechsel gerade bremst</li>
+            <li>Welche deiner Anzeichen dazu passen und welche nicht</li>
+            <li>Was du konkret ändern kannst, ohne Hunger und ohne Verzicht</li>
+            <li>Dein Schilddrüsen-Starter-Bundle als Geschenk</li>
+          </ul>
+        </div>
+        <h2 class="only-a">Dein Ergebnis: Zu <em><span id="v2-score-h">89</span>%</em> blockiert Deine Schilddrüse Deinen Stoffwechsel</h2>
 
         <div class="score-wrap">
           <div class="score">
@@ -830,7 +874,7 @@ const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').t
 
         // Zugewiesene Front-End-Variante (A=Text, B=Quiz)
         var v = 'unknown';
-        try { v = sessionStorage.getItem('fot_ab_fe') || 'unknown'; } catch (e) {}
+        try { v = 'book-' + (sessionStorage.getItem('fot_fc_book') || 'A'); } catch (e) {}
 
         tk('booking_confirmed', { variant: v, detail: v });
 
@@ -1066,6 +1110,13 @@ const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').t
         });
       }, { threshold: 0.5 });
       io.observe(el);
+    })();
+
+    // Fassung T: Vorname aus dem Formular in die Überschrift
+    (function () {
+      var n = '';
+      try { n = sessionStorage.getItem('fot_result_name') || ''; } catch (e) {}
+      document.querySelectorAll('.t-name').forEach(function (el) { el.textContent = n || 'Du'; });
     })();
 
     function v2ScrollToBooking() {
