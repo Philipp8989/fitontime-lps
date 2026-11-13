@@ -574,7 +574,7 @@ const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').t
       <div class="step form" data-s="form">
         <div class="tag">&#10003; Analyse abgeschlossen!</div>
         <h2>Dein Stoffwechsel-Fahrplan ist bereit!</h2>
-        <p class="sub">Trage dich ein und erhalte deinen individuellen Report, kostenlos per E-Mail.</p>
+        <p class="sub">Trage dich ein und erhalte dein individuelles Ergebnis, kostenlos und persönlich erklärt.</p>
         <div class="fields">
           <div class="field"><span class="ic">&#128075;</span><input type="text" id="fn" placeholder="Dein Vor- und Nachname" required /></div>
           <div class="field"><span class="ic">&#128236;</span><input type="email" id="em" placeholder="Deine E-Mail" required /></div>
@@ -622,7 +622,6 @@ const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').t
           <div class="sc-title"><span>&#9888;</span><span>Wichtiger Hinweis</span></div>
           <p>Wir können nur eine begrenzte Zahl an Ergebnissen <strong>sofort persönlich übergeben</strong>.</p>
           <p><strong>Sichere dir jetzt deinen Platz</strong>, bevor du auf die Warteliste musst.</p>
-          <p>(Falls du keinen Termin buchst, bekommst du dein Ergebnis automatisch später, aber ohne persönliche Erklärung.)</p>
         </div>
       </div>
 
@@ -672,8 +671,27 @@ const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').t
         ycbm.setAttribute('data-domain', 'fitontime-stoffwechsel-report');
         ycbm.setAttribute('data-displaymode', 'auto');
         document.getElementById('ycbm-embed').appendChild(ycbm);
-        document.getElementById('qn').textContent = 'Preview';
+        prefillKalender();
+        document.getElementById('qn').textContent = 'Termin wählen';
+        document.getElementById('qf').style.width = '100%';
       });
+    }
+
+    // Hängt Name, Mail und Nummer aus dem Lead-Formular an die Kalender-Adresse (Kürzel von youcanbook.me),
+    // damit die Felder nach dem Antippen eines Zeitpunkts schon gefüllt sind. Die Seiten-Adresse bleibt sauber.
+    function prefillKalender() {
+      var d = null;
+      try { d = JSON.parse(sessionStorage.getItem('fot_prefill') || 'null'); } catch (e) {}
+      if (!d || !d.email) return;
+      var teile = String(d.name || '').trim().split(/\s+/);
+      var werte = { FNAME: teile[0] || '', LNAME: teile.slice(1).join(' '), EMAIL: d.email, PHONE: d.phone || '' };
+      var versuche = 0;
+      (function warte() {
+        var f = document.querySelector('#ycbm-embed iframe');
+        if (!f) { if (versuche++ < 100) setTimeout(warte, 50); return; }
+        var q = Object.keys(werte).filter(function (k) { return werte[k]; }).map(function (k) { return k + '=' + encodeURIComponent(werte[k]); }).join('&');
+        if (q && f.src.indexOf('EMAIL=') === -1) f.src = f.src + (f.src.indexOf('?') === -1 ? '?' : '&') + q;
+      })();
     }
 
     function startQuiz(gender) {
