@@ -1,5 +1,6 @@
 ---
 // Figur-Check, Fassung T "Die Einladung" (13.11.2026). Ziel: Termine im 1:1-Workshop.
+// Seit 16.11.2026: vor dem Opt-in Ergebnis-Versprechen wie Figur-Check A (Leads), Workshop erst nach dem Opt-in (Termine).
 // Ablauf: Start, 7 Fragen mit Coach-Rückmeldung, Zwischenergebnis plus Opt-in, persönliche Einladung mit Kalender.
 // Traffic kommt nur über den 50/50-Schalter in /figur-check/ (fot_fc_book = T), Ads bleiben auf /figur-check.
 // Anschlüsse: Lead über /api/sheets (Slug figur-check-einladung = gleiches Sheet und gleicher Bot-Rahmen wie Figur-Check),
@@ -28,7 +29,7 @@ const FRAGEN = [
     ['extrem', 'Extrem schwer', 'Extrem schwer, obwohl du auf die Ernährung achtest: Dann liegt es selten an der Disziplin. Genau das schauen wir uns an.'],
     ['mittel', 'Es geht so', 'Es geht so heisst oft: viel Aufwand für wenig Ergebnis. Das merken wir uns.'],
     ['leicht', 'Gar nicht schwer', 'Schön. Dann schauen wir, was dich trotzdem hierher gebracht hat.'],
-    ['unklar', 'Weiss ich nicht', 'Ehrlich, dass du es nicht weisst. Genau dafür ist der Workshop da.'],
+    ['unklar', 'Weiss ich nicht', 'Ehrlich, dass du es nicht weisst. Genau das zeigt dir die Auswertung.'],
   ] },
   { q: 'Frierst du oft, zum Beispiel kalte Hände oder Füsse?', a: [
     ['staendig', 'Ja, ständig', 'Ständiges Frieren ist eines der häufigsten Zeichen, dass dein Körper Energie spart. Das notieren wir.'],
@@ -106,7 +107,7 @@ const ZAHLEN = [['4\'000+', 'Frauen in der Schweiz begleitet'], ['97 %', 'erreic
     .ek-lead { font-size: 1.06rem; line-height: 1.55; color: var(--ink-soft); max-width: 36rem; text-wrap: pretty; }
     .ek-preis { margin: 1.1rem 0 1.4rem; font-weight: 500; font-variant-numeric: tabular-nums; }
     .ek-preis s { color: var(--taupe); margin-right: 0.6rem; }
-    .ek-gate-label { margin-bottom: 0.6rem; color: var(--ink-soft); }
+    .ek-gate-label { margin: 1.6rem 0 0.6rem; color: var(--ink-soft); }
     .ek-gate { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; max-width: 26rem; }
     .ek-btn { font: inherit; font-weight: 600; font-size: 1.02rem; padding: 1rem; border-radius: 4px; cursor: pointer; border: 1px solid var(--ink); background: transparent; color: var(--ink); transition: background-color .15s, color .15s; }
     .ek-btn--voll { background: var(--ink); color: var(--cream-bright); }
@@ -230,16 +231,15 @@ const ZAHLEN = [['4\'000+', 'Frauen in der Schweiz begleitet'], ['97 %', 'erreic
   </style>
 </head>
 <body class="ek" data-slug={SLUG} data-lpname={LP_NAME} data-direkt={direkt ? '1' : '0'}>
-  <div class="ek-wrap"><header class="ek-kopf"><FotWordmark /><span class="ek-tag" id="kopf-tag">1:1-Workshop</span></header></div>
+  <div class="ek-wrap"><header class="ek-kopf"><FotWordmark /><span class="ek-tag" id="kopf-tag">Figur-Check</span></header></div>
 
   <!-- ===== 1 Start ===== -->
   <section class="ek-step" id="s-start">
     <div class="ek-wrap ek-hero">
       <div>
         <p class="ek-kicker">Figur-Check · 7 Fragen · 90 Sekunden</p>
-        <h1>Was bremst dich <em>wirklich beim Abnehmen?</em></h1>
-        <p class="ek-lead">Beantworte 7 Fragen. Daraus stellen wir dir eine persönliche Einladung aus: zu deinem 1:1-Workshop, in dem eine Coach deine Antworten mit dir durchgeht.</p>
-        <p class="ek-preis"><s>CHF 500</s>Für dich CHF 0</p>
+        <h1>Steckt dein Körper <em>im Sparmodus?</em></h1>
+        <p class="ek-lead">Finde in 90 Sekunden heraus, wie viele der 4 Sparmodus-Anzeichen du hast und was dich beim Abnehmen bremst. Dein Ergebnis siehst du sofort. Kostenlos.</p>
         <p class="ek-mono ek-gate-label">Ich bin</p>
         <div class="ek-gate">
           <button type="button" class="ek-btn ek-btn--voll" data-gender="frau">Frau</button>
@@ -248,13 +248,13 @@ const ZAHLEN = [['4\'000+', 'Frauen in der Schweiz begleitet'], ['97 %', 'erreic
         <p class="ek-beleg">Über 4'000 Frauen in der Schweiz begleitet. Seit 2016.</p>
       </div>
       <div>
-        <p class="ek-mono ek-soft" style="margin-bottom:0.9rem">So sieht deine Einladung am Ende aus</p>
+        <p class="ek-mono ek-soft" style="margin-bottom:0.9rem">So sieht dein Ergebnis am Ende aus</p>
         <div class="ek-karte" aria-hidden="true"><div class="ek-karte-innen">
-          <div class="ek-karte-kopf"><span class="ek-kicker">Persönliche Einladung</span><i>Fit on Time</i></div>
+          <div class="ek-karte-kopf"><span class="ek-kicker">Deine Auswertung</span><i>Fit on Time</i></div>
           <p class="ek-karte-name">Dein Name,</p>
-          <p class="ek-karte-intro">du bist eingeladen zu deinem</p>
-          <p class="ek-karte-ws">1:1-Workshop</p>
-          <dl><dt>Thema</dt><dd>Ergibt sich aus deinen Antworten</dd><dt>Format</dt><dd>Online, nur du und deine Coach</dd><dt>Termin</dt><dd>Wählst du gleich selbst</dd><dt>Wert</dt><dd><s>CHF 500</s>CHF 0 für dich</dd></dl>
+          <p class="ek-karte-intro">das zeigen deine Antworten:</p>
+          <p class="ek-karte-ws">Dein Muster</p>
+          <dl><dt>Anzeichen</dt><dd>Wie viele der 4 du hast</dd><dt>Bremse</dt><dd>Was dein Abnehmen aufhält</dd><dt>Dauer</dt><dd>7 Fragen, 90 Sekunden</dd><dt>Kosten</dt><dd>CHF 0</dd></dl>
         </div></div>
       </div>
     </div>
@@ -291,7 +291,7 @@ const ZAHLEN = [['4\'000+', 'Frauen in der Schweiz begleitet'], ['97 %', 'erreic
         </div>
       ))}
       <div class="ek-feedback" id="feedback" aria-live="polite" hidden><span class="ek-kicker">Deine Coach sagt dazu</span><p id="fb-text"></p><button type="button" class="ek-weiter" id="fb-weiter">Weiter</button></div>
-      <div class="ek-mini"><div><small>Deine Einladung entsteht</small><span>Thema: wird aus deinen Antworten ermittelt</span></div><div class="ek-punkte" id="punkte">{FRAGEN.map(() => <i></i>)}</div></div>
+      <div class="ek-mini"><div><small>Deine Auswertung entsteht</small><span>Muster: wird aus deinen Antworten ermittelt</span></div><div class="ek-punkte" id="punkte">{FRAGEN.map(() => <i></i>)}</div></div>
     </div></div>
   </section>
 
@@ -300,7 +300,7 @@ const ZAHLEN = [['4\'000+', 'Frauen in der Schweiz begleitet'], ['97 %', 'erreic
     <div class="ek-wrap"><div class="ek-quiz">
       <div class="ek-prog" aria-hidden="true">{FRAGEN.map(() => <i class="an"></i>)}</div>
       <p class="ek-kicker" style="margin-top:1.6rem">Deine Antworten sind ausgewertet</p>
-      <h2 style="margin-top:0.7rem">Auf welchen Namen dürfen wir <em>deine Einladung ausstellen?</em></h2>
+      <h2 style="margin-top:0.7rem">Dein Ergebnis ist <em>startklar.</em></h2>
       <div class="ek-zwischen"><b id="zw-zahl">3/4</b><p><span class="ek-kicker" style="display:block;margin-bottom:0.2rem">Dein Zwischenergebnis</span><span id="zw-text"></span></p></div>
       <form id="leadform" novalidate>
         <div class="ek-felder">
@@ -310,11 +310,11 @@ const ZAHLEN = [['4\'000+', 'Frauen in der Schweiz begleitet'], ['97 %', 'erreic
           <div class="ek-feld ek-feld--breit"><label for="ph">Handy</label><input id="ph" type="tel" inputmode="tel" autocomplete="tel" placeholder="+41 79 123 45 67" required maxlength="35" /></div>
           <div style="position:absolute;left:-99999px" aria-hidden="true"><label for="website">Website</label><input id="website" tabindex="-1" autocomplete="off" /></div>
         </div>
-        <label class="ek-check"><input type="checkbox" id="wa" /><span>Meine Coach darf mir per WhatsApp schreiben und die Einladung mit mir durchgehen.</span></label>
-        <label class="ek-check"><input type="checkbox" id="ds" required /><span>Ich bin einverstanden, dass Fit on Time meine Angaben für meine Workshop-Anfrage verwendet und mich per E-Mail oder Telefon kontaktieren darf, auch wenn ich keinen Termin auswähle. <a href={IMPRESSUM_URL} target="_blank" rel="noopener">Datenschutz</a></span></label>
+        <label class="ek-check"><input type="checkbox" id="wa" /><span>Meine Coach darf mir per WhatsApp schreiben und mein Ergebnis mit mir durchgehen.</span></label>
+        <label class="ek-check"><input type="checkbox" id="ds" required /><span>Ich bin einverstanden, dass Fit on Time meine Angaben für meine Auswertung verwendet und mich per E-Mail oder Telefon kontaktieren darf, auch wenn ich keinen Termin auswähle. <a href={IMPRESSUM_URL} target="_blank" rel="noopener">Datenschutz</a></span></label>
         <div class="ek-fehler" id="fehler" role="alert"></div>
-        <button type="submit" class="ek-btn ek-btn--voll ek-senden" id="senden">Einladung ausstellen &rarr;</button>
-        <p class="ek-klein">Im nächsten Schritt wählst du deinen Termin.</p>
+        <button type="submit" class="ek-btn ek-btn--voll ek-senden" id="senden">Mein Ergebnis ansehen &rarr;</button>
+        <p class="ek-klein">Trag dich ein und sieh sofort, was bei dir los ist.</p>
       </form>
       <div class="ek-zahlen" style="margin-top:1.75rem">{ZAHLEN.map(([z, l]) => (<div><b>{z}</b><span>{l}</span></div>))}</div>
     </div></div>
@@ -392,7 +392,7 @@ const ZAHLEN = [['4\'000+', 'Frauen in der Schweiz begleitet'], ['97 %', 'erreic
   <script is:inline>
     // Ablauf: Start -> 7 Fragen (Rückmeldung, Auto-Weiter) -> Zwischenergebnis + Opt-in -> Einladung mit Kalender
     var answers = {}, started = false, leadFired = false, savedData = '', bookingLoaded = false, current = 0, timer = null;
-    var steps = { start: 'Start', quiz: 'Frage', form: 'Fast fertig', einl: 'Deine Einladung' };
+    var steps = { start: 'Start', quiz: 'Frage', form: 'Fast fertig', einl: 'Dein Ergebnis' };
     // Antworten, die als Anzeichen zählen, plus Satz für das Muster
     var ANZEICHEN = {
       1: { extrem: 'Abnehmen fällt dir extrem schwer, obwohl du auf deine Ernährung achtest.', mittel: 'Abnehmen fällt dir nicht leicht, obwohl du auf deine Ernährung achtest.' },
@@ -403,7 +403,7 @@ const ZAHLEN = [['4\'000+', 'Frauen in der Schweiz begleitet'], ['97 %', 'erreic
     function $(id) { return document.getElementById(id); }
     function show(name) {
       ['start', 'quiz', 'form', 'einl'].forEach(function (n) { $('s-' + n).hidden = n !== name; });
-      $('kopf-tag').textContent = name === 'quiz' ? 'Frage ' + (current + 1) + ' von 7' : steps[name] === 'Start' ? '1:1-Workshop' : steps[name];
+      $('kopf-tag').textContent = name === 'quiz' ? 'Frage ' + (current + 1) + ' von 7' : steps[name] === 'Start' ? 'Figur-Check' : steps[name];
       window.scrollTo(0, 0);
     }
     function zeigeFrage(i) {
@@ -427,9 +427,9 @@ const ZAHLEN = [['4\'000+', 'Frauen in der Schweiz begleitet'], ['97 %', 'erreic
       var n = anzeichen().length;
       $('zw-zahl').textContent = n + '/4';
       $('zw-text').textContent = n >= 2
-        ? 'Bei dir zeigen sich ' + n + ' von 4 typischen Anzeichen für einen Stoffwechsel im Sparmodus. Was das heisst, steht in deiner Einladung.'
-        : n === 1 ? 'Bei dir zeigt sich 1 von 4 typischen Anzeichen. Was trotzdem bremsen kann, steht in deiner Einladung.'
-        : 'Bei dir zeigen sich kaum typische Anzeichen. Was trotzdem bremsen kann, steht in deiner Einladung.';
+        ? 'Bei dir zeigen sich ' + n + ' von 4 typischen Anzeichen für einen Stoffwechsel im Sparmodus. Was das heisst, siehst du im nächsten Schritt.'
+        : n === 1 ? 'Bei dir zeigt sich 1 von 4 typischen Anzeichen. Was trotzdem bremsen kann, siehst du im nächsten Schritt.'
+        : 'Bei dir zeigen sich kaum typische Anzeichen. Was trotzdem bremsen kann, siehst du im nächsten Schritt.';
       show('form');
     }
     document.querySelectorAll('[data-gender]').forEach(function (b) {
@@ -506,7 +506,7 @@ const ZAHLEN = [['4\'000+', 'Frauen in der Schweiz begleitet'], ['97 %', 'erreic
       var d = { fn: fn, ln: ln, em: em, ph: ph }, now = JSON.stringify(d);
       if (savedData === now) { zeigeEinladung(d); return; }
       var n = anzeichen().length, btn = $('senden');
-      btn.disabled = true; btn.textContent = 'Einladung wird ausgestellt …';
+      btn.disabled = true; btn.textContent = 'Ergebnis wird erstellt …';
       fetch('/api/sheets', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -523,7 +523,7 @@ const ZAHLEN = [['4\'000+', 'Frauen in der Schweiz begleitet'], ['97 %', 'erreic
       }).catch(function (err) {
         fehler.textContent = (window.__lpErr ? window.__lpErr(err.message) : 'Deine Angaben konnten nicht gespeichert werden. Bitte prüfe sie und versuche es erneut.');
         fehler.classList.add('show');
-      }).finally(function () { btn.disabled = false; btn.textContent = 'Einladung ausstellen →'; });
+      }).finally(function () { btn.disabled = false; btn.textContent = 'Mein Ergebnis ansehen →'; });
     });
     function zeigeEinladung(d) {
       baueEinladung(d.fn);
