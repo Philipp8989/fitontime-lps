@@ -172,6 +172,22 @@ const hyrosPh = hyrosPhProp || '689a71ca1ab3be1cb1caddbe6b7902a4ad2c51a228f4ec9e
     var banner = document.getElementById('cc-banner');
     var current = null;
     try { current = localStorage.getItem(KEY); } catch (e) {}
+    // Entscheid aus einem anderen FoT-Funnel derselben Domain übernehmen (gleicher Betreiber, gleicher Banner).
+    // Sonst fragt z. B. /workshop/gebucht nach der Buchung aus /einladung/ erneut, ohne Klick lädt kein Pixel
+    // und Schedule geht verloren (17.11.2026: 6 Selbst-Buchungen, 0 Schedule in Meta).
+    if (!current && /^fot_/.test(KEY)) {
+      try {
+        var gefunden = null;
+        for (var i = 0; i < localStorage.length; i++) {
+          var k = localStorage.key(i);
+          if (!/^fot_[a-z_]*consent$/.test(k)) continue;
+          var v = localStorage.getItem(k);
+          if (v === 'essential') { gefunden = 'essential'; break; }
+          if (v === 'all') gefunden = 'all';
+        }
+        if (gefunden) { current = gefunden; localStorage.setItem(KEY, gefunden); }
+      } catch (e) {}
+    }
 
     // Google Ads gtag mit Consent Mode v2: Tag laedt sofort (cookielose Pings fuer
     // Conversion-Modeling), Cookies/Personalisierung erst nach "Alle akzeptieren".
