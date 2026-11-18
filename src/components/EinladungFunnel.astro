@@ -2,7 +2,7 @@
 // Figur-Check, Fassung T "Die Einladung" (13.11.2026). Ziel: Termine im 1:1-Workshop.
 // Seit 16.11.2026: vor dem Opt-in Ergebnis-Versprechen wie Figur-Check A (Leads), Workshop erst nach dem Opt-in (Termine).
 // Ablauf: Start, 7 Fragen mit Coach-Rückmeldung, Zwischenergebnis plus Opt-in, persönliche Einladung mit Kalender.
-// Traffic kommt nur über den 50/50-Schalter in /figur-check/ (fot_fc_book = T), Ads bleiben auf /figur-check.
+// Traffic seit 18.11.2026 nur direkt aus den Einladungs-Anzeigen, der 50/50-Schalter in /figur-check/ ist aus.
 // Anschlüsse: Lead über /api/sheets (Slug figur-check-einladung = gleiches Sheet und gleicher Bot-Rahmen wie Figur-Check),
 // Kalender YCBM fitontime-workshop, Bestätigung /workshop/gebucht (fot_funnel). Entwurf: Figma FitonTime, Section 8:52.
 import '../styles/bauchfett.css';
@@ -88,8 +88,8 @@ const ZAHLEN = [['4\'000+', 'Frauen in der Schweiz begleitet'], ['97 %', 'erreic
   <link href={FONTS} rel="stylesheet" />
   <script is:inline src="https://t.hyros.com/v1/lst/universal-script?ph=689a71ca1ab3be1cb1caddbe6b7902a4ad2c51a228f4ec9ea7fef3123a705f63"></script>
   <script is:inline data-slug={SLUG}>
-    // Fassung merken (Schalter in /figur-check/) und Funnel-Marker für /workshop/gebucht
-    try { localStorage.setItem('fot_fc_book', 'T'); sessionStorage.setItem('fot_fc_book', 'T'); sessionStorage.setItem('fot_funnel', document.currentScript.dataset.slug); } catch (e) {}
+    // Funnel-Marker für /workshop/gebucht
+    try { sessionStorage.setItem('fot_funnel', document.currentScript.dataset.slug); } catch (e) {}
   </script>
   <style is:global>
     .ek { --w: 75rem; }
