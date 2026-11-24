@@ -247,6 +247,12 @@ const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').t
     .result .r-push { font-size: 14px; color: var(--text-2); margin-bottom: 8px; font-weight: 500; }
     .result .r-when { font-size: 18px; font-weight: 800; margin: 18px 0 12px; display: flex; align-items: center; justify-content: center; gap: 8px; }
     .result #ycbm-embed { background: #fff; border: 1px solid #e8e4da; border-radius: var(--r); padding: 10px; min-height: 400px; }
+    /* Variante b: Befund-Liste */
+    .r-befund { list-style: none; counter-reset: bf; text-align: left; margin: 14px auto 16px; max-width: 480px; background: #fff; border: 1px solid #e8e4da; border-radius: var(--r); padding: 6px 16px; }
+    .r-befund li { counter-increment: bf; display: flex; gap: 12px; padding: 12px 0; font-size: 15px; line-height: 1.45; color: var(--text-2); }
+    .r-befund li + li { border-top: 1px solid #efeae0; }
+    .r-befund li::before { content: counter(bf); flex-shrink: 0; width: 24px; height: 24px; border-radius: 50%; background: var(--accent); color: #fff; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; margin-top: 1px; }
+    .r-befund strong { color: var(--text); }
     .r-bullets { list-style: none; text-align: left; margin: 20px auto; max-width: 440px; padding: 18px 16px; background: #fff; border: 1px solid #e8e4da; border-radius: var(--r); }
     .r-bullets li { padding: 6px 0; font-size: 14px; color: var(--text-2); display: flex; gap: 10px; line-height: 1.4; }
     .r-bullets li::before { content: "✓"; color: var(--green); font-weight: 700; flex-shrink: 0; }
@@ -597,11 +603,19 @@ const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').t
           <span class="cog big">&#9881;&#65039;</span>
           <span class="cog small">&#9881;&#65039;</span>
         </div>
-        <h2><span class="confetti">&#127881;</span><span id="r-name">Du</span>, Du hast es fast geschafft!</h2>
-        <p class="r-sub">Jetzt kommt der wichtigste Schritt:</p>
-        <p class="r-lead"><span class="ic">&#128210;</span>Wähle dir einen Termin, um dein Ergebnis zu erhalten, persönlich erklärt und auf dich zugeschnitten.</p>
-        <p class="r-push">&#128073; Dein Stoffwechsel wartet nicht, warum solltest du?</p>
-        <div class="r-when"><span>&#128197;</span><span>Wann willst du dein Ergebnis erhalten?</span></div>
+        <div class="r-a">
+          <h2><span class="confetti">&#127881;</span><span id="r-name">Du</span>, Du hast es fast geschafft!</h2>
+          <p class="r-sub">Jetzt kommt der wichtigste Schritt:</p>
+          <p class="r-lead"><span class="ic">&#128210;</span>Wähle dir einen Termin, um dein Ergebnis zu erhalten, persönlich erklärt und auf dich zugeschnitten.</p>
+          <p class="r-push">&#128073; Dein Stoffwechsel wartet nicht, warum solltest du?</p>
+        </div>
+        <!-- Variante b: persönlicher Befund aus den Quiz-Antworten, wird per Script gefüllt -->
+        <div class="r-b" hidden>
+          <h2><span id="rb-name">Du</span>, das bremst deinen Stoffwechsel gerade aus:</h2>
+          <ol class="r-befund" id="rb-liste"></ol>
+          <p class="r-lead">Was du dagegen tust, steht in deinem 4-Wochen-Fahrplan. Den erklären wir dir persönlich, kostenlos.</p>
+        </div>
+        <div class="r-when"><span>&#128197;</span><span id="r-when-t">Wann willst du dein Ergebnis erhalten?</span></div>
 
         <!-- YCBM Booking Embed (inline) -->
         <div id="ycbm-embed"></div>
@@ -672,9 +686,51 @@ const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').t
         ycbm.setAttribute('data-displaymode', 'auto');
         document.getElementById('ycbm-embed').appendChild(ycbm);
         prefillKalender();
+        zeigeBefund();
         document.getElementById('qn').textContent = 'Termin wählen';
         document.getElementById('qf').style.width = '100%';
       });
+    }
+
+    // Variante b (/ergebnis-b/): drei Befund-Sätze aus den Quiz-Antworten über dem Kalender.
+    // Ohne gespeicherte Antworten (anderer Tab, Direktaufruf) bleibt die Ansicht wie a.
+    function befundSaetze(a) {
+      var probiert = {
+        diaeten: 'Du hast schon <strong>Diäten</strong> gemacht. Jede Diät drückt deinen Grundumsatz ein Stück weiter runter. Darum kommen die Kilos zurück.',
+        sport: 'Du hast schon <strong>Sport-Programme</strong> gemacht. Mehr Bewegung allein holt deinen Körper nicht aus dem Sparmodus.',
+        nahrungserg: 'Du hast <strong>Nahrungsergänzung</strong> probiert. Ohne passenden Plan dahinter verpufft die Wirkung.',
+        nichts: 'Du hast <strong>noch nichts</strong> probiert. Das ist ein Vorteil: ohne Jojo-Runden reagiert dein Körper schneller.'
+      };
+      var alter = {
+        '18-29': 'Mit <strong>unter 30</strong> lässt sich dein Stoffwechsel am schnellsten umstellen, wenn du jetzt richtig ansetzt.',
+        '30-39': 'Ab <strong>30</strong> baut dein Körper Jahr für Jahr Muskeln ab, wenn du nicht gegensteuerst. Damit sinkt dein Verbrauch.',
+        '40-49': 'Mit <strong>40 bis 49</strong> verändern sich deine Hormone. Was früher funktioniert hat, wirkt jetzt kaum noch.',
+        '50+': 'Ab <strong>50</strong> verändern sich deine Hormone deutlich. Was früher funktioniert hat, wirkt jetzt kaum noch.'
+      };
+      var alltag = {
+        ja: 'Dein <strong>Alltag ist voll</strong>. Dein Plan muss mit wenig Zeit funktionieren, sonst hältst du ihn nicht durch.',
+        schicht: 'Der <strong>Schichtdienst</strong> bringt deinen Rhythmus durcheinander, und damit Hunger und Hormone. Dein Plan muss dazu passen.'
+      };
+      var sport = {
+        nie: 'Du trainierst <strong>gar nicht</strong>. Schon zwei kurze Krafteinheiten pro Woche machen einen spürbaren Unterschied.',
+        '1-2x': 'Du trainierst <strong>1 bis 2x pro Woche</strong>. Mit der richtigen Art Training holst du aus der gleichen Zeit deutlich mehr raus.',
+        '3-4x': 'Du trainierst <strong>3 bis 4x pro Woche</strong> und nimmst trotzdem nicht ab. Dann passen Essen und Hormone nicht zum Training.',
+        taeglich: 'Du trainierst <strong>täglich</strong> und nimmst trotzdem nicht ab. Dann passen Essen und Hormone nicht zum Training.'
+      };
+      return [probiert[a.q7], alter[a.q5], alltag[a.q1] || sport[a.q6]].filter(Boolean);
+    }
+    function zeigeBefund() {
+      if (location.pathname.indexOf('/ergebnis-b') === -1) return;
+      var a = null;
+      try { a = JSON.parse(sessionStorage.getItem('fot_kr_answers') || 'null'); } catch (e) {}
+      var saetze = a ? befundSaetze(a) : [];
+      if (saetze.length < 2) return;
+      document.getElementById('rb-liste').innerHTML = saetze.map(function (s) { return '<li><span>' + s + '</span></li>'; }).join('');
+      document.getElementById('rb-name').textContent = document.getElementById('r-name').textContent;
+      document.getElementById('r-when-t').textContent = 'Wähle jetzt deinen Termin:';
+      document.querySelector('.r-a').hidden = true;
+      var cogs = document.querySelector('.result .cogs'); if (cogs) cogs.style.display = 'none';
+      document.querySelector('.r-b').hidden = false;
     }
 
     // Hängt Name, Mail und Nummer aus dem Lead-Formular an die Kalender-Adresse (Kürzel von youcanbook.me),
