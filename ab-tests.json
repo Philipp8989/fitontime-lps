@@ -1,0 +1,24 @@
+{
+  "_hinweis": "A/B-Tests dieses Repos. Wird beim Production-Build ans lp-machine-dashboard gemeldet (scripts/ab-sync.mjs). Ablauf und Regeln: ~/Desktop/Kunden/Skills/ab-routine/BAUPLAN.md",
+  "tests": [
+    {
+      "id": "kr-buchung-befund",
+      "lp_slug": "koerper-report",
+      "name": "Buchungsansicht: persönlicher Befund vor dem Kalender",
+      "hypothese": "Wer nach dem Opt-in drei Sätze zu den eigenen Quiz-Antworten liest, fühlt sich verstanden und bucht öfter einen Termin als mit der allgemeinen Ansicht.",
+      "aenderung": "Variante b ersetzt Zahnrad-Animation und allgemeinen Text über dem Kalender durch drei persönliche Befund-Sätze (Probiertes, Alter, Alltag oder Training). Kalender, Tracking und Formular bleiben gleich.",
+      "muster": "Personalisierte Ergebnisseite nach Quiz (Micro-Yes-Stack, PAT-2026-04-30-FLOW-001)",
+      "basis": "lead",
+      "ziel": "termin",
+      "leitplanke": null,
+      "varianten": [
+        { "id": "a", "name": "Kalender wie bisher", "url": "https://go.abnehmen-ohne-stress.ch/koerper-report/ergebnis/" },
+        { "id": "b", "name": "Befund vor dem Kalender", "beschreibung": "Der Befund erscheint nur mit Quiz-Antworten im selben Tab, ein Direktaufruf zeigt die Ansicht a.", "url": "https://go.abnehmen-ohne-stress.ch/koerper-report/ergebnis-b/" }
+      ],
+      "lead_map": { "feld": "lp_variant", "map": { "erg-a": "a", "erg-b": "b" } },
+      "status": "laeuft",
+      "start": "2026-11-25T19:45:56Z",
+      "notiz": "Zuteilung läuft seit 24.11.2026 (50 zu 50 im Browser). Gezählt wird ab dem Deploy am 25.11.2026, weil Termine vorher nicht je Variante gemeldet wurden. Termine kommen von der Bestätigungsseite /koerper-report/gebucht, Sales folgen über den Montags-Abgleich."
+    }
+  ]
+}

@@ -536,6 +536,18 @@ const hyrosPh = hyrosPhProp || '689a71ca1ab3be1cb1caddbe6b7902a4ad2c51a228f4ec9e
           window.gtag('event', eventName, params || {});
         }
       },
+      // A/B-Test-Stufe ans lp-machine-dashboard melden (view, termin, sale; Leads zählen dort aus der Lead-DB).
+      // Geräte-ID bleibt in localStorage, damit Lead-Seite und Buchungsseite dasselbe Gerät zählen.
+      ab: function(test, variant, stage) {
+        try {
+          if (!test || !variant || !stage) return;
+          var did = localStorage.getItem('lp_did');
+          if (!did) { did = crypto.randomUUID(); localStorage.setItem('lp_did', did); }
+          navigator.sendBeacon('https://lp-machine-dashboard.vercel.app/api/analytics/ab-event', new Blob([JSON.stringify({
+            slug: 'fitontime', test: test, variant: variant, stage: stage, deviceId: did
+          })], { type: 'text/plain' }));
+        } catch (e) {}
+      },
       // Dashboard-Event per sendBeacon (navigations-sicher)
       track: function(event, data, funnel, funnelName) {
         var sid = sessionStorage.getItem('lp_sid');

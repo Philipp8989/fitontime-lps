@@ -643,7 +643,7 @@ const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').t
           window.__lp.track(e, Object.assign({ page: 'koerper-report' }, d || {}), 'fot', 'Körper Report');
           if (e === 'quiz_start') window.__lp.meta('ViewContent', { content_name: 'FoT Quiz Start', currency: 'CHF' });
           if (e === 'quiz_complete') window.__lp.meta('CompleteRegistration', { content_name: 'FoT Quiz Complete', currency: 'CHF' });
-          if (e === 'lead_submit') window.__lp.meta('Lead', { content_name: 'FoT Lead', currency: 'CHF' });
+          if (e === 'lead_submit') window.__lp.meta('Lead', { content_name: 'FoT Lead', currency: 'CHF', ab_variant: (d && d.ab_variant) || undefined });
         } else if (tries++ < 40) {
           setTimeout(fire, 50);
         }
@@ -746,6 +746,9 @@ const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').t
         localStorage.setItem('fot_kr_erg', erg);
       } catch (e) {}
       quizAnswers.lp_variant = 'erg-' + erg;
+      // Kennung für die A/B-Auswertung im Dashboard (Test steht in ab-tests.json)
+      quizAnswers.ab_test = 'kr-buchung-befund';
+      quizAnswers.ab_variant = erg;
 
       // Atomarer Submit: lead_submit + Pixel + UI-Weiter NUR bei erfolgreichem Insert
       fetch('/api/sheets', {
@@ -763,7 +766,7 @@ const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').t
         if (!res.ok) throw new Error('insert-failed');
         // Lead-Event feuert HIER auf der neutralen Einstiegsseite (event_source_url sauber),
         // dann erst Weiterleitung auf die Ergebnisseite.
-        tk('lead_submit', { detail: fn });
+        tk('lead_submit', { detail: fn, ab_variant: 'kr-buchung-befund:' + erg });
         var firstName = (fn.split(' ')[0] || '').trim();
         try { sessionStorage.setItem('fot_result_name', firstName || 'Du'); } catch(e) {}
         // Angaben für den Kalender auf der Ergebnisseite merken (nur dieser Tab), damit dort niemand doppelt tippt.

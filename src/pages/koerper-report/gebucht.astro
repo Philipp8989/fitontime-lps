@@ -90,6 +90,15 @@ const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').t
       if (!already) {
         try { sessionStorage.setItem('fot_booking_fired', '1'); } catch (e) {}
         tk('booking_confirmed', { detail: funnel });
+        // A/B Buchungsansicht: Termin der Variante zuordnen, die dieses Gerät gesehen hat
+        if (funnel === 'koerper-report') {
+          var erg = null;
+          try { erg = localStorage.getItem('fot_kr_erg'); } catch (e) {}
+          (function abFire(n) {
+            if (window.__lp && window.__lp.ab) { if (erg) window.__lp.ab('kr-buchung-befund', erg, 'termin'); }
+            else if (n < 40) setTimeout(function () { abFire(n + 1); }, 50);
+          })(0);
+        }
       }
     }
   </script>
