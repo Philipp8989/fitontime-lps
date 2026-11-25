@@ -10,6 +10,15 @@ import { sendOpenAiAdsEvent } from '../../lib/openaiAds';
 import { KA_SHEET } from '../../lib/koerperalter-sheet';
 import { upsertHubspotContact } from '../../lib/hubspot';
 
+// A/B-Kennung (vom CookieBanner angehängt) in die Antworten fürs Dashboard übernehmen
+function mitAb(data: any): Record<string, any> {
+  const a = { ...(data?.answers || {}) };
+  const t = typeof data?.ab?.test === 'string' ? data.ab.test.slice(0, 80) : '';
+  const v = typeof data?.ab?.variant === 'string' ? data.ab.variant.slice(0, 20) : '';
+  if (t && v && !a.ab_test) { a.ab_test = t; a.ab_variant = v; }
+  return a;
+}
+
 // Pro LP: Sheet-ID + Spalten-Schema. Fehlt der Eintrag, wird kein Sheet-Write gemacht.
 type SheetConfig = {
   id: string;
@@ -494,7 +503,7 @@ const handleLead: APIRoute = async ({ request }) => {
         phone: data.phone || '',
         lp_slug: lpSlug,
         lp_name: data.lp_name || lpSlug,
-        quiz_answers: data.answers || {},
+        quiz_answers: mitAb(data),
         gclid: attribution.gclid,
         utms: attribution.utms,
       });
