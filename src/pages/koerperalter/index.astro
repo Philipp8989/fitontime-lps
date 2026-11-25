@@ -15,6 +15,12 @@ import CookieBanner from '../../components/CookieBanner.astro';
 import ScaleeeCredit from '../../components/ScaleeeCredit.astro';
 import FotWordmark from '../../components/FotWordmark.astro';
 import ProofPaare from '../../components/ProofPaare.astro';
+import { abZuteilen } from '../../lib/ab';
+// A/B-Test ka-ausweis-zuerst (ab-tests.json, Montags-Routine): b zeigt die Altersauswahl direkt unter der
+// Headline mit der Frage aus der Ausweis-Anzeige, Erklärtext entfällt im ersten Bildschirm.
+// Unabhängig vom alten WhatsApp-Test oben (PUBLIC_KA_WA_TEST, ?v=), der bleibt aus.
+const ab = await abZuteilen(Astro, 'koerperalter');
+const b = ab?.variant === 'b';
 const impressumUrl = 'https://fitontime.ch/impressum-datenschutz';
 const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
 const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').trim();
@@ -75,6 +81,14 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
     .form-proof a { color: inherit; }
     .wa-btn[aria-disabled="true"] { opacity: 0.6; pointer-events: none; }
     .kv-list li b { font-family: 'Fraunces', serif; font-weight: 400; color: #b08a52; font-size: 1.1rem; }
+    /* A/B ka-ausweis-zuerst, Variante b: Altersauswahl mobil über dem Cookie-Banner */
+    .hero--b { padding-top: 0.5rem; }
+    .hero--b h1 { margin-bottom: 0.6rem; }
+    .hero--b .lead { margin-bottom: 1rem; }
+    .hero--b .gate .gate-sub { margin-bottom: 0.6rem; }
+    .hero--b .age-grid { margin-top: 0.6rem; gap: 0.5rem; }
+    .hero--b .age-grid .opt { padding: 0.8rem 0.25rem; white-space: nowrap; }
+    .ka-b-absender { margin: 0.9rem 0 0; font-size: 0.85rem; line-height: 1.45; color: #6f6458; text-align: center; }
   </style>
 </head>
 <body>
@@ -88,6 +102,35 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
       </div>
     </div>
 
+    {b ? (
+    <section class="hero hero--b">
+      <div class="arc arc--hero"></div>
+      <div class="wrap wrap--wide hero-grid">
+        <div>
+          <h1>Wie alt ist dein Körper <em>wirklich?</em></h1>
+          <p class="lead">Auf deinem Ausweis steht eine Zahl. Dein Körper hat eine andere.</p>
+        </div>
+
+        <div class="gate">
+          <div class="gate-q">Wie alt bist du laut Ausweis?</div>
+          <div class="gate-sub">Tipp drauf. Die zweite Zahl, dein Körperalter, rechnet der Test aus.</div>
+          <div class="age-grid">
+            <button class="opt" onclick="startQuiz('u35')">Unter 35</button>
+            <button class="opt" onclick="startQuiz('35-39')">35 bis 39</button>
+            <button class="opt" onclick="startQuiz('40-44')">40 bis 44</button>
+            <button class="opt" onclick="startQuiz('45-49')">45 bis 49</button>
+            <button class="opt" onclick="startQuiz('50-54')">50 bis 54</button>
+            <button class="opt" onclick="startQuiz('55-59')">55 bis 59</button>
+            <button class="opt" onclick="startQuiz('60-64')">60 bis 64</button>
+            <button class="opt" onclick="startQuiz('65-69')">65 bis 69</button>
+            <button class="opt" onclick="startQuiz('70+')">Ab 70</button>
+          </div>
+          <div class="gate-note"><span>1 Minute</span> · <span>7 Fragen</span> · <span>Kostenlos</span> · <span>Keine Waage nötig</span></div>
+          <p class="ka-b-absender">Von den Ernährungs- und Fitness-Coaches von Fit on Time. Über 4'000 Frauen in der Schweiz begleitet.</p>
+        </div>
+      </div>
+    </section>
+    ) : (
     <section class="hero">
       <div class="arc arc--hero"></div>
       <div class="wrap wrap--wide hero-grid">
@@ -116,6 +159,7 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
         </div>
       </div>
     </section>
+    )}
 
     <!-- Erklärung -->
     <section class="section section--bright">
@@ -503,6 +547,7 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
     consentKey="fot_koerperalter_consent"
     impressumUrl={impressumUrl}
     datenschutzUrl={datenschutzUrl}
+    ab={ab}
   />
 </body>
 </html>

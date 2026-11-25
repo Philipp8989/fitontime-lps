@@ -7,6 +7,10 @@ import '../../styles/bauchfett.css';
 import CookieBanner from '../../components/CookieBanner.astro';
 import ScaleeeCredit from '../../components/ScaleeeCredit.astro';
 import FotWordmark from '../../components/FotWordmark.astro';
+// A/B-Test bf-auswahl-oben (ab-tests.json): b zeigt das Versprechen der Anzeige und die Bild-Auswahl im ersten Bildschirm
+import { abZuteilen } from '../../lib/ab';
+const ab = await abZuteilen(Astro, 'bauchfett');
+const b = ab?.variant === 'b';
 const impressumUrl = 'https://fitontime.ch/impressum-datenschutz';
 const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
 // Google Tag (wie /koerper-report): Consent-Mode-v2, Conversions nur bei Google-Klick
@@ -40,16 +44,23 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
     <section class="hero">
       <div class="arc arc--hero"></div>
       <div class="wrap wrap--wide hero-grid">
+        {b ? (
+        <div>
+          <h1>Finde die Bremse, die dein <em>Bauchfett festhält.</em></h1>
+          <p class="lead">Cortisol, Insulin oder Hormone: Eine der drei Bremsen hält bei dir fest. Der Check zeigt dir in 3 Minuten und 8 Fragen, welche. Kostenlos.</p>
+        </div>
+        ) : (
         <div>
           <p class="eyebrow">3 Minuten · 8 Fragen · kostenlos</p>
           <h1>Der Bauch bleibt. Egal, was du <em>versuchst.</em></h1>
           <p class="lead">Das liegt nicht an dir. Dein Bauchfett hat drei Bremsen. Solange auch nur eine zu ist, gibt dein Körper das Fett am Bauch nicht her. Der Bauchfett-Check zeigt dir in 3 Minuten, welche Bremse bei dir zu ist und wie du sie löst.</p>
           <p class="lead" style="font-size:0.95rem;">Von den Coachinnen von Fit on Time. Über 4'000 Frauen in der Schweiz haben mit ihnen abgenommen.</p>
         </div>
+        )}
 
         <div class="gate">
           <div class="gate-q">Wo sitzt dein Bauchfett vor allem?</div>
-          <div class="gate-sub">Tipp auf das Bild, das am ehesten zu dir passt. Damit startet der Check.</div>
+          <div class="gate-sub">{b ? 'Tipp aufs passende Bild. Damit startet der Check.' : 'Tipp auf das Bild, das am ehesten zu dir passt. Damit startet der Check.'}</div>
           <div class="gate-row">
             <button class="gate-opt" onclick="startQuiz('vorne')">
               <img src="/images/bauchfett/vorne-2.webp" alt="Bauchfett vorne am Bauch" width="900" height="900" />
@@ -593,6 +604,7 @@ const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,
     consentKey="fot_bauchfett_consent"
     impressumUrl={impressumUrl}
     datenschutzUrl={datenschutzUrl}
+    ab={ab}
   />
 </body>
 </html>

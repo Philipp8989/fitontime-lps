@@ -66,7 +66,11 @@ export async function abZuteilen(Astro: AstroGlobal, lpSlug: string): Promise<Ab
   const t = tests.find((x) => x.lp_slug === lpSlug && x.status === 'laeuft')
     || (erzwungen ? tests.find((x) => x.lp_slug === lpSlug && x.status === 'geplant') : undefined)
     || tests.find((x) => x.lp_slug === lpSlug && x.status === 'beendet' && !!x.gewinner);
-  if (!t) return null;
+  if (!t) {
+    // Lokale Entwicklung: ?ab=b zeigt eine Variante auch ohne registrierten Test (zählt nie)
+    if (import.meta.env.DEV && erzwungen) return { test: 'dev', variant: erzwungen, forced: true };
+    return null;
+  }
   // Seiten mit Test nie im CDN cachen, sonst sehen alle dieselbe Variante
   Astro.response.headers.set('cache-control', 'private, no-store');
   if (erzwungen && t.varianten.includes(erzwungen)) return { test: t.id, variant: erzwungen, forced: true };

@@ -12,8 +12,10 @@ import FotWordmark from './FotWordmark.astro';
 import ProofPaare from './ProofPaare.astro';
 
 // direkt = Variante B (13.11.2026): kein Opt-in, nach dem Quiz sofort Einladung plus Kalender.
-interface Props { direkt?: boolean; }
-const { direkt = false } = Astro.props;
+// frageZuerst = A/B-Test ek-frage-zuerst (25.11.2026): Frage 1 steht im ersten Bildschirm statt der Geschlechts-Auswahl.
+// ab = Zuteilung aus src/lib/ab.ts, geht an den CookieBanner (zählt Besuch, markiert Lead). Ohne beides: Seite wie bisher.
+interface Props { direkt?: boolean; frageZuerst?: boolean; ab?: { test: string; variant: string; forced: boolean } | null; }
+const { direkt = false, frageZuerst = false, ab = null } = Astro.props;
 const SLUG = direkt ? 'figur-check-einladung-b' : 'figur-check-einladung';
 const LP_NAME = direkt ? 'Figur-Check T:Einladung direkt' : 'Figur-Check T:Einladung';
 
@@ -229,6 +231,18 @@ const ZAHLEN = [['4\'000+', 'Frauen in der Schweiz begleitet'], ['97 %', 'erreic
     }
     @media (prefers-reduced-motion: reduce) { .ek-opt, .ek-btn, .ek-sticky { transition: none; } }
   </style>
+  {frageZuerst && (
+    <style is:global>
+      /* A/B ek-frage-zuerst: Frage 1 im ersten Bildschirm, gleiche Optik wie die Quiz-Zeilen */
+      .ek-hero .ek-h1-frage { font-size: clamp(2rem, 6vw, 3.2rem); margin: 0.8rem 0 0.5rem; text-wrap: balance; }
+      .ek-sopt { display: grid; grid-template-columns: 1.4rem 1fr auto; gap: 0.75rem; align-items: center; width: 100%; padding: 1.05rem 0.25rem; background: none; border: 0; border-top: var(--hairline); text-align: left; font: inherit; font-weight: 500; font-size: 1.05rem; color: var(--ink); cursor: pointer; transition: background-color .15s, padding .15s; }
+      .ek-sopt:hover, .ek-sopt:focus-visible { background: var(--cream-bright); padding-left: 0.65rem; padding-right: 0.65rem; }
+      .ek-sopt:focus-visible { outline: 2px solid var(--ink); outline-offset: -2px; }
+      .ek-sopt .bu { font-size: 0.75rem; color: var(--gold); letter-spacing: 0.08em; }
+      .ek-sopt .pf { color: var(--gold); }
+      @media (prefers-reduced-motion: reduce) { .ek-sopt { transition: none; } }
+    </style>
+  )}
 </head>
 <body class="ek" data-slug={SLUG} data-lpname={LP_NAME} data-direkt={direkt ? '1' : '0'}>
   <div class="ek-wrap"><header class="ek-kopf"><FotWordmark /><span class="ek-tag" id="kopf-tag">Figur-Check</span></header></div>
@@ -236,6 +250,19 @@ const ZAHLEN = [['4\'000+', 'Frauen in der Schweiz begleitet'], ['97 %', 'erreic
   <!-- ===== 1 Start ===== -->
   <section class="ek-step" id="s-start">
     <div class="ek-wrap ek-hero">
+      {frageZuerst ? (
+      <div>
+        <p class="ek-kicker">Sparmodus-Check · Frage 1 von 7</p>
+        <h1 class="ek-h1-frage">{FRAGEN[0].q}</h1>
+        <p class="ek-hinweis">Tipp auf die Zeile, die am ehesten passt. Danach siehst du, wie viele der 4 Sparmodus-Anzeichen du hast.</p>
+        <ul class="ek-opts">
+          {FRAGEN[0].a.map(([val, label], k) => (
+            <li><button type="button" class="ek-sopt" data-start={val}><span class="bu">{'ABCD'[k]}</span><span class="lb">{label}</span><span class="pf" aria-hidden="true">&rarr;</span></button></li>
+          ))}
+        </ul>
+        <p class="ek-beleg">7 Fragen · 90 Sekunden · kostenlos. Über 4'000 Frauen in der Schweiz begleitet. Seit 2016.</p>
+      </div>
+      ) : (
       <div>
         <p class="ek-kicker">Figur-Check · 7 Fragen · 90 Sekunden</p>
         <h1>Steckt dein Körper <em>im Sparmodus?</em></h1>
@@ -247,6 +274,7 @@ const ZAHLEN = [['4\'000+', 'Frauen in der Schweiz begleitet'], ['97 %', 'erreic
         </div>
         <p class="ek-beleg">Über 4'000 Frauen in der Schweiz begleitet. Seit 2016.</p>
       </div>
+      )}
       <div>
         <p class="ek-mono ek-soft" style="margin-bottom:0.9rem">So sieht dein Ergebnis am Ende aus</p>
         <div class="ek-karte" aria-hidden="true"><div class="ek-karte-innen">
@@ -371,7 +399,7 @@ const ZAHLEN = [['4\'000+', 'Frauen in der Schweiz begleitet'], ['97 %', 'erreic
     <div style="margin-top:10px"><ScaleeeCredit /></div>
   </div></footer>
 
-  <CookieBanner metaPixelId="1316450223953563" googleAdsId={GOOGLE_ADS_ID} consentKey="fot_consent" impressumUrl={IMPRESSUM_URL} datenschutzUrl={IMPRESSUM_URL} />
+  <CookieBanner metaPixelId="1316450223953563" googleAdsId={GOOGLE_ADS_ID} consentKey="fot_consent" impressumUrl={IMPRESSUM_URL} datenschutzUrl={IMPRESSUM_URL} ab={ab} />
 
   <script is:inline>
     // Tracking nach LP-Machine-Muster (__lp aus dem CookieBanner), Events wie im Figur-Check
@@ -552,5 +580,21 @@ const ZAHLEN = [['4\'000+', 'Frauen in der Schweiz begleitet'], ['97 %', 'erreic
       try { var l = JSON.parse(sessionStorage.getItem('fot_sd_lead') || '{}'); if (l.email || l.phone) fetch('/api/booked', { method: 'POST', headers: { 'Content-Type': 'application/json' }, keepalive: true, body: JSON.stringify(l) }).catch(function () {}); } catch (x) {}
     });
   </script>
+  {frageZuerst && (
+    <script is:inline>
+      // A/B ek-frage-zuerst: Antwort im ersten Bildschirm startet das Quiz und wählt dieselbe Antwort in Frage 1.
+      // Gleiche Events wie A (quiz_start, quiz_answer), danach läuft der bisherige Ablauf unverändert.
+      // abkürzung: ohne Geschlechts-Auswahl gilt gender = frau (Anzeigen zielen nur auf Frauen), ausbauen, falls Männer-Leads relevant werden.
+      document.querySelectorAll('.ek-sopt[data-start]').forEach(function (b) {
+        b.addEventListener('click', function () {
+          answers.gender = 'frau';
+          if (!started) { started = true; tk('quiz_start', { detail: 'gender_frau' }); }
+          show('quiz'); zeigeFrage(0);
+          var o = document.querySelector('.ek-frage[data-i="0"] .ek-opt[data-val="' + b.dataset.start + '"]');
+          if (o) o.click();
+        });
+      });
+    </script>
+  )}
 </body>
 </html>

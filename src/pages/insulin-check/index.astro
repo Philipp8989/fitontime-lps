@@ -6,6 +6,10 @@
 // mit event_id, damit Browser-Pixel und CAPI dedupliziert werden.
 import CookieBanner from '../../components/CookieBanner.astro';
 import ScaleeeCredit from '../../components/ScaleeeCredit.astro';
+// A/B-Test ic-heisshunger-zuerst (ab-tests.json): b holt den Anzeigen-Hook in die H1 und stellt die Heisshunger-Frage direkt im ersten Bildschirm
+import { abZuteilen } from '../../lib/ab';
+const ab = await abZuteilen(Astro, 'insulin-check');
+const b = ab?.variant === 'b';
 const impressumUrl = 'https://fitontime.ch/impressum-datenschutz';
 const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
 // Clean-Domain-Pixel (go.abnehmen-ohne-stress.ch), NICHT der geflaggte Health-Pixel.
@@ -174,6 +178,29 @@ a{color:var(--moss)}
 
   <!-- ============ INTRO ============ -->
   <section class="screen on" id="screen-intro">
+    {b ? (
+    <Fragment>
+    <p class="kicker">Kostenloser Insulin-Selbsttest für Frauen</p>
+    <h1>Um 16 Uhr im Loch und abends an der <em>Schoggi.</em></h1>
+    <p class="lede">Das liegt selten an dir. Oft steckt ein Insulin-Muster dahinter: hoch, dann tief, dann Heisshunger. Der Selbsttest zeigt dir in 2 Minuten, ob dein Insulin deine Fettverbrennung bremst.</p>
+
+    <div class="card" style="margin-top:6px">
+      <p class="qcount">Frage 1 von 9</p>
+      <h2 class="qtext">Kennst du das Nachmittagstief mit Verlangen nach etwas Süssem?</h2>
+      <div class="opts" id="introOpts">
+        <button type="button" class="opt" data-i="0">Fast jeden Tag</button>
+        <button type="button" class="opt" data-i="1">Mehrmals pro Woche</button>
+        <button type="button" class="opt" data-i="2">Selten</button>
+        <button type="button" class="opt" data-i="3">Eigentlich nie</button>
+      </div>
+    </div>
+    {/* Das Hauptskript bindet #startBtn, ohne das Element bricht es ab. In b startet die Antwort oben den Test. */}
+    <button class="btn" id="startBtn" hidden style="display:none">Quiz starten</button>
+    <p class="btn-note">9 Fragen &middot; keine Kosten &middot; Auswertung direkt im Anschluss</p>
+    <p class="medhint">Der InsulinCheck ist ein Selbst-Check und ersetzt keine ärztliche Beratung, Diagnose oder Behandlung.</p>
+    </Fragment>
+    ) : (
+    <Fragment>
     <p class="kicker">Kostenloses Selbst-Check-Quiz für Frauen</p>
     <h1>Blockiert dein Insulin die <em>Fettverbrennung?</em></h1>
     <p class="lede">Viele Frauen essen weniger, bewegen sich mehr und die Waage bleibt trotzdem stehen. Oft liegt es nicht an der Disziplin, sondern an einem Hormon, das im Hintergrund entscheidet, ob dein Körper Fett verbrennt oder einlagert.</p>
@@ -181,6 +208,8 @@ a{color:var(--moss)}
     <button class="btn" id="startBtn" style="margin-top:6px">Quiz starten</button>
     <p class="btn-note">9 Fragen &middot; keine Kosten &middot; Auswertung direkt im Anschluss</p>
     <p class="medhint">Der InsulinCheck ist ein Selbst-Check und ersetzt keine ärztliche Beratung, Diagnose oder Behandlung.</p>
+    </Fragment>
+    )}
 
     <div class="card" style="margin:26px 0 0">
       <h3 style="margin-bottom:6px">Kommt dir etwas davon bekannt vor?</h3>
@@ -743,6 +772,43 @@ $("r-book").addEventListener("click", function(){ tk('book_click'); });
 })();
 </script>
 
+{b && (
+<script is:inline>
+/* Variante b: Heisshunger-Frage zuerst, beantwortet im ersten Bildschirm.
+   Nur die Reihenfolge ändert sich. Die Antwort-Felder behalten ihre Nummer
+   (f1_alter bis f9_bereitschaft), damit Sheet und CRM gleich bleiben. */
+(function(){
+  var ORIG = QUESTIONS.slice();
+  var HI = 2; // heisshunger
+  QUESTIONS = [ORIG[HI]].concat(ORIG.slice(0, HI), ORIG.slice(HI + 1));
+  buildAnswers = function(){
+    var p = { funnel: CONFIG.FUNNEL_NAME, score: state.score, einstufung: TIERS[state.tier].badge };
+    for (var n = 0; n < ORIG.length; n++) {
+      var q = ORIG[n];
+      p["f" + (n + 1) + "_" + q.key] = answerText(q, state.answers[q.key]);
+    }
+    return p;
+  };
+  var btns = document.querySelectorAll("#introOpts .opt");
+  for (var k = 0; k < btns.length; k++) {
+    btns[k].onclick = function(){
+      var el = this;
+      state.answers[QUESTIONS[0].key] = { idx: +el.getAttribute("data-i") };
+      el.className += " sel";
+      setTimeout(function(){
+        $("curvebar").hidden = false;
+        tk('quiz_start');
+        show("quiz");
+        initCurve();
+        state.i = 1;
+        renderQ();
+      }, 180);
+    };
+  }
+})();
+</script>
+)}
+
 <script is:inline src="https://t.hyros.com/v1/lst/universal-script?ph=689a71ca1ab3be1cb1caddbe6b7902a4ad2c51a228f4ec9ea7fef3123a705f63"></script>
 
 <CookieBanner
@@ -751,6 +817,7 @@ $("r-book").addEventListener("click", function(){ tk('book_click'); });
   consentKey="fot_insulin_consent"
   impressumUrl={impressumUrl}
   datenschutzUrl={datenschutzUrl}
+  ab={ab}
 />
 </body>
 </html>

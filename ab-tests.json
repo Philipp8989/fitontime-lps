@@ -12,13 +12,143 @@
       "ziel": "termin",
       "leitplanke": null,
       "varianten": [
-        { "id": "a", "name": "Kalender wie bisher", "url": "https://go.abnehmen-ohne-stress.ch/koerper-report/ergebnis/" },
-        { "id": "b", "name": "Befund vor dem Kalender", "beschreibung": "Der Befund erscheint nur mit Quiz-Antworten im selben Tab, ein Direktaufruf zeigt die Ansicht a.", "url": "https://go.abnehmen-ohne-stress.ch/koerper-report/ergebnis-b/" }
+        {
+          "id": "a",
+          "name": "Kalender wie bisher",
+          "url": "https://go.abnehmen-ohne-stress.ch/koerper-report/ergebnis/"
+        },
+        {
+          "id": "b",
+          "name": "Befund vor dem Kalender",
+          "beschreibung": "Der Befund erscheint nur mit Quiz-Antworten im selben Tab, ein Direktaufruf zeigt die Ansicht a.",
+          "url": "https://go.abnehmen-ohne-stress.ch/koerper-report/ergebnis-b/"
+        }
       ],
-      "lead_map": { "feld": "lp_variant", "map": { "erg-a": "a", "erg-b": "b" } },
+      "lead_map": {
+        "feld": "lp_variant",
+        "map": {
+          "erg-a": "a",
+          "erg-b": "b"
+        }
+      },
       "status": "laeuft",
       "start": "2026-11-25T19:45:56Z",
       "notiz": "Zuteilung läuft seit 24.11.2026 (50 zu 50 im Browser). Gezählt wird ab dem Deploy am 25.11.2026, weil Termine vorher nicht je Variante gemeldet wurden. Termine kommen von der Bestätigungsseite /koerper-report/gebucht, Sales folgen über den Montags-Abgleich."
+    },
+    {
+      "id": "bf-auswahl-oben",
+      "lp_slug": "bauchfett",
+      "name": "Versprechen der Anzeige und Bild-Auswahl im ersten Bildschirm",
+      "hypothese": "Auf dem Handy liegt die Bild-Auswahl heute unter dem ersten Bildschirm, und die H1 'Der Bauch bleibt' passt nicht zur Anzeige ('Hält Cortisol dein Bauchfett fest?'). Steht das Versprechen der Anzeige als H1 da und ist die Auswahl ohne Scrollen antippbar, starten mehr Besucherinnen den Check und es entstehen mehr Leads pro Besucher.",
+      "aenderung": "Variante b: Hero ohne Eyebrow, H1 'Finde die Bremse, die dein Bauchfett festhält.', ein kurzer Satz statt zwei Absätzen (Cortisol, Insulin oder Hormone, 3 Minuten, 8 Fragen, kostenlos). Absender-Zeile und langer Einstieg fallen weg, Hinweis über den Bildern gekürzt. Bild-Auswahl, Quiz, Formular, Tracking und Rest der Seite bleiben gleich.",
+      "muster": "Gate im ersten Bildschirm nach Formel koerper-report (8,9 % Leads pro Besucher), Hook der Gewinner-Anzeigen BW1/BFN2 'Hält Cortisol dein Bauchfett fest?', PAT-2026-04-30-FLOW-001",
+      "risiko": "Liegt der Verlust nicht am Einstieg, sondern am Formular (zwei Pflicht-Haken inklusive WhatsApp), starten mehr Frauen den Check, ohne dass die Leads steigen.",
+      "basis": "view",
+      "ziel": "lead",
+      "leitplanke": null,
+      "varianten": [
+        {
+          "id": "a",
+          "name": "Bisher"
+        },
+        {
+          "id": "b",
+          "name": "Anzeigen-Versprechen, Auswahl oben"
+        }
+      ],
+      "status": "geplant"
+    },
+    {
+      "id": "ic-heisshunger-zuerst",
+      "lp_slug": "insulin-check",
+      "name": "Heisshunger-Frage aus der Anzeige direkt im ersten Bildschirm",
+      "hypothese": "Die Insulin-Anzeigen (Schoggi-Schublade, 16-Uhr-Loch, Frühstück, früher Gewinner ICN3) versprechen einen Selbsttest zum Heisshunger. Die Seite zeigt aber eine allgemeine Frage-H1, einen Start-Knopf und danach eine Altersfrage. Beginnt die Seite mit dem Hook der Anzeige und ist die Heisshunger-Frage sofort beantwortbar, starten mehr Frauen den Test und es entstehen mehr Leads pro Besucher.",
+      "aenderung": "Variante b: H1 'Um 16 Uhr im Loch und abends an der Schoggi.', Einleitung aus dem Text der Anzeige, Knopf 'Quiz starten' ersetzt durch die Karte 'Frage 1 von 9: Kennst du das Nachmittagstief mit Verlangen nach etwas Süssem?' mit vier Antworten. Ein Tipp startet den Test bei Frage 2. Fragen-Reihenfolge: Heisshunger zuerst, danach wie bisher. Antwortfelder, Sheet-Spalten, Formular und Tracking bleiben gleich.",
+      "muster": "Ad ist der Testanfang (Gewinner ICN3 Selbsttest Heisshunger, CPL-Hebel 16.11.), Gate statt CTA nach koerper-report, PAT-2026-04-30-FLOW-001",
+      "risiko": "Wer zuerst eine Erklärung erwartet, fühlt sich ohne Einordnung direkt abgefragt und springt ab. Ausserdem passt die H1 nur zu zwei der drei laufenden Anzeigen (Frühstück-Ad nicht).",
+      "basis": "view",
+      "ziel": "lead",
+      "leitplanke": null,
+      "varianten": [
+        {
+          "id": "a",
+          "name": "Bisher"
+        },
+        {
+          "id": "b",
+          "name": "Heisshunger-Frage zuerst"
+        }
+      ],
+      "status": "geplant"
+    },
+    {
+      "id": "ka-ausweis-zuerst",
+      "lp_slug": "koerperalter",
+      "name": "Altersauswahl sofort sichtbar, Frage aus der Ausweis-Anzeige",
+      "hypothese": "Auf dem Handy liegt die Altersauswahl heute komplett unter dem Cookie-Banner. Wer aus der Ausweis-Anzeige kommt, kennt die Idee schon. Sieht sie die Frage 'Wie alt bist du laut Ausweis?' mit allen Knöpfen sofort, starten mehr Frauen den Test, und es entstehen mehr Leads pro Besucher.",
+      "aenderung": "Variante b: Eyebrow und Erklärtext im ersten Bildschirm entfallen. Unter der gleichen H1 steht der Satz aus der Anzeige 'Auf deinem Ausweis steht eine Zahl. Dein Körper hat eine andere.', dann die Altersauswahl mit 'Wie alt bist du laut Ausweis?'. Knöpfe kompakter, Absenderzeile in die Box. Mobil liegen alle 9 Knöpfe über dem Banner. Quiz, Formular, Ergebnis und Tracking gleich.",
+      "muster": "Eigener FoT-Beleg figur-check 17.06.2026 (Quiz direkt schlug Text-Seite auf Leads), Anzeigen-Mechanik 'zwei Zahlen' (Ausweis Bad CPL 6,14), PAT-2026-04-30-FLOW-001",
+      "risiko": "Mehr Frauen starten ohne Erklärung, brechen aber am Formular ab, weil die Neugier auf die zweite Zahl nicht aufgebaut wurde: mehr Quiz-Starts, gleich viele Leads.",
+      "basis": "view",
+      "ziel": "lead",
+      "leitplanke": null,
+      "varianten": [
+        {
+          "id": "a",
+          "name": "Bisher"
+        },
+        {
+          "id": "b",
+          "name": "Ausweis-Frage zuerst"
+        }
+      ],
+      "status": "geplant"
+    },
+    {
+      "id": "fc-kurzform",
+      "lp_slug": "figur-check",
+      "name": "Kurzes Formular: ein Namensfeld, ein Haken, Knopf immer aktiv",
+      "hypothese": "Das Formular ist die letzte Hürde nach 7 Fragen. Heute: 4 Felder, 2 Pflicht-Haken und ein grauer Knopf, der erst nach beiden Haken aktiv wird, ohne zu sagen warum. Mit 3 Feldern, einem Haken und einem Knopf, der sagt, was fehlt, tragen sich mehr Frauen ein.",
+      "aenderung": "Variante b: Vor- und Nachname in einem Feld (wie koerper-report), ein Haken für Datenschutz plus WhatsApp-Erlaubnis (wie koerperalter), Knopf immer aktiv mit Hinweis am Haken. Gesendet wird dasselbe (name, first_name, email, phone, wa_optin, score, answers). Startseite, Quiz, Ergebnis und Tracking gleich.",
+      "muster": "PAT-2026-04-30-FRICTION-001 (maximal 3 Felder). Vorbild im Repo: koerper-report (8,9 %) mit einem Namensfeld, koerperalter mit kombiniertem Haken, Stoffwechsel-Test CRO 16.07.2026.",
+      "risiko": "Wer bis zum Formular durchhält, ist entschlossen genug für 4 Felder. Der Abbruch passiert vorher (Startseite unter dem Cookie-Banner, Fragen), dann bewegt das Formular die Quote nicht. Dazu rechtlich offen: ein Haken für Datenschutz und WhatsApp zusammen.",
+      "basis": "view",
+      "ziel": "lead",
+      "leitplanke": null,
+      "varianten": [
+        {
+          "id": "a",
+          "name": "Bisher"
+        },
+        {
+          "id": "b",
+          "name": "Kurzes Formular"
+        }
+      ],
+      "status": "geplant"
+    },
+    {
+      "id": "ek-frage-zuerst",
+      "lp_slug": "figur-check-einladung",
+      "name": "Einstieg: Frage 1 sofort statt Frau/Mann-Auswahl",
+      "hypothese": "Die Besucherinnen kommen aus Selbsttest- und Einladungs-Anzeigen. Steht Frage 1 mit den Antworten direkt im ersten Bildschirm, ist der erste Tipp schon eine Antwort, mehr Besucherinnen starten das Quiz und es kommen mehr Leads pro Besucher als mit Überschrift plus Frau/Mann-Auswahl.",
+      "aenderung": "Variante b ersetzt im ersten Bildschirm Kicker, Überschrift 'Steckt dein Körper im Sparmodus?', Einleitung und Frau/Mann-Auswahl durch Frage 1 ('Wie schwer fällt dir Abnehmen, obwohl du auf deine Ernährung achtest?') mit den vier Antworten und der Zeile 'Sparmodus-Check · Frage 1 von 7'. Ein Tipp startet das Quiz mit dieser Antwort. Vorschaukarte, Beweis-Block, Fragen 2 bis 7, Formular, Einladung, Kalender und Tracking bleiben gleich. Geschlecht wird in b als frau gesetzt.",
+      "muster": "PAT-2026-04-30-FLOW-001 (Micro-Yes, leichteste Frage zuerst); Vorbild Figur-Check 17.06.2026 (nacktes Quiz schlug Text-Seite); Selbsttest-Anzeigen sind laut CPL-Analyse 16.11. die Gewinner",
+      "risiko": "Wer über die Einladungs-Bilder (CHF 500 für CHF 0) kommt, sieht oben nur noch eine Frage ohne Versprechen in grosser Schrift, versteht nicht, wofür sie antwortet, und springt ab.",
+      "basis": "view",
+      "ziel": "lead",
+      "leitplanke": null,
+      "varianten": [
+        {
+          "id": "a",
+          "name": "Bisher"
+        },
+        {
+          "id": "b",
+          "name": "Frage 1 sofort"
+        }
+      ],
+      "status": "geplant"
     }
   ]
 }

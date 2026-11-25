@@ -1,5 +1,9 @@
 ---
 // Figur-Check Fassung T "Die Einladung" mit Opt-in (Variante A). Inhalt: src/components/EinladungFunnel.astro
+// A/B-Test ek-frage-zuerst (ab-tests.json): b zeigt Frage 1 direkt im ersten Bildschirm statt der Geschlechts-Auswahl.
 import EinladungFunnel from '../../components/EinladungFunnel.astro';
+import { abZuteilen } from '../../lib/ab';
+const ab = await abZuteilen(Astro, 'figur-check-einladung');
+const b = ab?.variant === 'b';
 ---
-<EinladungFunnel />
+<EinladungFunnel frageZuerst={b} ab={ab} />

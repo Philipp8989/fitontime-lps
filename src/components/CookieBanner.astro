@@ -591,8 +591,9 @@ const hyrosPh = hyrosPhProp || '689a71ca1ab3be1cb1caddbe6b7902a4ad2c51a228f4ec9e
       if (!ab || !ab.test) return;
       window.__lpAbCur = ab;
       if (!ab.forced && window.__lp && window.__lp.ab) window.__lp.ab(ab.test, ab.variant, 'view');
-      // Vorschau-Link (?ab=): Banner ausblenden, damit Screenshots die Seite zeigen. Ohne Einwilligung bleibt Meta aus.
-      if (ab.forced && /[?&]ab=/.test(location.search)) {
+      // Screenshot-Link der Montags-Mail (?ab=..&shot=1): Banner ausblenden, damit das Bild die Seite zeigt.
+      // Normale Vorschau (?ab=) behält den Banner, sonst lässt sich das Tracking mit Einwilligung nicht prüfen.
+      if (ab.forced && /[?&]shot=1/.test(location.search)) {
         var bn = document.getElementById('cc-banner');
         if (bn) bn.hidden = true;
       }
