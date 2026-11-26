@@ -4,6 +4,8 @@
 // UI/UX-Upgrade: echte Vorher-Nachher-Bilder, cleaneres Typo-System, bessere Mobile-UX
 import CookieBanner from '../../components/CookieBanner.astro';
 import ScaleeeCredit from '../../components/ScaleeeCredit.astro';
+// Kundinnen-Liste von Fabian (26.11.2026), reduziert per scripts/kundinnen-erfolge.py: [Alter, cm, kg vorher, kg nachher, Berufsgruppe]
+import erfolge from '../../data/kundinnen-erfolge.json';
 const impressumUrl = 'https://fitontime.ch/impressum-datenschutz';
 const datenschutzUrl = 'https://fitontime.ch/impressum-datenschutz';
 // Google Tag (wie /ab-40): laedt Consent-Mode-v2-Tag, Conversions feuern nur bei Google-Klick
@@ -253,6 +255,21 @@ const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').t
     .r-befund li + li { border-top: 1px solid #efeae0; }
     .r-befund li::before { content: counter(bf); flex-shrink: 0; width: 24px; height: 24px; border-radius: 50%; background: var(--accent); color: #fff; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; margin-top: 1px; }
     .r-befund strong { color: var(--text); }
+    /* Kundin wie du: echte Zahlen einer Kundin mit ähnlichen Quiz-Angaben */
+    .r-zwilling { text-align: left; margin: 12px auto 4px; max-width: 480px; background: #fff; border: 1px solid #e8e4da; border-radius: var(--r); padding: 14px 16px 12px; }
+    .rz-kopf { font-size: 13px; font-weight: 700; color: var(--accent-dark); margin-bottom: 2px; }
+    .rz-wer { font-size: 14px; color: var(--text-2); }
+    .rz-zahlen { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 10px; margin: 6px 0 8px; font-variant-numeric: tabular-nums; }
+    .rz-von { font-size: 20px; font-weight: 600; color: var(--text-3); }
+    .rz-pfeil { font-size: 18px; color: var(--text-3); }
+    .rz-bis { font-size: 26px; font-weight: 800; color: var(--text); letter-spacing: -0.3px; }
+    .rz-minus { font-size: 15px; font-weight: 700; color: #15803d; background: #ecfdf3; border-radius: 6px; padding: 2px 8px; }
+    .rz-gruppe { font-size: 14px; line-height: 1.45; color: var(--text-2); }
+    .rz-gruppe strong { color: var(--text); }
+    .rz-next { margin-top: 4px; background: none; border: none; padding: 6px 0; font-family: var(--font); font-size: 14px; font-weight: 700; color: var(--accent); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+    .rz-next:hover { color: var(--accent-dark); }
+    .rz-next:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+    .rz-fuss { margin-top: 4px; font-size: 12px; line-height: 1.4; color: var(--text-3); }
     .r-bullets { list-style: none; text-align: left; margin: 20px auto; max-width: 440px; padding: 18px 16px; background: #fff; border: 1px solid #e8e4da; border-radius: var(--r); }
     .r-bullets li { padding: 6px 0; font-size: 14px; color: var(--text-2); display: flex; gap: 10px; line-height: 1.4; }
     .r-bullets li::before { content: "✓"; color: var(--green); font-weight: 700; flex-shrink: 0; }
@@ -615,6 +632,16 @@ const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').t
           <ol class="r-befund" id="rb-liste"></ol>
           <p class="r-lead">Was du dagegen tust, steht in deinem 4-Wochen-Fahrplan. Den erklären wir dir persönlich, kostenlos.</p>
         </div>
+        <!-- Kundin wie du: wird per Script aus den Quiz-Antworten gefüllt, ohne Antworten bleibt es aus -->
+        <div class="r-zwilling" id="rz" hidden aria-live="polite">
+          <p class="rz-kopf">Eine Kundin wie du</p>
+          <p class="rz-wer" id="rz-wer"></p>
+          <p class="rz-zahlen"><span class="rz-von" id="rz-von"></span><span class="rz-pfeil" aria-hidden="true">&rarr;</span><span class="rz-bis" id="rz-bis"></span><span class="rz-minus" id="rz-minus"></span></p>
+          <p class="rz-gruppe" id="rz-gruppe"></p>
+          <button type="button" class="rz-next" id="rz-next" hidden>Nächste Kundin ansehen</button>
+          <p class="rz-fuss">Echte Kundinnen, ohne Namen. Jeder Körper ist anders, kein Ergebnis ist ein Versprechen.</p>
+        </div>
+        <script type="application/json" id="rz-daten" set:html={JSON.stringify(erfolge)}></script>
         <div class="r-when"><span>&#128197;</span><span id="r-when-t">Wann willst du dein Ergebnis erhalten?</span></div>
 
         <!-- YCBM Booking Embed (inline) -->
@@ -687,6 +714,7 @@ const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').t
         document.getElementById('ycbm-embed').appendChild(ycbm);
         prefillKalender();
         zeigeBefund();
+        zeigeZwilling();
         document.getElementById('qn').textContent = 'Termin wählen';
         document.getElementById('qf').style.width = '100%';
       });
@@ -731,6 +759,69 @@ const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').t
       document.querySelector('.r-a').hidden = true;
       var cogs = document.querySelector('.result .cogs'); if (cogs) cogs.style.display = 'none';
       document.querySelector('.r-b').hidden = false;
+    }
+
+    // Kundin wie du: sucht in Fabians Liste Kundinnen mit gleicher Alters-, Grössen- und Gewichtsstufe
+    // wie im Quiz (q5, q3, q4). Unter 8 Treffern: erst Grösse, dann Alter weglassen.
+    // Beispiele nur aus der mittleren Hälfte der Ergebnisse, damit keine Ausreisser als Normalfall wirken.
+    var RZ_STUFEN = {
+      q5: { '18-29': [18, 29, 24], '30-39': [30, 39, 35], '40-49': [40, 49, 45], '50+': [50, 99, 56] },
+      q3: { klein: [0, 162, 158], mittel1: [163, 168, 166], mittel2: [169, 174, 172], gross: [175, 999, 178] },
+      q4: { u60: [0, 59.9, 56], '60-68': [60, 68.9, 64], '69-77': [69, 77.9, 73], ue78: [78, 999, 88] }
+    };
+    var RZ_TEXT = {
+      q5: { '18-29': '18 bis 29 Jahre', '30-39': '30 bis 39 Jahre', '40-49': '40 bis 49 Jahre', '50+': '50+ Jahre' },
+      q3: { klein: 'bis 1,62\u00a0m', mittel1: '1,63 bis 1,68\u00a0m', mittel2: '1,69 bis 1,74\u00a0m', gross: 'über 1,74\u00a0m' },
+      q4: { u60: 'unter 60\u00a0kg', '60-68': '60 bis 68\u00a0kg', '69-77': '69 bis 77\u00a0kg', ue78: 'über 78\u00a0kg' }
+    };
+    var RZ_BERUF = { buero: 'arbeitet im Büro', pflege: 'arbeitet in Pflege oder Praxis', schule: 'arbeitet mit Kindern oder in der Schule', verkauf: 'arbeitet im Verkauf', gastro: 'arbeitet in der Gastronomie', koerper: 'körperlich anstrengender Job', selbst: 'selbständig', familie: 'Familie und Haushalt', pension: 'pensioniert' };
+    function rzKg(x) { return x.toFixed(1).replace('.', ',') + '\u00a0kg'; }
+    function rzMedian(w) { var s = w.slice().sort(function (a, b) { return a - b; }); var m = s.length >> 1; return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2; }
+    function zeigeZwilling() {
+      var a = null, daten = null;
+      try { a = JSON.parse(sessionStorage.getItem('fot_kr_answers') || 'null'); } catch (e) {}
+      try { daten = JSON.parse(document.getElementById('rz-daten').textContent); } catch (e) {}
+      if (!a || !daten || !RZ_STUFEN.q5[a.q5] || !RZ_STUFEN.q3[a.q3] || !RZ_STUFEN.q4[a.q4]) return;
+      var spalte = { q5: 0, q3: 1, q4: 2 };
+      function passt(r, q) { var st = RZ_STUFEN[q][a[q]]; return r[spalte[q]] >= st[0] && r[spalte[q]] <= st[1]; }
+      var stufen = [['q5', 'q3', 'q4'], ['q5', 'q4'], ['q4']], gruppe = [], genutzt = [];
+      for (var i = 0; i < stufen.length && gruppe.length < 8; i++) {
+        genutzt = stufen[i];
+        gruppe = daten.filter(function (r) { return genutzt.every(function (q) { return passt(r, q); }); });
+      }
+      if (gruppe.length < 8) return;
+      var verluste = gruppe.map(function (r) { return r[2] - r[3]; }).sort(function (x, y) { return x - y; });
+      // Unter 4 kg im Mittel (heute nur Stufe "unter 60 kg") schreckt eher ab als es zieht: Block bleibt aus
+      if (rzMedian(verluste) < 4) return;
+      var q1 = verluste[Math.floor(verluste.length * 0.25)], q3 = verluste[Math.floor(verluste.length * 0.75)];
+      var mitte = { q5: RZ_STUFEN.q5[a.q5][2], q3: RZ_STUFEN.q3[a.q3][2], q4: RZ_STUFEN.q4[a.q4][2] };
+      // abkürzung: Abstand grob über Alter, Grösse, Gewicht gleich gewichtet, reicht für 500 Zeilen
+      var beispiele = gruppe.filter(function (r) { var v = r[2] - r[3]; return v >= q1 && v <= q3 && v > 0; })
+        .sort(function (x, y) {
+          function d(r) { return Math.abs(r[0] - mitte.q5) / 5 + Math.abs(r[1] - mitte.q3) / 4 + Math.abs(r[2] - mitte.q4) / 5; }
+          return d(x) - d(y);
+        }).slice(0, 6);
+      if (!beispiele.length) return;
+      var nr = 0;
+      function zeige() {
+        var r = beispiele[nr];
+        var wer = [r[0] + ' Jahre', (r[1] / 100).toFixed(2).replace('.', ',') + '\u00a0m'];
+        if (RZ_BERUF[r[4]]) wer.push(RZ_BERUF[r[4]]);
+        document.getElementById('rz-wer').textContent = wer.join(' · ');
+        document.getElementById('rz-von').textContent = rzKg(r[2]);
+        document.getElementById('rz-bis').textContent = rzKg(r[3]);
+        document.getElementById('rz-minus').textContent = '−' + rzKg(r[2] - r[3]);
+      }
+      zeige();
+      var angaben = genutzt.map(function (q) { return RZ_TEXT[q][a[q]]; }).join(', ');
+      document.getElementById('rz-gruppe').innerHTML = 'Sie ist eine von <strong>' + gruppe.length + ' Kundinnen</strong> mit ähnlichen Angaben wie du (' + angaben + '). Die Hälfte davon hat <strong>mindestens ' + rzKg(rzMedian(verluste)) + '</strong> abgenommen.';
+      var knopf = document.getElementById('rz-next');
+      if (beispiele.length > 1) {
+        knopf.hidden = false;
+        knopf.addEventListener('click', function () { nr = (nr + 1) % beispiele.length; zeige(); tk('zwilling_weiter', { detail: String(nr) }); });
+      }
+      document.getElementById('rz').hidden = false;
+      tk('zwilling_sichtbar', { detail: genutzt.join('-') });
     }
 
     // Hängt Name, Mail und Nummer aus dem Lead-Formular an die Kalender-Adresse (Kürzel von youcanbook.me),
