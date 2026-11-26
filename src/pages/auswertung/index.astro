@@ -1,0 +1,589 @@
+---
+// Termin-Funnel "Auswertung" (26.11.2026, Filip plus Philipp). Ziel: Selbstbuchungen der Standortbestimmung.
+// Idee: Das Quiz stellt die Fragen der Setter aus den Gewinner-Calls (CloseScore, setting_analyse.md),
+// die Danke-Seite nach dem Opt-in macht den Job des Setters: Antworten spiegeln, Hürde deuten,
+// Einwände vorwegnehmen, Termin als nächster Schritt. Video (VSL) kommt dazu, sobald es gedreht ist.
+// Anschlüsse: Lead über /api/sheets (Slug auswertung, Figur-Check-Sheet wie /einladung/), kein WhatsApp-Bot,
+// Kalender YCBM fitontime-workshop, Bestätigung /workshop/gebucht (fot_funnel = auswertung), Pixel 1316450223953563.
+// Optik: Bausteine und Tokens von /einladung/ (DESIGN.md, Figma Section 8:52), kein neuer Entwurf.
+import '../../styles/bauchfett.css';
+import CookieBanner from '../../components/CookieBanner.astro';
+import ScaleeeCredit from '../../components/ScaleeeCredit.astro';
+import FotWordmark from '../../components/FotWordmark.astro';
+import ProofPaare from '../../components/ProofPaare.astro';
+import { abZuteilen } from '../../lib/ab';
+
+const ab = await abZuteilen(Astro, 'auswertung');
+const SLUG = 'auswertung';
+const LP_NAME = 'Auswertung (Termin-Funnel)';
+
+// Video der Danke-Seite. Leer = Block wird nicht gezeigt, die Seite funktioniert als Textfassung.
+// Erwartet eine Embed-URL (Vimeo player.vimeo.com/video/<id> oder YouTube-nocookie embed/<id>).
+const VIDEO_URL = '';
+
+const IMPRESSUM_URL = 'https://fitontime.ch/impressum-datenschutz';
+const GOOGLE_ADS_ID = (import.meta.env.PUBLIC_GOOGLE_ADS_ID || 'AW-955413991').trim();
+const FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..500,0..100;1,9..144,300..500,0..100&family=Albert+Sans:wght@400;500;600&display=swap';
+
+// Fragen in der Reihenfolge der Gewinner-Setter: Ziel, Dauer, schon probiert, Hürde, Alter, Grund, Priorität.
+// [Wert, Beschriftung, Rückmeldung der Coach]. Frage 3 ist Mehrfachauswahl.
+const FRAGEN = [
+  { q: 'Wie viel möchtest du abnehmen?', a: [
+    ['bis5', 'Bis 5 Kilo', 'Die letzten Kilos sind oft die hartnäckigsten. Genau da hilft ein klarer Plan.'],
+    ['5-10', '5 bis 10 Kilo', 'Das hören wir sehr oft. Ein Ziel, das gut machbar ist, wenn der Ansatz passt.'],
+    ['10-20', '10 bis 20 Kilo', 'Viele Frauen bei uns sind genau hier gestartet. Das notieren wir.'],
+    ['20plus', 'Mehr als 20 Kilo', 'Danke für deine Offenheit. Dann lohnt es sich besonders, in Ruhe hinzuschauen.'],
+  ] },
+  { q: 'Wie lange beschäftigt dich das schon?', a: [
+    ['u1', 'Weniger als ein Jahr', 'Gut, dass du früh hinschaust. Dann ist noch wenig festgefahren.'],
+    ['1-3', '1 bis 3 Jahre', 'Lang genug, um zu merken: Allein klappt es nicht so, wie du willst.'],
+    ['3-10', '3 bis 10 Jahre', 'So lange dranbleiben kostet Kraft. Das zeigt, dass es dir wichtig ist.'],
+    ['ue10', 'Mehr als 10 Jahre', 'Viele erzählen uns: seit der Schwangerschaft oder seit einem Umbruch. Da geht es vielen Frauen ähnlich.'],
+  ] },
+  { q: 'Was hast du schon probiert?', multi: true, a: [
+    ['diaeten', 'Diäten wie Low-Carb oder Kalorien zählen'],
+    ['fasten', 'Fasten'],
+    ['sport', 'Sport-Programme oder Fitnessstudio'],
+    ['shakes', 'Shakes, Pulver oder Kapseln'],
+    ['programm', 'Apps oder Abnehm-Programme'],
+    ['nichts', 'Noch nichts davon'],
+  ] },
+  { q: 'Was fällt dir im Moment am schwersten?', a: [
+    ['abends', 'Der Abend und der Heisshunger', 'Heisshunger am Abend ist selten eine Frage des Willens. Das schauen wir uns genauer an.'],
+    ['ernaehrung', 'Die Ernährung im Alltag', 'Die meisten Frauen wissen, was gesund ist. Schwer ist, dass es in den Alltag passt.'],
+    ['zeit', 'Die Zeit neben Job und Familie', 'Dann braucht es einen Plan für deinen echten Tag, nicht für einen idealen.'],
+    ['dranbleiben', 'Dranbleiben, wenn es nicht sofort wirkt', 'Fast jede hört auf, wenn nach zwei Wochen nichts passiert. Das liegt selten an ihr.'],
+  ] },
+  { q: 'Wie alt bist du?', a: [
+    ['u35', 'Unter 35 Jahre', 'Je früher du verstehst, wie dein Körper tickt, desto leichter wird es.'],
+    ['35-44', '35 bis 44 Jahre', 'In diesem Alter merken viele zum ersten Mal: Was früher klappte, klappt nicht mehr.'],
+    ['45-54', '45 bis 54 Jahre', 'Der Körper verändert sich in diesen Jahren. Was mit 30 funktioniert hat, muss angepasst werden.'],
+    ['55plus', '55 Jahre oder älter', 'Viele unserer Kundinnen sind über 55. Es ist nicht zu spät.'],
+  ] },
+  { q: 'Was würde sich für dich ändern, wenn du dein Ziel erreichst?', a: [
+    ['wohl', 'Ich fühle mich wieder wohl in meinem Körper', 'Das ist der häufigste Grund, den wir hören. Und der wichtigste.'],
+    ['energie', 'Ich habe wieder mehr Energie im Alltag', 'Mehr Energie merkst du oft schon, bevor die Waage sich bewegt.'],
+    ['kleider', 'Meine Kleider passen wieder', 'Der Moment vor dem Spiegel. Den kennen fast alle Frauen bei uns.'],
+    ['gesund', 'Ich tue etwas für meine Gesundheit, auch für später', 'Ein starker Grund. Er trägt auch dann, wenn die Motivation mal fehlt.'],
+  ] },
+  { q: 'Wie wichtig ist es dir, jetzt etwas zu ändern?', a: [
+    ['jetzt', 'Sehr wichtig, ich will nicht länger warten', 'Dann lass uns keinen Monat verlieren. Deine Auswertung ist gleich fertig.'],
+    ['bald', 'Wichtig, in den nächsten Wochen', 'Gut. Dann weisst du nach der Auswertung, womit du anfängst.'],
+    ['irgendwann', 'Schön wäre es, aber nicht dringend', 'Ehrlich, danke. Die Auswertung zeigt dir trotzdem, wo du stehst.'],
+  ] },
+];
+const N = FRAGEN.length;
+
+// Einwände aus den Setting-Calls (setting_analyse.md, Abschnitt 1.4 und Einwandbehandlung), in ihren Worten
+const EINWAENDE = [
+  ['Was kostet die Standortbestimmung?', 'Nichts. Wir nehmen uns die Zeit, weil ein Teil der Frauen danach mit uns weitermacht. Ob du das willst, entscheidest allein du. Wenn ja, bekommst du ein Angebot, das zu dir passt. Wenn nein, nimmst du deinen Fahrplan trotzdem mit.'],
+  ['Wie lange dauert das, und wie läuft es ab?', 'Rechne mit 45 bis 60 Minuten am Telefon. Du musst nichts vorbereiten. Such dir einen ruhigen Ort, deine Coach ruft dich zur gewählten Zeit an. Die Zeit nimmst du nicht für uns, sondern für dich.'],
+  ['Ich habe schon alles probiert. Warum soll es diesmal klappen?', 'Das hören wir am häufigsten. Die meisten Frauen bei uns kommen nach Jahren mit Diäten. Deshalb schauen wir zuerst, warum es bei dir bisher nicht gehalten hat, bevor wir irgendetwas vorschlagen. Ohne Diät, ohne Spritze.'],
+  ['Ich bin schon in einem Programm.', 'Dann erzähl uns davon. Wir schauen gemeinsam, was daran für dich funktioniert und was fehlt. Viele Frauen kommen genau an diesem Punkt zu uns.'],
+  ['Ich muss mir das noch überlegen.', 'Verständlich. Reservier dir trotzdem einen Termin, solange es freie gibt. Wenn es doch nicht passt, verschiebst oder sagst du ihn über den Link in deiner Bestätigung ab.'],
+];
+const ABLAUF = [
+  { t: 'Wir gehen deine Antworten durch', d: 'Deine Coach kennt deine Auswertung schon und fragt nach, wo es bei dir hängt.' },
+  { t: 'Wir finden, was bei dir bremst', d: 'Warum es bisher nicht gehalten hat, ehrlich und ohne Schuldzuweisung.' },
+  { t: 'Du bekommst deinen Fahrplan', d: 'Die ersten Schritte, die in deinen Alltag passen. Den nimmst du mit, egal wie du dich danach entscheidest.' },
+];
+const ZAHLEN = [['4\'000+', 'Frauen in der Schweiz begleitet'], ['97 %', 'erreichen ihr Ziel'], ['94 %', 'halten es nach 12 Monaten']];
+---
+<!DOCTYPE html>
+<html lang="de-CH">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Deine persönliche Abnehm-Auswertung | Fit on Time</title>
+  <link rel="icon" type="image/png" href="/images/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href={FONTS} rel="stylesheet" />
+  <script is:inline src="https://t.hyros.com/v1/lst/universal-script?ph=689a71ca1ab3be1cb1caddbe6b7902a4ad2c51a228f4ec9ea7fef3123a705f63"></script>
+  <script is:inline data-slug={SLUG}>
+    // Funnel-Marker für /workshop/gebucht
+    try { sessionStorage.setItem('fot_funnel', document.currentScript.dataset.slug); } catch (e) {}
+  </script>
+  <style is:global>
+    .au { --w: 75rem; }
+    .au-wrap { max-width: var(--w); margin: 0 auto; padding: 0 clamp(1.25rem, 4vw, 2.5rem); }
+    .au-kopf { display: flex; align-items: center; justify-content: space-between; padding: 1.25rem 0; border-bottom: var(--hairline); }
+    .au-tag { font-size: 0.85rem; color: var(--ink-soft); }
+    /* Labels in normaler Schreibung, 13px/500 (Design-Standard: keine Versalien-Flut) */
+    .au-label { font-size: 0.8125rem; font-weight: 500; color: var(--gold); letter-spacing: 0.01em; }
+    .au-soft { color: var(--ink-soft); }
+    .au-step[hidden] { display: none !important; }
+
+    /* Start */
+    .au-hero { display: grid; grid-template-columns: minmax(0, 1fr); gap: 2rem; padding-top: 2rem; padding-bottom: 2.5rem; }
+    .au-hero h1 { font-size: clamp(2.5rem, 7.6vw, 4.75rem); margin: 0.9rem 0 1.1rem; text-wrap: balance; }
+    .au-lead { font-size: 1.06rem; line-height: 1.55; color: var(--ink-soft); max-width: 36rem; text-wrap: pretty; }
+    .au-btn { font: inherit; font-weight: 600; font-size: 1.02rem; padding: 1rem 1.6rem; border-radius: 4px; cursor: pointer; border: 1px solid var(--ink); background: var(--ink); color: var(--cream-bright); transition: background-color .15s, transform .15s; }
+    .au-btn:hover { background: #3a322a; transform: translateY(-1px); }
+    .au-btn:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+    .au-btn:disabled { opacity: .45; cursor: not-allowed; transform: none; }
+    .au-btn--hell { background: transparent; color: var(--ink); }
+    .au-btn--hell:hover { background: var(--cream-bright); color: var(--ink); }
+    .au-start { margin-top: 1.6rem; }
+    .au-beleg { font-size: 0.86rem; color: var(--ink-soft); margin-top: 1rem; }
+
+    /* Vorschau-Blatt */
+    .au-blatt { background: var(--cream-bright); border: 1px solid var(--gold); padding: 6px; box-shadow: var(--shadow-soft); }
+    .au-blatt-innen { border: 1px solid color-mix(in srgb, var(--gold) 45%, transparent); padding: 1.4rem 1.3rem 1.2rem; }
+    .au-blatt-kopf { display: flex; justify-content: space-between; align-items: baseline; gap: 0.5rem; }
+    .au-blatt-kopf i { font-family: var(--font-display); font-size: 0.85rem; color: var(--ink-soft); }
+    .au-blatt-titel { font-family: var(--font-display); font-weight: 300; font-size: clamp(2rem, 5vw, 2.5rem); line-height: 1.05; letter-spacing: -0.02em; margin: 0.6rem 0 1rem; }
+    .au-blatt dl { display: grid; grid-template-columns: 6.5rem 1fr; }
+    .au-blatt dt, .au-blatt dd { border-top: var(--hairline); padding: 0.7rem 0; }
+    .au-blatt dt { font-size: 0.8rem; color: var(--ink-soft); padding-top: 0.8rem; }
+    .au-blatt dd { font-weight: 500; font-size: 0.94rem; }
+    .au-blatt dd.offen { color: var(--ink-soft); font-weight: 400; font-style: italic; }
+
+    /* Zahlen und Beweis */
+    .au-zahlen { display: grid; grid-template-columns: repeat(3, 1fr); }
+    .au-zahlen div { border-top: var(--hairline); padding: 0.9rem 0.6rem 0 0; }
+    .au-zahlen b { display: block; font-family: var(--font-display); font-weight: 320; font-size: clamp(1.7rem, 4vw, 2.6rem); line-height: 1.1; font-variant-numeric: tabular-nums; }
+    .au-zahlen span { display: block; font-size: 0.8rem; line-height: 1.35; color: var(--ink-soft); margin-top: 0.25rem; }
+    .au-beweis { background: var(--cream-bright); border-top: var(--hairline); border-bottom: var(--hairline); padding: 2.5rem 0 2.75rem; }
+    .au-beweis h2 { margin: 0.6rem 0 1.4rem; font-size: clamp(1.8rem, 4.4vw, 2.75rem); }
+    .au-beweis-kopf { display: grid; gap: 1.5rem; margin-bottom: 1.75rem; }
+    .au-zitat { border-top: 1px solid var(--gold); padding-top: 1rem; }
+    .au-zitat q { display: block; quotes: '«' '»'; font-family: var(--font-display); font-style: italic; font-weight: 320; font-size: clamp(1.2rem, 2.4vw, 1.45rem); line-height: 1.32; font-variation-settings: "opsz" 110, "SOFT" 70; }
+    .au-zitat cite { display: block; font-style: normal; margin-top: 0.7rem; font-size: 0.8rem; color: var(--ink-soft); }
+    .au-zitate { display: grid; gap: 1.5rem; margin-top: 1.75rem; }
+
+    /* Quiz */
+    .au-quiz { max-width: 38rem; margin: 0 auto; padding-top: 1.5rem; padding-bottom: 3rem; }
+    .au-prog { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 0.9rem; }
+    .au-prog i { height: 2px; background: color-mix(in srgb, var(--ink) 12%, transparent); }
+    .au-prog i.an { background: var(--gold); }
+    .au-quiz h2 { font-size: clamp(1.75rem, 5vw, 2.4rem); margin: 1.6rem 0 0.4rem; text-wrap: balance; }
+    .au-hinweis { font-size: 0.9rem; color: var(--ink-soft); margin-bottom: 1.1rem; }
+    .au-opts { list-style: none; border-bottom: var(--hairline); }
+    .au-opt { display: grid; grid-template-columns: 1.4rem 1fr auto; gap: 0.75rem; align-items: center; width: 100%; padding: 1.05rem 0.25rem; background: none; border: 0; border-top: var(--hairline); text-align: left; font: inherit; font-weight: 500; font-size: 1.05rem; color: var(--ink); cursor: pointer; transition: background-color .15s, padding .15s; }
+    .au-opt:hover, .au-opt:focus-visible { background: var(--cream-bright); padding-left: 0.65rem; padding-right: 0.65rem; }
+    .au-opt:focus-visible { outline: 2px solid var(--ink); outline-offset: -2px; }
+    .au-opt .bu { font-size: 0.75rem; color: var(--gold); letter-spacing: 0.08em; }
+    .au-opt .pf { color: var(--gold); }
+    .au-opt.gewaehlt, .au-opt[aria-pressed="true"] { background: var(--cream-bright); padding-left: 0.65rem; padding-right: 0.65rem; }
+    .au-multi-weiter { margin-top: 1.2rem; }
+    .au-feedback { margin-top: 1.3rem; min-height: 5.5rem; }
+    .au-feedback p { font-family: var(--font-display); font-style: italic; font-weight: 320; font-size: 1.2rem; line-height: 1.38; margin-top: 0.4rem; font-variation-settings: "opsz" 110, "SOFT" 70; }
+    .au-feedback .au-weiter { margin-top: 0.8rem; background: none; border: 0; padding: 0; font: inherit; font-size: 0.9rem; color: var(--ink-soft); text-decoration: underline; cursor: pointer; }
+    .au-feedback .au-weiter:hover { color: var(--ink); }
+
+    /* Formular */
+    .au-felder { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin-top: 1.4rem; }
+    .au-feld { display: grid; gap: 0.35rem; }
+    .au-feld--breit { grid-column: 1 / -1; }
+    .au-feld label { font-size: 0.8rem; color: var(--ink-soft); font-weight: 500; }
+    .au-feld input { width: 100%; font: inherit; font-size: 1rem; color: var(--ink); background: var(--cream-bright); border: 1px solid var(--sand-deep); border-radius: 3px; padding: 0.85rem 0.9rem; }
+    .au-feld input:focus { outline: 2px solid var(--ink); outline-offset: 1px; border-color: var(--ink); }
+    .au-check { display: grid; grid-template-columns: auto 1fr; gap: 0.6rem; font-size: 0.8rem; line-height: 1.45; color: var(--ink-soft); margin-top: 0.9rem; }
+    .au-check input { width: 1.05rem; height: 1.05rem; margin-top: 0.12rem; accent-color: var(--ink); }
+    .au-check a { color: inherit; }
+    .au-senden { width: 100%; margin-top: 1.1rem; }
+    .au-fehler { display: none; background: #f6e3dc; color: var(--rust); border-radius: 3px; padding: 0.75rem 0.9rem; font-size: 0.9rem; margin-top: 0.9rem; }
+    .au-fehler.show { display: block; }
+    .au-klein { text-align: center; font-size: 0.84rem; color: var(--ink-soft); margin-top: 0.8rem; }
+
+    /* Danke-Seite */
+    .au-erg { padding-top: 1.75rem; padding-bottom: 3rem; display: grid; grid-template-columns: minmax(0, 1fr); gap: 2.5rem; }
+    .au-erg > div { min-width: 0; }
+    .au-erg h1 { font-size: clamp(2.2rem, 6.4vw, 3.4rem); margin: 0.6rem 0 1.3rem; text-wrap: balance; }
+    .au-spiegel { list-style: none; border-bottom: var(--hairline); counter-reset: m; }
+    .au-spiegel li { display: grid; grid-template-columns: 1.6rem 1fr; gap: 0.7rem; border-top: var(--hairline); padding: 0.9rem 0; font-size: 1.02rem; line-height: 1.5; text-wrap: pretty; }
+    .au-spiegel li::before { content: counter(m, decimal-leading-zero); counter-increment: m; font-size: 0.75rem; color: var(--gold); padding-top: 0.25rem; }
+    .au-deutung h2 { font-size: clamp(1.6rem, 3.8vw, 2.2rem); margin: 2.2rem 0 0.7rem; }
+    .au-deutung p { color: var(--ink-soft); line-height: 1.6; text-wrap: pretty; margin-top: 0.7rem; max-width: 38rem; }
+    .au-fahrplan { font-family: var(--font-display); font-style: italic; font-weight: 320; font-size: 1.35rem; line-height: 1.35; margin: 1.6rem 0 0; color: var(--ink); }
+    .au-video { margin-top: 2.2rem; }
+    .au-video-rahmen { position: relative; aspect-ratio: 16 / 9; background: var(--sand); margin-top: 0.7rem; }
+    .au-video-rahmen iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+    .au-zusage h2 { font-size: clamp(1.8rem, 4.6vw, 2.6rem); margin: 0.5rem 0 0.5rem; }
+    .au-fakten { display: flex; flex-wrap: wrap; gap: 0.4rem 1.2rem; font-size: 0.9rem; color: var(--ink-soft); margin-top: 0.4rem; }
+    .au-embed { min-height: 34rem; margin-top: 1.1rem; background: var(--cream-bright); border: var(--hairline); border-radius: 3px; overflow: hidden; }
+    .au-ablauf ol { list-style: none; counter-reset: s; border-bottom: var(--hairline); margin-top: 1rem; }
+    .au-ablauf li { display: grid; grid-template-columns: 2.4rem 1fr; gap: 0.6rem; border-top: var(--hairline); padding: 1.1rem 0; counter-increment: s; }
+    .au-ablauf li::before { content: counter(s); font-family: var(--font-display); font-weight: 300; font-size: 2rem; line-height: 1; color: var(--gold); }
+    .au-ablauf b { display: block; font-weight: 600; }
+    .au-ablauf span { color: var(--ink-soft); font-size: 0.96rem; }
+    .au-fragen { margin-top: 2.75rem; }
+    .au-fragen h3 { font-size: clamp(1.6rem, 3.6vw, 2.2rem); margin: 0.5rem 0 1rem; }
+    .au-fragen details { border-top: var(--hairline); }
+    .au-fragen details:last-child { border-bottom: var(--hairline); }
+    .au-fragen summary { list-style: none; cursor: pointer; display: grid; grid-template-columns: 1fr auto; gap: 1rem; padding: 1rem 0; font-weight: 600; font-size: 1.02rem; transition: color .15s; }
+    .au-fragen summary::-webkit-details-marker { display: none; }
+    .au-fragen summary::after { content: '+'; color: var(--gold); font-weight: 400; font-size: 1.3rem; line-height: 1; }
+    .au-fragen details[open] summary::after { content: '\2212'; }
+    .au-fragen summary:hover { color: var(--ink-soft); }
+    .au-fragen summary:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+    .au-fragen details p { color: var(--ink-soft); line-height: 1.6; padding: 0 0 1.1rem; max-width: 38rem; }
+    .au-sticky { position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; padding: 0.75rem 1rem calc(0.75rem + env(safe-area-inset-bottom)); background: var(--cream); border-top: var(--hairline); transform: translateY(110%); transition: transform .2s var(--ease-out); }
+    .au-sticky.zeigen { transform: none; }
+    .au-sticky .au-btn { width: 100%; }
+    .au-fuss { background: color-mix(in srgb, var(--sand) 55%, transparent); padding: 1.6rem 0 6rem; font-size: 0.78rem; line-height: 1.5; color: var(--ink-soft); }
+    .au-fuss a { color: inherit; }
+
+    @media (min-width: 60rem) {
+      .au-hero { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: 5rem; align-items: center; padding-top: 5.5rem; padding-bottom: 5rem; }
+      .au-lead { font-size: 1.2rem; }
+      .au-beweis { padding: 4.5rem 0; }
+      .au-beweis-kopf { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); align-items: end; gap: 5rem; }
+      .au-zitate { grid-template-columns: 1fr 1fr 1fr; gap: 2.5rem; }
+      .au-erg { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); column-gap: 4.5rem; row-gap: 2.75rem; padding-top: 4rem; padding-bottom: 5rem; align-items: start; }
+      .au-a { grid-column: 1; grid-row: 1; }
+      .au-c { grid-column: 1; grid-row: 2; }
+      .au-rechts { grid-column: 2; grid-row: 1 / span 2; position: sticky; top: 1.5rem; }
+      .au-sticky { display: none; }
+      .au-fuss { padding-bottom: 2rem; }
+    }
+    @media (prefers-reduced-motion: reduce) { .au-opt, .au-btn, .au-sticky, .au-fragen summary { transition: none; } .au-btn:hover { transform: none; } }
+  </style>
+</head>
+<body class="au" data-slug={SLUG} data-lpname={LP_NAME}>
+  <div class="au-wrap"><header class="au-kopf"><FotWordmark /><span class="au-tag" id="kopf-tag">Deine Auswertung</span></header></div>
+
+  <!-- ===== 1 Start ===== -->
+  <section class="au-step" id="s-start">
+    <div class="au-wrap au-hero">
+      <div>
+        <p class="au-label">7 Fragen · 2 Minuten · kostenlos</p>
+        <h1>Deine persönliche <em>Abnehm-Auswertung</em></h1>
+        <p class="au-lead">Wir stellen dir die Fragen, die dir auch unsere Coaches im ersten Gespräch stellen. Danach siehst du schwarz auf weiss, was dich bisher gebremst hat. Den Fahrplan dazu gehst du mit einer Coach durch.</p>
+        <p class="au-start"><button type="button" class="au-btn" data-start>Auswertung starten</button></p>
+        <p class="au-beleg">Über 4'000 Frauen in der Schweiz begleitet. Seit 2016.</p>
+      </div>
+      <div>
+        <p class="au-soft" style="margin-bottom:0.9rem;font-size:0.9rem">So sieht deine Auswertung aus</p>
+        <div class="au-blatt" aria-hidden="true"><div class="au-blatt-innen">
+          <div class="au-blatt-kopf"><span class="au-label">Deine Auswertung</span><i>Fit on Time</i></div>
+          <p class="au-blatt-titel">Was dich bremst</p>
+          <dl><dt>Dein Ziel</dt><dd>So viele Kilo, seit so langer Zeit</dd><dt>Schon probiert</dt><dd>Was nicht gehalten hat, und warum</dd><dt>Deine Hürde</dt><dd>Was wirklich dahintersteckt</dd><dt>Dein Fahrplan</dt><dd class="offen">gehst du mit deiner Coach durch</dd></dl>
+        </div></div>
+      </div>
+    </div>
+    <section class="au-beweis" aria-labelledby="beweis-h">
+      <div class="au-wrap">
+        <div class="au-beweis-kopf">
+          <div><p class="au-label">Echte Kundinnen, echte Fotos</p><h2 id="beweis-h">Über 4'000 Frauen haben diesen Weg schon gemacht.</h2></div>
+          <div class="au-zahlen">{ZAHLEN.map(([z, l]) => (<div><b>{z}</b><span>{l}</span></div>))}</div>
+        </div>
+        <ProofPaare ids={['14', '21', '13', '03', '20', '07']} />
+        <div class="au-zitate">
+          <blockquote class="au-zitat"><q>Man hat mir nicht versprochen, in 14 Tagen 9 Kilo abzunehmen. Von Anfang an hiess es: langsamer ist besser.</q><cite>Milli, Kundin von Fit on Time</cite></blockquote>
+          <blockquote class="au-zitat"><q>Von 94 auf 78 Kilo, Juli 2024 bis August 2025.</q><cite>Coco, Kundin von Fit on Time</cite></blockquote>
+        </div>
+        <p style="margin-top:2rem"><button type="button" class="au-btn" data-start>Auswertung starten</button></p>
+      </div>
+    </section>
+  </section>
+
+  <!-- ===== 2 Fragen ===== -->
+  <section class="au-step" id="s-quiz" hidden>
+    <div class="au-wrap"><div class="au-quiz">
+      <div class="au-prog" id="prog" aria-hidden="true">{FRAGEN.map(() => <i></i>)}</div>
+      {FRAGEN.map((f, i) => (
+        <div class="au-frage" data-i={i} hidden>
+          <h2>{f.q}</h2>
+          <p class="au-hinweis">{f.multi ? 'Wähle alles, was passt.' : 'Tipp auf die Zeile, die am ehesten passt.'}</p>
+          <ul class="au-opts">
+            {f.a.map(([val, label, fb], k) => (
+              <li>{f.multi
+                ? <button type="button" class="au-opt" data-q={i + 1} data-val={val} data-multi aria-pressed="false"><span class="bu">{'ABCDEF'[k]}</span><span class="lb">{label}</span><span class="pf" aria-hidden="true">+</span></button>
+                : <button type="button" class="au-opt" data-q={i + 1} data-val={val} data-fb={fb}><span class="bu">{'ABCD'[k]}</span><span class="lb">{label}</span><span class="pf" aria-hidden="true">&rarr;</span></button>}</li>
+            ))}
+          </ul>
+          {f.multi && <button type="button" class="au-btn au-multi-weiter" id="multi-weiter" disabled>Weiter</button>}
+        </div>
+      ))}
+      <div class="au-feedback" id="feedback" aria-live="polite" hidden><span class="au-label">Deine Coach sagt dazu</span><p id="fb-text"></p><button type="button" class="au-weiter" id="fb-weiter">Weiter</button></div>
+    </div></div>
+  </section>
+
+  <!-- ===== 3 Angaben ===== -->
+  <section class="au-step" id="s-form" hidden>
+    <div class="au-wrap"><div class="au-quiz">
+      <div class="au-prog" aria-hidden="true">{FRAGEN.map(() => <i class="an"></i>)}</div>
+      <p class="au-label" style="margin-top:1.6rem">7 von 7 beantwortet</p>
+      <h2 style="margin-top:0.5rem">Deine Auswertung ist fertig.</h2>
+      <p class="au-soft">Wohin dürfen wir sie schicken? Du siehst sie gleich danach hier auf der Seite.</p>
+      <form id="leadform" novalidate>
+        <div class="au-felder">
+          <div class="au-feld"><label for="fn">Vorname</label><input id="fn" autocomplete="given-name" required maxlength="60" /></div>
+          <div class="au-feld"><label for="ln">Nachname</label><input id="ln" autocomplete="family-name" required maxlength="60" /></div>
+          <div class="au-feld au-feld--breit"><label for="em">E-Mail</label><input id="em" type="email" autocomplete="email" required maxlength="200" /></div>
+          <div class="au-feld au-feld--breit"><label for="ph">Handy</label><input id="ph" type="tel" inputmode="tel" autocomplete="tel" placeholder="+41 79 123 45 67" required maxlength="35" /></div>
+          <div style="position:absolute;left:-99999px" aria-hidden="true"><label for="website">Website</label><input id="website" tabindex="-1" autocomplete="off" /></div>
+        </div>
+        <label class="au-check"><input type="checkbox" id="ds" required /><span>Ich bin einverstanden, dass Fit on Time meine Angaben für meine Auswertung verwendet und mich per E-Mail oder Telefon kontaktieren darf, auch wenn ich keinen Termin auswähle. <a href={IMPRESSUM_URL} target="_blank" rel="noopener">Datenschutz</a></span></label>
+        <div class="au-fehler" id="fehler" role="alert"></div>
+        <button type="submit" class="au-btn au-senden" id="senden">Meine Auswertung ansehen &rarr;</button>
+        <p class="au-klein">Kostenlos. Deine Angaben bleiben bei uns.</p>
+      </form>
+    </div></div>
+  </section>
+
+  <!-- ===== 4 Danke-Seite: Auswertung, Video, Termin, Einwände ===== -->
+  <section class="au-step" id="s-erg" hidden>
+    <div class="au-wrap au-erg">
+      <div class="au-a">
+        <p class="au-label">Deine Auswertung</p>
+        <h1 id="e-h1"><span id="e-name">Du</span>, das zeigen deine Antworten.</h1>
+        <ul class="au-spiegel" id="spiegel"></ul>
+        <div class="au-deutung">
+          <h2>Was dahinter oft steckt</h2>
+          <p id="deutung"></p>
+          <p id="dauer-satz" hidden></p>
+          <p class="au-fahrplan" id="fahrplan"></p>
+        </div>
+        {VIDEO_URL && (
+          <div class="au-video">
+            <p class="au-label">Schau dir das zuerst an</p>
+            <div class="au-video-rahmen"><iframe id="vsl" src={VIDEO_URL} title="Video: so gehen wir deine Auswertung an" loading="lazy" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe></div>
+          </div>
+        )}
+      </div>
+      <div class="au-rechts">
+        <div class="au-zusage" id="zusage">
+          <p class="au-label">Dein nächster Schritt</p>
+          <h2>Wähle deinen Termin für die Standortbestimmung.</h2>
+          <div class="au-fakten"><span>Kostenlos</span><span>Am Telefon</span><span>45 bis 60 Minuten</span><span>Mit deiner Coach</span></div>
+          <div class="au-embed" id="bookingembed"></div>
+          <p class="au-soft" style="font-size:0.86rem;margin-top:0.7rem">Am besten heute oder morgen, solange deine Antworten frisch sind. Die Bestätigung kommt per E-Mail.</p>
+        </div>
+      </div>
+      <div class="au-c">
+        <div class="au-ablauf">
+          <p class="au-label">So läuft deine Standortbestimmung</p>
+          <ol>{ABLAUF.map((s) => (<li><div><b>{s.t}</b><span>{s.d}</span></div></li>))}</ol>
+        </div>
+        <div class="au-fragen" id="fragen">
+          <h3>Was Frauen uns vorher fragen</h3>
+          {EINWAENDE.map(([f, a], k) => (<details data-k={k}><summary>{f}</summary><p>{a}</p></details>))}
+        </div>
+        <div style="margin-top:2.75rem">
+          <p class="au-label" style="margin-bottom:1rem">Frauen, die diesen Schritt gemacht haben</p>
+          <ProofPaare ids={['15', '12', '24', '04']} />
+          <div class="au-zitate" style="grid-template-columns:1fr">
+            <blockquote class="au-zitat"><q>Ich habe nicht verstanden, warum ich es nicht schaffe, obwohl ich trainiert habe wie blöd. Heute weiss ich, dass es an anderen Themen liegt.</q><cite>Phuong, Kundin von Fit on Time</cite></blockquote>
+          </div>
+          <div class="au-zahlen" style="margin-top:1.75rem">{ZAHLEN.map(([z, l]) => (<div><b>{z}</b><span>{l}</span></div>))}</div>
+        </div>
+      </div>
+    </div>
+    <div class="au-sticky" id="sticky"><button type="button" class="au-btn" id="sticky-btn">Termin wählen</button></div>
+  </section>
+
+  <footer class="au-fuss"><div class="au-wrap">
+    <p>Die Auswertung und die Standortbestimmung ersetzen keine medizinische Diagnose. Bei Verdacht auf eine Erkrankung ist eine ärztliche Abklärung sinnvoll.</p>
+    <p style="margin-top:0.5rem"><a href={IMPRESSUM_URL} target="_blank" rel="noopener">Impressum</a> · <a href={IMPRESSUM_URL} target="_blank" rel="noopener">Datenschutz</a></p>
+    <div style="margin-top:10px"><ScaleeeCredit /></div>
+  </div></footer>
+
+  <CookieBanner metaPixelId="1316450223953563" googleAdsId={GOOGLE_ADS_ID} consentKey="fot_consent" impressumUrl={IMPRESSUM_URL} datenschutzUrl={IMPRESSUM_URL} ab={ab} />
+
+  <script is:inline>
+    // Tracking nach LP-Machine-Muster (__lp aus dem CookieBanner)
+    var SLUG = document.body.dataset.slug, LP_NAME = document.body.dataset.lpname;
+    function tk(e, d) {
+      var tries = 0;
+      (function fire() {
+        if (window.__lp) {
+          window.__lp.track(e, Object.assign({ page: SLUG }, d || {}), 'fot', LP_NAME);
+          if (e === 'quiz_start') window.__lp.meta('ViewContent', { content_name: 'FoT Quiz Start', currency: 'CHF' });
+          if (e === 'quiz_complete') window.__lp.meta('CompleteRegistration', { content_name: 'FoT Quiz Complete', currency: 'CHF' });
+          if (e === 'lead_submit') window.__lp.meta('Lead', { content_name: 'FoT Lead', currency: 'CHF' });
+        } else if (tries++ < 40) { setTimeout(fire, 50); }
+      })();
+    }
+    tk('page_view');
+  </script>
+  <script is:inline>
+    // Ablauf: Start -> 7 Fragen (Rückmeldung, Auto-Weiter) -> Opt-in -> Danke-Seite mit Auswertung und Kalender
+    var N = 7, answers = { gender: 'frau' }, started = false, leadFired = false, savedData = '', bookingLoaded = false, current = 0, timer = null;
+    function $(id) { return document.getElementById(id); }
+
+    // Bausteine der Auswertung. Sätze in der Sprache der Gewinner-Setter, keine Diagnose.
+    var ZIEL = { 'bis5': 'bis 5 Kilo', '5-10': '5 bis 10 Kilo', '10-20': '10 bis 20 Kilo', '20plus': 'mehr als 20 Kilo' };
+    var DAUER = { 'u1': 'seit weniger als einem Jahr', '1-3': 'seit 1 bis 3 Jahren', '3-10': 'seit 3 bis 10 Jahren', 'ue10': 'seit mehr als 10 Jahren' };
+    var PROBIERT = { diaeten: 'Diäten', fasten: 'Fasten', sport: 'Sport-Programme', shakes: 'Shakes oder Kapseln', programm: 'Apps und Abnehm-Programme' };
+    var HUERDE = { abends: 'der Abend und der Heisshunger', ernaehrung: 'die Ernährung im Alltag', zeit: 'die Zeit neben Job und Familie', dranbleiben: 'dranbleiben, wenn es nicht sofort wirkt' };
+    var GRUND = { wohl: 'Du willst dich in deinem Körper wieder wohlfühlen.', energie: 'Du willst wieder mehr Energie im Alltag haben.', kleider: 'Du willst, dass deine Kleider wieder passen.', gesund: 'Du willst etwas für deine Gesundheit tun, auch für später.' };
+    var DEUTUNG = {
+      abends: 'Heisshunger am Abend ist selten eine Frage des Willens. Oft hat der Tag davor zu wenig geliefert: zu spät gegessen, zu wenig Sättigendes, zu viel Stress. Am Abend holt sich der Körper zurück, was ihm gefehlt hat. Wer dann mit Verzicht dagegenhält, verliert meistens.',
+      ernaehrung: 'Die meisten Frauen bei uns wissen ziemlich genau, was gesund ist. Am Wissen liegt es selten. Es fehlt ein Plan, der in deinen Alltag passt und nicht nach zwei Wochen kippt, weil er zu streng ist.',
+      zeit: 'Wenn Job und Familie den Tag bestimmen, scheitern Pläne, die eine Stunde Sport und Vorkochen voraussetzen. Das ist kein Mangel an Disziplin. Der Plan muss in deinen echten Tag passen, nicht in einen idealen.',
+      dranbleiben: 'Wenn nach zwei Wochen nichts passiert, hört fast jede auf. Das liegt selten an ihr. Die meisten Programme setzen auf schnelle Kilos statt auf Schritte, die bleiben. Wer sieht, warum es langsamer geht, bleibt dran.'
+    };
+
+    function show(name) {
+      ['start', 'quiz', 'form', 'erg'].forEach(function (n) { $('s-' + n).hidden = n !== name; });
+      $('kopf-tag').textContent = name === 'quiz' ? 'Frage ' + (current + 1) + ' von ' + N : name === 'form' ? 'Fast fertig' : 'Deine Auswertung';
+      window.scrollTo(0, 0);
+    }
+    function zeigeFrage(i) {
+      current = i;
+      document.querySelectorAll('.au-frage').forEach(function (f) { f.hidden = +f.dataset.i !== i; });
+      document.querySelectorAll('#prog i').forEach(function (el, k) { el.classList.toggle('an', k < i); });
+      $('feedback').hidden = true;
+      $('kopf-tag').textContent = 'Frage ' + (i + 1) + ' von ' + N;
+      window.scrollTo(0, 0);
+    }
+    function weiter() {
+      clearTimeout(timer);
+      if (current < N - 1) { zeigeFrage(current + 1); return; }
+      tk('quiz_complete');
+      show('form');
+    }
+    document.querySelectorAll('[data-start]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        if (!started) { started = true; tk('quiz_start'); }
+        show('quiz'); zeigeFrage(0);
+      });
+    });
+    // Einfachauswahl: markieren, Rückmeldung zeigen, nach gut 2 Sekunden weiter (Tippen überspringt)
+    document.querySelectorAll('.au-opt:not([data-multi])').forEach(function (b) {
+      b.addEventListener('click', function () {
+        if (!$('feedback').hidden && b.classList.contains('gewaehlt')) { weiter(); return; }
+        var q = b.dataset.q;
+        answers['q' + q] = b.querySelector('.lb').textContent.trim();
+        answers['q' + q + '_val'] = b.dataset.val;
+        tk('quiz_answer', { detail: 'q' + q + '_' + b.dataset.val });
+        b.closest('.au-opts').querySelectorAll('.au-opt').forEach(function (o) { o.classList.remove('gewaehlt'); o.querySelector('.pf').textContent = '→'; });
+        b.classList.add('gewaehlt'); b.querySelector('.pf').textContent = '✓';
+        $('fb-text').textContent = b.dataset.fb;
+        $('feedback').hidden = false;
+        clearTimeout(timer); timer = setTimeout(weiter, 2200);
+      });
+    });
+    // Mehrfachauswahl (Frage 3): "Noch nichts davon" schliesst die anderen aus
+    var multi = Array.prototype.slice.call(document.querySelectorAll('.au-opt[data-multi]'));
+    function multiWerte() { return multi.filter(function (o) { return o.getAttribute('aria-pressed') === 'true'; }); }
+    multi.forEach(function (b) {
+      b.addEventListener('click', function () {
+        var an = b.getAttribute('aria-pressed') !== 'true';
+        if (an) multi.forEach(function (o) { if ((b.dataset.val === 'nichts') !== (o.dataset.val === 'nichts')) { o.setAttribute('aria-pressed', 'false'); o.querySelector('.pf').textContent = '+'; } });
+        b.setAttribute('aria-pressed', an ? 'true' : 'false');
+        b.querySelector('.pf').textContent = an ? '✓' : '+';
+        $('multi-weiter').disabled = multiWerte().length === 0;
+      });
+    });
+    $('multi-weiter').addEventListener('click', function () {
+      var w = multiWerte(), q = multi[0].dataset.q;
+      answers['q' + q] = w.map(function (o) { return o.querySelector('.lb').textContent.trim(); }).join(', ');
+      answers['q' + q + '_val'] = w.map(function (o) { return o.dataset.val; }).join(',');
+      tk('quiz_answer', { detail: 'q' + q + '_' + answers['q' + q + '_val'] });
+      weiter();
+    });
+    $('fb-weiter').addEventListener('click', weiter);
+
+    function normalizePhone(raw) {
+      var c = (raw || '').replace(/[^\d+]/g, '');
+      if (!c) return '';
+      if (c.indexOf('00') === 0) return '+' + c.slice(2);
+      if (c.charAt(0) === '+') return c;
+      if (c.charAt(0) === '0') return '+41' + c.slice(1);
+      return '+41' + c;
+    }
+    function liste(arr) { return arr.length < 2 ? arr.join('') : arr.slice(0, -1).join(', ') + ' und ' + arr[arr.length - 1]; }
+    function baueAuswertung(vorname) {
+      $('e-name').textContent = vorname || 'Du';
+      var ul = $('spiegel'), saetze = [];
+      var z = ZIEL[answers.q1_val], d = DAUER[answers.q2_val];
+      if (z) saetze.push('Du möchtest ' + z + ' abnehmen' + (d ? ', und das beschäftigt dich ' + d + '.' : '.'));
+      var p = (answers.q3_val || '').split(',').filter(function (v) { return PROBIERT[v]; }).map(function (v) { return PROBIERT[v]; });
+      if (p.length) saetze.push('Du hast schon ' + liste(p) + ' versucht. Dass es nicht gehalten hat, sagt nichts über deine Disziplin. Es zeigt, dass der Ansatz nicht zu dir gepasst hat.');
+      else if (answers.q3_val === 'nichts') saetze.push('Du hast noch keine Diät hinter dir. Du startest ohne Ballast, das ist ein Vorteil.');
+      if (HUERDE[answers.q4_val]) saetze.push('Deine grösste Hürde: ' + HUERDE[answers.q4_val] + '.');
+      if (GRUND[answers.q6_val]) saetze.push('Dein Grund: ' + GRUND[answers.q6_val]);
+      ul.innerHTML = '';
+      saetze.forEach(function (s) { var li = document.createElement('li'); li.textContent = s; ul.appendChild(li); });
+      $('deutung').textContent = DEUTUNG[answers.q4_val] || DEUTUNG.ernaehrung;
+      var lang = answers.q2_val === '3-10' || answers.q2_val === 'ue10';
+      $('dauer-satz').hidden = !lang;
+      if (lang) $('dauer-satz').textContent = 'Wer es so lange versucht, hat meistens nicht zu wenig getan, sondern zu viel vom Falschen. Genau deshalb lohnt es sich, einmal mit jemandem draufzuschauen, der das jeden Tag macht.';
+      $('fahrplan').textContent = answers.q7_val === 'irgendwann'
+        ? 'Was noch fehlt, ist dein Fahrplan. Kein Druck: Die Standortbestimmung verpflichtet dich zu nichts, sie zeigt dir nur, wo du stehst.'
+        : 'Was noch fehlt, ist dein Fahrplan: welche Schritte bei dir zuerst kommen. Den gehst du in deiner Standortbestimmung mit deiner Coach durch.';
+    }
+    function ladeKalender(d) {
+      if (bookingLoaded) return;
+      bookingLoaded = true;
+      var s = document.createElement('script');
+      s.src = 'https://embed.ycb.me'; s.async = true;
+      s.dataset.domain = 'fitontime-workshop'; s.dataset.displaymode = 'auto';
+      $('bookingembed').appendChild(s);
+      tk('booking_embed_loaded');
+      // Name, Mail und Handy an den Kalender übergeben (YCBM-Kürzel), damit nur noch der Termin fehlt
+      var werte = { FNAME: d.fn, LNAME: d.ln, EMAIL: d.em, PHONE: d.ph }, versuche = 0;
+      (function warte() {
+        var f = document.querySelector('#bookingembed iframe');
+        if (!f) { if (versuche++ < 200) setTimeout(warte, 50); return; }
+        var q = Object.keys(werte).filter(function (k) { return werte[k]; }).map(function (k) { return k + '=' + encodeURIComponent(werte[k]); }).join('&');
+        if (q && f.src.indexOf('EMAIL=') === -1) f.src = f.src + (f.src.indexOf('?') === -1 ? '?' : '&') + q;
+      })();
+    }
+    $('leadform').addEventListener('submit', function (e) {
+      e.preventDefault();
+      var fehler = $('fehler'); fehler.classList.remove('show');
+      if ($('website').value) return;
+      var fn = $('fn').value.trim(), ln = $('ln').value.trim(), em = $('em').value.trim(), ph = normalizePhone($('ph').value);
+      if (!fn || !ln || !em || !ph || !$('ds').checked) { fehler.textContent = 'Bitte fülle alle Felder aus und bestätige den Datenschutz.'; fehler.classList.add('show'); return; }
+      var d = { fn: fn, ln: ln, em: em, ph: ph }, now = JSON.stringify(d);
+      if (savedData === now) { zeigeAuswertung(d); return; }
+      var btn = $('senden');
+      btn.disabled = true; btn.textContent = 'Auswertung wird erstellt …';
+      fetch('/api/sheets', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ lp_slug: SLUG, lp_name: LP_NAME, name: fn + ' ' + ln, first_name: fn, email: em, phone: ph, wa_optin: false, answers: answers }),
+      }).then(function (res) {
+        if (!res.ok) return res.json().catch(function () { return {}; }).then(function (j) { throw new Error(j && j.error ? j.error : 'insert-failed'); });
+        savedData = now;
+        try { sessionStorage.setItem('fot_sd_lead', JSON.stringify({ email: em, phone: ph })); sessionStorage.setItem('fot_result_name', fn); } catch (x) {}
+        if (!leadFired) { leadFired = true; tk('lead_submit', { detail: 'huerde_' + (answers.q4_val || '') }); }
+        zeigeAuswertung(d);
+      }).catch(function (err) {
+        fehler.textContent = (window.__lpErr ? window.__lpErr(err.message) : 'Deine Angaben konnten nicht gespeichert werden. Bitte prüfe sie und versuche es erneut.');
+        fehler.classList.add('show');
+      }).finally(function () { btn.disabled = false; btn.textContent = 'Meine Auswertung ansehen →'; });
+    });
+    function zeigeAuswertung(d) {
+      baueAuswertung(d.fn);
+      show('erg');
+      ladeKalender(d);
+      if (window.__auSticky) setTimeout(window.__auSticky, 50);
+      tk('result_shown', { detail: 'auswertung' });
+    }
+    // Ersatz-Ereignisse für die Wochen-Tests: Kalender im Bild, Einwand geöffnet
+    (function () {
+      var sticky = $('sticky'), ziel = $('zusage'), gesehen = false;
+      $('sticky-btn').addEventListener('click', function () { tk('sticky_cta_click'); ziel.scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+      document.querySelectorAll('#fragen details').forEach(function (el) {
+        el.addEventListener('toggle', function () { if (el.open) tk('einwand_offen', { detail: 'e' + el.dataset.k }); });
+      });
+      if (!('IntersectionObserver' in window)) return;
+      var obs = new IntersectionObserver(function (es) {
+        es.forEach(function (en) {
+          var aktiv = !$('s-erg').hidden;
+          sticky.classList.toggle('zeigen', aktiv && !en.isIntersecting);
+          if (aktiv && en.isIntersecting && !gesehen) { gesehen = true; tk('kalender_sichtbar'); }
+        });
+      }, { threshold: 0.15 });
+      obs.observe(ziel);
+      // Beim Anzeigen der Auswertung neu messen, sonst bleibt der Zustand von vorher (versteckt) stehen
+      window.__auSticky = function () { obs.unobserve(ziel); obs.observe(ziel); };
+    })();
+    // Selbst-Buchung melden (gleicher Weg wie /einladung/). booking_confirmed feuert /workshop/gebucht.
+    window.addEventListener('message', function (ev) {
+      var o = String(ev.origin || '');
+      if (!/(^|\.)ycb\.me$/.test(o) && o.indexOf('youcanbook') === -1) return;
+      var t = ''; try { t = (typeof ev.data === 'string' ? ev.data : JSON.stringify(ev.data)).toLowerCase(); } catch (x) { return; }
+      if (t.indexOf('book') === -1 || !/confirm|complete|created|success|made|finished/.test(t) || t.indexOf('cancel') !== -1) return;
+      try { if (sessionStorage.getItem('fot_booked_reported') === '1') return; sessionStorage.setItem('fot_booked_reported', '1'); } catch (x) {}
+      try { var l = JSON.parse(sessionStorage.getItem('fot_sd_lead') || '{}'); if (l.email || l.phone) fetch('/api/booked', { method: 'POST', headers: { 'Content-Type': 'application/json' }, keepalive: true, body: JSON.stringify(l) }).catch(function () {}); } catch (x) {}
+    });
+  </script>
+</body>
+</html>

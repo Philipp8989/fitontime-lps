@@ -299,6 +299,20 @@ SHEETS['nervensystem'] = {
 // WhatsApp-Bot denselben Gesprächsrahmen nutzt. Getrennt ausgewertet wird über lp_slug im Dashboard.
 SHEETS['figur-check-einladung'] = SHEETS['figur-check'];
 
+// Termin-Funnel /auswertung/ (26.11.2026): Figur-Check-Sheet wie /einladung/, damit Setter und HubSpot nichts umstellen.
+// abkürzung: Spaltenköpfe des Sheets passen nicht zu diesen Fragen, deshalb steht jede Antwort mit Kurzlabel in der Zelle.
+// Ausbauen, wenn der Funnel trägt: eigenes Sheet mit passenden Spalten plus eigener Zap.
+SHEETS['auswertung'] = {
+  id: '1pKSK2fB3tjL9sxHMbM95a3NGdHZyeW0g29sIYnzh4js',
+  range: 'Tabellenblatt1!A:M',
+  buildRow: (datum, d) => {
+    const a = d.answers || {};
+    const z = (label: string, v: any) => (v ? `${label}: ${v}` : '');
+    return [datum, d.name, d.email, d.phone || '', 'Auswertung (Termin-Funnel)', z('Ziel', a.q1), z('Seit', a.q2), z('Probiert', a.q3),
+      z('Hürde', a.q4), z('Alter', a.q5), z('Grund', a.q6), z('Wichtig', a.q7), ''];
+  },
+};
+
 // Nervensystem-Quiz Variante B (Kevins Funnel, /nervensystem-b/): gleiche A/B-Leadliste wie Variante A.
 // Die Anmeldung dort ist zugleich die Webinar-Anmeldung (siehe handleLead: Webinar-Liste + WebinarJam).
 SHEETS['nervensystem-b'] = {
@@ -628,7 +642,7 @@ const handleLead: APIRoute = async ({ request }) => {
             // Eigener Pixel, damit das Medikamenten-Thema den geteilten Pixel nie trifft.
             // Ohne Env kein CAPI-Override auf einen fremden Pixel: dann geht nichts raus (siehe unten).
             : lpSlug === 'nach-der-spritze' ? ((import.meta.env.PUBLIC_FOT_SPRITZE_PIXEL_ID || '').trim() || 'none')
-            : (lpSlug === 'workshop' || lpSlug === 'workshop-c' || lpSlug === 'figur-check-einladung' || lpSlug === 'insulin-check' || lpSlug === 'bauchfett' || lpSlug === 'koerperalter' || lpSlug === 'webinar' || lpSlug === 'nervensystem' || lpSlug === 'nervensystem-b' || lpSlug === 'prognose') ? '1316450223953563'
+            : (lpSlug === 'workshop' || lpSlug === 'workshop-c' || lpSlug === 'figur-check-einladung' || lpSlug === 'auswertung' || lpSlug === 'insulin-check' || lpSlug === 'bauchfett' || lpSlug === 'koerperalter' || lpSlug === 'webinar' || lpSlug === 'nervensystem' || lpSlug === 'nervensystem-b' || lpSlug === 'prognose') ? '1316450223953563'
               : undefined,
         // Nur Longevity: geschaetzter Lead-Wert (reine Zahl, KEINE Gesundheitsdaten) behebt Meta-Diagnose "gueltige Preisinfo".
         // value/currency muessen mit dem Browser-Pixel (longevity/index.astro) uebereinstimmen. Platzhalter 50 CHF.
