@@ -691,7 +691,7 @@ function buildAnswers(){
 function submitLead(){
   var name = $("f-name").value.trim();
   var mail = $("f-mail").value.trim();
-  var tel = $("f-tel").value.trim();
+  var tel = telBereinigen($("f-tel").value.trim());
   var ok = $("f-consent").checked;
   var err = $("formErr");
 
@@ -755,6 +755,14 @@ $("submitBtn").onclick = submitLead;
 $("r-book").addEventListener("click", function(){ tk('book_click'); });
 
 /* Telefonfeld: Landesvorwahl bleibt stehen, laesst sich aber ueberschreiben */
+/* Doppelte Vorwahl vor dem vorbelegten "+41 " entfernen: "+41 +41 79", "+41 +49 151", "+41 0041 79", "+41 079" */
+function telBereinigen(v) {
+  return String(v || "")
+    .replace(/^\+41\s*(?=\+)/, "")
+    .replace(/^\+41\s*0041\s*/, "+41 ")
+    .replace(/^\+41\s*0(?=[1-9])/, "+41 ")
+    .replace(/^\+41\s{2,}/, "+41 ");
+}
 (function(){
   var tel = $("f-tel");
   tel.addEventListener("focus", function(){
@@ -768,6 +776,8 @@ $("r-book").addEventListener("click", function(){ tk('book_click'); });
     if (tel.value.length && tel.value.charAt(0) !== "+" && /^[0-9]/.test(tel.value)) {
       tel.value = "+41 " + tel.value.replace(/^0+/, "");
     }
+    var sauber = telBereinigen(tel.value);
+    if (sauber !== tel.value) tel.value = sauber;
   });
 })();
 </script>
