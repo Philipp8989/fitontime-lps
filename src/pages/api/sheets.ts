@@ -313,11 +313,6 @@ SHEETS['auswertung'] = {
       u.utm_source || '', u.utm_campaign || '', u.utm_content || ''];
   },
 };
-    const z = (label: string, v: any) => (v ? `${label}: ${v}` : '');
-    return [datum, d.name, d.email, d.phone || '', 'Auswertung (Termin-Funnel)', z('Ziel', a.q1), z('Seit', a.q2), z('Probiert', a.q3),
-      z('Hürde', a.q4), z('Alter', a.q5), z('Grund', a.q6), z('Wichtig', a.q7), ''];
-  },
-};
 
 // Nervensystem-Quiz Variante B (Kevins Funnel, /nervensystem-b/): gleiche A/B-Leadliste wie Variante A.
 // Die Anmeldung dort ist zugleich die Webinar-Anmeldung (siehe handleLead: Webinar-Liste + WebinarJam).
