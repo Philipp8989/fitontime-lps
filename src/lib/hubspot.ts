@@ -49,3 +49,22 @@ export async function upsertHubspotContact(
   // Lifecycle nur bei neuen Kontakten, rückwärts (opportunity -> lead) lehnt HubSpot ab
   return hs(token, '', 'POST', { properties: { ...props, email: lead.email.trim(), lifecyclestage: 'lead' } });
 }
+
+// Notiz am Kontakt (z. B. Quiz-Antworten), damit der Setter mit dem Resultat eröffnen kann.
+// Text wird escaped, Zeilen als <br> getrennt. 202 = Notiz zu Kontakt (HUBSPOT_DEFINED).
+function esc(t: string): string {
+  return t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+export async function addHubspotNote(token: string, contactId: string, titel: string, zeilen: string[]) {
+  if (!zeilen.length) return;
+  const body = `<b>${esc(titel)}</b><br>` + zeilen.map(esc).join('<br>');
+  const res = await fetch('https://api.hubapi.com/crm/v3/objects/notes', {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      properties: { hs_timestamp: new Date().toISOString(), hs_note_body: body },
+      associations: [{ to: { id: contactId }, types: [{ associationCategory: 'HUBSPOT_DEFINED', associationTypeId: 202 }] }],
+    }),
+  });
+  if (!res.ok) throw new Error(`HubSpot Notiz ${res.status}: ${(await res.text().catch(() => '')).slice(0, 200)}`);
+}

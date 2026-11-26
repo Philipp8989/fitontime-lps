@@ -8,7 +8,7 @@ import { invalidLeadFields } from '../../lib/leadValidation';
 import { buildAttribution } from '../../lib/attribution';
 import { sendOpenAiAdsEvent } from '../../lib/openaiAds';
 import { KA_SHEET } from '../../lib/koerperalter-sheet';
-import { upsertHubspotContact } from '../../lib/hubspot';
+import { upsertHubspotContact, addHubspotNote } from '../../lib/hubspot';
 
 // A/B-Kennung (vom CookieBanner angehängt) in die Antworten fürs Dashboard übernehmen
 function mitAb(data: any): Record<string, any> {
@@ -299,14 +299,20 @@ SHEETS['nervensystem'] = {
 // WhatsApp-Bot denselben Gesprächsrahmen nutzt. Getrennt ausgewertet wird über lp_slug im Dashboard.
 SHEETS['figur-check-einladung'] = SHEETS['figur-check'];
 
-// Termin-Funnel /auswertung/ (26.11.2026): Figur-Check-Sheet wie /einladung/, damit Setter und HubSpot nichts umstellen.
-// abkürzung: Spaltenköpfe des Sheets passen nicht zu diesen Fragen, deshalb steht jede Antwort mit Kurzlabel in der Zelle.
-// Ausbauen, wenn der Funnel trägt: eigenes Sheet mit passenden Spalten plus eigener Zap.
+// Termin-Funnel /auswertung/ (26.11.2026): eigenes Sheet ohne Zap "FitonTime Auswertung Leads (Termin-Funnel)", Tab Leads.
+// Bewusst NICHT das Figur-Check-Sheet: dessen Zap legt in HubSpot einen zweiten Kontakt-Eintrag mit Quelle Schilddrüse an.
+// HubSpot läuft direkt (HUBSPOT_DIRECT, Workflow "Auswertung -> Deal erstellen"), die Antworten gehen als Notiz an den Kontakt.
 SHEETS['auswertung'] = {
-  id: '1pKSK2fB3tjL9sxHMbM95a3NGdHZyeW0g29sIYnzh4js',
-  range: 'Tabellenblatt1!A:M',
+  id: '1MmTHIWguZo4HQZY05dPAGXt82aepQoUO8RayYsMeFX8',
+  range: 'Leads!A:O',
   buildRow: (datum, d) => {
     const a = d.answers || {};
+    const u = d.attr || {};
+    const [vorname, nachname] = splitName(d.name);
+    return [datum, vorname, nachname, d.email, d.phone || '', a.q1 || '', a.q2 || '', a.q3 || '', a.q4 || '', a.q5 || '', a.q6 || '', a.q7 || '',
+      u.utm_source || '', u.utm_campaign || '', u.utm_content || ''];
+  },
+};
     const z = (label: string, v: any) => (v ? `${label}: ${v}` : '');
     return [datum, d.name, d.email, d.phone || '', 'Auswertung (Termin-Funnel)', z('Ziel', a.q1), z('Seit', a.q2), z('Probiert', a.q3),
       z('Hürde', a.q4), z('Alter', a.q5), z('Grund', a.q6), z('Wichtig', a.q7), ''];
@@ -347,7 +353,12 @@ SHEETS['prognose'] = {
 };
 
 // Funnels ohne Zap: Slug -> lead_quelle in HubSpot
-const HUBSPOT_DIRECT: Record<string, string> = { prognose: 'Prognose' };
+const HUBSPOT_DIRECT: Record<string, string> = { prognose: 'Prognose', auswertung: 'Auswertung' };
+
+// Funnels, deren Quiz-Antworten als Notiz am HubSpot-Kontakt landen (Setter eröffnen mit dem Quiz-Resultat)
+const HUBSPOT_NOTIZ: Record<string, [string, string][]> = {
+  auswertung: [['q1', 'Ziel'], ['q2', 'Seit'], ['q3', 'Schon probiert'], ['q4', 'Grösste Hürde'], ['q5', 'Alter'], ['q6', 'Grund'], ['q7', 'Wie wichtig jetzt']],
+};
 
 // Ein-Klick-Anmeldungen aus der Mail und Hot-Seat-Antworten sind keine neuen Leads: kein CRM-Eintrag
 // (sonst Doppel-Lead plus Benachrichtigung je Listen-Kontakt) und kein Meta-Lead (sonst stimmt der CPL nicht).
@@ -564,8 +575,14 @@ const handleLead: APIRoute = async ({ request }) => {
     const hubspotToken = import.meta.env.HUBSPOT_TOKEN;
     if (hubspotToken && HUBSPOT_DIRECT[lpSlug]) {
       const [vorname, nachname] = splitName(data.name);
+      const felder = HUBSPOT_NOTIZ[lpSlug];
       waitUntil(upsertHubspotContact(hubspotToken, {
         vorname, nachname, email: data.email, phone: data.phone || '', quelle: HUBSPOT_DIRECT[lpSlug],
+      }).then((kontakt: any) => {
+        if (!felder || !kontakt?.id) return;
+        const a = data.answers || {};
+        const zeilen = felder.filter(([k]) => a[k]).map(([k, label]) => `${label}: ${String(a[k]).slice(0, 300)}`);
+        return addHubspotNote(hubspotToken, kontakt.id, `Quiz-Antworten ${data.lp_name || lpSlug}`, zeilen);
       }).catch((e) => console.error('[sheets] HubSpot', lpSlug, e?.message || e)));
     }
 
